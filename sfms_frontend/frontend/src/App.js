@@ -1,22 +1,25 @@
-import './App.css';
-import React from 'react';
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Payment from "./pages/Payment";
+import History from "./pages/History";
+import Layout from "./pages/Layout";
+import Confirm from "./pages/Confirm";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h3>Student Fees Management</h3>
-        <h5>Enter your student number to proceed with payment</h5>
-        <form>
-        <lable> Enter student number:
-          <input type="text"/>
-          <input type="submit"/>
-        </lable>
-    </form>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="payment" element={<Payment />} />
+          <Route path="history" element={<History />} />
+          <Route path="confirmation" element={<Confirm />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App;
-
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
