@@ -1,6 +1,9 @@
+import { Component } from 'react';  
 import { Link } from "react-router-dom";
 
-const Confirm = () => {
+
+class Confirm  extends Component {
+  render(){
     return (
         <div className="container">
             <h1 className='d-flex justify-content-center'>Confirm Payment</h1>
@@ -9,8 +12,8 @@ const Confirm = () => {
     Pay with MoMo
   </div>
   <div class="card-body">
-    <h5 class="card-title">User. You are Paying a sum of k200 Using Mobile number 203948775</h5>
-    <h5 class="card-title"> A prompt will be sent to your number</h5>
+    <h5 class="card-title">User. You are Paying a sum of ZMW{this.props.amount} Using Mobile account#: {this.props.mobile}</h5>
+    <h5 class="card-title"> A prompt will be sent to your number for confirmation</h5>
     <a href={'/'} class="btn btn-primary">Confirm</a>
   </div>
 </div>
@@ -20,5 +23,10 @@ const Confirm = () => {
         </div>
     )
   };
-  
-  export default Confirm;
+}
+
+Confirm.defaultProps = {
+  amount: 23455,
+  mobile: "098765432"
+}
+export default Confirm;
