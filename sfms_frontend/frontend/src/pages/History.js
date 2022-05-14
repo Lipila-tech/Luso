@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactTable from "react-table-6";  
 import "react-table-6/react-table.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
   
 class App extends Component {  
   render() {  
@@ -16,7 +15,7 @@ class App extends Component {
          amount: 2345,
          term: "term 2 2022",
          pending: 2400
-         }]  
+         }];
      const columns = [{  
        Header: 'Transaction date',  
        accessor: 'date'  
@@ -41,7 +40,7 @@ class App extends Component {
                   defaultPageSize = {3}  
                   pageSizeOptions = {[2,4, 6]}  
               />
-              <Link className='d-flex justify-content-center' to={'/payment'}><button type="button" class="btn btn-primary">Make a Payment</button></Link>
+               <a href={'/payment'} class="btn btn-primary d-flex justify-content-center">Make a Payment</a>
           </div>        
     )  
   }  

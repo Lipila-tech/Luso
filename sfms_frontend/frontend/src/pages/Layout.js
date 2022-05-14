@@ -9,7 +9,7 @@ const Layout = () => {
 <div>
   <ul class="nav justify-content-end">
     <li class="nav-item active">
-      <Link class="nav-link" to={'#'} >Welcome,<span class="sr-only">USER.</span></Link>
+      <Link class="nav-link" to={'#'} >Welcome, USER.</Link>
     </li>
     <li class="nav-item">
       <Link  class="nav-link" to="/payment">PAY /</Link>
