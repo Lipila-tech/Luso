@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Link } from "react-router-dom";
 import {
   Button,
   Form,
@@ -12,27 +13,18 @@ class Home extends Component {
   render() {
     return (
       <div className="Home">
-        <h2>Sign In</h2>
+        <h2 className='d-flex justify-content-center'>Sign in to Make Payment</h2>
         <Form className="form">
           <FormGroup>
-            <Label for="exampleEmail">Username</Label>
+            <Label for="studentCode">Student Code</Label>
             <Input
-              type="email"
-              name="email"
-              id="exampleEmail"
-              placeholder="example@example.com"
+              type="text"
+              name="text"
+              id="studentCode"
+              placeholder="123456"
             />
           </FormGroup>
-          <FormGroup>
-            <Label for="examplePassword">Password</Label>
-            <Input
-              type="password"
-              name="password"
-              id="examplePassword"
-              placeholder="********"
-            />
-          </FormGroup>
-        <Button>Submit</Button>
+        <Link to={ '/history' }><Button>Submit</Button></Link>
       </Form>
     </div>
   );

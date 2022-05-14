@@ -1,7 +1,4 @@
 import { Component } from 'react';  
-import { Link } from "react-router-dom";
-
-
 class Confirm  extends Component {
   render(){
     return (
@@ -18,7 +15,7 @@ class Confirm  extends Component {
   </div>
 </div>
             <div className='d-flex justify-content-center'>
-                <Link to={'/payment'}><button type="button" class="btn btn-primary"> Go Back </button></Link>
+                <a href={'/payment'} class="btn btn-primary">Go back</a>
             </div>
         </div>
     )
