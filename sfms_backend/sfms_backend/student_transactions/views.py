@@ -10,21 +10,14 @@ class PaymentView(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
 
-    def payment(id):
-        """ Returns a students payment records"""
-        student = Student.objects.get(pk=id)
-        payments = student.payment.all()
-        return payments
-
-
-class StudentView(viewsets.ReadOnlyModelViewSet):
+class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
 
-class TermView(viewsets.ReadOnlyModelViewSet):
+class TermView(viewsets.ModelViewSet):
     serializer_class = TermSerializer
     queryset = Term.objects.all()
 
-class ProgramView(viewsets.ReadOnlyModelViewSet):
+class ProgramView(viewsets.ModelViewSet):
     serializer_class = ProgramSerializer
     queryset = Program.objects.all()

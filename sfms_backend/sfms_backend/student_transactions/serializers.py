@@ -6,7 +6,7 @@ from .models import Payment, Student, Program, Term
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ('amount', 'student', 'term')
+        fields = '__all__'
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:

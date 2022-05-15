@@ -20,7 +20,7 @@ class Student(models.Model):
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
 
     def __str__(self):
-        return ("Firstname: {} Lastname: {}".format(self.firstname, self.lastname).upper())
+        return ("{} {}".format(self.firstname, self.lastname).upper())
 
 class Term(models.Model):
     name = models.CharField(max_length=30)
@@ -36,15 +36,9 @@ class Term(models.Model):
 class Payment(models.Model):
     """Student payments Term 1"""
     amount = models.IntegerField()
-    status = models.CharField(max_length=10, default="pending")
-    pay_date = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    pay_date = models.DateField()
     student = models.ForeignKey(Student, related_name='payment', on_delete=models.CASCADE)
     term = models.ForeignKey(Term, related_name="term", on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{} Amount: {} Date: {} Term: {} Status: {}".format(self.student,
-                                                                   self.amount,
-                                                                   self.pay_date,
-                                                                   self.term,
-                                                                   self.status)
+        return "Amount: {} Student Info: {}".format(self.amount, self.student)
