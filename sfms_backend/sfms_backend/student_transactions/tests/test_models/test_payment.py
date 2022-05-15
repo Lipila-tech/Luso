@@ -7,11 +7,12 @@ Replace this with more appropriate tests for your application.
 """
 
 import django
+from django.contrib.auth.models import User
 from django.test import TestCase
-from ...models import Program
-from ...models import Student
-from ...models import Term
-from ...models import Payment
+from student_transactions.models import Program
+from student_transactions.models import Student
+from student_transactions.models import Term
+from student_transactions.models import Payment
 from datetime import datetime
 
 class PaymentTestCase(TestCase):
@@ -30,10 +31,14 @@ class PaymentTestCase(TestCase):
             program_name="Pascal Programming", tuition=4000)
         self.pro2 = Program.objects.create(
             program_name="Ruby Programming", tuition=4000)
+
+        # Create User
+        self.user1  = User.objects.create_user('Memo', 'memo@email.tech', 'memo@pswd')
         # Create student
         self.std = Student.objects.create(
-            firstname="Sepiso", lastname="Muke",
-            tuition=4000, program=self.pro1)
+            username=self.user1,
+            tuition=4000,
+            program=self.pro1)
         # Create term
         self.t = Term.objects.create(name="Term1",
                                      start_date="2021-01-01",
@@ -45,11 +50,11 @@ class PaymentTestCase(TestCase):
 
     def test_payment_string_repr(self):
         """ Test string representation of the payment"""
-        self.assertEqual(str(self.pay), "Amount: 4000 Student Info: SEPISO MUKE")
+        self.assertEqual(str(self.pay), "Amount: 4000 Student Info: memo")
      
     def test_correct_students_payment(self):
         """ test if the correct student was given the payment"""
-        self.assertEqual(self.std.student_no, self.pay.student.student_no)
+        self.assertEqual(self.std.id, self.pay.student.id)
 
 
 

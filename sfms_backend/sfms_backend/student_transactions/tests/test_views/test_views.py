@@ -8,11 +8,12 @@ Replace this with more appropriate tests for your application.
 
 from datetime import datetime
 import django
+from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from ...models import Program
-from ...models import Term
-from ...models import Student
-from ...models import Payment
+from student_transactions.models import Program
+from student_transactions.models import Student
+from student_transactions.models import Term
+from student_transactions.models import Payment
 
 # TODO: Configure your database in settings.py and sync before running tests.
 
@@ -26,6 +27,32 @@ class ViewsTestCase(TestCase):
         print('\n')
 
     def setUp(self):
+        # Create User
+        self.user1  = User.objects.create_user('Memo', 'memo@email.tech', 'memo@pswd')
+        self.user2  = User.objects.create_user('Sepiso', 'sepiso@email.tech', 'sepiso@pswd')
+
+        # Create Terms
+        start_d = datetime.strptime("2022-10-01", "%Y-%m-%d").date()
+        end_d = datetime.strptime("2022-12-30", "%Y-%m-%d").date()
+        self.term1 = Term.objects.create(name="Term1", start_date=start_d, end_date=end_d)
+
+        # cretae programs
+        self.program1 = Program.objects.create(program_name="Python Programming",
+                                         tuition=4000)
+        self.program2 = Program.objects.create(
+            program_name="Ruby Programming", tuition=4000)
+
+        # Create Students
+        self.s1 = Student.objects.create(username=self.user1,
+                                         tuition=2300, program=self.program1)
+        self.s2 = Student.objects.create(username=self.user2,
+                                         tuition=2300, program=self.program2)
+
+        # Create payment
+        self.payment = Payment.objects.create(amount=4000,
+                                          pay_date="2022-05-10",
+                                          student=self.s1, term=self.term1)
+
         # Send GET requests to API endpoints
         self.response = Client().get("/api/v1/")
         self.r1 = Client().get("/api/v1/programs/")
@@ -33,109 +60,67 @@ class ViewsTestCase(TestCase):
         self.r3 = Client().get("/api/v1/students/")
         self.r4 = Client().get("/api/v1/payments/")
 
-        # Send POST requests
-        # Create program
-        self.p1 = Client().post("/api/v1/programs/",
-                                {"program_name": "C# Tutorial",
-                                 "tuition": 3400})
-        # Create terms
-        self.p2 = Client().post("/api/v1/terms/",
-                                {"name":"term1", "start_date":"2022-08-01",
-                                 "end_date":"2022-10-30"})
-        # Create student
-        self.p3 = Client().post("/api/v1/students/",
-                                {"firstname":"Sangwani",
-                                 "lastname":"zyambo",
-                                 "tuition":"3000",
-                                 "program": 1})
-        # Create payment
-        self.p4 = Client().post("/api/v1/payments/",
+        # POST payment
+        s_id = self.s1.id
+        t_id = self.term1.id     
+        self.post_payment = Client().post("/api/v1/payments/",
                                 {"amount":2346,
                                  "pay_date":"2022-05-10",
-                                 "student": 1,
-                                 "term": 1})
-        # Create payment with bad request
+                                 "student": s_id,
+                                 "term": t_id})
+        # POST payment with bad request
         self.p5 = Client().post("/api/v1/payments/",
                                 {"amount":2346,
                                  "pay_date":"2022-05-10",
-                                 "student": 1,
-                                 "term": "term1"})
-        # Post request to non existing route
+                                 "student": self.s2,
+                                 "term": self.term1})
+        # POST request to non existing route
         self.p6 = Client().post("/api/v1/not_a_view/",
                                 {"program_name": "C# Tutorial",
                                  "tuition": 3400})
        
     def test_valid_api_route(self):
-        """ Test if the payments api exists"""
+        """ TEST if API ROUTE EXISTS"""
         print('\n************************')
         print("******* Testing GET requests on API *******")
         print('\n')
         self.assertEqual(self.response.status_code, 200)
 
     def test_valid_programs_route(self):
-        """ Test if programs route is valid"""
-        program = Program.objects.create(program_name="Pascal Programming",
-                                         tuition=4000)
-        r2 = Client().get("/api/v1/programs/{}/".format(program.id))
+        """ GET vaild programs route"""
+        r2 = Client().get("/api/v1/programs/{}/".format(self.program1.id))
         self.assertEqual(self.r1.status_code, 200)
         self.assertEqual(r2.status_code, 200)
 
     def test_valid_terms_route(self):
-        """ Test if terms route is valid"""
-        start_d = datetime.strptime("2022-10-01", "%Y-%m-%d").date()
-        end_d = datetime.strptime("2022-12-30", "%Y-%m-%d").date()
-        # Create Terms
-        term = Term.objects.create(name="Term1", start_date=start_d, end_date=end_d)
-        r2 = Client().get("/api/v1/terms/{}/".format(term.id))
+        """ GET valid terms route"""
+        r2 = Client().get("/api/v1/terms/{}/".format(self.term1.id))
         self.assertEqual(self.r2.status_code, 200)
         self.assertEqual(r2.status_code, 200)
 
     def test_valid_students_route(self):
-        """ Test if students route is valid"""
-        p = Program.objects.create(program_name="Ruby Programming",
-                                         tuition=4000)
-        
-        # Create Students
-        student = Student.objects.create(firstname="Memo", lastname="Zuze",
-                                         tuition=2300, program=p)
-        r2 = Client().get("/api/v1/students/{}/".format(student.student_no))
+        """ GET valid students route"""        
+        r2 = Client().get("/api/v1/students/{}/".format(self.s1.id))
         self.assertEqual(self.r3.status_code, 200)
         self.assertEqual(r2.status_code, 200)
 
     def test_valid_payment_route(self):
-        """ Test if students route is valid"""
-        program = Program.objects.create(
-            program_name="Ruby Programming", tuition=4000)
-        # Create student
-        student = Student.objects.create(
-            firstname="Sepiso", lastname="Muke",
-            tuition=4000, program=program)
-        # Create term
-        term = Term.objects.create(name="Term1",
-                                     start_date="2021-01-01",
-                                     end_date="2021-04-01")
-        # Create payment
-        payment = Payment.objects.create(amount=4000,
-                                          pay_date="2022-05-10",
-                                          student=student, term=term)
-        r2 = Client().get("/api/v1/payments/{}/".format(payment.id))
+        """ GET valid payments route""" 
+        r2 = Client().get("/api/v1/payments/{}/".format(self.payment.id))
         self.assertEqual(self.r4.status_code, 200)
         self.assertEqual(r2.status_code, 200)
 
     def test_invalid_route(self):
-        """ Test get request on non existing route"""
+        """ GET invalid route """
         r1 = Client().get("/api/v1/not_a_view/")
         self.assertEqual(r1.status_code, 404)
 
     def test_post_response_201(self):
-        """ Test if data was added successfully to db"""
+        """ POST payment data successfully to database"""
         print('\n************************')
         print("******* Testing POST requests on API *******")
         print('\n')
-        self.assertEqual(self.p1.status_code, 201)
-        self.assertEqual(self.p2.status_code, 201)
-        self.assertEqual(self.p3.status_code, 201)
-        self.assertEqual(self.p4.status_code, 201)
+        self.assertEqual(self.post_payment.status_code, 201)
 
     def test_post_response_400(self):
         """ Test post request with invalid message framing"""

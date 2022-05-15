@@ -7,7 +7,7 @@ Replace this with more appropriate tests for your application.
 
 import django
 from django.test import TestCase
-from ...models import Program
+from student_transactions.models import Program
 
 class ProgramTestCase(TestCase):
     """Tests for the application views."""

@@ -4,7 +4,9 @@
     <Name>sfms_backend</Name>
     <RootNamespace>sfms_backend</RootNamespace>
     <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
-    <TestFramework>Pytest</TestFramework>
+    <TestFramework>unittest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="manage.py" />
-    <Compile Include="sfms_backend\__init__.py" />
     <Compile Include="sfms_backend\settings.py" />
     <Compile Include="sfms_backend\urls.py" />
     <Compile Include="sfms_backend\wsgi.py" />
@@ -66,11 +67,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="student_transactions\views.py" />
-    <Compile Include="student_transactions\__init__.py" />
-    <Compile Include="transactions\admin.py" />
-    <Compile Include="transactions\apps.py" />
-    <Compile Include="transactions\migrations\__init__.py" />
-    <Compile Include="transactions\__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
@@ -85,8 +81,6 @@
     <Folder Include="student_transactions\templates\student_transactions\" />
     <Folder Include="student_transactions\tests\test_views\" />
     <Folder Include="student_transactions\tests\test_models\" />
-    <Folder Include="transactions\" />
-    <Folder Include="transactions\migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="venv\">
