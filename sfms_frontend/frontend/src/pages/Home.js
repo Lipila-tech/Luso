@@ -13,7 +13,7 @@ class Home extends Component {
   render() {
     return (
       <div className="Home">
-        <h2 className='d-flex justify-content-center'>Sign in to Make Payment</h2>
+        <h2 className='d-flex justify-content-center'>Enter Code to Make a Payment</h2>
         <Form className="form">
           <FormGroup>
             <Label for="studentCode">Student Code</Label>
