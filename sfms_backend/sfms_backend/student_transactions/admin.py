@@ -3,7 +3,7 @@ from .models import Student, Payment, Term, Program
 
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ("firstname", 'lastname', 'tuition', 'program', 'student_no')
+    list_display = ('username', 'tuition', 'program')
 
 class AddAdmin(admin.ModelAdmin):
     list_display = ('student', 'pay_date', 'amount', 'term')

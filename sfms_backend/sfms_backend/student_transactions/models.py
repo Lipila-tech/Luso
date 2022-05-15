@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # School Programs
 class Program(models.Model):
@@ -13,14 +14,12 @@ class Program(models.Model):
 
 # Students Personal info class
 class Student(models.Model):
-    student_no = models.AutoField(primary_key=True, null=False)
-    firstname = models.CharField(max_length=100)
-    lastname = models.CharField(max_length=100)
+    username = models.OneToOneField(User, on_delete=models.CASCADE)
     tuition = models.IntegerField()
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
 
     def __str__(self):
-        return ("{} {}".format(self.firstname, self.lastname).upper())
+        return ("{}".format(self.username).lower())
 
 class Term(models.Model):
     name = models.CharField(max_length=30)
