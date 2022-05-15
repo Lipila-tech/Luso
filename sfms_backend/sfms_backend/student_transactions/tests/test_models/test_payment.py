@@ -48,13 +48,19 @@ class PaymentTestCase(TestCase):
                                           pay_date="2022-05-10",
                                           student=self.std, term=self.t)
 
+
+    def test_primary_keys(self):
+        """ Test if Payment id and Student have the same id"""
+        self.assertEqual(self.std.username_id, self.pay.student_id)
+        self.assertEqual(self.std.pk, self.pay.pk)
+
     def test_payment_string_repr(self):
         """ Test string representation of the payment"""
-        self.assertEqual(str(self.pay), "Amount: 4000 Student Info: memo")
+        self.assertEqual(str(self.pay), "Username: memo Amount: 4000 Date: 2022-05-10 Term: Term1 2021-04-01")
      
     def test_correct_students_payment(self):
         """ test if the correct student was given the payment"""
-        self.assertEqual(self.std.id, self.pay.student.id)
+        self.assertEqual(self.std.username_id, self.pay.student.username_id)
 
 
 
