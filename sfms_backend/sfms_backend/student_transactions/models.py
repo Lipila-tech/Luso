@@ -14,9 +14,12 @@ class Program(models.Model):
 
 # Students Personal info class
 class Student(models.Model):
-    username = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.OneToOneField(User,
+                                    related_name="studentname",
+                                    on_delete=models.CASCADE,
+                                    primary_key=True)
     tuition = models.IntegerField()
-    program = models.ForeignKey(Program, on_delete=models.CASCADE)
+    program = models.ForeignKey(Program, related_name="student", on_delete=models.CASCADE)
 
     def __str__(self):
         return ("{}".format(self.username).lower())
@@ -27,17 +30,23 @@ class Term(models.Model):
     end_date = models.DateField()
 
     def __str__(self):
-        return "{} {}".format(self.name, self.end_date.year).upper()
+        return "{} {}".format(self.name, self.end_date)
 
     def is_valid_term(self):
         return self.start_date < self.end_date
 
 class Payment(models.Model):
     """Student payments Term 1"""
+    student = models.OneToOneField(Student,
+                                   related_name='payment',
+                                   on_delete=models.CASCADE,
+                                   primary_key=True)
     amount = models.IntegerField()
     pay_date = models.DateField()
-    student = models.ForeignKey(Student, related_name='payment', on_delete=models.CASCADE)
     term = models.ForeignKey(Term, related_name="term", on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Amount: {} Student Info: {}".format(self.amount, self.student)
+        return "Username: {} Amount: {} Date: {} Term: {}".format(self.student,
+                                                                 self.amount,
+                                                                 self.pay_date,
+                                                                 self.term)

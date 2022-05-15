@@ -36,14 +36,19 @@ class TestStudentModels(TestCase):
         self.s2 = Student.objects.create(username=self.user2,
                                          tuition=2300, program=self.p2)
 
+    def test_primary_keys(self):
+        """ Test if User id and Student have the same id"""
+        self.assertEqual(self.user1.id, self.s1.username_id)
+        self.assertEqual(self.user1.pk, self.s1.pk)
+
     def test_student_str_repr(self):
         """ test the string representation"""
         self.assertEqual(str(self.s1), "memo")
 
     def test_correct_course(self):
         """ tests if the correct program was assigned to student"""
-        sd1 = Student.objects.get(id=1)
-        sd2 = Student.objects.get(id=2)
+        sd1 = Student.objects.get(username_id=1)
+        sd2 = Student.objects.get(username_id=2)
         self.assertEqual(str(sd1.program), "PASCAL PROGRAMMING")
         self.assertEqual(str(sd2.program), "RUBY PROGRAMMING")
 

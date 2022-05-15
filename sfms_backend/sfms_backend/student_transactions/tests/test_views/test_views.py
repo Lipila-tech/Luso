@@ -28,17 +28,23 @@ class ViewsTestCase(TestCase):
 
     def setUp(self):
         # Create User
-        self.user1  = User.objects.create_user('Memo', 'memo@email.tech', 'memo@pswd')
-        self.user2  = User.objects.create_user('Sepiso', 'sepiso@email.tech', 'sepiso@pswd')
+        self.user1  = User.objects.create_user('Memo',
+                                               'memo@email.tech',
+                                               'memo@pswd')
+        self.user2  = User.objects.create_user('Sepiso',
+                                               'sepiso@email.tech',
+                                               'sepiso@pswd')
 
         # Create Terms
         start_d = datetime.strptime("2022-10-01", "%Y-%m-%d").date()
         end_d = datetime.strptime("2022-12-30", "%Y-%m-%d").date()
-        self.term1 = Term.objects.create(name="Term1", start_date=start_d, end_date=end_d)
+        self.term1 = Term.objects.create(name="Term1",
+                                         start_date=start_d, end_date=end_d)
 
         # cretae programs
-        self.program1 = Program.objects.create(program_name="Python Programming",
-                                         tuition=4000)
+        self.program1 = Program.objects.create(
+            program_name="Python Programming",
+            tuition=4000)
         self.program2 = Program.objects.create(
             program_name="Ruby Programming", tuition=4000)
 
@@ -61,12 +67,12 @@ class ViewsTestCase(TestCase):
         self.r4 = Client().get("/api/v1/payments/")
 
         # POST payment
-        s_id = self.s1.id
+        s_id = self.s2.username_id
         t_id = self.term1.id     
         self.post_payment = Client().post("/api/v1/payments/",
-                                {"amount":2346,
-                                 "pay_date":"2022-05-10",
-                                 "student": s_id,
+                                {"student": s_id,
+                                 "amount": 2346,
+                                 "pay_date": "2022-05-10",
                                  "term": t_id})
         # POST payment with bad request
         self.p5 = Client().post("/api/v1/payments/",
@@ -100,13 +106,13 @@ class ViewsTestCase(TestCase):
 
     def test_valid_students_route(self):
         """ GET valid students route"""        
-        r2 = Client().get("/api/v1/students/{}/".format(self.s1.id))
+        r2 = Client().get("/api/v1/students/{}/".format(self.s1.username_id))
         self.assertEqual(self.r3.status_code, 200)
         self.assertEqual(r2.status_code, 200)
 
     def test_valid_payment_route(self):
         """ GET valid payments route""" 
-        r2 = Client().get("/api/v1/payments/{}/".format(self.payment.id))
+        r2 = Client().get("/api/v1/payments/{}/".format(self.payment.student_id))
         self.assertEqual(self.r4.status_code, 200)
         self.assertEqual(r2.status_code, 200)
 

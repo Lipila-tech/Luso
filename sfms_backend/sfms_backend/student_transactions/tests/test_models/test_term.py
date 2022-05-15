@@ -36,7 +36,7 @@ class TermTestCase(TestCase):
 
     def test_term_str_repr(self):
         """ test string representation"""
-        self.assertEqual(str(self.t1), "TERM1 2022")
+        self.assertEqual(str(self.t1), "Term1 2022-04-04")
 
     def test_valid_term_period(self):
         """ test if a term period is valid"""
