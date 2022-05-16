@@ -12,7 +12,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Login />} />
-          <Route path="payment" element={<Payment />} />
+          <Route path="payments" element={<Payment />} />
           <Route path="history" element={<History />} />
           <Route path="confirmation" element={<Confirm />} />
         </Route>
