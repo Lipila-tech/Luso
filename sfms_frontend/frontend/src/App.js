@@ -1,10 +1,12 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Account from "./components/Account";
 import Login from "./components/Home";
 import Payment from "./components/Payment";
 import History from "./components/History";
 import Layout from "./components/Layout";
 import Confirm from "./components/Confirm";
+
 
 export default function App() {
   return (
@@ -12,9 +14,10 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Login />} />
-          <Route path="payments" element={<Payment />} />
+          <Route path="account" element={<Account />} />
+          <Route path="confirm" element={<Confirm />} />
           <Route path="history" element={<History />} />
-          <Route path="confirmation" element={<Confirm />} />
+          <Route path="payments" element={<Payment />} />          
         </Route>
       </Routes>
     </BrowserRouter>
