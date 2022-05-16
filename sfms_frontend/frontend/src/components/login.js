@@ -1,7 +1,7 @@
 import React from 'react';  
 import "react-table-6/react-table.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import SelectTableComponent from "./selectTableComponent";
+import SelectTableComponent from "../pages/selectTableComponent";
 import Alert from 'react-popup-alert'
 import '../styles.scss';
 

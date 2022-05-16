@@ -34,12 +34,27 @@ class TestStudentModels(TestCase):
         self.s1 = Student.objects.create(username=self.user1,
                                          tuition=2300, program=self.p1)
         self.s2 = Student.objects.create(username=self.user2,
-                                         tuition=2300, program=self.p2)
+                                         tuition=4000, program=self.p2)
 
-    def test_primary_keys(self):
+    def test_primary_keys_relation(self):
         """ Test if User id and Student have the same id"""
         self.assertEqual(self.user1.id, self.s1.username_id)
         self.assertEqual(self.user1.pk, self.s1.pk)
+
+    def test_primary_keys(self):
+        """ Test get_user_id method"""
+        self.assertTrue(self.s1.get_user_id(), 1)
+        self.assertTrue(self.s1.get_user_id(), 2)
+
+    def test_username(self):
+        """ tests get_username method"""
+        self.assertTrue(self.s1.get_username, 'memo')
+        self.assertTrue(self.s2.get_username, 'sepi')
+
+    def test_tuition_fee(self):
+        """ test the get_tuition method"""
+        self.assertTrue(self.s1.get_tuition, 2300)
+        self.assertTrue(self.s2.get_tuition, 4000)
 
     def test_student_str_repr(self):
         """ test the string representation"""
@@ -52,5 +67,8 @@ class TestStudentModels(TestCase):
         self.assertEqual(str(sd1.program), "PASCAL PROGRAMMING")
         self.assertEqual(str(sd2.program), "RUBY PROGRAMMING")
 
-
+    def test_related_names(self):
+        """ Test the program related name on student"""
+        self.assertTrue(self.p1.student, self.s1.program)
+        self.assertTrue(self.p2.student, self.s2.program)
 

@@ -109,21 +109,19 @@ render () {
                 ))}
               </tbody>
             </table>
-            {/* <button
+            <h3
               className="btn btn-primary"
-              onClick={() => this.getSelectedRows()}
             >
-              Get Selected Items {this.state.SelectedList.length} 
-            </button> */}
-            {/* <div className="row">
-              <b>Selected Row Items(Click Button To Get):</b>
+              Number of Selected Items {this.state.SelectedList.length} 
+            </h3>
+            <div className="row">
+              <b>Selected Row Items:</b>
               <code>{JSON.stringify(this.state.SelectedList)}</code>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
     );
   }
 }
-
 export default SelectTableComponent;

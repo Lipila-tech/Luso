@@ -1,9 +1,6 @@
 
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+This module contains unittests for the student_transactions app.
 """
 
 from datetime import datetime
@@ -15,11 +12,9 @@ from student_transactions.models import Student
 from student_transactions.models import Term
 from student_transactions.models import Payment
 
-# TODO: Configure your database in settings.py and sync before running tests.
 
 class ViewsTestCase(TestCase):
     """Tests for the application views."""
-
     @classmethod
     def setUpTestData(cls):
         print('\n.................................')
@@ -69,9 +64,14 @@ class ViewsTestCase(TestCase):
         # POST payment
         s_id = self.s2.username_id
         t_id = self.term1.id     
-        self.post_payment = Client().post("/api/v1/payments/",
+        self.post_payment1 = Client().post("/api/v1/payments/",
                                 {"student": s_id,
                                  "amount": 2346,
+                                 "pay_date": "2022-05-10",
+                                 "term": t_id})
+        self.post_payment2 = Client().post("/api/v1/payments/",
+                                {"student": s_id,
+                                 "amount": 3567,
                                  "pay_date": "2022-05-10",
                                  "term": t_id})
         # POST payment with bad request
@@ -126,7 +126,8 @@ class ViewsTestCase(TestCase):
         print('\n************************')
         print("******* Testing POST requests on API *******")
         print('\n')
-        self.assertEqual(self.post_payment.status_code, 201)
+        self.assertEqual(self.post_payment1.status_code, 201)
+        self.assertEqual(self.post_payment2.status_code, 201)
 
     def test_post_response_400(self):
         """ Test post request with invalid message framing"""
@@ -140,11 +141,6 @@ class ViewsTestCase(TestCase):
         """ test content type of response"""
         self.assertEqual(self.response['Content-Type'], "application/json")
         
-    def test_put_on_program(self):
-        print('\n************************')
-        print("******* Testing PUT requests on API *******")
-        print('\n')
-        pass
         
 
     
