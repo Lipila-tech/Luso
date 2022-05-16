@@ -24,6 +24,19 @@ class Student(models.Model):
     def __str__(self):
         return ("{}".format(self.username).lower())
 
+    def get_user_id(self):
+        """ Returns the id of a student"""
+        return self.username
+
+    def get_username(self):
+        """ returns the username of the student"""
+        return self.username.username
+
+    def get_tuition(self):
+        """ returns the tuition of the student"""
+        return self.tuition
+
+
 class Term(models.Model):
     name = models.CharField(max_length=30)
     start_date = models.DateField()
@@ -37,10 +50,10 @@ class Term(models.Model):
 
 class Payment(models.Model):
     """Student payments Term 1"""
-    student = models.OneToOneField(Student,
-                                   related_name='payment',
-                                   on_delete=models.CASCADE,
-                                   primary_key=True)
+    student = models.ForeignKey(Student,
+                                related_name='payment',
+                                on_delete=models.CASCADE
+                                )
     amount = models.IntegerField()
     pay_date = models.DateField()
     term = models.ForeignKey(Term, related_name="term", on_delete=models.CASCADE)
