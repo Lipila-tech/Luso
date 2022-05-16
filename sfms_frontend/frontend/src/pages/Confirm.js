@@ -17,6 +17,7 @@ class Confirm  extends Component {
       <li>Using Mobile account#: {this.props.mobile}</li>
       <li>A prompt will be sent to your number for confirmation</li>
     </ul>
+    <br/>
     <a href={'/'} class="btn btn-primary">Confirm</a>
   </div>
 </div>

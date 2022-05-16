@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import Login from "./pages/Home";
 import Payment from "./pages/Payment";
 import History from "./pages/History";
 import Layout from "./pages/Layout";
@@ -11,7 +11,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<Login />} />
           <Route path="payment" element={<Payment />} />
           <Route path="history" element={<History />} />
           <Route path="confirmation" element={<Confirm />} />

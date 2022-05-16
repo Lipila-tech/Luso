@@ -35,13 +35,20 @@ class App extends Component {
     return (  
           <div className='container-lg'>  
             <h2 className='d-flex justify-content-center'>Payment History</h2>
+            <br/>
               <ReactTable  
                   data={data}  
                   columns={columns}  
                   defaultPageSize = {3}  
                   pageSizeOptions = {[2,4, 6]}  
+<<<<<<< HEAD
               />
               <Link className='d-flex justify-content-center' to={'/payment'}><button type="button" class="btn btn-primary">Make a Payment</button></Link>
+=======
+              />{' '}
+              <br/>
+               <a href={'/payment'} class="btn btn-primary d-flex justify-content-center">Make a Payment</a>
+>>>>>>> b017735 (add auth features)
           </div>        
     )  
   }  
