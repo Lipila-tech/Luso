@@ -120,6 +120,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# Specifies localhost server where React will be running
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000'
     ]
