@@ -34,12 +34,14 @@ class App extends Component {
     return (  
           <div className='container-lg'>  
             <h2 className='d-flex justify-content-center'>Payment History</h2>
+            <br/>
               <ReactTable  
                   data={data}  
                   columns={columns}  
                   defaultPageSize = {3}  
                   pageSizeOptions = {[2,4, 6]}  
-              />
+              />{' '}
+              <br/>
                <a href={'/payment'} class="btn btn-primary d-flex justify-content-center">Make a Payment</a>
           </div>        
     )  
