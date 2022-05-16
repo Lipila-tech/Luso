@@ -6,25 +6,30 @@ import axios from 'axios';
 
 export default class Payment extends React.Component {
   state = {
-    name: ''
+    amount: '',
+    mobile: ''
   }
 
   handleChange = event => {
-    this.setState({ name: event.target.value });
+    this.setState({ amount: event.target.value });
+    this.setState({ mobile: event.target.value });
   }
 
   handleSubmit = event => {
     event.preventDefault();
 
     const user = {
-      name: this.state.name
+      amount: this.state.amount,
+      mobile: this.state.mobile
     };
+    console.log(user.amount)
+    console.log(user.mobile)
 
-    axios.post(`api/v1/payments/`, { user })
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-      })
+    // axios.post(`api/v1/payments/`, { user })
+    //   .then(res => {
+    //     console.log(res);
+    //     console.log(res.data);
+    //   })
   }
 
   render() {

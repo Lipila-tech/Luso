@@ -1,10 +1,10 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Home";
-import Payment from "./pages/Payment";
-import History from "./pages/History";
-import Layout from "./pages/Layout";
-import Confirm from "./pages/Confirm";
+import Login from "./components/Home";
+import Payment from "./components/Payment";
+import History from "./components/History";
+import Layout from "./components/Layout";
+import Confirm from "./components/Confirm";
 
 export default function App() {
   return (
