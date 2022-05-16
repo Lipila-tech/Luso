@@ -1,5 +1,5 @@
 django~=4.0.4
 djangorestframework
 django-cors-headers
-jango-rest-auth
+django-rest-auth
 django-allauth
