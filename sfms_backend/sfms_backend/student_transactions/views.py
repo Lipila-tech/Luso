@@ -13,6 +13,7 @@ class PaymentView(viewsets.ModelViewSet):
 class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
+    
 
 class TermView(viewsets.ModelViewSet):
     serializer_class = TermSerializer

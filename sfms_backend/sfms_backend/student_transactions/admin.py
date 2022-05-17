@@ -14,7 +14,6 @@ class TermAdmin(admin.ModelAdmin):
 class ProgramAdmin(admin.ModelAdmin):
     list_display = ('program_name', 'tuition')
 
-
 # Register your models here.
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Payment, AddAdmin)

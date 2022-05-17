@@ -31,7 +31,7 @@ class Student(models.Model):
 
     def get_user_id(self):
         """ Returns the id of a student"""
-        return self.username
+        return self.username_id
 
     def get_username(self):
         """ returns the username of the student"""
@@ -56,7 +56,7 @@ class Term(models.Model):
 
 class Payment(models.Model):
     """Defines a Payments Table"""
-    student = models.OneToOneField(Student,
+    student = models.ForeignKey(Student,
                                    related_name='payment',
                                    on_delete=models.CASCADE,
                                    )
@@ -70,11 +70,4 @@ class Payment(models.Model):
                                                                  self.amount,
                                                                  self.pay_date,
                                                                  self.term)
-
-class History(models.Model):
-    """Defines a History Table"""
-    transaction_id = models.ForeignKey(Payment,
-                                       related_name="history_payment",
-                                       on_delete=models.CASCADE)
-                                                             
 
