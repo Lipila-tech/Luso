@@ -9,10 +9,10 @@ Replace this with more appropriate tests for your application.
 import django
 from django.contrib.auth.models import User
 from django.test import TestCase
-from student_transactions.models import Program
-from student_transactions.models import Student
-from student_transactions.models import Term
-from student_transactions.models import Payment
+from api.models import Program
+from api.models import Student
+from api.models import Term
+from api.models import Payment
 from datetime import datetime
 
 class PaymentTestCase(TestCase):

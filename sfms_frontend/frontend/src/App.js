@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Account from "./components/Account";
 import Login from "./components/Home";
 import Payment from "./components/Payment";
 import History from "./components/History";
@@ -14,7 +13,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Login />} />
-          <Route path="account" element={<Account />} />
           <Route path="confirm" element={<Confirm />} />
           <Route path="history" element={<History />} />
           <Route path="payments" element={<Payment />} />          

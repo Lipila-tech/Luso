@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     # Add your apps here to enable them
     'corsheaders',
     'rest_framework',
-    'student_transactions',
+    'api',
+    'django_rename_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
