@@ -1,5 +1,5 @@
 """
-Django settings for sfms_backend project.
+Django settings for backend project.
 
 Based on by 'django-admin startproject' using Django 2.1.2.
 
@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'sfms_backend.urls'
+ROOT_URLCONF = 'backend.urls'
 
 # Template configuration
 # https://docs.djangoproject.com/en/2.1/topics/templates/
@@ -76,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sfms_backend.wsgi.application'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
