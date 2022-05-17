@@ -109,7 +109,7 @@ render () {
                 ))}
               </tbody>
             </table>
-            <h3
+            {/* <h3
               className="btn btn-primary"
             >
               Number of Selected Items {this.state.SelectedList.length} 
@@ -117,7 +117,7 @@ render () {
             <div className="row">
               <b>Selected Row Items:</b>
               <code>{JSON.stringify(this.state.SelectedList)}</code>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
