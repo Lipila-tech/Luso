@@ -20,7 +20,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from student_transactions import views
+from api import views
 
 router = routers.DefaultRouter()
 router.register(r'payments', views.PaymentView, 'payment')

@@ -11,7 +11,7 @@ class App extends Component {
       }
 
 componentDidMount() {
-      axios.get(`api/v1/payments/`)
+      axios.get(`api/v1/history`)
         .then(res => {
           const payments = res.data;
           this.setState({ payments });

@@ -5,7 +5,7 @@ from .models import Student, Payment, Term, Program
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('username', 'tuition', 'program')
 
-class AddAdmin(admin.ModelAdmin):
+class PaymentAdmin(admin.ModelAdmin):
     list_display = ('student', 'pay_date', 'amount', 'term')
 
 class TermAdmin(admin.ModelAdmin):
@@ -16,6 +16,6 @@ class ProgramAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Student, StudentAdmin)
-admin.site.register(Payment, AddAdmin)
+admin.site.register(Payment, PaymentAdmin)
 admin.site.register(Term, TermAdmin)
 admin.site.register(Program, ProgramAdmin)
