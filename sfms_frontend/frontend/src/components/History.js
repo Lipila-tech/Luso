@@ -11,13 +11,15 @@ class App extends Component {
       }
 
 componentDidMount() {
-      axios.get(`api/v1/history`)
-        .then(res => {
-          const payments = res.data;
-          this.setState({ payments });
-          console.log(payments);
-        })
-    }
+    axios.get("/api/v1/payments/1")
+      .then((res) => {
+        const payments = res.data;
+        var newPayments = this.state.payments.concat([payments]);
+        this.setState({ payments: newPayments });
+        console.log(JSON.stringify(res.data));
+      })
+        .catch((err) => console.log(err));
+  };  
 
   render() {  
      const columns = [{  

@@ -3,6 +3,7 @@ import "react-table-6/react-table.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SelectTableComponent from './selectTableComponent';
 import axios from 'axios';
+import logo from "../assets/mtn.png"
 
 const Account = () => {
 
@@ -28,19 +29,13 @@ const Account = () => {
   const handleSubmit = event => {
     event.preventDefault();
 
-    const data = {
-      mobile: mobile.mobile,
-      amount: amount.amount
+    axios.get("/api/v1/payments/1")
+    .then((res) => {
+      console.log(JSON.stringify(res.data));
+    })
+      .catch((err) => console.log(err));
     };
-    console.log(data.mobile)
-    console.log(data.amount)
 
-    // axios.post(`api/v1/payments/`, { user })
-    //   .then(res => {
-    //     console.log(res);
-    //     console.log(res.data);
-    //   })
-  }
 
     return (
       <div className='container-lg'>
@@ -48,9 +43,9 @@ const Account = () => {
         <br/>
         <SelectTableComponent />
         <br/>
-        <img src ='../assets/mtn.png' alt='MTN Logo'></img>
         <h2 className='d-flex justify-content-center'>Enter Amount and Account Number</h2>
         <br/>
+        {/* <img src ={logo} alt='MTN Logo'/> */}
         <form onSubmit={handleSubmit}>
         <label>
             Amount: {' '}
