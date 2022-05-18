@@ -19,7 +19,7 @@ componentDidMount() {
         console.log(JSON.stringify(res.data));
       })
         .catch((err) => console.log(err));
-  };  
+  } 
 
   render() {  
      const columns = [{  

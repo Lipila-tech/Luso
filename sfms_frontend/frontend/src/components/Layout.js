@@ -14,24 +14,24 @@ const Layout = () => {
 
   return (
       <>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-<h1 class="nav-link active" aria-current="page" >Student Fees Management</h1>
+  <nav className="navbar navbar-expand-lg navbar-light bg-light">
+<h1 className="nav-link active" aria-current="page" >Student Fees Management</h1>
 <div>
-  <ul class="nav justify-content-end">
+  <ul className="nav justify-content-end">
     {isAuth === true ? (
       <Fragment>
         {' '}
-        <li class="nav-item active">
-      <Link class="nav-link" to={'#'} >Welcome, USER.</Link>
+        <li className="nav-item active">
+      <Link className="nav-link" to={'#'} >Welcome, USER.</Link>
     </li>
-    <li class="nav-item">
-      <Link  class="nav-link" to="/payment">PAY /</Link>
+    <li className="nav-item">
+      <Link  className="nav-link" to="/payment">PAY /</Link>
     </li>
-    <li class="nav-item">
-      <Link  class="nav-link" to="/history">HISTORY /</Link>
+    <li className="nav-item">
+      <Link  className="nav-link" to="/history">HISTORY /</Link>
     </li>
-    <li class="nav-item">
-      <Link class="nav-link" to="/">LOG OUT</Link>
+    <li className="nav-item">
+      <Link className="nav-link" to="/">LOG OUT</Link>
     </li>
       </Fragment>
     ) : (
