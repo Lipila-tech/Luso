@@ -40,6 +40,9 @@ class LoginView(views.APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
+        """POST request to get session Cookies:
+            csrf and sessionid
+        """
         serializer = LoginSerializer(
             data=self.request.data,
             context={ 'request': self.request }
@@ -49,8 +52,18 @@ class LoginView(views.APIView):
         login(request, user)
         return Response(None, status=status.HTTP_202_ACCEPTED)
 
+class LogoutView(views.APIView):
+    """" Logs out the currecnt signed in user"""
+
+    def get(self, request, format=None):
+        """GET request to flash user cookies and log them out"""
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
 class ProfileView(generics.RetrieveAPIView):
+    """Returns the profile of the user"""
     serializer_class = UserSerializer
 
     def get_object(self):
+        """ GET the user object"""
         return self.request.user
