@@ -30,10 +30,13 @@ ALLOWED_HOSTS = []
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
 INSTALLED_APPS = [
-    # Add your apps here to enable them
+    # 3rd Party apps
     'corsheaders',
     'rest_framework',
+    # Local apss
     'api',
+   
+    # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -121,7 +124,19 @@ STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-# Specifies localhost server where React will be running
+# Specifies localhost port 3000 where the React
+# server will be running is safe to receive requests
+# from
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000'
     ]
+
+# Rest Framework config. Add all of this.
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
