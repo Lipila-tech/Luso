@@ -8,8 +8,8 @@ Replace this with more appropriate tests for your application.
 import django
 from django.contrib.auth.models import User
 from django.test import TestCase
-from student_transactions.models import Program
-from student_transactions.models import Student
+from api.models import Program
+from api.models import Student
 
 
 class TestStudentModels(TestCase):

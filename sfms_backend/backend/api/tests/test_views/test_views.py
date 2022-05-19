@@ -1,17 +1,18 @@
 
 """
-This module contains unittests for the student_transactions app.
+This module contains unittests for the api app.
 """
 
 from datetime import datetime
 import django
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from student_transactions.models import Program
-from student_transactions.models import Student
-from student_transactions.models import Term
-from student_transactions.models import Payment
+from api.models import Program
+from api.models import Student
+from api.models import Term
+from api.models import Payment
 
+from http.cookies import SimpleCookie
 
 class ViewsTestCase(TestCase):
     """Tests for the application views."""
@@ -23,12 +24,15 @@ class ViewsTestCase(TestCase):
 
     def setUp(self):
         # Create User
-        self.user1  = User.objects.create_user('Memo',
-                                               'memo@email.tech',
-                                               'memo@pswd')
-        self.user2  = User.objects.create_user('Sepiso',
-                                               'sepiso@email.tech',
-                                               'sepiso@pswd')
+        self.user0 = User.objects.create_user(username='pita',
+                                             password='pwd_123',
+                                             email='test@example.com')
+        self.user0.save()
+
+        
+        # Authenticate user0 and user0
+        self.user0 = Client().login(username='memo', password='memo@pswd')
+        self.user0 = Client().login(username='sepiso', password='sepiso@pswd')
 
         # Create Terms
         start_d = datetime.strptime("2022-10-01", "%Y-%m-%d").date()
@@ -43,10 +47,12 @@ class ViewsTestCase(TestCase):
         self.program2 = Program.objects.create(
             program_name="Ruby Programming", tuition=4000)
 
+        self.cookies = SimpleCookie()
+
         # Create Students
-        self.s1 = Student.objects.create(username=self.user1,
+        self.s1 = Student.objects.create(username=self.user0,
                                          tuition=2300, program=self.program1)
-        self.s2 = Student.objects.create(username=self.user2,
+        self.s2 = Student.objects.create(username=self.user0,
                                          tuition=2300, program=self.program2)
 
         # Create payment
@@ -55,7 +61,7 @@ class ViewsTestCase(TestCase):
                                           student=self.s1, term=self.term1)
 
         # Send GET requests to API endpoints
-        self.response = Client().get("/api/v1/")
+        self.response = Client().get("/api/v1/", )
         self.r1 = Client().get("/api/v1/programs/")
         self.r2 = Client().get("/api/v1/terms/")
         self.r3 = Client().get("/api/v1/students/")
@@ -84,6 +90,21 @@ class ViewsTestCase(TestCase):
         self.p6 = Client().post("/api/v1/not_a_view/",
                                 {"program_name": "C# Tutorial",
                                  "tuition": 3400})
+
+    def test_login_success(self):
+        """ TEST if login was succesful"""
+        print('\n************************')
+        print("******* Testing Login *******")
+        print('\n')
+        login = Client().login(username='pita', password='pwd_123')
+        self.assertTrue(login)
+
+    def test_wrong_credentials(self):
+        print('\n************************')
+        print("******* Testing Login unregistered user *******")
+        print('\n')
+        login = Client().login(username='pitaz', password='pwd_123')
+        self.assertFalse(login)
        
     def test_valid_api_route(self):
         """ TEST if API ROUTE EXISTS"""
