@@ -22,17 +22,14 @@ from django.urls import path, include
 from rest_framework import routers
 from api import views
 
-router = routers.DefaultRouter()
-router.register(r'payments', views.PaymentView, 'payment')
-#router.register(r'students', views.StudentView, 'student')
-router.register(r'programs', views.ProgramView, 'program')
-router.register(r'terms', views.TermView, 'term')
+
+#router = routers.DefaultRouter()
+#router.register(r'programs', views.ProgramView, 'program')
+#router.register(r'terms', views.TermView, 'term')
 
 urlpatterns = [
     # Uncomment the next line to enable the admin:
     path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls)),
-    path('api/v1/login', views.LoginView.as_view()),
-    path('api/v1/profile', views.ProfileView.as_view()),
-    path('api/v1/logout', views.LogoutView.as_view()),
+    #path('api/v1/', include(router.urls)),
+    path('api/v1/', include('api.urls')),
 ]

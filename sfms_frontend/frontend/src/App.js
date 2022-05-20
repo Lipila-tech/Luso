@@ -4,7 +4,6 @@ import Login from "./components/Home";
 import Payment from "./components/Payment";
 import History from "./components/History";
 import Layout from "./components/Layout";
-import Confirm from "./components/Confirm";
 
 
 export default function App() {
@@ -13,7 +12,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Login />} />
-          <Route path="confirm" element={<Confirm />} />
           <Route path="history" element={<History />} />
           <Route path="payments" element={<Payment />} />          
         </Route>

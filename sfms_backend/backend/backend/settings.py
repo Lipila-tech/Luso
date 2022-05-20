@@ -133,10 +133,9 @@ CORS_ORIGIN_WHITELIST = [
 
 # Rest Framework config. Add all of this.
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+    ),
+    'PAGE_SIZE': 10
 }

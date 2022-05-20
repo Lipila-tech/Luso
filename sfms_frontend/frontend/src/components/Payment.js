@@ -36,12 +36,11 @@ const Account = () => {
       .catch((err) => console.log(err));
     };
 
-
     return (
       <div className='container-lg'>
-        <h2 className='d-flex justify-content-center'>Select Items to Pay for</h2>
+        <h2 className='d-flex justify-content-center'>Pay for Tuition</h2>
         <br/>
-        <SelectTableComponent />
+        {/* <SelectTableComponent /> */}
         <br/>
         <h2 className='d-flex justify-content-center'>Enter Amount and Account Number</h2>
         <br/>

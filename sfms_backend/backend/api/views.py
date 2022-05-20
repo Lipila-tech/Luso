@@ -14,12 +14,34 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import views, viewsets
 from rest_framework.response import Response
+from django.http import Http404
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework.authentication import TokenAuthentication
 
 
 # Create your views here.
-class PaymentView(viewsets.ModelViewSet):
-    serializer_class = PaymentSerializer
-    queryset = Payment.objects.all()
+@method_decorator(csrf_exempt, name='dispatch')
+class PaymentView(views.APIView):
+    authentication_classes = (TokenAuthentication,)
+
+    def get(self, request, format=None):
+        """ List all payments"""
+        payments = Payment.objects.all()
+        serializer = PaymentSerializer(payments, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        """Create a new payment"""
+        serializer = PaymentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,
+                            status=status.HTTP_201_CREATED)
+        return Response(serializers.erros, status=status.HTTP_400_BAD_REQUEST)
+    
 
 class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
