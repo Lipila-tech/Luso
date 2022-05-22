@@ -60,7 +60,7 @@ class Payment(models.Model):
                                    related_name='payment',
                                    on_delete=models.CASCADE,
                                    )
-
+    mobile = models.CharField(max_length=10)
     amount = models.IntegerField()
     pay_date = models.DateField()
     term = models.ForeignKey(Term, related_name="term", on_delete=models.CASCADE)

@@ -30,6 +30,5 @@ from api import views
 urlpatterns = [
     # Uncomment the next line to enable the admin:
     path('admin/', admin.site.urls),
-    #path('api/v1/', include(router.urls)),
     path('api/v1/', include('api.urls')),
 ]

@@ -15,11 +15,20 @@ from rest_framework import status
 from rest_framework import views, viewsets
 from rest_framework.response import Response
 from django.http import Http404
+from rest_framework.decorators import api_view
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.authentication import TokenAuthentication
+
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import requests
+from django.shortcuts import render
+
+#from .external_api_handler import Handler
 
 
 # Create your views here.
@@ -40,13 +49,13 @@ class PaymentView(views.APIView):
             serializer.save()
             return Response(serializer.data,
                             status=status.HTTP_201_CREATED)
-        return Response(serializers.erros, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     
 
 class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
-    
+  
 
 class TermView(viewsets.ModelViewSet):
     serializer_class = TermSerializer
@@ -89,3 +98,7 @@ class ProfileView(generics.RetrieveAPIView):
     def get_object(self):
         """ GET the user object"""
         return self.request.user
+
+
+
+
