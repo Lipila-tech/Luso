@@ -19,13 +19,7 @@ Including another URLconf
 # Uncomment next two lines to enable admin:
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
 from api import views
-
-
-#router = routers.DefaultRouter()
-#router.register(r'programs', views.ProgramView, 'program')
-#router.register(r'terms', views.TermView, 'term')
 
 urlpatterns = [
     # Uncomment the next line to enable the admin:

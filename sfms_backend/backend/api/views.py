@@ -4,7 +4,7 @@ from django.core import serializers
 from .models import Payment, Program, Student, Term
 
 from .serializers import PaymentSerializer
-from .serializers import TermSerializer
+from .serializers import HistorySerializer
 from .serializers import StudentSerializer
 from .serializers import ProgramSerializer
 from .serializers import LoginSerializer
@@ -72,10 +72,10 @@ class PaymentView(views.APIView):
                 if payer.status_code == 202:                  
 
                     # set variables
-                    s_pk = int(self.request.data['student'])
-                    t_pk = int(self.request.data['term'])
-                    student = str(User.objects.get(pk=s_pk))
-                    term = str(Term.objects.get(pk=t_pk))
+                    student_pk = int(self.request.data['student'])
+                    term_pk = int(self.request.data['term'])
+                    student = str(User.objects.get(pk=student_pk))
+                    term = str(Term.objects.get(pk=term_pk))
                                                                     
                     content = {'student': student,
                     'amount': amount,
@@ -106,10 +106,6 @@ class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
   
-
-class TermView(viewsets.ModelViewSet):
-    serializer_class = TermSerializer
-    queryset = Term.objects.all()
 
 class ProgramView(viewsets.ModelViewSet):
     serializer_class = ProgramSerializer
@@ -150,5 +146,52 @@ class ProfileView(generics.RetrieveAPIView):
         return self.request.user
 
 
+class HistoryView(views.APIView):
+    authentication_classes = (TokenAuthentication,)
 
+    def get(self, request, format=None):
+        """ List all payments"""
+        payments = Payment.objects.all()
+        serializer = HistorySerializer(payments, many=True)
 
+        # Get IDS
+        student_pk = request.GET.get('id', '')
+
+        # Get Values
+        username = User.objects.filter(pk=student_pk).values()
+        username = username[0]['username']
+        content = Payment.objects.filter(student_id=student_pk).values()
+
+        tuition = Student.objects.filter(username_id=student_pk).values()
+        tuition = tuition[0]['tuition']
+
+        if len(content) < 1:
+            return Response(
+                {'Message': 'No payment data available'},
+                status=status.HTTP_204_NO_CONTENT)
+
+        # Get data from json object to dict
+        data = {}
+        for json_data in content:
+            for k, v in json_data.items():
+                data[k] = v
+        # Check if user has content
+        term_pk = int(data['term_id'])
+ 
+        term = Term.objects.filter(pk=term_pk).values()
+        term = term[0]['name']
+
+        balance = int(tuition) - int(data['amount'])
+
+        context = {
+            'student': username,
+            'reference':data['reference'],
+            'amount':data['amount'],
+            'paydate':data['pay_date'],
+            'account':data['mobile'],
+            'term':term,
+            'tuition':tuition,
+            'pending': balance
+            }
+
+        return Response(context, status=status.HTTP_200_OK)

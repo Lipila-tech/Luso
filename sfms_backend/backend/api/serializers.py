@@ -20,10 +20,17 @@ class ProgramSerializer(serializers.ModelSerializer):
         model = Program
         fields = '__all__'
 
-class TermSerializer(serializers.ModelSerializer):
+class HistorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Term
-        fields = '__all__'
+        model = Payment
+        fields = [
+            'student',
+            'amount',
+            'mobile',
+            'reference',
+            'pay_date',
+            'term'
+            ]
 
 
 class LoginSerializer(serializers.Serializer):
