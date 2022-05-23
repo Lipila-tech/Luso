@@ -60,14 +60,17 @@ class Payment(models.Model):
                                    related_name='payment',
                                    on_delete=models.CASCADE,
                                    )
-    mobile = models.CharField(max_length=10)
     amount = models.IntegerField()
+    mobile = models.CharField(max_length=10)
+    reference = models.CharField(max_length=20)
     pay_date = models.DateField()
     term = models.ForeignKey(Term, related_name="term", on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Username: {} Amount: {} Date: {} Term: {}".format(self.student,
-                                                                 self.amount,
-                                                                 self.pay_date,
-                                                                 self.term)
+        return "{} {} {} {} {} {}".format(self.student,
+                                          self.amount,
+                                          self.mobile,
+                                          self.reference,
+                                          self.pay_date,
+                                          self.term)
 

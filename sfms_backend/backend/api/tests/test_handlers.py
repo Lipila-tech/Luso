@@ -31,31 +31,46 @@ class HandlerTestCase(TestCase):
     def test_x_reference_id(self):
         """ Test the x_reference id creation"""        
         self.assertEqual(self.ref.status_code, 200)
+
     def test_api_user(self):
         """ Test Sandbox user creation"""
         self.assertEqual(self.user.status_code, 201)
+
     def test_api_key(self):
         """Tesk Api key creaStion"""
         self.assertEqual(self.key.status_code, 201)
+
     def test_api_token(self):
         """ Test API access token creation"""
         self.assertEqual(self.token.status_code, 200)
+
     def test_request_to_pay(self):
         """Test request to pay method"""
         self.assertEqual(self.payer0.status_code, 202)
 
     def test_value_errors(self):
         """ Test the length of PartyId"""
-        with self.assertRaises(ValueError):
-            self.res.request_to_pay('36654', '096962', '56797356')
-            self.res.request_to_pay('36654', '0969620978895774', '56797356')
+        self.assertRaises(ValueError,
+                          self.res.request_to_pay,
+                          '36654', '096962', '56797356')
+        self.assertRaises(ValueError,
+                          self.res.request_to_pay,
+                          '36654', '0969620978895774', '56797356')
+        self.assertRaises(ValueError,
+                          self.res.request_to_pay,
+                          '50', '0969620978', '56797356')
 
     def test_type_errors(self):
         """Test the type of paramateres"""
-        with self.assertRaises(TypeError):
-            self.res.request_to_pay(12345, '0969620939', '56797356')
-            self.res.request_to_pay('12345', 969620939, '56797356')
-            self.res.request_to_pay('12345', '0969620939', 56797356)
+        self.assertRaises(TypeError,
+                          res.request_to_pay,
+                          12345, '0969620939', '56797356')
+        self.assertRaises(TypeError,
+                          self.res.request_to_pay,
+                          '12345', 969620939, '56797356')
+        self.assertRaises(TypeError,
+                          self.res.request_to_pay,
+                          '12345', '0969620939', 56797356)
         
 
 

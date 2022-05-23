@@ -12,7 +12,6 @@ from api.models import Student
 from api.models import Term
 from api.models import Payment
 
-from http.cookies import SimpleCookie
 
 class ViewsTestCase(TestCase):
     """Tests for the application views."""
@@ -70,18 +69,19 @@ class ViewsTestCase(TestCase):
         # POST payment
         s_id = self.std2.username_id
         t_id = self.term1.id     
-        self.post_payment1 = Client().post("/api/v1/payments",
+        self.post_payment1 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
                                 {"student": s_id,
                                  "amount": 2346,
                                  "pay_date": "2021-05-10",
                                  "term": t_id})
-        self.post_payment2 = Client().post("/api/v1/payments",
+        self.post_payment2 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
                                 {"student": s_id,
                                  "amount": 3567,
                                  "pay_date": "2022-05-10",
                                  "term": t_id})
+   
         # POST payment with bad request
-        self.p5 = Client().post("/api/v1/payments",
+        self.p5 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
                                 {"amount":2346,
                                  "pay_date":"2022-05-10",
                                  "student": self.std2,
@@ -146,7 +146,8 @@ class ViewsTestCase(TestCase):
     def test_content_type(self):
         """ test content type of response"""
         self.assertEqual(self.profile['Content-Type'], "application/json")
-        
+
+    
         
 
     

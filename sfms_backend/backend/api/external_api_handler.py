@@ -1,7 +1,10 @@
 """ Handles MoMo API calls"""
 import requests
 import json
-from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
+from rest_framework.response import Response
+from rest_framework import status
+
 
 class APIHandler():
     basic = 'Basic NjM1OWNhM2EtN2M1NC00M2I3LWJlN2MtNGRjZDY1NTBmMGE2OmRjNjNjZDNmMjI4ODQwYWJiMDY0ZmY1YTdiYTUyNjNj'
@@ -23,6 +26,7 @@ class APIHandler():
         try:
             res = requests.get(url, headers=headers, data=payload)
             self.x_reference_id = self.x_reference_id + res.text
+            return (res)
         except requests.exceptions.HTTPError as errh:
             print ("Http Error:", errh)
         except requests.exceptions.ConnectionError as errc:
@@ -31,7 +35,8 @@ class APIHandler():
             print ("Timeout Error:", errt)
         except requests.exceptions.RequestException as err:
             print ("OOps: Something Else",err)
-        return (res)
+       
+          
 
 
     def create_api_user(self):
@@ -48,6 +53,7 @@ class APIHandler():
         }
         try:
             res = requests.request('POST', url, headers=headers, data=payload)
+            return res
         except requests.exceptions.HTTPError as errh:
             print ("Http Error:", errh)
         except requests.exceptions.ConnectionError as errc:
@@ -56,7 +62,7 @@ class APIHandler():
             print ("Timeout Error:", errt)
         except requests.exceptions.RequestException as err:
             print ("OOps: Something Else",err)
-        return (res)
+        
 
     def get_api_key(self):
         # GET API KEY
@@ -68,8 +74,12 @@ class APIHandler():
         }
         try:
             res = requests.post(url, headers=headers, data=payload)
+            if res.status_code == 403:
+                return res
             key = res.json()
             self.api_key = self.api_key + key['apiKey']
+            return res
+
         except requests.exceptions.HTTPError as errh:
             print ("Http Error:", errh)
         except requests.exceptions.ConnectionError as errc:
@@ -77,9 +87,8 @@ class APIHandler():
         except requests.exceptions.Timeout as errt:
             print ("Timeout Error:", errt)
         except requests.exceptions.RequestException as err:
-            print ("OOps: Something Else",err)
-        return (res)
-
+            return HttpResponseBadRequest("Error...")
+        
     def get_api_token(self):
         # Generate API token
         url = "https://sandbox.momodeveloper.mtn.com/collection/token/"
@@ -91,8 +100,11 @@ class APIHandler():
         }
         try:
             res = requests.post(url, headers=headers, data=payload)
+            if res.status_code == 403:
+                return res
             token = res.json()
             self.api_token = self.api_token + token['access_token']
+            return res
         except requests.exceptions.HTTPError as errh:
             print ("Http Error:", errh)
         except requests.exceptions.ConnectionError as errc:
@@ -101,49 +113,54 @@ class APIHandler():
             print ("Timeout Error:", errt)
         except requests.exceptions.RequestException as err:
             print ("OOps: Something Else",err)
-        return (res)
-
+        
     def request_to_pay(self, amount, partyId, externalId ):
-        # Request to pay
-        if len(partyId) != 10:
-            raise ValueError("PartyId must be 10 digits")
+        """ Request to pay"""
+        if len(partyId) != 10 or int(amount) < 100:
+            raise ValueError("PartyId must be 10 digits and Amount value should be greater than 100")
+             
         if not isinstance(amount, str):
-            raise TypeError("Amount must be string")
+            raise TypeError("Amount must be string great than 100")
         if not isinstance(partyId, str):
-            raise TypeError("PartyId must be string")
+            raise TypeError("PartyId must be string with 10 digits")
         if not isinstance(externalId, str):
             raise TypeError("ExternalId must be string")
 
-        url = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
-
-        payload = json.dumps({
-            "amount": amount,
-            "currency": 'EUR',
-            "externalId": externalId,
-            "payer": {
-            "partyIdType": "MSISDN",
-            "partyId": partyId
-            },
-            "payerMessage": "Pay for Tuition",
-            "payeeNote": "Termly Fees"
-        })
-        headers = {
-            'X-Reference-Id': self.x_reference_id,
-            'Ocp-Apim-Subscription-Key': self.subscription_key,
-            'X-Target-Environment': self.x_target_environment,
-            'Authorization': self.api_token,
-            'Content-Type': self.content_type
-        }
-
         try:
-            result = requests.post(url, headers=headers, data=payload)
-        except requests.exceptions.HTTPError as errh:
-            print ("Http Error:", errh)
-        except requests.exceptions.ConnectionError as errc:
-            print ("Error Connecting:", errc)
-        except requests.exceptions.Timeout as errt:
-            print ("Timeout Error:", errt)
-        except requests.exceptions.RequestException as err:
-            print ("OOps: Something Else",err)
+            
+            url = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
 
-        return result
+            payload = json.dumps({
+                "amount": amount,
+                "currency": 'EUR',
+                "externalId": externalId,
+                "payer": {
+                "partyIdType": "MSISDN",
+                "partyId": partyId
+                },
+                "payerMessage": "Pay for Tuition",
+                "payeeNote": "Termly Fees"
+            })
+            headers = {
+                'X-Reference-Id': self.x_reference_id,
+                'Ocp-Apim-Subscription-Key': self.subscription_key,
+                'X-Target-Environment': self.x_target_environment,
+                'Authorization': self.api_token,
+                'Content-Type': self.content_type
+            }
+
+            result = requests.post(url, headers=headers, data=payload)
+            return result
+        #except requests.exceptions.HTTPError as errh:
+         #   print ("Http Error:", errh)
+        #except requests.exceptions.ConnectionError as errc:
+         #   print ("Error Connecting:", errc)
+        #except requests.exceptions.Timeout as errt:
+         #   print ("Timeout Error:", errt)
+        #except requests.exceptions.RequestException as err:
+         #   print ("OOps: Something Else",err)
+        except ValueError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except TypeError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        #return Response(status=status.HTTP_417_EXPECTATION_FAILED)

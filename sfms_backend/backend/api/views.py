@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.core import serializers
 
 from .models import Payment, Program, Student, Term
 
@@ -8,6 +9,8 @@ from .serializers import StudentSerializer
 from .serializers import ProgramSerializer
 from .serializers import LoginSerializer
 from .serializers import UserSerializer
+
+from django.contrib.auth.models import User
 
 from rest_framework import generics
 from rest_framework import permissions
@@ -32,7 +35,7 @@ from django.shortcuts import render
 
 
 # Create your views here.
-@method_decorator(csrf_exempt, name='dispatch')
+#@method_decorator(csrf_exempt, name='dispatch')
 class PaymentView(views.APIView):
     authentication_classes = (TokenAuthentication,)
 
@@ -43,14 +46,61 @@ class PaymentView(views.APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
+        from .external_api_handler import APIHandler
         """Create a new payment"""
-        serializer = PaymentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,
-                            status=status.HTTP_201_CREATED)
+
+        # get request data
+        partyId = request.GET.get('partyId', '')
+        externalId = request.GET.get('externalId', '')
+        amount = str(self.request.data['amount'])
+
+        # Query external API handlers
+        pay = APIHandler()
+        pay.get_uuid()
+        pay.create_api_user()
+        pay.get_api_key()
+        pay.get_api_token()
+
+        try:
+            serializer = PaymentSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+
+                payer = pay.request_to_pay(amount, partyId,
+                externalId)
+                        
+                if payer.status_code == 202:                  
+
+                    # set variables
+                    s_pk = int(self.request.data['student'])
+                    t_pk = int(self.request.data['term'])
+                    student = str(User.objects.get(pk=s_pk))
+                    term = str(Term.objects.get(pk=t_pk))
+                                                                    
+                    content = {'student': student,
+                    'amount': amount,
+                    'account':partyId,
+                    'reference':externalId,
+                    'term': term
+                    }
+                    
+                    return Response(content,
+                        status=status.HTTP_201_CREATED)
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+                elif payer.status_code == 400:
+                    raise ValueError('BAD REQUEST TO API')
+                elif payer.status_code == 409:
+                    raise TypeError('RESOURCE ALREADY EXITS')
+                elif payer.status_code == 500:
+                    raise TypeError('INTERNAL SERVER ERROR')
+                elif payer.status_code == 403:
+                    raise TypeError('EXCEEDED')
+        except Exception as e:
+            return Response({'Error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        error = pay.request_to_pay(amount, partyId,
+                externalId)
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class StudentView(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
