@@ -35,6 +35,7 @@ class PaymentTestCase(TestCase):
         # Create User
         self.user1  = User.objects.create_user('Memo', 'memo@email.tech', 'memo@pswd')
         self.user2  = User.objects.create_user('Sepi', 'sepi@email.tech', 'sepi@pswd')
+
         # Create student
         self.std1 = Student.objects.create(
             username=self.user1,
@@ -45,20 +46,30 @@ class PaymentTestCase(TestCase):
             username=self.user2,
             tuition=4690,
             program=self.pro2)
+
         # Create term
         self.t = Term.objects.create(name="Term1",
                                      start_date="2021-01-01",
                                      end_date="2021-04-01")
-        # Create payment
-        self.pay1 = Payment.objects.create(amount=4000,
-                                          pay_date="2022-05-10",
-                                          student=self.std1, term=self.t)
-        self.pay2 = Payment.objects.create(amount=2000,
-                                          pay_date="2022-02-10",
-                                          student=self.std1, term=self.t)
-        self.pay3 = Payment.objects.create(amount=2000,
-                                          pay_date="2022-02-10",
-                                          student=self.std2, term=self.t)
+        # Create Student payments
+        self.pay1 = Payment.objects.create(student=self.std1,
+                                           amount=4000,
+                                           mobile='0988774466',
+                                           reference='12345',
+                                           pay_date="2022-05-10",
+                                           term=self.t)
+        self.pay2 = Payment.objects.create(student=self.std1,
+                                           amount=4000,
+                                           mobile='0987654332',
+                                           reference='',
+                                           pay_date="2022-05-10",
+                                           term=self.t)
+        self.pay3 = Payment.objects.create(student=self.std2,
+                                           amount=3000,
+                                           mobile='0987645323',
+                                           reference='12345',
+                                           pay_date="2022-05-10",
+                                           term=self.t)
 
 
     def test_student_payment_relationship(self):
@@ -69,7 +80,7 @@ class PaymentTestCase(TestCase):
 
     def test_payment_string_repr(self):
         """ Test string representation of the payment"""
-        self.assertEqual(str(self.pay1), "Username: memo Amount: 4000 Date: 2022-05-10 Term: Term1 2021-04-01")
+        self.assertEqual(str(self.pay1), "memo 4000 0988774466 12345 2022-05-10 Term1 2021-04-01")
      
     def test_correct_students_payment(self):
         """ test if the correct student was given the payment"""
