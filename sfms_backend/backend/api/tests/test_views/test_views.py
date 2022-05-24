@@ -38,25 +38,27 @@ class ViewsTestCase(TestCase):
         end_d = datetime.strptime("2022-12-30", "%Y-%m-%d").date()
         self.term1 = Term.objects.create(name="Term1",
                                          start_date=start_d, end_date=end_d)
-
+        self.term1.save()
 
         # cretae programs
         self.program1 = Program.objects.create(
             program_name="Python Programming",
             tuition=4000)
+        self.program1.save()
+
         self.program2 = Program.objects.create(
             program_name="Ruby Programming", tuition=4000)
+        self.program2.save()
 
         self.program = Program.objects.get(id=1)
-
-        #self.cookies = SimpleCookie()
 
         # Create Students
         self.std1 = Student.objects.create(username=self.user0,
                                          tuition=2300, program=self.program)
+        self.std1.save()
         self.std2 = Student.objects.create(username=self.user1,
                                          tuition=2300, program=self.program)
-
+        self.std2.save()
         # Create payment
         self.payment = Payment.objects.create(amount=4000,
                                           pay_date="2022-05-10",
@@ -64,32 +66,49 @@ class ViewsTestCase(TestCase):
 
         # Send GET requests to API endpoints
         self.profile = Client().get("/api/v1/profile")
-        self.payments = Client().get("/api/v1/payments")
+        self.payments = Client().get("/api/v1/payments?id=0")
         
         # POST payment
-        s_id = self.std2.username_id
+        s_id = self.std1.username_id
+        s_id1 = self.std2.username_id
         t_id = self.term1.id     
-        self.post_payment1 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
+               
+        self.post_payment1 = Client().post("/api/v1/payments?id={}".format(s_id),
                                 {"student": s_id,
-                                 "amount": 2346,
+                                 "amount": '2346',
+                                 'mobile': '0971892260',
+                                 'reference':'123456',
                                  "pay_date": "2021-05-10",
                                  "term": t_id})
-        self.post_payment2 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
-                                {"student": s_id,
-                                 "amount": 3567,
-                                 "pay_date": "2022-05-10",
+        self.post_payment2 = Client().post("/api/v1/payments?id={}".format(s_id1),
+                                {"student": s_id1,
+                                 "amount": 3000,
+                                 'mobile': '0971442260',
+                                 'reference':'123457',
+                                 "pay_date": "2021-05-10",
                                  "term": t_id})
+
+        # POST payment with bad request
+        self.post_payment3 = Client().post("/api/v1/payments?id=19",
+                                {"amount":2346,
+                                 "pay_date":"2022-05-10",
+                                 "student": self.std2,
+                                 "term": self.term1})
    
         # POST payment with bad request
-        self.p5 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
+        self.p5 = Client().post("/api/v1/payments?id={}".format(s_id),
                                 {"amount":2346,
                                  "pay_date":"2022-05-10",
                                  "student": self.std2,
                                  "term": self.term1})
         # POST request to non existing route
         self.p6 = Client().post("/api/v1/not_a_view",
-                                {"program_name": "C# Tutorial",
-                                 "tuition": 3400})
+                                {"student": s_id,
+                                 "amount": 2346,
+                                 'mobile': '0971892260',
+                                 'reference':'123456',
+                                 "pay_date": "2021-05-10",
+                                 "term": t_id})
 
     def test_login_success(self):
         """ TEST if login was succesful"""
@@ -118,9 +137,9 @@ class ViewsTestCase(TestCase):
         """ GET valid terms route"""
         self.assertEqual(self.profile.status_code, 200)
 
-    def test_valid_payment_route(self):
-        """ GET valid payments route""" 
-        self.assertEqual(self.payments.status_code, 200)
+    def test_payment_route(self):
+        """ Test that API returns 404 if id not present""" 
+        self.assertEqual(self.payments.status_code, 404)
 
     def test_invalid_route(self):
         """ GET invalid route """
@@ -135,13 +154,17 @@ class ViewsTestCase(TestCase):
         self.assertEqual(self.post_payment1.status_code, 201)
         self.assertEqual(self.post_payment2.status_code, 201)
 
-    def test_post_response_400(self):
+    def test_post_response_no_payment(self):
         """ Test post request with invalid message framing"""
         self.assertEqual(self.p5.status_code, 400)
 
     def test_post_response_404(self):
         """ Test post request with invalid message framing"""
         self.assertEqual(self.p6.status_code, 404)
+
+    def test_invalid_student_id(self):
+        """ Test that API returns 404 on invalid id""" 
+        self.assertEqual(self.post_payment3.status_code, 404)
 
     def test_content_type(self):
         """ test content type of response"""

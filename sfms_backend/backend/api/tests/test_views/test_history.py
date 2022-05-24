@@ -5,6 +5,7 @@ This module contains unittests for the api app's HistoryView.
 
 from datetime import datetime
 from api.models import Payment
+from api.models import Program
 from api.models import Student
 from api.models import Term
 
@@ -52,7 +53,6 @@ class HistoryTestCase(TestCase):
 
         self.program = Program.objects.get(id=1)
 
-        #self.cookies = SimpleCookie()
 
         # Create Students
         self.std1 = Student.objects.create(username=self.user0,
@@ -65,34 +65,34 @@ class HistoryTestCase(TestCase):
                                           pay_date="2022-05-10",
                                           student=self.std1, term=self.term1)
 
-        # Send GET requests to API endpoints
-        self.profile = Client().get("/api/v1/profile")
-        self.payments = Client().get("/api/v1/payments")
-        
-        # POST payment
-        s_id = self.std2.username_id
-        t_id = self.term1.id     
-        self.post_payment1 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
-                                {"student": s_id,
-                                 "amount": 2346,
-                                 "pay_date": "2021-05-10",
-                                 "term": t_id})
-        self.post_payment2 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
-                                {"student": s_id,
-                                 "amount": 3567,
-                                 "pay_date": "2022-05-10",
-                                 "term": t_id})
-   
-        # POST payment with bad request
-        self.p5 = Client().post("/api/v1/payments?partyId=0969620939&externalId=88478",
-                                {"amount":2346,
-                                 "pay_date":"2022-05-10",
-                                 "student": self.std2,
-                                 "term": self.term1})
-        # POST request to non existing route
-        self.p6 = Client().post("/api/v1/not_a_view",
-                                {"program_name": "C# Tutorial",
-                                 "tuition": 3400})
+        # GET history
+        student_id0 = self.std1.username_id  
+        student_id1 = self.std2.username_id  
+        self.get_history0 = Client().get("/api/v1/history?id={}".format(student_id0))
+        self.get_history1 = Client().get("/api/v1/history?id={}".format(student_id1))
+        self.get_history2 = Client().get("/api/v1/history?id=4")
+
+    def test_get_history(self):
+        """Test that API returns 200 code if data is present"""
+        self.assertEqual(self.get_history0.status_code, 200)
+
+    def test_get_history_no_payment(self):
+        """Test that API returns 202 if data not available
+        """
+        self.assertEqual(self.get_history1.status_code, 204)
+
+    def test_get_history_id_not_present(self):
+        """Test that API returns 404 if user id not available
+        """
+        self.assertEqual(self.get_history2.status_code, 404)
+
+    def test_content_type(self):
+        """ test content type of response"""
+        self.assertEqual(self.get_history0['Content-Type'], "application/json")
+        self.assertEqual(self.get_history1['Content-Type'], "application/json")
+        self.assertEqual(self.get_history2['Content-Type'], "application/json")
+
+
 
     
         

@@ -1,9 +1,7 @@
-
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+file: test_handler.py
+This file contains tests for the 3rd Party API communication
+in external_api_handler.py
 """
 
 
@@ -63,7 +61,7 @@ class HandlerTestCase(TestCase):
     def test_type_errors(self):
         """Test the type of paramateres"""
         self.assertRaises(TypeError,
-                          res.request_to_pay,
+                          self.res.request_to_pay,
                           12345, '0969620939', '56797356')
         self.assertRaises(TypeError,
                           self.res.request_to_pay,

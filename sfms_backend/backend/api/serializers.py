@@ -8,7 +8,14 @@ from rest_framework import serializers
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ['student', 'term', 'amount', 'pay_date']
+        fields = [
+            'student',
+            'amount',
+            'mobile',
+            'reference',
+            'pay_date',
+            'term'
+            ]
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:

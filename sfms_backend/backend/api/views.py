@@ -31,8 +31,6 @@ import json
 import requests
 from django.shortcuts import render
 
-#from .external_api_handler import Handler
-
 
 # Create your views here.
 #@method_decorator(csrf_exempt, name='dispatch')
@@ -41,18 +39,43 @@ class PaymentView(views.APIView):
 
     def get(self, request, format=None):
         """ List all payments"""
+        # Get IDS
+        student_pk = request.GET.get('id', '')
+        
+        if not User.objects.filter(pk=student_pk).values():
+            return Response(
+                {'Message': 'User not available'},
+                status=status.HTTP_404_NOT_FOUND)
+
         payments = Payment.objects.all()
         serializer = PaymentSerializer(payments, many=True)
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        from .external_api_handler import APIHandler
         """Create a new payment"""
+        from .external_api_handler import APIHandler
 
-        # get request data
-        partyId = request.GET.get('partyId', '')
-        externalId = request.GET.get('externalId', '')
+        # Get IDS and Validata request data
+        student_pk = self.request.GET.get('id', '')
+        if not User.objects.filter(pk=student_pk).values():
+            return Response(
+                {'Message': 'User not available'},
+                status=status.HTTP_404_NOT_FOUND)
+
+        if len(request.data) < 6:
+            return Response(
+                {'Message': 'Missing values'},
+                status=status.HTTP_400_BAD_REQUEST)
+
+        term_id = self.request.data['term']
+        partyId = str(self.request.data['mobile'])
+        externalId = str(self.request.data['reference'])
         amount = str(self.request.data['amount'])
+             
+        if len(partyId) != 10 or int(amount) < 100:
+            return Response(
+                {'Message': 'Invalid data'},
+                status=status.HTTP_400_BAD_REQUEST)
 
         # Query external API handlers
         pay = APIHandler()
@@ -64,19 +87,16 @@ class PaymentView(views.APIView):
         try:
             serializer = PaymentSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
-
+                # Query request to pay function
                 payer = pay.request_to_pay(amount, partyId,
                 externalId)
-                        
-                if payer.status_code == 202:                  
-
+                if payer.status_code == 202:
+                    serializer.save()
                     # set variables
-                    student_pk = int(self.request.data['student'])
-                    term_pk = int(self.request.data['term'])
                     student = str(User.objects.get(pk=student_pk))
-                    term = str(Term.objects.get(pk=term_pk))
-                                                                    
+                    term = Term.objects.filter(pk=term_id).values()
+                    term = term[0]['name']
+                                               
                     content = {'student': student,
                     'amount': amount,
                     'account':partyId,
@@ -156,6 +176,11 @@ class HistoryView(views.APIView):
 
         # Get IDS
         student_pk = request.GET.get('id', '')
+        
+        if not User.objects.filter(pk=student_pk).values():
+            return Response(
+                {'Message': 'User not available'},
+                status=status.HTTP_404_NOT_FOUND)
 
         # Get Values
         username = User.objects.filter(pk=student_pk).values()
