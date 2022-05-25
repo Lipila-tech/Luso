@@ -4,6 +4,7 @@ import Login from "./components/Home";
 import Payment from "./components/Payment";
 import History from "./components/History";
 import Layout from "./components/Layout";
+import Logout from "./components/Logout";
 
 
 export default function App() {
@@ -13,7 +14,8 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Login />} />
           <Route path="history" element={<History />} />
-          <Route path="payments" element={<Payment />} />       
+          <Route path="payments" element={<Payment />} /> 
+          <Route path="logout" element={<Logout />} />      
         </Route>
       </Routes>
     </BrowserRouter>

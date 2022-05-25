@@ -40,7 +40,7 @@ class ViewsTestCase(TestCase):
                                          start_date=start_d, end_date=end_d)
         self.term1.save()
 
-        # cretae programs
+        # create programs
         self.program1 = Program.objects.create(
             program_name="Python Programming",
             tuition=4000)

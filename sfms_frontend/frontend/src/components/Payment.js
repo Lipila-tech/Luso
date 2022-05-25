@@ -1,6 +1,6 @@
-import React from 'react';  
 import "react-table-6/react-table.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import React, {useEffect } from 'react';
 
 
 const Account = () => {
@@ -14,6 +14,8 @@ const Account = () => {
   const [reference, setRef] = React.useState({
     reference: ''
   });
+  const [errors, setErrors] = React.useState(false);
+  const [paid, setPaid] = React.useState(false);
 
   const handleRefChange = event => {
     setRef({
@@ -32,18 +34,23 @@ const Account = () => {
       mobile: event.target.value 
     });
   }
+    useEffect(() => {
+      if (paid['paid'] === 201) {
+        setPaid(true);
+      }
+    }, [paid]);
 
   const handleSubmit = event => {
       event.preventDefault();
 
       var axios = require('axios');
       var data = JSON.stringify({
-      "student": "2",
+      "student": reference['reference'],
       "amount": amount['amount'],
       "mobile": mobile['mobile'],
-      "reference": reference['reference'],
+      "reference": "12245",
       "pay_date": "2018-05-10",
-      "term": "2"
+      "term": "1"
       });
 
       var config = {
@@ -59,15 +66,19 @@ const Account = () => {
 
       axios(config)
       .then(function (response) {
+        setPaid({paid: response.state})
       console.log(JSON.stringify(response.data));
       })
       .catch(function (error) {
+      setErrors(true);
       console.log(error);
       });
     };
 
     return (
       <div className='container-lg'>
+        {paid === true && <p className='d-flex justify-content-center'>Payment Sent Succesfully</p>}
+        {errors === true && <p>Payment Failed</p>}
         <h2 className='d-flex justify-content-center'>Pay for Tuition</h2>
         <br/>
         {/* <SelectTableComponent /> */}
@@ -77,7 +88,7 @@ const Account = () => {
         {/* <img src ={logo} alt='MTN Logo'/> */}
         <form onSubmit={handleSubmit}>
         <label>
-            Reference: {' '}
+            Student ID: {' '}
             <input autoFocus={true} type="text" value={reference.reference} onChange={handleRefChange} />
           </label>{" "}
         <label>
@@ -86,7 +97,7 @@ const Account = () => {
           </label>{" "}
           <label>
             Mobile Number: {' '}
-            <input autoFocus={true} type="text" placeholder='0969620939' value={mobile.mobile} onChange={handleMobileChange} />
+            <input autoFocus={true} type="text" placeholder='0963355664' value={mobile.mobile} onChange={handleMobileChange} />
           </label>{" "}
           <button type="submit">Submit</button>
         </form>

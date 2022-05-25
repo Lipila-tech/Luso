@@ -7,9 +7,7 @@ const Layout = () => {
   const [isAuth, setIsAuth] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem('token') !== null) {
-      setIsAuth(true);
-    }
+    setIsAuth(true);
   }, []);
 
   return (
@@ -25,13 +23,13 @@ const Layout = () => {
       <Link className="nav-link" to={'#'} >Welcome, USER.</Link>
     </li>
     <li className="nav-item">
-      <Link  className="nav-link" to="/payment">PAY /</Link>
+      <Link  className="nav-link" to="/payments">PAY /</Link>
     </li>
     <li className="nav-item">
       <Link  className="nav-link" to="/history">HISTORY /</Link>
     </li>
     <li className="nav-item">
-      <Link className="nav-link" to="/">LOG OUT</Link>
+      <Link className="nav-link" to="/logout">LOG OUT</Link>
     </li>
       </Fragment>
     ) : (

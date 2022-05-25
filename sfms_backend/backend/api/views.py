@@ -39,13 +39,7 @@ class PaymentView(views.APIView):
 
     def get(self, request, format=None):
         """ List all payments"""
-        # Get IDS
-        student_pk = request.GET.get('id', '')
         
-        if not User.objects.filter(pk=student_pk).values():
-            return Response(
-                {'Message': 'User not available'},
-                status=status.HTTP_404_NOT_FOUND)
 
         #payments = Payment.objects.all()
         #serializer = PaymentSerializer(payments, many=True)
@@ -147,10 +141,10 @@ class LoginView(views.APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        return Response(None, status=status.HTTP_202_ACCEPTED)
+        return Response(str(user), status=status.HTTP_202_ACCEPTED)
 
 class LogoutView(views.APIView):
-    """" Logs out the currecnt signed in user"""
+    """" Logs out the current signed in user"""
 
     def get(self, request, format=None):
         """GET request to flash user cookies and log them out"""
@@ -177,9 +171,9 @@ class HistoryView(views.APIView):
         # Get IDS
         student_pk = request.GET.get('id', '')
         
-        if not User.objects.filter(pk=student_pk).values():
+        if not Student.objects.filter(username_id=student_pk).values():
             return Response(
-                {'Message': 'User not available'},
+                {'Message': 'User not a student'},
                 status=status.HTTP_404_NOT_FOUND)
 
         # Get Values
