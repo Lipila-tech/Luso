@@ -11,7 +11,7 @@ class App extends Component {
       }
 
 componentDidMount() {
-    axios.get("/api/v1/payments")
+    axios.get("/api/v1/history?id=2")
       .then((res) => {
         const payments = res.data;
         var newPayments = this.state.payments.concat([payments]);
@@ -26,13 +26,25 @@ componentDidMount() {
        Header: 'Term',  
        accessor: 'term'  
        },{  
-       Header: 'Date',  
-       accessor: 'pay_date'  
+       Header: 'Pay Date',  
+       accessor: 'paydate'  
        },
        {
          Header: 'Amount Paid',
          accessor: 'amount'
        },
+       {
+        Header: 'Pending',
+        accessor: 'pending'
+      },
+      {
+        Header: 'Account',
+        accessor: 'account'
+      },
+      {
+        Header: 'Reference',
+        accessor: 'reference'
+      },
      ]  
     return (  
           <div className='container-md'>  

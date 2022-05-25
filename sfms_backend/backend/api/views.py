@@ -74,7 +74,7 @@ class PaymentView(views.APIView):
              
         if len(partyId) != 10 or int(amount) < 100:
             return Response(
-                {'Message': 'Invalid data'},
+                {'Message': 'Invalid mobile and amount data'},
                 status=status.HTTP_400_BAD_REQUEST)
 
         # Query external API handlers

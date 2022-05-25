@@ -1,18 +1,25 @@
 import React from 'react';  
 import "react-table-6/react-table.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import SelectTableComponent from './selectTableComponent';
-import axios from 'axios';
-import logo from "../assets/mtn.png"
+
 
 const Account = () => {
 
   const [amount, setAmount] = React.useState({
-    amount: ''
+    amount: '',
   });
   const [mobile, setMobile] = React.useState({
     mobile: ''
   });
+  const [reference, setRef] = React.useState({
+    reference: ''
+  });
+
+  const handleRefChange = event => {
+    setRef({
+      reference: event.target.value 
+    });
+  }
 
   const handleAmountChange = event => {
     setAmount({
@@ -27,13 +34,36 @@ const Account = () => {
   }
 
   const handleSubmit = event => {
-    event.preventDefault();
+      event.preventDefault();
 
-    axios.get("/api/v1/payments/1")
-    .then((res) => {
-      console.log(JSON.stringify(res.data));
-    })
-      .catch((err) => console.log(err));
+      var axios = require('axios');
+      var data = JSON.stringify({
+      "student": "2",
+      "amount": amount['amount'],
+      "mobile": mobile['mobile'],
+      "reference": reference['reference'],
+      "pay_date": "2018-05-10",
+      "term": "2"
+      });
+
+      var config = {
+      method: 'post',
+      url: '/api/v1/payments?id=2',
+      headers: { 
+          'Content-Type': 'application/json', 
+          'X-CSFRToken': 's77416lj5sxno2icjzog90ips1b9xit8', 
+          'Cookie': 'csrftoken=srORLevgm5wspjFS8eo4bMB48xQMU3biNZQ6hPp8LCOEgkL8Q2zp3kOHPRIjnzoa; sessionid=ayw57xsbo8httx6zpjf2pha5i4alq9pv'
+      },
+      data : data
+      };
+
+      axios(config)
+      .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+      console.log(error);
+      });
     };
 
     return (
@@ -46,6 +76,10 @@ const Account = () => {
         <br/>
         {/* <img src ={logo} alt='MTN Logo'/> */}
         <form onSubmit={handleSubmit}>
+        <label>
+            Reference: {' '}
+            <input autoFocus={true} type="text" value={reference.reference} onChange={handleRefChange} />
+          </label>{" "}
         <label>
             Amount: {' '}
             <input autoFocus={true} type="text" value={amount.amount} onChange={handleAmountChange} />
