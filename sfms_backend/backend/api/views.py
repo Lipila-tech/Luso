@@ -47,9 +47,9 @@ class PaymentView(views.APIView):
                 {'Message': 'User not available'},
                 status=status.HTTP_404_NOT_FOUND)
 
-        payments = Payment.objects.all()
-        serializer = PaymentSerializer(payments, many=True)
-        return Response(serializer.data)
+        #payments = Payment.objects.all()
+        #serializer = PaymentSerializer(payments, many=True)
+        return Response(status=status.HTTP_200_OK)
     
     def post(self, request, format=None):
         """Create a new payment"""
