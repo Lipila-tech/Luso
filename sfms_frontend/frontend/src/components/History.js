@@ -11,7 +11,7 @@ class App extends Component {
       }
 
 componentDidMount() {
-    axios.get("/api/v1/payments/1")
+    axios.get("/api/v1/payments")
       .then((res) => {
         const payments = res.data;
         var newPayments = this.state.payments.concat([payments]);

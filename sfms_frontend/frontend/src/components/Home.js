@@ -25,31 +25,53 @@ const Home = () => {
   const onSubmit = e => {
     e.preventDefault();
 
-    const user = {
-      username: username,
-      password: password
-    };
-
-    fetch('http://127.0.0.1:8000/api/v1/users/auth/login/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.key) {
-          localStorage.clear();
-          localStorage.setItem('token', data.key);
-          window.location.replace('http://localhost:3000/history');
-        } else {
-          setUsername('');
-          setPassword('');
-          localStorage.clear();
-          setErrors(true);
-        }
+    
+    // Send request
+      var axios = require('axios');
+      var data = JSON.stringify({
+        "username": username,
+        "password": password
       });
+
+      var config = {
+        method: 'post',
+        url: '/api/v1/login',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    // end request
+
+    // fetch('http://127.0.0.1:8000/api/v1/users/auth/login/', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(user)
+    // })
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     if (data.key) {
+    //       localStorage.clear();
+    //       localStorage.setItem('token', data.key);
+    //       window.location.replace('http://localhost:3000/history');
+    //     } else {
+    //       setUsername('');
+    //       setPassword('');
+    //       localStorage.clear();
+    //       setErrors(true);
+    //     }
+    //   });
   };
   
     return (
@@ -65,7 +87,7 @@ const Home = () => {
               name="username"
               value={username}
               required
-              placeholder="example@username.tech"
+              placeholder="username"
               onChange={e => setUsername(e.target.value)}
             />{' '}
             <br/>
