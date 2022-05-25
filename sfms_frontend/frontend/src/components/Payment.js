@@ -78,7 +78,7 @@ const Account = () => {
     return (
       <div className='container-lg'>
         {paid === true && <p className='d-flex justify-content-center'>Payment Sent Succesfully</p>}
-        {errors === true && <p>Payment Failed</p>}
+        {errors === true && <p>Payment Failed!</p>}
         <h2 className='d-flex justify-content-center'>Pay for Tuition</h2>
         <br/>
         {/* <SelectTableComponent /> */}
