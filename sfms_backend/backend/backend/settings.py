@@ -127,9 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # Specifies localhost port 3000 where the React
 # server will be running is safe to receive requests
 # from
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
-    ]
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Rest Framework config. Add all of this.
 REST_FRAMEWORK = {
