@@ -33,6 +33,11 @@ from django.shortcuts import render
 
 
 # Create your views here.
+
+def index(request):
+    """View for the page homapage"""
+    return render(request, 'index.html')
+    
 #@method_decorator(csrf_exempt, name='dispatch')
 class PaymentView(views.APIView):
     authentication_classes = (TokenAuthentication,)

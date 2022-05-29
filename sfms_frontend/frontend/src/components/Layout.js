@@ -13,14 +13,15 @@ const Layout = () => {
   return (
       <>
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
-<h1 className="nav-link active" aria-current="page" >Student Fees Management</h1>
+  <Link to={'/'} className="nav-link active"  aria-current="page" >SkoolPay</Link>
+{/* <h1 className="nav-link active" aria-current="page" >SkoolPay</h1> */}
 <div>
   <ul className="nav justify-content-end">
     {isAuth === true ? (
       <Fragment>
         {' '}
         <li className="nav-item active">
-      <Link className="nav-link" to={'#'} >Welcome, USER.</Link>
+      <a className="nav-link" href="https://sfms-backend.herokuapp.com/admin" target="blank">Login</a>
     </li>
     <li className="nav-item">
       <Link  className="nav-link" to="/payments">PAY /</Link>
