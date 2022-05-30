@@ -6,6 +6,12 @@ import banner from "../assets/banner2.jpg";
 import PayGif from "../assets/payment.gif";
 import AdmGif from "../assets/admin.gif";
 import HisImg from "../assets/history.jpg";
+import {
+  faLinkedIn,
+  faTwitter,
+  faGithub,
+  FontAwesomeIcon 
+} from "@fortawesome/react-fontawesome";
 
 
 const Landing = () => {
@@ -86,15 +92,23 @@ const Landing = () => {
               I have worked on desktop, web and mobile applications.
               <br/>
               <br/>
-              <div className="row" id="contact">
+              <div className="row social-container" id="contact">
+                <h3>Social Follow</h3>
                     <div className="col-sm-4">
-                        LinkedIn
+                      <a href='https:www.linkedin.com/in/sangwani-pz' className='LinkedIn social'>
+                        <FontAwesomeIcon icon="fab fa-LinkedIn" size="2x"/>
+                      </a>
+                        
                     </div>
                     <div className="col-sm-4">
-                        Twitter
+                    <a href="https://www.twitter.com/sangwani_zyambo" className="twitter social">
+                      <FontAwesomeIcon icon="fab fa-Twitter" size="2x" />
+                    </a>
                     </div>
                     <div className="col-sm-4">
-                       Github
+                    <a href="https://www.gihub.com/sangwani-coder" className="github social">
+                      <FontAwesomeIcon icon="fab fa-Github" size="2x" />
+                    </a>
                     </div>
               </div>
               <br/>
