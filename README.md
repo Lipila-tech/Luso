@@ -1,6 +1,6 @@
 # SkoolPay 
 ## An online Student Fees Mangement System
-### Portfolio Project
+### Portfolio Project for the [Alx-Africa](https://www.alxafrica.com/)/[Holberton School](https://www.holbertonschool.com/) software engineering program 2022.
 
 <img src="https://github.com/sangwani-coder/portfolio_project/blob/main/images/architecture.jpg" width="1000" title="architecture"></img>
 
@@ -10,6 +10,17 @@ The project was inspired by the neeed to make the management of student fees mor
 - Students pay using MTN mobile money and be added to the database
 - Students can view payment history
 - Schools can add students payments manually to the database
+
+## Technologies
+### Backend:
+- Scription language: Python
+- Web Framework: Django-rest-framework
+- Database: PostgreSQL
+
+### Frontend:
+- Reactjs
+- Bootstrap
+- axios
 
 Author:
 Sangwani Peter Zyambo: [Twitter](https://www.twitter.com/sangwani_zyambo)
