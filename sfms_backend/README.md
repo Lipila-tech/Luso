@@ -1,2 +1,3 @@
 <h1>BACKEND<h1>
-# This is the backend of the project
+  <img src="https://github.com/sangwani-coder/portfolio_project/blob/main/images/admin.gif" title="architecture"/>
+# This is the Django backend of the project
