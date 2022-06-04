@@ -13,11 +13,13 @@ The project was inspired by the neeed to make the management of student fees mor
 
 ## Technologies
 ### Backend:
+[Location](./sfsm_backend): Folder containing the backend project files
 - Scription language: Python
 - Web Framework: Django-rest-framework
 - Database: PostgreSQL
 
 ### Frontend:
+[Location](./sfms_frontend): Folder containing the frontend project files
 - Reactjs
 - Bootstrap
 - axios
