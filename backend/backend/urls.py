@@ -19,10 +19,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from api import views
+from api.admin import school_admin
 
 urlpatterns = [
     # Uncomment the next line to enable the admin:
     path('admin/', admin.site.urls),
+    path('schooladmin/', school_admin.urls),
     path('/', include('api.urls')),
-    path('api/v1/', include('api.urls')),
+    path('lipila/api/v1/', include('api.urls')),
 ]

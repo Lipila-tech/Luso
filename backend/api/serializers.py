@@ -1,43 +1,44 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
-from .models import Payment, Student, Program, Term
+from .models import (
+    Payment, Student, LoanRequest,
+    LoanPayment, School, Parent)
 from rest_framework import serializers
 
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = [
-            'student',
-            'amount',
-            'mobile',
-            'reference',
-            'pay_date',
-            'term'
-            ]
+        fields = '__all__'
+
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
-  
-class ProgramSerializer(serializers.ModelSerializer):
+
+
+class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Program
+        model = School
         fields = '__all__'
 
-class HistorySerializer(serializers.ModelSerializer):
+
+class LoanRequestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Payment
-        fields = [
-            'student',
-            'amount',
-            'mobile',
-            'reference',
-            'pay_date',
-            'term'
-            ]
+        model = LoanRequest
+        fields = '__all__'
+
+class LoanPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoanPayment
+        fields = '__all__'
+    
+class ParentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parent
+        fields = '__all__'
 
 
 class LoginSerializer(serializers.Serializer):

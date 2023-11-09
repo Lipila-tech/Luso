@@ -1,13 +1,22 @@
 from django.urls import path
 from . import views
 
-urlpatterns = [
-	path('', views.index, name='index'),
-	path('login', views.LoginView.as_view()),
-	path('payments', views.PaymentView.as_view()),
-	path('profile', views.ProfileView.as_view()),
-    path('logout', views.LogoutView.as_view()),
-    path('history', views.HistoryView.as_view()),
-]
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+
+# router.register(r'', views.index, name='index'),
+router.register(r'student', views.StudentView, basename='student')
+router.register(r'parent', views.ParentView, basename='parent')
+router.register(r'school', views.SchoolView, basename='school')
+router.register(r'payment', views.PaymentView, basename='payment')
+router.register(r'loanrequest', views.LoanRequestView, basename='loanrequest')
+router.register(r'loanpayment', views.LoanPaymentView, basename='loanpayment')
+
+# router.register(r'login', views.LoginView, basename='login')
+# router.register(r'profile', views.ProfileView, basename='profile')
+# router.register(r'logout', views.LogoutView, basename='logout')
+
+urlpatterns = router.urls
 
 
