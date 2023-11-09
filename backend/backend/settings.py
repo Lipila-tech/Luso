@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # Local apss
     'api',
+    'school',
+    'loans',
    
     # Default apps
     'django.contrib.admin',

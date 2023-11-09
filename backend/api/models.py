@@ -24,7 +24,7 @@ class School(models.Model):
                                   on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.school_name
+        return self.administrator.username
 
 # Students Personal info class
 class Student(models.Model):
@@ -37,6 +37,8 @@ class Student(models.Model):
     school = models.ForeignKey(School,
                                   on_delete=models.CASCADE)
     tuition = models.FloatField()
+    # administrator = models.ForeignKey(User,
+    #                               on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return ("{}".format(self.enrollment_number))
@@ -44,7 +46,7 @@ class Student(models.Model):
 
     def get_enrollemnt_number(self):
         """ returns the username of the student"""
-        return self.enrollment_number
+        return self.school
 
 
 class LoanRequest(models.Model):

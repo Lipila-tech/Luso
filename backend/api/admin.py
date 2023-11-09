@@ -4,15 +4,21 @@ from .models import (
     LoanPayment, LoanRequest, Parent
 )
 
-# custom
-from django.contrib import admin
-from django.template.response import TemplateResponse
-from django.urls import path
-
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'grade_level',
                     'enrollment_number', 'parent_id', 'school', 'tuition')
+    search_fields = ('enrollment_number', 'first_name', 'last_name')
+    
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return Student.objects.all()
+        elif request.user.is_staff:
+            school = School.objects.filter(administrator=request.user)
+            school_ids = [school.id for school in school]
+            return Student.objects.filter(school=int(school_ids[0]))
+        else:
+            return Student.objects.none()
 
 
 class PaymentAdmin(admin.ModelAdmin):
@@ -28,6 +34,14 @@ class ParentAdmin(admin.ModelAdmin):
 class SchoolAdmin(admin.ModelAdmin):
     list_display = ('school_name', 'city', 'province', 'administrator')
 
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return School.objects.all()
+        elif request.user.is_staff:
+            return School.objects.filter(administrator=request.user)
+        else:
+            return School.objects.none()
+    
 
 class LoanPaymentAdmin(admin.ModelAdmin):
     list_display = ('parent_id', 'payment_amount',
@@ -37,25 +51,7 @@ class LoanPaymentAdmin(admin.ModelAdmin):
 class LoanRequestAdmin(admin.ModelAdmin):
     list_display = ('parent_id', 'loan_amount', 'students', 'created_at')
 
-class SchoolAdminView(admin.AdminSite):
-    site_header = "Lipila School Administration"
-    # def get_urls(self):
-    #     urls = super().get_urls()
-    #     my_urls = [path("my_view/", self.admin_site.admin_view(self.my_view))]
-    #     return my_urls + urls
-
-    # def my_view(self, request):
-    #     # ...
-    #     context = dict(
-    #         # Include common variables for rendering the admin template.
-    #         self.admin_site.each_context(request),
-    #         # Anything else you want in the context...
-    #         # key=value,
-    #     )
-    #     return TemplateResponse(request, "custom_admin_view.html", context)
-
-school_admin = SchoolAdminView(name="School Admin")
-
+    
 
 # Register your models here.
 admin.site.register(Student, StudentAdmin)
