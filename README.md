@@ -20,6 +20,6 @@ School management system backend
 
 ### admin sites
 
-lipila admin -> localhost:8000/admin/
-school admin -> localhost:8000/schooladmin/
-loan admin -> localhost:8000/loansadmin/
+- lipila admin -> localhost:8000/admin/
+- school admin -> localhost:8000/schooladmin/
+- loan admin -> localhost:8000/loansadmin/
