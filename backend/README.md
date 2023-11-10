@@ -1,3 +1,3 @@
-# Student Fees Management
-## Django REST
-# sfms_backend
+# Lipila School app
+
+url : localhost:8000/schooladmin/
