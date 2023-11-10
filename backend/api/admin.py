@@ -8,7 +8,7 @@ from .models import (
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'grade_level',
                     'enrollment_number', 'parent_id', 'school', 'tuition')
-    search_fields = ('enrollment_number', 'first_name', 'last_name')
+    search_fields = ('enrollment_number', 'first_name', 'last_name', 'grade_level')
     
     def get_queryset(self, request):
         if request.user.is_superuser:
@@ -24,11 +24,31 @@ class StudentAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('enrollment_number', 'payment_amount',
                     'payment_method', 'transaction_id', 'payment_date')
+    
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return Payment.objects.all()
+        elif request.user.is_staff:
+            school = School.objects.filter(administrator=request.user)
+            school_ids = [school.id for school in school]
+            return Payment.objects.filter(school=int(school_ids[0]))
+        else:
+            return Payment.objects.none()
 
 
 class ParentAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email_address',
-                    'mobile_number', 'employer', 'address')
+                    'mobile_number', 'employer', 'address', 'school')
+    
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return Parent.objects.all()
+        elif request.user.is_staff:
+            school = School.objects.filter(administrator=request.user)
+            school_ids = [school.id for school in school]
+            return Parent.objects.filter(school=int(school_ids[0]))
+        else:
+            return Parent.objects.none()
 
 
 class SchoolAdmin(admin.ModelAdmin):
