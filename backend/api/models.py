@@ -101,6 +101,7 @@ class Payment(models.Model):
     payment_method = models.CharField(max_length=55)
     transaction_id = models.CharField(max_length=20)
     payment_date = models.DateField()
+    description = models.CharField(max_length=255)
     school = models.ForeignKey(School,
                                on_delete=models.CASCADE)
 
@@ -111,4 +112,5 @@ class Payment(models.Model):
                                           self.transaction_id,
                                           self.payment_date,
                                           self.school,
+                                          self.description,
                                           )
