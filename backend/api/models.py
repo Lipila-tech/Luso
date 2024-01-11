@@ -27,8 +27,16 @@ class Parent(models.Model):
                                on_delete=models.CASCADE)
 
     def __str__(self):
-        return ("{}".format(self.email_address))
+        return "{} {}".format(
+            self.first_name, self.last_name
+        )
+    
+    def get_school_name(self):
+        return self.school.school_name
 
+    def get_contacts(self):
+        return f"{self.email_address} {self.mobile_number}"
+    
 
 # Students Personal info class
 class Student(models.Model):
