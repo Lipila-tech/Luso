@@ -2,75 +2,71 @@
 import requests
 import json
 from django.http import HttpResponseBadRequest
+from django import http
 from rest_framework.response import Response
 from rest_framework import status
+from .helpers import get_uuid4, basic_auth
+
+import environ
+
+env = environ.Env()
+
+environ.Env.read_env()
 
 
-class APIHandler():
-    basic = 'Basic NjM1OWNhM2EtN2M1NC00M2I3LWJlN2MtNGRjZDY1NTBmMGE2OmRjNjNjZDNmMjI4ODQwYWJiMDY0ZmY1YTdiYTUyNjNj'
-    # Global authentication headers
+class MtnApiHandler():
+
     def __init__(self):
-        self.subscription_key = '2d2aaaf890fd44828e0977303c1a0ab7'
-        self.x_target_environment = 'sandbox'
+        self.subscription_col_key = env("MTN_MOMO_COLLECTIONS_KEY")
+        self.subscription_dis_key = env("MTN_MOMO_DISBURSEMENT_KEY")
+        self.x_target_environment = env("TARGET_ENV")
         self.content_type = 'application/json'
-        self.x_reference_id = ''
+        self.x_reference_id = get_uuid4()
         self.api_key = ''
         self.api_token = 'Bearer '
 
-    # Handle Momo
-    def get_uuid(self,):
-        # Get UUID
-        url = "https://www.uuidgenerator.net/api/version4"
-        payload={}
-        headers = {}
-        try:
-            res = requests.get(url, headers=headers, data=payload)
-            self.x_reference_id = self.x_reference_id + res.text
-            return (res)
-        except requests.exceptions.HTTPError as errh:
-            print ("Http Error:", errh)
-        except requests.exceptions.ConnectionError as errc:
-            print ("Error Connecting:", errc)
-        except requests.exceptions.Timeout as errt:
-            print ("Timeout Error:", errt)
-        except requests.exceptions.RequestException as err:
-            print ("OOps: Something Else",err)
-       
-          
-
-
     def create_api_user(self):
-        # CREATE API USER
+        """
+        Used to create an API user in the sandbox target environment.
+            X-Reference-Id(string) Format - UUID V4.
+            Recource ID for the API user to be created.
+        """
         url = "https://sandbox.momodeveloper.mtn.com/v1_0/apiuser"
 
         payload = json.dumps({
-            "providerCallbackHost": "https://webhook.site/48b519d0-d2f6-479e-8f51-142aa1267a89"
+            "providerCallbackHost": "{}".format(env("PROVIDER_CALLBACK_HOST"))
         })
         headers = {
             'X-Reference-Id': self.x_reference_id,
-            'Ocp-Apim-Subscription-Key': self.subscription_key,
+            'Ocp-Apim-Subscription-Key': self.subscription_col_key,
             'Content-Type': self.content_type
         }
         try:
             res = requests.request('POST', url, headers=headers, data=payload)
             return res
-        except requests.exceptions.HTTPError as errh:
-            print ("Http Error:", errh)
-        except requests.exceptions.ConnectionError as errc:
-            print ("Error Connecting:", errc)
-        except requests.exceptions.Timeout as errt:
-            print ("Timeout Error:", errt)
-        except requests.exceptions.RequestException as err:
-            print ("OOps: Something Else",err)
-        
+        except requests.exceptions.HTTPError:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except requests.exceptions.ConnectionError:
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except requests.exceptions.Timeout:
+            return Response(status=status.HTTP_504_GATEWAY_TIMEOUT)
+        except requests.exceptions.RequestException:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get_api_key(self):
-        # GET API KEY
-        url = "https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{}/apikey".format(self.x_reference_id)
+        """
+        Used to create an API key for an API user in the sandbox target environment.
+        X-Reference-Id(string) Format - UUID V4.
+            Recource ID for the API user to be created.
+        Ocp-Apim-Subscription-Key(string)Subscription key which provides access to this API.
+        Found in your momo Profile.
+        """
+        url = "https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{}/apikey".format(
+            self.x_reference_id)
 
-        payload={}
+        payload = {}
         headers = {
-            'Ocp-Apim-Subscription-Key': self.subscription_key,
+            'Ocp-Apim-Subscription-Key': self.subscription_col_key,
         }
         try:
             res = requests.post(url, headers=headers, data=payload)
@@ -80,23 +76,27 @@ class APIHandler():
             self.api_key = self.api_key + key['apiKey']
             return res
 
-        except requests.exceptions.HTTPError as errh:
-            print ("Http Error:", errh)
-        except requests.exceptions.ConnectionError as errc:
-            print ("Error Connecting:", errc)
-        except requests.exceptions.Timeout as errt:
-            print ("Timeout Error:", errt)
-        except requests.exceptions.RequestException as err:
-            return HttpResponseBadRequest("Error...")
-        
+        except requests.exceptions.HTTPError:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except requests.exceptions.ConnectionError:
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except requests.exceptions.Timeout:
+            return Response(status=status.HTTP_504_GATEWAY_TIMEOUT)
+        except requests.exceptions.RequestException:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
     def get_api_token(self):
-        # Generate API token
+        """
+        This operation is used to create an access token which can then
+        be used to authorize and authenticate towards the other end-points
+        of the API.
+        """
         url = "https://sandbox.momodeveloper.mtn.com/collection/token/"
-     
-        payload={}
+
+        payload = {}
         headers = {
-            'Ocp-Apim-Subscription-Key': self.subscription_key,
-            'Authorization': self.basic
+            'Ocp-Apim-Subscription-Key': self.subscription_col_key,
+            'Authorization': basic_auth(self.x_reference_id, self.api_key)
         }
         try:
             res = requests.post(url, headers=headers, data=payload)
@@ -105,62 +105,52 @@ class APIHandler():
             token = res.json()
             self.api_token = self.api_token + token['access_token']
             return res
-        except requests.exceptions.HTTPError as errh:
-            print ("Http Error:", errh)
-        except requests.exceptions.ConnectionError as errc:
-            print ("Error Connecting:", errc)
-        except requests.exceptions.Timeout as errt:
-            print ("Timeout Error:", errt)
-        except requests.exceptions.RequestException as err:
-            print ("OOps: Something Else",err)
-        
-    def request_to_pay(self, amount, partyId, externalId ):
+        except requests.exceptions.HTTPError:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except requests.exceptions.ConnectionError:
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except requests.exceptions.Timeout:
+            return Response(status=status.HTTP_504_GATEWAY_TIMEOUT)
+        except requests.exceptions.RequestException:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def request_to_pay(self, amount, mobile, reference):
         """ Request to pay"""
-        if len(partyId) != 10 or int(amount) < 100:
-            raise ValueError("PartyId must be 10 digits and Amount value should be greater than 100")
-             
+        if len(mobile) != 10 or int(amount) < 10:
+            raise ValueError(
+                "PartyId must be 10 digits and Amount value should be greater than 10")
+
         if not isinstance(amount, str):
-            raise TypeError("Amount must be string great than 100")
-        if not isinstance(partyId, str):
+            raise TypeError("Amount must be string great than 10")
+        if not isinstance(mobile, str):
             raise TypeError("PartyId must be string with 10 digits")
-        if not isinstance(externalId, str):
+        if not isinstance(reference, str):
             raise TypeError("ExternalId must be string")
 
         try:
-            
             url = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
 
             payload = json.dumps({
                 "amount": amount,
                 "currency": 'EUR',
-                "externalId": externalId,
+                "externalId": reference,
                 "payer": {
-                "partyIdType": "MSISDN",
-                "partyId": partyId
+                    "partyIdType": "MSISDN",
+                    "partyId": mobile
                 },
-                "payerMessage": "Pay for Tuition",
-                "payeeNote": "Termly Fees"
+                "payerMessage": "Make a donation to wicare",
+                "payeeNote": "wicare donation"
             })
             headers = {
                 'X-Reference-Id': self.x_reference_id,
-                'Ocp-Apim-Subscription-Key': self.subscription_key,
+                'Ocp-Apim-Subscription-Key': self.subscription_col_key,
                 'X-Target-Environment': self.x_target_environment,
                 'Authorization': self.api_token,
                 'Content-Type': self.content_type
             }
-
-            result = requests.post(url, headers=headers, data=payload)
-            return result
-        #except requests.exceptions.HTTPError as errh:
-         #   print ("Http Error:", errh)
-        #except requests.exceptions.ConnectionError as errc:
-         #   print ("Error Connecting:", errc)
-        #except requests.exceptions.Timeout as errt:
-         #   print ("Timeout Error:", errt)
-        #except requests.exceptions.RequestException as err:
-         #   print ("OOps: Something Else",err)
+            response = requests.post(url, headers=headers, data=payload)
+            return response
         except ValueError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except TypeError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        #return Response(status=status.HTTP_417_EXPECTATION_FAILED)

@@ -6,7 +6,8 @@ in external_api_handler.py
 
 
 from django.test import TestCase, Client
-from api.external_api_handler import APIHandler
+from api.external_api_handler import MtnApiHandler
+from api.helpers import get_uuid4
 
 class HandlerTestCase(TestCase):
     """Tests for the application views."""
@@ -18,17 +19,16 @@ class HandlerTestCase(TestCase):
         print('---------------------------------\n\n')
 
     def setUp(self):
-        self.res = APIHandler()
-        self.ref = self.res.get_uuid()
+        self.res = MtnApiHandler()
+        self.ref = get_uuid4()
         self.user = self.res.create_api_user()
         self.key = self.res.get_api_key()
         self.token = self.res.get_api_token()
         self.payer0 = self.res.request_to_pay('36654', '0969620939', '56797356')
        
-    # Django requires an explicit setup() when running tests in PTVS
     def test_x_reference_id(self):
         """ Test the x_reference id creation"""        
-        self.assertEqual(self.ref.status_code, 200)
+        self.assertEqual(type(self.ref), str)
 
     def test_api_user(self):
         """ Test Sandbox user creation"""
@@ -56,7 +56,7 @@ class HandlerTestCase(TestCase):
                           '36654', '0969620978895774', '56797356')
         self.assertRaises(ValueError,
                           self.res.request_to_pay,
-                          '50', '0969620978', '56797356')
+                          '5', '0969620978', '56797356')
 
     def test_type_errors(self):
         """Test the type of paramateres"""
