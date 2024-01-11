@@ -114,15 +114,15 @@ class MtnApiHandler():
         except requests.exceptions.RequestException:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def request_to_pay(self, amount, mobile, reference):
+    def request_to_pay(self, amount: str, payer_account:str, reference:str):
         """ Request to pay"""
-        if len(mobile) != 10 or int(amount) < 10:
+        if len(payer_account) != 10 or int(amount) < 10:
             raise ValueError(
                 "PartyId must be 10 digits and Amount value should be greater than 10")
 
         if not isinstance(amount, str):
             raise TypeError("Amount must be string great than 10")
-        if not isinstance(mobile, str):
+        if not isinstance(payer_account, str):
             raise TypeError("PartyId must be string with 10 digits")
         if not isinstance(reference, str):
             raise TypeError("ExternalId must be string")
@@ -136,10 +136,10 @@ class MtnApiHandler():
                 "externalId": reference,
                 "payer": {
                     "partyIdType": "MSISDN",
-                    "partyId": mobile
+                    "partyId": payer_account
                 },
-                "payerMessage": "Make a donation to wicare",
-                "payeeNote": "wicare donation"
+                "payerMessage": f"send money to {payer_account}",
+                "payeeNote": "Lipila gateway"
             })
             headers = {
                 'X-Reference-Id': self.x_reference_id,
@@ -151,6 +151,8 @@ class MtnApiHandler():
             response = requests.post(url, headers=headers, data=payload)
             return response
         except ValueError:
+            print('Caught value error')
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except TypeError:
+            print('Caught type error')
             return Response(status=status.HTTP_400_BAD_REQUEST)

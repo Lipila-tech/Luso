@@ -71,45 +71,6 @@ class Student(models.Model):
         """ returns the username of the student"""
         return self.enrollment_number
 
-
-class LoanRequest(models.Model):
-    parent_id = models.ForeignKey(Parent,
-                                  related_name='loanrequest',
-                                  on_delete=models.CASCADE,
-                                  )
-    student = models.ForeignKey(Student,
-                                  on_delete=models.CASCADE,
-                                  )
-    loan_amount = models.FloatField()
-    students = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return "{} {} {}".format(self.parent_id, self.loan_amount, self.created_at)
-
-
-class LoanPayment(models.Model):
-    parent_id = models.ForeignKey(Parent,
-                                  related_name='loanpayment',
-                                  on_delete=models.CASCADE,
-                                  )
-    student = models.ForeignKey(Student,
-                                  on_delete=models.CASCADE,
-                                  )
-    payment_amount = models.FloatField()
-    payment_method = models.CharField(max_length=55)
-    transaction_id = models.CharField(max_length=20)
-    payment_date = models.DateField()
-
-    def __str__(self):
-        return "{} {} {} {} {} {}".format(self.parent_id,
-                                          self.payment_amount,
-                                          self.payment_method,
-                                          self.transaction_id,
-                                          self.payment_date,
-                                          )
-
-
 class Payment(models.Model):
     """Defines a Payments Table"""
     enrollment_number = models.ForeignKey(Student,
@@ -137,3 +98,20 @@ class Payment(models.Model):
                                           self.school,
                                           self.description,
                                           )
+    
+
+class LipilaPayment(models.Model):
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    # currency = models.CharField(max_length=3)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    reference_id = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    payer_account = models.CharField(max_length=10, null=False)
+    payer_name = models.CharField(max_length=100, null=True)
+    payer_email = models.EmailField(null=True)
+    receiver_account = models.CharField(max_length=10, null=False)
+    status = models.CharField(max_length=20, choices=(
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+    ))

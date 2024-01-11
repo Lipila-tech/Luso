@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Student, Payment, School,
-    LoanPayment, LoanRequest, Parent
+    Student, Payment, School, Parent
 )
 
 
@@ -62,25 +61,15 @@ class SchoolAdmin(admin.ModelAdmin):
             return School.objects.filter(administrator=request.user)
         else:
             return School.objects.none()
-    
-
-class LoanPaymentAdmin(admin.ModelAdmin):
-    list_display = ('parent_id', 'payment_amount',
-                    'payment_method', 'transaction_id', 'payment_date')
-
-
-class LoanRequestAdmin(admin.ModelAdmin):
-    list_display = ('parent_id', 'loan_amount', 'students', 'created_at')
-
-    
+        
 
 # Register your models here.
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(School, SchoolAdmin)
 admin.site.register(Parent, ParentAdmin)
-admin.site.register(LoanPayment, LoanPaymentAdmin)
-admin.site.register(LoanRequest, LoanRequestAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = ''
+
+# superuser: pita, password: test@123

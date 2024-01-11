@@ -2,9 +2,15 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
 from .models import (
-    Payment, Student, LoanRequest,
-    LoanPayment, School, Parent)
+    Payment, Student,
+    School, Parent)
 from rest_framework import serializers
+from .models import LipilaPayment
+
+class LipilaPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LipilaPayment
+        fields = '__all__'
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -22,17 +28,6 @@ class StudentSerializer(serializers.ModelSerializer):
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
-        fields = '__all__'
-
-
-class LoanRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LoanRequest
-        fields = '__all__'
-
-class LoanPaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LoanPayment
         fields = '__all__'
     
 class ParentSerializer(serializers.ModelSerializer):
@@ -61,7 +56,7 @@ class LoginSerializer(serializers.Serializer):
     )
 
     def validate(self, attrs):
-        # Take username and password from request
+       # Take username and password from request
         username = attrs.get('username')
         password = attrs.get('password')
 

@@ -1,16 +1,38 @@
 
 """
-This module contains unittests for the api app.
+TEST Views
 """
-
-from datetime import datetime
-import django
 from django.contrib.auth.models import User
-from django.test import TestCase, Client, TransactionTestCase
+from django.test import TestCase, Client
 from api.models import School
 from api.models import Student
 from api.models import Parent
 from api.models import Payment
+
+
+from rest_framework.test import APITestCase
+from rest_framework.reverse import reverse
+
+from api.views import LipilaPaymentView  # Import your view
+
+
+class LipilaPaymentViewTest(APITestCase):
+
+    def test_get_payments(self):
+        """Tests retrieving a list of payments."""
+        url = reverse('lipila-payment-list')  # Generate URL using basename
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)  # Assert successful response
+        self.assertIsInstance(response.data, list)  # Assert data is a list
+
+
+
+        self.assertEqual(response.status_code, 201)  # Assert successful creation
+        self.assertIsNotNone(response.data.get('id'))  # Assert created payment has an ID
+        # self.assertEqual(response.data.get('timestamp'), ...)  # Assert date is deserialized correctly
+        self.assertEqual(response.data.get('status'), 'succes')  # Assert status is set based on status_code
+
 
 class ViewsTestCaseGet(TestCase):
     @classmethod

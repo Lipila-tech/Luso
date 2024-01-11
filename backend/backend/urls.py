@@ -19,14 +19,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from api import views
-from school.admin import school_site
-from loans.admin import loans_site
 
 urlpatterns = [
     # adminstrations urls
     path('admin/', admin.site.urls),
-    path('schooladmin/', school_site.urls),
-    path('loansadmin/', loans_site.urls),
 
     # api urls
     path('/', include('api.urls')),
