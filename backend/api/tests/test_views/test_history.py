@@ -5,9 +5,9 @@ This module contains unittests for the api app's HistoryView.
 
 from datetime import datetime
 from api.models import Payment
-from api.models import Program
+from api.models import School
 from api.models import Student
-from api.models import Term
+from api.models import Parent
 
 import django
 from django.contrib.auth.models import User
@@ -15,14 +15,11 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 
 
-
-
 class HistoryTestCase(TestCase):
     """Tests for the application views."""
     @classmethod
     def setUpTestData(cls):
-        print('\n.................................')
-        print('....... TESTING HISTORY VIEW .......')
+        print('*******TESTING HISTORY VIEW******')
         print('\n')
 
     def setUp(self):
@@ -37,37 +34,37 @@ class HistoryTestCase(TestCase):
                                              email='sepi@example.com')
         self.user1.save()
 
-        # Create Terms
-        start_d = datetime.strptime("2022-10-01", "%Y-%m-%d").date()
-        end_d = datetime.strptime("2022-12-30", "%Y-%m-%d").date()
-        self.term1 = Term.objects.create(name="Term1",
-                                         start_date=start_d, end_date=end_d)
+        # Create Schools
+        self.school1 = School.objects.create(school_name="School1", administrator=self.user0)
+        self.school1.save()
 
+        # create parents
+        self.parent1 = Parent.objects.create(
+            first_name="Python Parentming",
+            school=self.school1)
+        self.parent1.save()
 
-        # cretae programs
-        self.program1 = Program.objects.create(
-            program_name="Python Programming",
-            tuition=4000)
-        self.program2 = Program.objects.create(
-            program_name="Ruby Programming", tuition=4000)
+        self.parent2 = Parent.objects.create(
+            first_name="Ruby Parentming", school=self.school1)
+        self.parent2.save()
 
-        self.program = Program.objects.get(id=1)
-
+        self.parent = Parent.objects.get(id=1)
 
         # Create Students
-        self.std1 = Student.objects.create(username=self.user0,
-                                         tuition=2300, program=self.program)
-        self.std2 = Student.objects.create(username=self.user1,
-                                         tuition=2300, program=self.program)
-
+        self.std1 = Student.objects.create(first_name="test firstname",
+                                         parent_id=self.parent1, tuition=200.0, enrollment_number=123)
+        self.std1.save()
+        self.std2 = Student.objects.create(first_name="test firstname2",
+                                         parent_id=self.parent2, tuition=12.1, enrollment_number=124)
+        self.std2.save()
         # Create payment
-        self.payment = Payment.objects.create(amount=4000,
-                                          pay_date="2022-05-10",
-                                          student=self.std1, term=self.term1)
+        self.payment = Payment.objects.create(payment_amount=4000,
+                                          payment_date="2022-05-10",
+                                          enrollment_number=self.std1, school=self.school1)
 
         # GET history
-        student_id0 = self.std1.username_id  
-        student_id1 = self.std2.username_id  
+        student_id0 = self.std1.id
+        student_id1 = self.std2.id  
         self.get_history0 = Client().get("/api/v1/history?id={}".format(student_id0))
         self.get_history1 = Client().get("/api/v1/history?id={}".format(student_id1))
         self.get_history2 = Client().get("/api/v1/history?id=4")

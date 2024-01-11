@@ -5,70 +5,83 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-import django
 from django.contrib.auth.models import User
 from django.test import TestCase
-from api.models import Program
+from api.models import School
 from api.models import Student
+from api.models import Parent
 
 
 class TestStudentModels(TestCase):
     """Tests for the application views."""
     @classmethod
     def setUpTestData(cls):
-        print('\n\n.................................')
-        print('....... Testing Student class.......')
-        print('---------------------------------\n\n')
-
+        print('***** Testing Student class *****')
     def setUp(self):
-        # Create Programs
-        self.p1 = Program.objects.create(program_name="Pascal Programming",
-                                         tuition=4000)
-        self.p2 = Program.objects.create(program_name="Ruby Programming",
-                                         tuition=4000)
-        # Create User
+         # Create User objects
         self.user1  = User.objects.create_user('Memo', 'memo@email.tech', 'memo@pswd')
-        self.user2  = User.objects.create_user('Sepiso', 'sepiso@email.tech', 'sepiso@pswd')
-        
-        # Create Students
-        self.s1 = Student.objects.create(username=self.user1,
-                                         tuition=2300, program=self.p1)
-        self.s2 = Student.objects.create(username=self.user2,
-                                         tuition=4000, program=self.p2)
+        self.user2  = User.objects.create_user('Sepi', 'sepi@email.tech', 'sepi@pswd')
 
-    def test_primary_keys_relation(self):
-        """ Test if User id and Student have the same id"""
-        self.assertEqual(self.user1.id, self.s1.username_id)
-        self.assertEqual(self.user1.pk, self.s1.pk)
+        # Create School objects
+        self.school1 = School.objects.create(school_name="School1", administrator=self.user1)
+        self.school1.save()
 
-    def test_primary_keys(self):
+        self.school2 = School.objects.create(school_name="School2", administrator=self.user2)
+        self.school2.save()
+ 
+         # create Parent object
+        self.parent1 = Parent.objects.create(
+            first_name="parent2", email_address="p1@bot.zm", mobile_number="888777555",
+            school=self.school1)
+        self.parent1.save() # save to db
+        self.parent2 = Parent.objects.create(
+            first_name="parent2", email_address="p2@bot.zm", mobile_number="888666555",
+            school=self.school2)
+        self.parent2.save() # save to db
+
+        # Create Student objects
+        self.std1 = Student.objects.create(first_name="first1", last_name="last1",
+                                         parent_id=self.parent1, tuition=200.0, enrollment_number=123)
+        self.std1.save() # save to db
+        self.std2 = Student.objects.create(first_name="first2", last_name="last2",
+                                         parent_id=self.parent2, tuition=120.1, enrollment_number=124)
+        self.std2.save() # save to db  
+
+    def test_get_school_name_method(self):
+        self.assertEqual(self.std1.get_school_name(), "School1")
+        self.assertEqual(self.std2.get_school_name(), "School2")
+
+    def test_get_parent_email_method(self):
+        self.assertEqual(self.std1.get_parent_email(), "p1@bot.zm")
+        self.assertEqual(self.std2.get_parent_email(), "p2@bot.zm")
+
+    def test_get_parent_phone_method(self):
+        self.assertEqual(self.std1.get_parent_phone(), "888777555")
+        self.assertEqual(self.std2.get_parent_phone(), "888666555")
+
+    def test_get_enrollment_numebr_method(self):
         """ Test get_user_id method"""
-        self.assertTrue(self.s1.get_user_id(), 1)
-        self.assertTrue(self.s1.get_user_id(), 2)
-
-    def test_username(self):
-        """ tests get_username method"""
-        self.assertTrue(self.s1.get_username, 'memo')
-        self.assertTrue(self.s2.get_username, 'sepi')
+        self.assertTrue(self.std1.get_enrollemnt_number(), 123)
+        self.assertTrue(self.std2.get_enrollemnt_number(), 124)
 
     def test_tuition_fee(self):
         """ test the get_tuition method"""
-        self.assertTrue(self.s1.get_tuition, 2300)
-        self.assertTrue(self.s2.get_tuition, 4000)
+        self.assertTrue(self.std1.get_tuition(), 200.0)
+        self.assertTrue(self.std1.get_tuition(), 120.1)
 
     def test_student_str_repr(self):
         """ test the string representation"""
-        self.assertEqual(str(self.s1), "memo")
+        self.assertEqual(str(self.std1), "123 first1 last1 200.0 School1")
+        self.assertEqual(str(self.std2), "124 first2 last2 120.1 School2")
 
-    def test_correct_course(self):
-        """ tests if the correct program was assigned to student"""
-        sd1 = Student.objects.get(username_id=1)
-        sd2 = Student.objects.get(username_id=2)
-        self.assertEqual(str(sd1.program), "PASCAL PROGRAMMING")
-        self.assertEqual(str(sd2.program), "RUBY PROGRAMMING")
+    def test_get_student_names_method(self):
+        std1 = Student.objects.get(id=1)
+        std2 = Student.objects.get(id=2)
+        self.assertEqual(std1.get_student_names(), "first1 last1")
+        self.assertEqual(std2.get_student_names(), "first2 last2")
 
-    def test_related_names(self):
-        """ Test the program related name on student"""
-        self.assertTrue(self.p1.student, self.s1.program)
-        self.assertTrue(self.p2.student, self.s2.program)
+    def test_school_admin_id(self):
+        """ check school admin"""
+        self.assertTrue(self.school1.administrator.id, self.user1.id)
+        self.assertTrue(self.school2.administrator.id, self.user2.id)
 

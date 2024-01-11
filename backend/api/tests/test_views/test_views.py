@@ -6,171 +6,161 @@ This module contains unittests for the api app.
 from datetime import datetime
 import django
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
-from api.models import Program
+from django.test import TestCase, Client, TransactionTestCase
+from api.models import School
 from api.models import Student
-from api.models import Term
+from api.models import Parent
 from api.models import Payment
 
+class ViewsTestCaseGet(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(ViewsTestCaseGet, cls).setUpClass()
+        print('***** TESTING GET METHODS *****')
 
-class ViewsTestCase(TestCase):
+    # def setUp(self):
+        # Endpoints
+        cls.payment_url = '/lipila/api/v1/payment/'
+        cls.school_url = '/lipila/api/v1/school/'
+        cls.student_url = '/lipila/api/v1/student/'
+        cls.parent_url = '/lipila/api/v1/parent/'
+        cls.profile_url = '/lipila/api/v1/profile/'
+
+    # TEST GET REQUESTS
+    def test_invalid_route(self):
+        """ GET invalid route """
+        r1 = Client().get("/lipila/api/v1/not_a_view/")
+        self.assertEqual(r1.status_code, 404)
+
+    def test_get_response_200(self):
+        print()
+        get_payment = Client().get(ViewsTestCaseGet.payment_url)
+        get_parent = Client().get(self.parent_url)
+        get_school = Client().get(self.school_url)
+        get_student = Client().get(self.student_url)
+        get_profile = Client().get(self.profile_url)
+
+        self.assertEqual(get_payment.status_code, 200)
+        self.assertEqual(get_parent.status_code, 200)
+        self.assertEqual(get_school.status_code, 200)
+        self.assertEqual(get_student.status_code, 200)
+        self.assertEqual(get_profile.status_code, 200)
+
+class ViewsTestCasePost(TestCase):
     """Tests for the application views."""
     @classmethod
     def setUpTestData(cls):
-        print('\n.................................')
-        print('....... TESTING VIEWS .......')
-        print('\n')
+        print('***** TESTING VIEWS *****')
 
     def setUp(self):
-        # Create User
+        # Endpoints
+        self.payment_url = '/lipila/api/v1/payment/'
+        self.school_url = '/lipila/api/v1/school/'
+        self.student_url = '/lipila/api/v1/student/'
+        self.parent_url = '/lipila/api/v1/parent/'
+        self.profile_url = '/lipila/api/v1/profile/'
+
+        # Create User objects
         self.user0 = User.objects.create_user(username='pita',
                                              password='pwd_123',
                                              email='pita@example.com')
-        self.user0.save()
-
+        self.user0.save() # save to db
         self.user1 = User.objects.create_user(username='sepi',
                                              password='pwd_123',
                                              email='sepi@example.com')
-        self.user1.save()
+        self.user1.save() # save to db
 
-        # Create Terms
-        start_d = datetime.strptime("2022-10-01", "%Y-%m-%d").date()
-        end_d = datetime.strptime("2022-12-30", "%Y-%m-%d").date()
-        self.term1 = Term.objects.create(name="Term1",
-                                         start_date=start_d, end_date=end_d)
-        self.term1.save()
+        # Create School objects
+        self.school1 = School.objects.create(school_name="School1", administrator=self.user0)
+        self.school1.save()
 
-        # create programs
-        self.program1 = Program.objects.create(
-            program_name="Python Programming",
-            tuition=4000)
-        self.program1.save()
+        # create Parent object
+        self.parent1 = Parent.objects.create(
+            first_name="Python Parentming",
+            school=self.school1)
+        self.parent1.save() # save to db
+        self.parent2 = Parent.objects.create(
+            first_name="Ruby Parentming", school=self.school1)
+        self.parent2.save() # save to db
 
-        self.program2 = Program.objects.create(
-            program_name="Ruby Programming", tuition=4000)
-        self.program2.save()
-
-        self.program = Program.objects.get(id=1)
-
-        # Create Students
-        self.std1 = Student.objects.create(username=self.user0,
-                                         tuition=2300, program=self.program)
-        self.std1.save()
-        self.std2 = Student.objects.create(username=self.user1,
-                                         tuition=2300, program=self.program)
-        self.std2.save()
-        # Create payment
-        self.payment = Payment.objects.create(amount=4000,
-                                          pay_date="2022-05-10",
-                                          student=self.std1, term=self.term1)
-
-        # Send GET requests to API endpoints
-        self.profile = Client().get("/api/v1/profile")
-        self.payments = Client().get("/api/v1/payments?id=0")
+        # Create Students objects
+        self.std1 = Student.objects.create(first_name="test firstname",
+                                         parent_id=self.parent1, tuition=200.0, enrollment_number=123)
+        self.std1.save() # save to db
+        self.std2 = Student.objects.create(first_name="test firstname2",
+                                         parent_id=self.parent2, tuition=12.1, enrollment_number=124)
+        self.std2.save() # save to db
+                
+        # Get the school and student ids
+        student1_id = self.std1.id
+        school_id = self.school1.id     
         
-        # POST payment
-        s_id = self.std1.username_id
-        s_id1 = self.std2.username_id
-        t_id = self.term1.id     
-               
-        self.post_payment1 = Client().post("/api/v1/payments?id={}".format(s_id),
-                                {"student": s_id,
-                                 "amount": '2346',
-                                 'mobile': '0971892260',
-                                 'reference':'123456',
-                                 "pay_date": "2021-05-10",
-                                 "term": t_id})
-        self.post_payment2 = Client().post("/api/v1/payments?id={}".format(s_id1),
-                                {"student": s_id1,
-                                 "amount": 3000,
-                                 'mobile': '0971442260',
-                                 'reference':'123457',
-                                 "pay_date": "2021-05-10",
-                                 "term": t_id})
-
-        # POST payment with bad request
-        self.post_payment3 = Client().post("/api/v1/payments?id=19",
-                                {"amount":2346,
-                                 "pay_date":"2022-05-10",
-                                 "student": self.std2,
-                                 "term": self.term1})
+        # Valid data
+        self.data1 =  {
+            "enrollment_number": student1_id,
+            "payment_amount": '2346',
+            "payment_method": '0971892260',
+            "transaction_id":'123456',
+            "payment_date": "2021-05-10",
+            "description": "paid",
+            "school": school_id
+            }
+        # Arguments missing required field
+        self.data2 =  {
+            "payment_amount": '2346',
+            "payment_method": '0971892260',
+            "transaction_id":'123456',
+            "payment_date": "2021-05-10",
+            "description": "paid",
+            "school": school_id
+            }
+        # Arguments with wring field type
+        self.data3 =  {
+            "enrollment_number": 'STRINGID',
+            "payment_amount": '2346',
+            "payment_method": '0971892260',
+            "transaction_id":'123456',
+            "payment_date": "2021-05-10",
+            "description": "paid",
+            "school": school_id
+            }
+        
+        # Valid post
+        self.post_payment1 = Client().post(self.payment_url, self.data1, format="json")
+        # POST payment with bad data
+        self.post_payment2 = Client().post(self.payment_url, self.data2)
    
-        # POST payment with bad request
-        self.p5 = Client().post("/api/v1/payments?id={}".format(s_id),
-                                {"amount":2346,
-                                 "pay_date":"2022-05-10",
-                                 "student": self.std2,
-                                 "term": self.term1})
-        # POST request to non existing route
-        self.p6 = Client().post("/api/v1/not_a_view",
-                                {"student": s_id,
-                                 "amount": 2346,
-                                 'mobile': '0971892260',
-                                 'reference':'123456',
-                                 "pay_date": "2021-05-10",
-                                 "term": t_id})
+        # POST request with invalid enrollment_number type
+        self.post_payment3 = Client().post(self.payment_url, self.data3)
 
+    # TEST AUTH
     def test_login_success(self):
         """ TEST if login was succesful"""
-        print('\n************************')
-        print("******* Testing Login *******")
-        print('\n')
         login = Client().login(username='pita', password='pwd_123')
         self.assertTrue(login)
 
     def test_logout_success(self):
         """test if session ended successfully"""
-        print('\n************************')
-        print("******* Testing Logout *******")
-        print('\n')
-        logout = Client().post("/api/v1/logout")
+        logout = Client().post("/lipila/api/v1/logout")
         self.assertTrue(logout)
 
     def test_wrong_credentials(self):
-        print('\n************************')
-        print("******* Testing Login unregistered user *******")
-        print('\n')
         login = Client().login(username='pitaz', password='pwd_123')
         self.assertFalse(login)
 
-    def test_valid_profile_route(self):
-        """ GET valid terms route"""
-        self.assertEqual(self.profile.status_code, 200)
-
-    def test_payment_route(self):
-        """ Test that API returns 404 if id not present""" 
-        self.assertEqual(self.payments.status_code, 404)
-
-    def test_invalid_route(self):
-        """ GET invalid route """
-        r1 = Client().get("/api/v1/not_a_view/")
-        self.assertEqual(r1.status_code, 404)
-
+    # TEST POST REQUESTS
     def test_post_response_201(self):
-        """ POST payment data successfully to database"""
-        print('\n************************')
-        print("******* Testing POST requests on API *******")
-        print('\n')
+        """ valid post request"""
         self.assertEqual(self.post_payment1.status_code, 201)
-        self.assertEqual(self.post_payment2.status_code, 201)
+        self.assertEqual(Payment.objects.count(), 1)  # Verify payment was created in database
+        post_payment = Client().post(self.payment_url, self.data1)
+        self.assertEqual(post_payment.status_code, 201)
+        self.assertEqual(Payment.objects.count(), 2)  # Verify payment was created in database
 
-    def test_post_response_no_payment(self):
-        """ Test post request with invalid message framing"""
-        self.assertEqual(self.p5.status_code, 400)
+    def test_post_response_bad_data_400(self):
+        """ invalid data arguments"""
+        self.assertEqual(self.post_payment3.status_code, 400)
 
-    def test_post_response_404(self):
-        """ Test post request with invalid message framing"""
-        self.assertEqual(self.p6.status_code, 404)
-
-    def test_invalid_student_id(self):
-        """ Test that API returns 404 on invalid id""" 
-        self.assertEqual(self.post_payment3.status_code, 404)
-
-    def test_content_type(self):
-        """ test content type of response"""
-        self.assertEqual(self.profile['Content-Type'], "application/json")
-
-    
-        
-
-    
+    def test_invalid_studenschool_id_400(self):
+        """ invalid data type""" 
+        self.assertEqual(self.post_payment2.status_code, 400)

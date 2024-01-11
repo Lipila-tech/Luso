@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 
 import django
 from django.test import TestCase
-from api.models import Term
+from api.models import Parent
 from datetime import datetime
 
 

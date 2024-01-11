@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
 
 from .models import (
     Payment, Student, LoanRequest,
@@ -83,10 +84,7 @@ class LogoutView(views.APIView):
         logout(request)
         return Response(status=status.HTTP_200_OK)
 
-class ProfileView(generics.RetrieveAPIView):
+class ProfileView(viewsets.ModelViewSet):
     """Returns the profile of the user"""
     serializer_class = UserSerializer
-
-    def get_object(self):
-        """ GET the user object"""
-        return self.request.user
+    queryset = User.objects.all()

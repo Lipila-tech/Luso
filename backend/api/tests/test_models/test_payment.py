@@ -1,101 +1,97 @@
 
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+TESTS the Payment Model
 """
 
-import django
 from django.contrib.auth.models import User
 from django.test import TestCase
-from api.models import Program
+from api.models import School
 from api.models import Student
-from api.models import Term
+from api.models import Parent
 from api.models import Payment
-from datetime import datetime
 
 class PaymentTestCase(TestCase):
     """Tests for the application views."""
 
     @classmethod
     def setUpTestData(cls):
-        print('\n\n.................................')
-        print('....... Testing Payment class.......')
-        print('---------------------------------\n\n')
+        print('***** Testing Payment class *****')
 
     # Django requires an explicit setup() when running tests in PTVS
     def setUp(self):
-        # Create programs
-        self.pro1 = Program.objects.create(
-            program_name="Pascal Programming", tuition=4000)
-        self.pro2 = Program.objects.create(
-            program_name="Ruby Programming", tuition=4000)
 
-        # Create User
+        # Create User objects
         self.user1  = User.objects.create_user('Memo', 'memo@email.tech', 'memo@pswd')
         self.user2  = User.objects.create_user('Sepi', 'sepi@email.tech', 'sepi@pswd')
 
-        # Create student
-        self.std1 = Student.objects.create(
-            username=self.user1,
-            tuition=4000,
-            program=self.pro1)
+        # Create School objects
+        self.school1 = School.objects.create(school_name="School1", administrator=self.user1)
+        self.school1.save()
 
-        self.std2 = Student.objects.create(
-            username=self.user2,
-            tuition=4690,
-            program=self.pro2)
+        self.school2 = School.objects.create(school_name="School1", administrator=self.user2)
+        self.school2.save()
+ 
+         # create Parent object
+        self.parent1 = Parent.objects.create(
+            first_name="Python Parentming",
+            school=self.school1)
+        self.parent1.save() # save to db
+        self.parent2 = Parent.objects.create(
+            first_name="Ruby Parentming", school=self.school1)
+        self.parent2.save() # save to db
 
-        # Create term
-        self.t = Term.objects.create(name="Term1",
-                                     start_date="2021-01-01",
-                                     end_date="2021-04-01")
+        # Create Student objects
+        self.std1 = Student.objects.create(first_name="test firstname",
+                                         parent_id=self.parent1, tuition=200.0, enrollment_number=123)
+        self.std1.save() # save to db
+        self.std2 = Student.objects.create(first_name="test firstname2",
+                                         parent_id=self.parent2, tuition=12.1, enrollment_number=124)
+        self.std2.save() # save to db        
+
+        self.school_id = self.school1    
+        self.school_id2 = self.school2    
+
         # Create Student payments
-        self.pay1 = Payment.objects.create(student=self.std1,
-                                           amount=4000,
-                                           mobile='0988774466',
-                                           reference='12345',
-                                           pay_date="2022-05-10",
-                                           term=self.t)
-        self.pay2 = Payment.objects.create(student=self.std1,
-                                           amount=4000,
-                                           mobile='0987654332',
-                                           reference='',
-                                           pay_date="2022-05-10",
-                                           term=self.t)
-        self.pay3 = Payment.objects.create(student=self.std2,
-                                           amount=3000,
-                                           mobile='0987645323',
-                                           reference='12345',
-                                           pay_date="2022-05-10",
-                                           term=self.t)
+        self.pay1 = Payment.objects.create(enrollment_number=self.std1,
+                                           payment_amount=4000,
+                                           payment_method='0988774466',
+                                           transaction_id='12345',
+                                           payment_date="2022-05-10",
+                                           description = "paid",
+                                           school=self.school_id)
+        self.pay2 = Payment.objects.create(enrollment_number=self.std1,
+                                           payment_amount=4000,
+                                           payment_method='0987654332',
+                                           transaction_id='',
+                                           payment_date="2022-05-10",
+                                           description = "paid",
+                                           school=self.school_id)
+        self.pay3 = Payment.objects.create(enrollment_number=self.std2,
+                                           payment_amount=3000,
+                                           payment_method='0987645323',
+                                           transaction_id='12345',
+                                           payment_date="2022-05-10",
+                                           description = "paid",
+                                           school=self.school_id2)
 
 
-    def test_student_payment_relationship(self):
+    def test_get_enrollment_number_method(self):
         """ Test if Payment id and Student have the same id"""
-        self.assertEqual(self.std1.username_id, self.pay1.student_id)
-        self.assertEqual(self.std1.pk, self.pay2.student_id)
-        self.assertEqual(self.std2.pk, self.pay3.student_id)
+        std_en = self.std1.get_enrollemnt_number()
+        pay_en = self.pay1.get_enrollemnt_number()
+        std2_en = self.std2.get_enrollemnt_number()
+        pay2_en = self.pay3.get_enrollemnt_number()
+        self.assertEqual(std_en, pay_en)
+        self.assertEqual(std2_en, pay2_en)
 
     def test_payment_string_repr(self):
         """ Test string representation of the payment"""
-        self.assertEqual(str(self.pay1), "memo 4000 0988774466 12345 2022-05-10 Term1 2021-04-01")
+        self.assertEqual(str(self.pay1), "1 4000 0988774466 12345 2022-05-10 School1 paid")
      
     def test_correct_students_payment(self):
         """ test if the correct student was given the payment"""
-        self.assertTrue(self.std1.username_id, self.pay1.student.username_id)
-        self.assertTrue(self.std2.username_id, self.pay3.student.username_id)
-
-    def test_correct_additional_payment(self):
-        """ Test if subsequent payment are assigned to correct student"""
-        self.assertTrue(self.std1.username_id, self.pay2.student.username_id)
-
-    def test_related_names(self):
-        """ Test the student related name on payment"""
-        self.assertTrue(self.std1.payment, self.pay1.student_id)
-        self.assertTrue(self.t.id, self.pay1.term)
-
+        self.assertTrue(self.pay1.payment_amount, 4000)
+        self.assertTrue(self.pay3.payment_amount, 3000)
 
 
 

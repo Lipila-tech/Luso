@@ -14,7 +14,7 @@ router.register(r'loanrequest', views.LoanRequestView, basename='loanrequest')
 router.register(r'loanpayment', views.LoanPaymentView, basename='loanpayment')
 
 # router.register(r'login', views.LoginView, basename='login')
-# router.register(r'profile', views.ProfileView, basename='profile')
+router.register(r'profile', views.ProfileView, basename='profile')
 # router.register(r'logout', views.LogoutView, basename='logout')
 
 urlpatterns = router.urls

@@ -38,19 +38,30 @@ class Student(models.Model):
     enrollment_number = models.CharField(max_length=150, unique=True)
     parent_id = models.ForeignKey(Parent, related_name='student',
                                   on_delete=models.CASCADE)
-    school = models.ForeignKey(School,
-                               on_delete=models.CASCADE)
     tuition = models.FloatField()
-    # administrator = models.ForeignKey(User,
-    #                               on_delete=models.CASCADE, default=1)
-
+   
     def __str__(self):
-        return ("{} {} {} {}".format(
-            self.enrollment_number, self.first_name, self.last_name, self.school))
+        return ("{} {} {} {} {}".format(
+            self.enrollment_number, self.first_name, self.last_name, self.tuition, self.parent_id.school))
+    
+    def get_parent_email(self):
+        return self.parent_id.email_address
+
+    def get_parent_phone(self):
+        return self.parent_id.mobile_number
+        
+    def get_school_name(self):
+        return self.parent_id.school.school_name
+
+    def get_tuition(self):
+        return self.tuition
+    
+    def get_student_names(self):
+        return f"{self.first_name} {self.last_name}"
 
     def get_enrollemnt_number(self):
         """ returns the username of the student"""
-        return self.school
+        return self.enrollment_number
 
 
 class LoanRequest(models.Model):
@@ -105,8 +116,12 @@ class Payment(models.Model):
     school = models.ForeignKey(School,
                                on_delete=models.CASCADE)
 
+    def get_enrollemnt_number(self):
+        """ returns the username of the student"""
+        return self.enrollment_number.enrollment_number
+
     def __str__(self):
-        return "{} {} {} {} {} {}".format(self.enrollment_number_id,
+        return "{} {} {} {} {} {} {}".format(self.enrollment_number_id,
                                           self.payment_amount,
                                           self.payment_method,
                                           self.transaction_id,
