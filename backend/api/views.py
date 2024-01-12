@@ -4,13 +4,13 @@ from django.contrib.auth.models import User
 from .models import (
     Payment, Student, School, Parent, LipilaPayment)
 
-from .serializers import PaymentSerializer
+from .serializers import SchoolPaymentSerializer
 from .serializers import StudentSerializer
 from .serializers import ParentSerializer
 from .serializers import SchoolSerializer
 from .serializers import LoginSerializer
 from .serializers import UserSerializer
-from .serializers import LipilaPaymentSerializer
+from .serializers import LipilaSchoolPaymentSerializer
 
 from rest_framework import generics
 from rest_framework import permissions
@@ -28,17 +28,17 @@ def index(request):
     return render(request, 'index.html')
     
 class PaymentView(viewsets.ModelViewSet):
-    serializer_class = PaymentSerializer
+    serializer_class = SchoolPaymentSerializer
     queryset = Payment.objects.all()
 
 class LipilaPaymentView(viewsets.ModelViewSet):
-    serializer_class = LipilaPaymentSerializer
+    serializer_class = LipilaSchoolPaymentSerializer
     queryset = LipilaPayment.objects.all()
 
     def create(self, request):
         """Handles POST requests, deserializing date and setting status."""
         data = request.data
-        serializer = LipilaPaymentSerializer(data=data)
+        serializer = LipilaSchoolPaymentSerializer(data=data)
 
         if serializer.is_valid():
             try:
@@ -46,7 +46,7 @@ class LipilaPaymentView(viewsets.ModelViewSet):
                 api_user = Collections()
                 api_user.create_api_user()
                 api_user.get_api_key()
-                api_user.get_api_token()
+                api_user.create_api_token()
 
                 amount = data['amount']
                 reference_id = Collections().x_reference_id
