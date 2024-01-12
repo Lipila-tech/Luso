@@ -3,6 +3,11 @@ module with helper functions
 """
 import requests
 from base64 import b64encode
+import datetime
+import random
+
+unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"  # Example: '20231125154054_7548'
+
 
 def get_uuid4() -> str:
         """

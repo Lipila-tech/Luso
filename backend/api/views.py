@@ -20,7 +20,8 @@ from rest_framework.response import Response
 from django.contrib import messages
 from django.shortcuts import render
 
-from api.external_api_handler import MtnApiHandler
+from api.momo.mtn import Collections
+from api.helpers import unique_id
 
 def index(request):
     """View for the page homapage"""
@@ -42,13 +43,13 @@ class LipilaPaymentView(viewsets.ModelViewSet):
         if serializer.is_valid():
             try:
                 # Query external API handlers
-                api_user = MtnApiHandler()
+                api_user = Collections()
                 api_user.create_api_user()
                 api_user.get_api_key()
                 api_user.get_api_token()
 
                 amount = data['amount']
-                reference_id = 0 + 100
+                reference_id = Collections().x_reference_id
                 description = data['description']
                 payer_account = data['payer_account']
                 payer_name = data['payer_name']
@@ -63,7 +64,8 @@ class LipilaPaymentView(viewsets.ModelViewSet):
                 if request_pay.status_code == 202:
                     # save payment
                     payment = serializer.save()
-                    payment.status = 'success'  # Set status based on mapping
+                    payment.reference_id = reference_id
+                    payment.status = 'pending'  # Set status based on mapping
                     # payment.timestamp = payment.timestamp.replace(tzinfo=None)  # Remove timezone
                     payment.save()
 
@@ -71,7 +73,7 @@ class LipilaPaymentView(viewsets.ModelViewSet):
                     #donation_amount = int(donation_amount) * (95/100)
 
                     status_code = request_pay.status_code
-                    return Response({'message': 'Payment processed'}, status=status_code)  # Set status code
+                    return Response({'message': 'request accepted, wait for client approval'}, status=status_code)  # Set status code
                 
                 elif request_pay.status_code == 403:
                     status_code = request_pay.status_code 

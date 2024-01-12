@@ -5,7 +5,7 @@ from django.http import HttpResponseBadRequest
 from django import http
 from rest_framework.response import Response
 from rest_framework import status
-from .helpers import get_uuid4, basic_auth
+from ..helpers import get_uuid4, basic_auth
 
 import environ
 
@@ -14,7 +14,10 @@ env = environ.Env()
 environ.Env.read_env()
 
 
-class MtnApiHandler():
+class Collections():
+    """
+    Handles the collections endpoint requests
+    """
 
     def __init__(self):
         self.subscription_col_key = env("MTN_MOMO_COLLECTIONS_KEY")
@@ -115,7 +118,7 @@ class MtnApiHandler():
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def request_to_pay(self, amount: str, payer_account:str, reference:str):
-        """ Request to pay"""
+        """ Query the Collections API"""
         if len(payer_account) != 10 or int(amount) < 10:
             raise ValueError(
                 "PartyId must be 10 digits and Amount value should be greater than 10")
@@ -151,8 +154,53 @@ class MtnApiHandler():
             response = requests.post(url, headers=headers, data=payload)
             return response
         except ValueError:
-            print('Caught value error')
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except TypeError:
-            print('Caught type error')
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def get_payment_status(self):
+        ''' checks status of payment SUCCESS or FAILED
+        200 SUCCESS/FAIL, 404 nOT Found, 400 bad request
+        '''
+        url = "https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{}".format(self.x_reference_id)
+        headers = {
+            'X-Target-Environment': self.x_target_environment,
+            'Ocp-Apim-Subscription-Key': self.subscription_col_key,
+            'Authorization': self.api_token
+        }
+        try:
+            response = requests.get(url, headers=headers, data={})
+            if response.status_code != 200:
+                raise ValueError("Bad request")
+            else:
+                # response = 
+                """ {referenceId: "The reference id for this Payment",
+                    status: "success of fail",
+                    financialTransactionId: "A transaction id associated with this payment."
+                    reason: "ErrorReason"}
+                """
+                return response
+        except Exception as e:
+            return Response(status=response.status_code)
+
+    def validate_account_holder(self):
+        ''' checks is a payee account exists
+        200 OK, 409 conflict, 400 bad request
+        '''
+        accountHolderIdType = 'msisdn'
+        accountHolderId = '076775588'
+        url =f"https://sandbox.momodeveloper.mtn.com/collection/v1_0/accountholder/{accountHolderIdType}/{accountHolderId}/active"
+        headers = {
+            'X-Target-Environment': self.x_target_environment,
+            'Authorization': self.api_token,
+            'Ocp-Apim-Subscription-Key': self.subscription_col_key,
+        }
+        try:
+            response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                raise ValueError("Bad request")
+            else:
+                return response
+        except Exception as e:
+             return Response(status=response.status_code)
+

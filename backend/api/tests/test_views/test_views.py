@@ -1,19 +1,19 @@
 
 """
-TEST Views
+Test Views
 """
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from api.models import School
 from api.models import Student
 from api.models import Parent
-from api.models import Payment
+from api.models import Payment, LipilaPayment
 
 
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 
-from api.views import LipilaPaymentView  # Import your view
+from api.views import LipilaPaymentView
 
 
 class LipilaPaymentViewTest(APITestCase):
@@ -26,12 +26,41 @@ class LipilaPaymentViewTest(APITestCase):
         self.assertEqual(response.status_code, 200)  # Assert successful response
         self.assertIsInstance(response.data, list)  # Assert data is a list
 
-
-
-        self.assertEqual(response.status_code, 201)  # Assert successful creation
-        self.assertIsNotNone(response.data.get('id'))  # Assert created payment has an ID
-        # self.assertEqual(response.data.get('timestamp'), ...)  # Assert date is deserialized correctly
-        self.assertEqual(response.data.get('status'), 'succes')  # Assert status is set based on status_code
+    def test_create_payment(self):
+        """Tests creating a payment with date deserialization."""
+        data1 =  {
+           "amount" : 100,
+            "description":"test description",
+            "payer_account":"8855994499",
+            "payer_name":"test payer name",
+            "payer_email":"test@bot.com",
+            "receiver_account":"9988557733",
+            "status":'success',
+        }
+        data2 =  {
+            "amount" : 400,
+            "description":"test description",
+            "payer_account":"8855994499",
+            "payer_name":"test payer name",
+            "payer_email":"test@bot.com",
+            "receiver_account":"9988557733",
+            "status":'pending',
+        }
+        url = reverse('lipila-payment-list')
+        response = self.client.post(url, data1)
+        
+        self.assertEqual(response.status_code, 202)  # Assert successful creation
+        self.assertEqual(response.headers['Content-Type'] , 'application/json')  # Assert successful creation
+        
+        self.assertEqual(LipilaPayment.objects.count(), 1)
+        T1 = LipilaPayment.objects.get(id=1) # get first object
+        self.assertEqual(T1.amount, 100)        
+        self.assertEqual(T1.status, 'pending')
+        response = self.client.post(url, data2) # make second payment
+        self.assertEqual(LipilaPayment.objects.count(), 2) # assert successful creation
+        T2 = LipilaPayment.objects.get(id=2) # get second object
+        self.assertEqual(T2.amount, 400)     
+        self.assertNotEqual(T1.reference_id, T2.reference_id) # assert unique reference_id
 
 
 class ViewsTestCaseGet(TestCase):
@@ -55,7 +84,6 @@ class ViewsTestCaseGet(TestCase):
         self.assertEqual(r1.status_code, 404)
 
     def test_get_response_200(self):
-        print()
         get_payment = Client().get(ViewsTestCaseGet.payment_url)
         get_parent = Client().get(self.parent_url)
         get_school = Client().get(self.school_url)

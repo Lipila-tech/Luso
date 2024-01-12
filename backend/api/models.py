@@ -115,3 +115,4 @@ class LipilaPayment(models.Model):
         ('success', 'Success'),
         ('failed', 'Failed'),
     ))
+    
