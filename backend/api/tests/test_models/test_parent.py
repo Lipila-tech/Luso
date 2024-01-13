@@ -13,10 +13,6 @@ from datetime import datetime
 
 class ParentTestCase(TestCase):
     """Tests for the application views."""
-    @classmethod
-    def setUpTestData(cls):
-        print('***** Testing Parent class *****')
-
     def setUp(self):
         # Create User objects
         self.user1  = User.objects.create_user('Memo', 'memo@email.tech', 'memo@pswd')

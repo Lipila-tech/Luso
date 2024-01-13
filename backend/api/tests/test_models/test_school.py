@@ -8,11 +8,6 @@ from api.models import School
 
 class SchoolTestCase(TestCase):
     """Tests for the application views."""
-
-    @classmethod
-    def setUpTestData(cls):
-        print('****** Testing School class******')
-
     # Django requires an explicit setup() when running tests in PTVS
     def setUp(self):
         # Create User objects

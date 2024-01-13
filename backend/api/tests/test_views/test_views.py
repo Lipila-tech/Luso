@@ -13,10 +13,10 @@ from api.models import Payment, LipilaPayment
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 
-from api.views import LipilaPaymentView
+from api.views import LipilaCollectionView
 
 
-class LipilaPaymentViewTest(APITestCase):
+class LipilaCollectionViewTest(APITestCase):
 
     def test_get_payments(self):
         """Tests retrieving a list of payments."""
@@ -67,8 +67,6 @@ class ViewsTestCaseGet(TestCase):
     @classmethod
     def setUpClass(cls):
         super(ViewsTestCaseGet, cls).setUpClass()
-        print('***** TESTING GET METHODS *****')
-
     # def setUp(self):
         # Endpoints
         cls.payment_url = '/lipila/api/v1/payment/'
@@ -98,10 +96,6 @@ class ViewsTestCaseGet(TestCase):
 
 class ViewsTestCasePost(TestCase):
     """Tests for the application views."""
-    @classmethod
-    def setUpTestData(cls):
-        print('***** TESTING VIEWS *****')
-
     def setUp(self):
         # Endpoints
         self.payment_url = '/lipila/api/v1/payment/'

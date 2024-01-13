@@ -4,10 +4,6 @@ from unittest.mock import patch
 from api.helpers import get_uuid4, basic_auth
 
 class TestHelperFunctions(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        print("**** Test Helper Functions ****")
-
     @patch('requests.get')
     def test_get_uuid4_successful_response(self, mock_get):
         mock_response = unittest.mock.Mock()

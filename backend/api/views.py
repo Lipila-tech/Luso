@@ -31,31 +31,26 @@ class PaymentView(viewsets.ModelViewSet):
     serializer_class = SchoolPaymentSerializer
     queryset = Payment.objects.all()
 
-class LipilaPaymentView(viewsets.ModelViewSet):
+class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaSchoolPaymentSerializer
     queryset = LipilaPayment.objects.all()
+
+    
 
     def create(self, request):
         """Handles POST requests, deserializing date and setting status."""
         data = request.data
         serializer = LipilaSchoolPaymentSerializer(data=data)
-
+        api_user = Collections()
+        api_user.provision_sandbox(api_user.subscription_col_key)
+        api_user.create_api_token(api_user.subscription_col_key, 'collection')
+    
         if serializer.is_valid():
             try:
                 # Query external API handlers
-                api_user = Collections()
-                api_user.create_api_user()
-                api_user.get_api_key()
-                api_user.create_api_token()
-
                 amount = data['amount']
                 reference_id = Collections().x_reference_id
-                description = data['description']
                 payer_account = data['payer_account']
-                payer_name = data['payer_name']
-                payer_email = data['payer_email']
-                receiver_account = data['receiver_account']
-                status = 'pending'
                 
                 # Query request to pay function
                 request_pay = api_user.request_to_pay(
@@ -66,11 +61,7 @@ class LipilaPaymentView(viewsets.ModelViewSet):
                     payment = serializer.save()
                     payment.reference_id = reference_id
                     payment.status = 'pending'  # Set status based on mapping
-                    # payment.timestamp = payment.timestamp.replace(tzinfo=None)  # Remove timezone
                     payment.save()
-
-                    # code to auto deduct commision before saving to subscriber data.
-                    #donation_amount = int(donation_amount) * (95/100)
 
                     status_code = request_pay.status_code
                     return Response({'message': 'request accepted, wait for client approval'}, status=status_code)  # Set status code
@@ -87,7 +78,7 @@ class LipilaPaymentView(viewsets.ModelViewSet):
                 print('Error:', e)
                 return Response({'message': 'Error'}, status=400)  # Set status code
         else:
-            return Response({'message': 'Invalid form fields'}, status=400)  # Set status code
+            return Response({'message': 'Invalid form fields'}, status=405)  # Set status code
             
 
     def list(self, request, *args, **kwargs):

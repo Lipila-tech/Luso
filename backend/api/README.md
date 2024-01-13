@@ -5,3 +5,8 @@
     - RequestToPay
     - ValidateAccountHolder
     - GetTransactionStatus
+
+2. MTN momo -> Disbursement
+    - Deposit
+    - ValidateAccountHolder
+    - GetTransactionStatus

@@ -12,11 +12,6 @@ from api.models import Payment
 
 class PaymentTestCase(TestCase):
     """Tests for the application views."""
-
-    @classmethod
-    def setUpTestData(cls):
-        print('***** Testing Payment class *****')
-
     # Django requires an explicit setup() when running tests in PTVS
     def setUp(self):
 
