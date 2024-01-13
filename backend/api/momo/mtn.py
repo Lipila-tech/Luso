@@ -82,15 +82,15 @@ class MTNBase():
         except requests.exceptions.RequestException:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def provision_sandbox(self, endpoint):
+    def provision_sandbox(self, subscription_key:str):
         """ creates the api user and api token
         """
         try:
-            api_user = self.create_api_user(endpoint)
-            api_key = self.create_api_key(endpoint)
+            api_user = self.create_api_user(subscription_key)
+            api_key = self.create_api_key(subscription_key)
 
             if api_user.status_code != 201 and api_key.status_code != 201:
-                raise ValueError('SAnbox provisioning failed')
+                raise ValueError('Sanbox provisioning failed')
             else:
                 return Response(status=201)
         except Exception:
@@ -202,12 +202,11 @@ class Collections(MTNBase):
         except TypeError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def get_payment_status(self):
+    def get_payment_status(self, reference_id) -> Response:
         ''' checks status of payment SUCCESS or FAILED
-        200 SUCCESS/FAIL, 404 nOT Found, 400 bad request
+        200 SUCCESS/FAIL, 404 not Found, 400 bad request
         '''
-        url = "https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{}".format(
-            self.x_reference_id)
+        url = "https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{}".format(reference_id)
         headers = {
             'X-Target-Environment': self.x_target_environment,
             'Ocp-Apim-Subscription-Key': self.subscription_col_key,
@@ -220,12 +219,13 @@ class Collections(MTNBase):
             else:
                 # response =
                 """ {referenceId: "The reference id for this Payment",
-                    status: "success of fail",
+                    status: "success oR fail",
                     financialTransactionId: "A transaction id associated with this payment."
                     reason: "ErrorReason"}
                 """
                 return response
         except Exception as e:
+            print(response)
             return Response(status=response.status_code)
 
 

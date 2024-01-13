@@ -91,7 +91,7 @@ class MTNCollectionsTestCase(TestCase):
 
     def test_get_payment_status_completed(self):
         """Test get payment status method"""
-        get_payment_status = self.momo.get_payment_status()  # check the payment status
+        get_payment_status = self.momo.get_payment_status(self.momo.x_reference_id)  # check the payment status
         # assert completed successfullys
         self.assertEqual(get_payment_status.status_code, 200)
 
