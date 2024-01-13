@@ -10,7 +10,8 @@ from .serializers import ParentSerializer
 from .serializers import SchoolSerializer
 from .serializers import LoginSerializer
 from .serializers import UserSerializer
-from .serializers import LipilaSchoolPaymentSerializer
+from .serializers import LipilaPaymentSerializer
+from .serializers import LipilaTransactionSerializer
 
 from rest_framework import generics
 from rest_framework import permissions
@@ -20,19 +21,46 @@ from rest_framework.response import Response
 from django.contrib import messages
 from django.shortcuts import render
 
+from rest_framework.views import APIView
 from api.momo.mtn import Collections
 from api.helpers import unique_id
 
 def index(request):
     """View for the page homapage"""
     return render(request, 'index.html')
-    
+
+
+
+
+class UserTransactionsView(viewsets.ModelViewSet):
+    serializer_class = LipilaTransactionSerializer
+    queryset = LipilaPayment.objects.all()
+
+    def list(self, request):
+        account = request.query_params.get('account')  # Get account from query parameters
+        role = request.query_params.get('role')  # Get role (payer or receiver)
+
+        if not account or not role:
+            return Response({'error': 'Missing account or role parameter'}, status=400)
+
+        if role == 'payer':
+            transactions = LipilaPayment.objects.filter(payer_account=account)
+        elif role == 'receiver':
+            transactions = LipilaPayment.objects.filter(receiver_account=account)
+        else:
+            return Response({'error': 'Invalid role'}, status=400)
+
+        serializer = LipilaTransactionSerializer(transactions, many=True)
+        return Response(serializer.data)
+
+
 class PaymentView(viewsets.ModelViewSet):
     serializer_class = SchoolPaymentSerializer
     queryset = Payment.objects.all()
 
+
 class LipilaCollectionView(viewsets.ModelViewSet):
-    serializer_class = LipilaSchoolPaymentSerializer
+    serializer_class = LipilaPaymentSerializer
     queryset = LipilaPayment.objects.all()
 
     
@@ -40,7 +68,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
     def create(self, request):
         """Handles POST requests, deserializing date and setting status."""
         data = request.data
-        serializer = LipilaSchoolPaymentSerializer(data=data)
+        serializer = LipilaPaymentSerializer(data=data)
         api_user = Collections()
         api_user.provision_sandbox(api_user.subscription_col_key)
         api_user.create_api_token(api_user.subscription_col_key, 'collection')
