@@ -48,6 +48,7 @@ class MTNBase():
             elif response.status_code == 409:
                 raise ValueError("Conflict user exists")
             elif response.status_code == 500:
+                print(response)
                 raise ValueError("Mtn Server error")
         except ValueError:
             return Response(status=response.status_code)
@@ -78,6 +79,7 @@ class MTNBase():
             elif response.status_code == 404:
                 raise ValueError("Not found")
             elif response.status_code == 500:
+                print(response)
                 raise ValueError("Mtn Server error")
         except ValueError:
             return Response(status=response.status_code)
@@ -89,12 +91,12 @@ class MTNBase():
             api_user = self.create_api_user(subscription_key)
             api_key = self.create_api_key(subscription_key)
 
-            if api_user.status_code != 201 and api_key.status_code != 201:
-                raise ValueError('Sanbox provisioning failed')
+            if api_user.status_code == 201 and api_key.status_code == 201:
+                return api_user
             else:
-                return Response(status=201)
-        except Exception:
-            return Response(status=400)
+                raise ValueError("Failed")
+        except ValueError:
+            return Response(status=api_user.status_code)
 
     def create_api_token(self, subscription_key: str, endpoint: str):
         """
@@ -133,8 +135,7 @@ class MTNBase():
         200 OK, 409 conflict, 400 bad request
         requires api token
         '''
-        url = f"https://sandbox.momodeveloper.mtn.com/{endpoint}/v1_0/\
-            accountholder/{accountHolderIdType}/{accountHolderId}/active"
+        url = f"https://sandbox.momodeveloper.mtn.com/{endpoint}/v1_0/accountholder/{accountHolderIdType}/{accountHolderId}/active"
         headers = {
             'X-Target-Environment': self.x_target_environment,
             'Authorization': self.api_token,
