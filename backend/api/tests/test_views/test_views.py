@@ -1,6 +1,6 @@
 
 """
-Test Views
+Test the MTN Views
 """
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
@@ -9,11 +9,8 @@ from api.models import Student
 from api.models import Parent
 from api.models import Payment, LipilaPayment
 
-
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
-
-from api.views import LipilaCollectionView
 
 
 class LipilaCollectionViewTest(APITestCase):
@@ -55,11 +52,13 @@ class LipilaCollectionViewTest(APITestCase):
         self.assertEqual(LipilaPayment.objects.count(), 1)
         T1 = LipilaPayment.objects.get(id=1) # get first object
         self.assertEqual(T1.amount, 100)        
-        self.assertEqual(T1.status, 'pending')
+        self.assertEqual(T1.status, 'success') #assert success
+
         response = self.client.post(url, data2) # make second payment
         self.assertEqual(LipilaPayment.objects.count(), 2) # assert successful creation
         T2 = LipilaPayment.objects.get(id=2) # get second object
-        self.assertEqual(T2.amount, 400)     
+        self.assertEqual(T2.amount, 400)
+        self.assertEqual(T2.status, 'success') #assert success
         self.assertNotEqual(T1.reference_id, T2.reference_id) # assert unique reference_id
 
 

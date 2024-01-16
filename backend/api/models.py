@@ -115,4 +115,7 @@ class LipilaPayment(models.Model):
         ('success', 'Success'),
         ('failed', 'Failed'),
     ))
+
+    def get_reference_id(self):
+        return self.reference_id
     

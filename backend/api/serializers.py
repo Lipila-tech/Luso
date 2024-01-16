@@ -7,11 +7,16 @@ from .models import (
 from rest_framework import serializers
 from .models import LipilaPayment
 
-class LipilaSchoolPaymentSerializer(serializers.ModelSerializer):
+class LipilaPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaPayment
         fields = '__all__'
 
+
+class LipilaTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LipilaPayment
+        fields = '__all__'
 
 class SchoolPaymentSerializer(serializers.ModelSerializer):
     class Meta:
