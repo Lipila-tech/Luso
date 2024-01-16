@@ -77,7 +77,7 @@ class MTNCollectionsTestCase(TestCase):
         self.assertEqual(self.user.status_code, 201)
 
     def test_api_key(self):
-        """Tesk Api key creaStion"""
+        """Tesk Api key creation"""
         self.assertEqual(self.key.status_code, 201)
 
     def test_api_token(self):

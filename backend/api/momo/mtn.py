@@ -39,16 +39,18 @@ class MTNBase():
             'Content-Type': self.content_type
         }
         try:
-            res = requests.request('POST', url, headers=headers, data=payload)
-            return res
-        except requests.exceptions.HTTPError:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except requests.exceptions.ConnectionError:
-            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        except requests.exceptions.Timeout:
-            return Response(status=status.HTTP_504_GATEWAY_TIMEOUT)
-        except requests.exceptions.RequestException:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            response = requests.request(
+                'POST', url, headers=headers, data=payload)
+            if response.status_code == 201:
+                return response
+            elif response.status_code == 400:
+                raise ValueError("Bad request")
+            elif response.status_code == 409:
+                raise ValueError("Conflict user exists")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
+        except ValueError:
+            return Response(status=response.status_code)
 
     def create_api_key(self, subscription_key: str):
         """
@@ -66,23 +68,21 @@ class MTNBase():
             'Ocp-Apim-Subscription-Key': subscription_key,
         }
         try:
-            res = requests.post(url, headers=headers, data=payload)
-            if res.status_code == 403:
-                return res
-            key = res.json()
-            self.api_key = self.api_key + key['apiKey']
-            return res
+            response = requests.post(url, headers=headers, data=payload)
+            if response.status_code == 201:
+                key = response.json()
+                self.api_key = self.api_key + key['apiKey']
+                return response
+            elif response.status_code == 400:
+                raise ValueError("Bad request")
+            elif response.status_code == 404:
+                raise ValueError("Not found")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
+        except ValueError:
+            return Response(status=response.status_code)
 
-        except requests.exceptions.HTTPError:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except requests.exceptions.ConnectionError:
-            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        except requests.exceptions.Timeout:
-            return Response(status=status.HTTP_504_GATEWAY_TIMEOUT)
-        except requests.exceptions.RequestException:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    def provision_sandbox(self, subscription_key:str):
+    def provision_sandbox(self, subscription_key: str):
         """ creates the api user and api token
         """
         try:
@@ -111,20 +111,17 @@ class MTNBase():
             'Authorization': basic_auth(self.x_reference_id, self.api_key)
         }
         try:
-            res = requests.post(url, headers=headers, data=payload)
-            if res.status_code == 403:
-                return res
-            token = res.json()
-            self.api_token = self.api_token + token['access_token']
-            return res
-        except requests.exceptions.HTTPError:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except requests.exceptions.ConnectionError:
-            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        except requests.exceptions.Timeout:
-            return Response(status=status.HTTP_504_GATEWAY_TIMEOUT)
-        except requests.exceptions.RequestException:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            response = requests.post(url, headers=headers, data=payload)
+            if response.status_code == 200:
+                token = response.json()
+                self.api_token = self.api_token + token['access_token']
+                return response
+            elif response.status_code == 401:
+                raise ValueError("Unauthorized")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
+        except ValueError:
+            return Response(status=response.status_code)
 
     def validate_account_holder(
             self, subscription_key: str,
@@ -136,7 +133,8 @@ class MTNBase():
         200 OK, 409 conflict, 400 bad request
         requires api token
         '''
-        url = f"https://sandbox.momodeveloper.mtn.com/{endpoint}/v1_0/accountholder/{accountHolderIdType}/{accountHolderId}/active"
+        url = f"https://sandbox.momodeveloper.mtn.com/{endpoint}/v1_0/\
+            accountholder/{accountHolderIdType}/{accountHolderId}/active"
         headers = {
             'X-Target-Environment': self.x_target_environment,
             'Authorization': self.api_token,
@@ -196,17 +194,23 @@ class Collections(MTNBase):
                 'Content-Type': self.content_type
             }
             response = requests.post(url, headers=headers, data=payload)
-            return response
+            if response.status_code == 202:
+                return response
+            elif response.status_code == 400:
+                raise ValueError("Bad request")
+            elif response.status_code == 409:
+                raise ValueError("Conflict user exists")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
         except ValueError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        except TypeError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=response.status_code)
 
     def get_payment_status(self, reference_id) -> Response:
         ''' checks status of payment SUCCESS or FAILED
         200 SUCCESS/FAIL, 404 not Found, 400 bad request
         '''
-        url = "https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{}".format(reference_id)
+        url = "https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{}".format(
+            reference_id)
         headers = {
             'X-Target-Environment': self.x_target_environment,
             'Ocp-Apim-Subscription-Key': self.subscription_col_key,
@@ -214,18 +218,15 @@ class Collections(MTNBase):
         }
         try:
             response = requests.get(url, headers=headers, data={})
-            if response.status_code != 200:
-                raise ValueError("Bad request")
-            else:
-                # response =
-                """ {referenceId: "The reference id for this Payment",
-                    status: "success oR fail",
-                    financialTransactionId: "A transaction id associated with this payment."
-                    reason: "ErrorReason"}
-                """
+            if response.status_code == 200:
                 return response
-        except Exception as e:
-            print(response)
+            elif response.status_code == 400:
+                raise ValueError("Bad request")
+            elif response.status_code == 404:
+                raise ValueError("Not found")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
+        except ValueError:
             return Response(status=response.status_code)
 
 
@@ -272,11 +273,16 @@ class Disbursement(MTNBase):
                 'Content-Type': self.content_type
             }
             response = requests.post(url, headers=headers, data=payload)
-            return response
+            if response.status_code == 202:
+                return response
+            elif response.status_code == 400:
+                raise ValueError("Bad request")
+            elif response.status_code == 409:
+                raise ValueError("Conflict user exists")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
         except ValueError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        except TypeError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=response.status_code)
 
     def get_transaction_status(self, transaction: str, referenceid: str):
         ''' checks status of deposit or deposit SUCCESS or FAILED
@@ -290,17 +296,15 @@ class Disbursement(MTNBase):
         }
         try:
             response = requests.get(url, headers=headers, data={})
-            if response.status_code != 200:
-                raise ValueError("Bad request")
-            else:
-                # response =
-                """ {referenceId: "The reference id for this Payment",
-                    status: "success of fail",
-                    financialTransactionId: "A transaction id associated with this payment."
-                    reason: "ErrorReason"}
-                """
+            if response.status_code == 200:
                 return response
-        except Exception as e:
+            elif response.status_code == 400:
+                raise ValueError("Bad request")
+            elif response.status_code == 404:
+                raise ValueError("Not found")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
+        except ValueError:
             return Response(status=response.status_code)
 
     def get_account_balance(self):
@@ -315,10 +319,7 @@ class Disbursement(MTNBase):
         }
         try:
             response = requests.get(url, headers=headers, data={})
-            if response.status_code != 200:
-                raise ValueError("Bad request")
-            else:
-                # response =
+            if response.status_code == 200:
                 """ 
                     {
                         "availableBalance": "string",
@@ -326,5 +327,11 @@ class Disbursement(MTNBase):
                     }
                 """
                 return response
-        except Exception as e:
+            elif response.status_code == 400:
+                raise ValueError("Bad request")
+            elif response.status_code == 404:
+                raise ValueError("Not found")
+            elif response.status_code == 500:
+                raise ValueError("Mtn Server error")
+        except ValueError:
             return Response(status=response.status_code)
