@@ -70,6 +70,7 @@ class MTNBase():
             if res.status_code == 403:
                 return res
             key = res.json()
+            print('KEY',key)
             self.api_key = self.api_key + key['apiKey']
             return res
 

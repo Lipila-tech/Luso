@@ -140,6 +140,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # server will be running is safe to receive requests
 # from
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    # ... other allowed methods ...
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'content-type',
+    'authorization',
+    # ... other allowed headers ...
+]
+
 
 # Rest Framework config. Add all of this.
 REST_FRAMEWORK = {
