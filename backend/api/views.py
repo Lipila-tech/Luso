@@ -8,29 +8,68 @@ from .serializers import SchoolPaymentSerializer
 from .serializers import StudentSerializer
 from .serializers import ParentSerializer
 from .serializers import SchoolSerializer
-from .serializers import LoginSerializer
 from .serializers import UserSerializer
 from .serializers import LipilaPaymentSerializer
 from .serializers import LipilaTransactionSerializer
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, MyUserSerializer
 
-from rest_framework import generics
-from rest_framework import permissions
 from rest_framework import status
 from rest_framework import views, viewsets
 from rest_framework.response import Response
-from django.contrib import messages
 from django.shortcuts import render
 
 from rest_framework.views import APIView
 from api.momo.mtn import Collections
 from api.helpers import unique_id
+from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+from rest_framework.authtoken.views import ObtainAuthToken
 
 
 def index(request):
     """View for the page homapage"""
     return render(request, 'index.html')
 
+User = get_user_model()  # Use your custom user model
+
+class SignupViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = MyUserSerializer  # Replace with your serializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        user = serializer.instance
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user': serializer.data,
+        })
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        # Set password, send verification email, etc. (optional)
+
+    permission_classes = [AllowAny]  # Allow anyone to register
+
+class LoginView(ObtainAuthToken):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user': {
+                'username': user.username,
+                'user_id': user.pk
+            }
+        }, status=status.HTTP_200_OK)
+    
 
 class UserTransactionsView(viewsets.ModelViewSet):
     serializer_class = LipilaTransactionSerializer
@@ -68,12 +107,13 @@ class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
 
     def list(self, request):
-        user = request.query_params.get('user')
+        username = request.query_params.get('user')
 
-        if not user:
+        if not username:
             return Response({"error": "User id missing"}, status=400)
         else:
-            products = Product.objects.filter(product_owner=int(user))
+            user = User.objects.get(username=username)
+            products = Product.objects.filter(product_owner=user.id)
 
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
@@ -81,7 +121,6 @@ class ProductView(viewsets.ModelViewSet):
     def post(self, request):
         data = request.data
         serializer = ProductSerializer(data=data)
-
 
 
 class LipilaCollectionView(viewsets.ModelViewSet):
@@ -167,24 +206,6 @@ class ParentView(viewsets.ModelViewSet):
     queryset = Parent.objects.all()
 
 
-class LoginView(views.APIView):
-    # This view should be accessible also for unauthenticated users.
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format=None):
-        """POST request to get session Cookies:
-            csrf and sessionid
-        """
-        serializer = LoginSerializer(
-            data=self.request.data,
-            context={'request': self.request}
-        )
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return Response(str(user), status=status.HTTP_202_ACCEPTED)
-
-
 class LogoutView(views.APIView):
     """" Logs out the current signed in user"""
 
@@ -198,3 +219,14 @@ class ProfileView(viewsets.ModelViewSet):
     """Returns the profile of the user"""
     serializer_class = UserSerializer
     queryset = User.objects.all()
+
+    def list(self, request):
+        username = request.query_params.get('user')
+
+        if not username:
+            return Response({"error": "Username is missing"}, status=400)
+        else:
+            user = User.objects.get(username=username)
+
+        serializer = UserSerializer(user, many=False)
+        return Response(serializer.data)

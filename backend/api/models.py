@@ -4,6 +4,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.contrib.auth.models import AbstractUser
+from backend import settings
+
+class MyUser(User):
+    # Add your custom fields here
+    phone_number = models.CharField(max_length=20, blank=True)
+    bio = models.TextField(blank=True)
+
+    REQUIRED_FIELDS = ['email', 'phone_number']
+
 
 class Product(models.Model):
     product_name = models.CharField(max_length=300)

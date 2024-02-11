@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # 3rd Party apps
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     # Local apss
     'api',
    
@@ -133,6 +134,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
+
+# AUTH_USER_MODEL = 'api.MyUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 

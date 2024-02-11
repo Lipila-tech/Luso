@@ -5,7 +5,23 @@ from .models import (
     Payment, Student,
     School, Parent)
 from rest_framework import serializers
-from .models import LipilaPayment, Product
+from .models import LipilaPayment, Product, MyUser
+# from rest_framework.authtoken.serializers import ObtainAuthTokenSerializer
+
+
+class MyUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyUser
+        fields = ('username', 'email', 'password', 'phone_number', 'bio')
+        write_only_fields = ('password',)
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = MyUser.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
 
 class LipilaPaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,54 +61,20 @@ class ParentSerializer(serializers.ModelSerializer):
         model = Parent
         fields = '__all__'
 
+# class MyLoginSerializer(ObtainAuthTokenSerializer):
+#     username_field = MyUser.USERNAME_FIELD  # Use your custom field
 
-class LoginSerializer(serializers.Serializer):
-    """
-    This serializer defines two fields for authentication:
-      * username
-      * password.
-    It will try to authenticate the user with when validated.
-    """
-    username = serializers.CharField(
-        label="Username",
-        write_only=True
-    )
-    password = serializers.CharField(
-        label="Password",
-        # This will be used when the DRF browsable API is enabled
-        style={'input_type': 'password'},
-        trim_whitespace=False,
-        write_only=True
-    )
-
-    def validate(self, attrs):
-       # Take username and password from request
-        username = attrs.get('username')
-        password = attrs.get('password')
-
-        if username and password:
-            # Try to authenticate the user using Django auth framework.
-            user = authenticate(request=self.context.get('request'),
-                                username=username, password=password)
-            if not user:
-                # If we don't have a regular user, raise a ValidationError
-                msg = 'Access denied: wrong username or password.'
-                raise serializers.ValidationError(msg, code='authorization')
-        else:
-            msg = 'Both "username" and "password" are required.'
-            raise serializers.ValidationError(msg, code='authorization')
-        # We have a valid user, put it in the serializer's validated_data.
-        # It will be used in the view.
-        attrs['user'] = user
-        return attrs
+#     def validate(self, attrs):
+#         # Add custom validations like checking phone number, active status, etc.
+#         return super().validate(attrs)
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = MyUser
         fields = [
-            'username',
-            'email',
             'first_name',
             'last_name',
+            'bio',
+            'phone_number'
         ]
