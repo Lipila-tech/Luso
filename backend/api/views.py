@@ -2,7 +2,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 
 from .models import (
-    Payment, Student, School, Parent, LipilaPayment)
+    Payment, Student, School, Parent, LipilaPayment, Product)
 
 from .serializers import SchoolPaymentSerializer
 from .serializers import StudentSerializer
@@ -12,6 +12,7 @@ from .serializers import LoginSerializer
 from .serializers import UserSerializer
 from .serializers import LipilaPaymentSerializer
 from .serializers import LipilaTransactionSerializer
+from .serializers import ProductSerializer
 
 from rest_framework import generics
 from rest_framework import permissions
@@ -59,12 +60,35 @@ class PaymentView(viewsets.ModelViewSet):
     serializer_class = SchoolPaymentSerializer
     queryset = Payment.objects.all()
 
+class ProductView(viewsets.ModelViewSet):
+    """
+    Get a users products
+    """
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+    def list(self, request):
+        user = request.query_params.get('user')
+
+        if not user:
+            return Response({"error": "User id missing"}, status=400)
+        else:
+            products = Product.objects.filter(product_owner=int(user))
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        data = request.data
+        serializer = ProductSerializer(data=data)
+
+
 
 class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaPaymentSerializer
     queryset = LipilaPayment.objects.all()
 
-    def create(self, request):
+    def post(self, request):
         """Handles POST requests, deserializing date and setting status."""
         data = request.data
         serializer = LipilaPaymentSerializer(data=data)
@@ -111,7 +135,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 elif request_pay.status_code == 400:
                     status_code = request_pay.status_code
                     # Set status code
-                    return Response({'message': 'Bad request'}, status=status_code)
+                    return Response({'message': 'Bad request from mtn'}, status=status_code)
 
             except Exception as e:
                 print('Error:', e)

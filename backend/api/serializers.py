@@ -5,11 +5,16 @@ from .models import (
     Payment, Student,
     School, Parent)
 from rest_framework import serializers
-from .models import LipilaPayment
+from .models import LipilaPayment, Product
 
 class LipilaPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaPayment
+        fields = '__all__'
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
         fields = '__all__'
 
 

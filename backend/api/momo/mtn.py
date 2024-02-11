@@ -198,13 +198,14 @@ class Collections(MTNBase):
             if response.status_code == 202:
                 return response
             elif response.status_code == 400:
-                raise ValueError("Bad request")
+                print('bad request from mtn', response)
+                raise ValueError("Bad request from mtn api")
             elif response.status_code == 409:
                 raise ValueError("Conflict user exists")
             elif response.status_code == 500:
                 raise ValueError("Mtn Server error")
         except ValueError:
-            return Response(status=response.status_code)
+            return response
 
     def get_payment_status(self, reference_id) -> Response:
         ''' checks status of payment SUCCESS or FAILED

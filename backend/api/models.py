@@ -5,6 +5,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class Product(models.Model):
+    product_name = models.CharField(max_length=300)
+    product_owner = models.ForeignKey(User, related_name='product',
+                                      on_delete=models.CASCADE)
+    price = models.FloatField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    status = models.BooleanField(default=True)
+
+
 class School(models.Model):
     school_name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
