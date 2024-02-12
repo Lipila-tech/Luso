@@ -38,19 +38,25 @@ class SignupViewSet(viewsets.ModelViewSet):
     serializer_class = MyUserSerializer  # Replace with your serializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        user = serializer.instance
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user': serializer.data,
-        })
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            user = serializer.instance
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key,
+                'user': serializer.data,
+            })
+        except Exception:
+             return Response({"Error: Bad Request"}, status=400)
 
     def perform_create(self, serializer):
-        user = serializer.save()
-        # Set password, send verification email, etc. (optional)
+        try:
+            user = serializer.save()
+            # Set password, send verification email, etc. (optional)
+        except Exception:
+             return Response({"Error: Bad Request"}, status=400)
 
     permission_classes = [AllowAny]  # Allow anyone to register
 
@@ -58,17 +64,20 @@ class LoginView(ObtainAuthToken):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user': {
-                'username': user.username,
-                'user_id': user.pk
-            }
-        }, status=status.HTTP_200_OK)
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data['user']
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key,
+                'user': {
+                    'username': user.username,
+                    'user_id': user.pk
+                }
+            }, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({"Error: Bad Request"}, status=400)
     
 
 class UserTransactionsView(viewsets.ModelViewSet):
@@ -76,23 +85,26 @@ class UserTransactionsView(viewsets.ModelViewSet):
     queryset = LipilaPayment.objects.all()
 
     def list(self, request):
-        # Get account from query parameters
-        account = request.query_params.get('account')
-        role = request.query_params.get('role')  # Get role (payer or receiver)
+        try:
+            # Get account from query parameters
+            account = request.query_params.get('account')
+            role = request.query_params.get('role')  # Get role (payer or receiver)
 
-        if not account or not role:
-            return Response({'error': 'Missing account or role parameter'}, status=400)
+            if not account or not role:
+                return Response({'error': 'Missing account or role parameter'}, status=400)
 
-        if role == 'payer':
-            transactions = LipilaPayment.objects.filter(payer_account=account)
-        elif role == 'receiver':
-            transactions = LipilaPayment.objects.filter(
-                receiver_account=account)
-        else:
-            return Response({'error': 'Invalid role'}, status=400)
+            if role == 'payer':
+                transactions = LipilaPayment.objects.filter(payer_account=account)
+            elif role == 'receiver':
+                transactions = LipilaPayment.objects.filter(
+                    receiver_account=account)
+            else:
+                return Response({'error': 'Invalid role'}, status=400)
 
-        serializer = LipilaTransactionSerializer(transactions, many=True)
-        return Response(serializer.data)
+            serializer = LipilaTransactionSerializer(transactions, many=True)
+            return Response(serializer.data)
+        except Exception:
+            return Response({"Error: Bad Request"}, status=400)
 
 
 class PaymentView(viewsets.ModelViewSet):
@@ -105,23 +117,29 @@ class ProductView(viewsets.ModelViewSet):
     """
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-
+    
     def list(self, request):
-        username = request.query_params.get('user')
+        try:
+            username = request.query_params.get('user')
 
-        if not username:
-            return Response({"error": "User id missing"}, status=400)
-        else:
-            user = User.objects.get(username=username)
-            products = Product.objects.filter(product_owner=user.id)
+            if not username:
+                return Response({"error": "Username is missing"}, status=400)
+            else:
+                user = User.objects.get(username=username)
+                products = Product.objects.filter(product_owner=user.id)
 
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+            serializer = ProductSerializer(products, many=True)
+            return Response(serializer.data)
+        except Exception:
+            return Response({"Error: Bad Request"}, status=400)
 
     def post(self, request):
-        data = request.data
-        serializer = ProductSerializer(data=data)
-
+        try:
+            data = request.data
+            serializer = ProductSerializer(data=data)
+        except Exception:
+             return Response({"Error: Bad Request"}, status=400)
+    
 
 class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaPaymentSerializer
@@ -136,7 +154,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
         api_user.create_api_token(api_user.subscription_col_key, 'collection')
 
         if serializer.is_valid():
-            try:
+            try:               
                 # Query external API handlers
                 amount = data['amount']
                 reference_id = api_user.x_reference_id
@@ -177,18 +195,19 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                     return Response({'message': 'Bad request from mtn'}, status=status_code)
 
             except Exception as e:
-                print('Error:', e)
-                # Set status code
-                return Response({'message': 'Error'}, status=400)
+                return Response({'message': e}, status=400)
         else:
             # Set status code
             return Response({'message': 'Invalid form fields'}, status=405)
 
     def list(self, request, *args, **kwargs):
         """Handles GET requests, serializing payment data."""
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception:
+            return Response({"Error: Bad Request"}, status=400)
 
 
 class StudentView(viewsets.ModelViewSet):
@@ -221,12 +240,15 @@ class ProfileView(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def list(self, request):
-        username = request.query_params.get('user')
+        try:
+            username = request.query_params.get('user')
 
-        if not username:
-            return Response({"error": "Username is missing"}, status=400)
-        else:
-            user = User.objects.get(username=username)
+            if not username:
+                return Response({"Error": "Username is missing"}, status=400)
+            else:
+                user = User.objects.get(username=username)
 
-        serializer = UserSerializer(user, many=False)
-        return Response(serializer.data)
+            serializer = UserSerializer(user, many=False)
+            return Response(serializer.data)
+        except Exception:
+             return Response({"Error: Bad Request"}, status=400)
