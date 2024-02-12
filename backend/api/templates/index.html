@@ -20,6 +20,11 @@
         <h2>Disburse money</h2>
       </div>
     </div><!-- End Breadcrumbs -->
+    <form action = "" method = "post"> 
+        {% csrf_token %} 
+        {{form }} 
+        <input type="submit" value=Submit"> 
+    </form>
 
   </main><!-- End #main -->
 </body>

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import LoginView, index
+from .views import LoginView, disburse
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -18,7 +18,7 @@ router.register(r'signup', views.SignupViewSet, basename='signup')
 router.register(r'profile', views.ProfileView, basename='profile')
 
 urlpatterns = [
-     path('disburse/', index, name='disburse'),
+     path('disburse/', disburse, name='disburse'),
      path('login/', LoginView.as_view(), name='login'),
 ]
 

@@ -26,11 +26,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.views import ObtainAuthToken
+from .forms.forms import DisburseForm
 
 
-def index(request):
+def disburse(request):
     """View for the page homapage"""
-    return render(request, 'index.html')
+    context ={} 
+    context['form']= DisburseForm() 
+    return render(request, 'disburse.html', context)
 
 User = get_user_model()  # Use your custom user model
 
