@@ -33,6 +33,18 @@ from .forms.forms import DisburseForm
 def index(request):
     return render(request, 'Append/index.html')
 
+def blog(request):
+    return render(request, 'Append/blog.html')
+
+def blog_details(request):
+    return render(request, 'Append/blog-details.html')
+
+def service_details(request):
+    return render(request, 'Append/service-details.html')
+
+def portfolio_details(request):
+    return render(request, 'Append/portfolio-details.html')
+
 def disburse(request):
     """View for the page homapage"""
     context ={} 
