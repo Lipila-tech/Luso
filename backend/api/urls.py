@@ -18,6 +18,7 @@ router.register(r'signup', views.SignupViewSet, basename='signup')
 router.register(r'profile', views.ProfileView, basename='profile')
 
 urlpatterns = [
+     path('index/', views.index, name='index'),
      path('disburse/', disburse, name='disburse'),
      path('login/', LoginView.as_view(), name='login'),
 ]

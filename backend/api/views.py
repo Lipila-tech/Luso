@@ -29,13 +29,18 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from .forms.forms import DisburseForm
 
 
+# Django template views
+def index(request):
+    return render(request, 'Append/index.html')
+
 def disburse(request):
     """View for the page homapage"""
     context ={} 
     context['form']= DisburseForm() 
     return render(request, 'disburse.html', context)
 
-User = get_user_model()  # Use your custom user model
+# API Views
+User = get_user_model()
 
 class SignupViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
