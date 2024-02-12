@@ -1,73 +1,60 @@
 from django.contrib import admin
-from .models import (
-    Student, Payment, School, Parent
-)
+from .models import (MyUser,
+                     Product, LipilaPayment, BusinessPayment,
+                     LipilaDisbursement
+                     )
 
 
-class StudentAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'grade_level',
-                    'enrollment_number', 'parent_id', 'tuition')
-    search_fields = ('enrollment_number', 'first_name', 'last_name', 'grade_level')
-    
-    def get_queryset(self, request):
-        if request.user.is_superuser:
-            return Student.objects.all()
-        elif request.user.is_staff:
-            school = School.objects.filter(administrator=request.user) # get schools by admin
-            school_ids = [school.id for school in school] # get school ids
-            parent_id = Parent.objects.filter(school=int(school_ids[0])) # find the school the parent belongs to
-            return Student.objects.filter(parent_id=int(parent_id))
-        else:
-            return Student.objects.none()
+class MyUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'phone_number', 'bio')
 
 
-class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('enrollment_number', 'payment_amount',
-                    'payment_method', 'transaction_id', 'payment_date')
-    
-    def get_queryset(self, request):
-        if request.user.is_superuser:
-            return Payment.objects.all()
-        elif request.user.is_staff:
-            school = School.objects.filter(administrator=request.user)
-            school_ids = [school.id for school in school]
-            return Payment.objects.filter(school=int(school_ids[0]))
-        else:
-            return Payment.objects.none()
-
-
-class ParentAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email_address',
-                    'mobile_number', 'employer', 'address', 'school')
-    
-    def get_queryset(self, request):
-        if request.user.is_superuser:
-            return Parent.objects.all()
-        elif request.user.is_staff:
-            school = School.objects.filter(administrator=request.user)
-            school_ids = [school.id for school in school]
-            return Parent.objects.filter(school=int(school_ids[0]))
-        else:
-            return Parent.objects.none()
-
-
-class SchoolAdmin(admin.ModelAdmin):
-    list_display = ('school_name', 'city', 'province', 'administrator')
+class LipilaPaymentAdmin(admin.ModelAdmin):
+    list_display = ('receiver_account', 'payer_account', 'amount', 'timestamp',
+                    'reference_id', 'description', 'payer_email',
+                    'payer_name', 'status')
 
     def get_queryset(self, request):
         if request.user.is_superuser:
-            return School.objects.all()
-        elif request.user.is_staff:
-            return School.objects.filter(administrator=request.user)
+            return LipilaPayment.objects.all()
         else:
-            return School.objects.none()
-        
+            return LipilaPayment.objects.none()
+
+
+class DisbursementAdmin(admin.ModelAdmin):
+    list_display = ('payer', 'payee', 'payee_account', 'payment_amount', 'payment_method',
+                    'description', 'transaction_id', 'payment_date')
+
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('product_name', 'product_owner', 'price',
+                    'date_created', 'status')
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return Product.objects.all()
+        else:
+            return Product.objects.none()
+
+
+class BusinessPaymentAdmin(admin.ModelAdmin):
+    list_display = ('payment_owner', 'payer_account', 'amount', 'timestamp',
+                    'reference_id', 'description', 'payer_email',
+                    'payer_name', 'status')
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return BusinessPayment.objects.all()
+        else:
+            return BusinessPayment.objects.none()
+
 
 # Register your models here.
-admin.site.register(Student, StudentAdmin)
-admin.site.register(Payment, PaymentAdmin)
-admin.site.register(School, SchoolAdmin)
-admin.site.register(Parent, ParentAdmin)
+admin.site.register(MyUser, MyUserAdmin)
+admin.site.register(LipilaPayment, LipilaPaymentAdmin)
+admin.site.register(LipilaDisbursement, DisbursementAdmin)
+admin.site.register(BusinessPayment, BusinessPaymentAdmin)
+admin.site.register(Product, ProductAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = ''

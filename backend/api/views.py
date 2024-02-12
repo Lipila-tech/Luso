@@ -2,7 +2,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 
 from .models import (
-    Payment, Student, School, Parent, LipilaPayment, Product)
+    Payment, Student, School, Parent, LipilaPayment,
+    Product, BusinessPayment, MyUser)
 
 from .serializers import SchoolPaymentSerializer
 from .serializers import StudentSerializer
@@ -10,7 +11,7 @@ from .serializers import ParentSerializer
 from .serializers import SchoolSerializer
 from .serializers import UserSerializer
 from .serializers import LipilaPaymentSerializer
-from .serializers import LipilaTransactionSerializer
+from .serializers import LipilaTransactionSerializer, BusinessPaymentSerializer
 from .serializers import ProductSerializer, MyUserSerializer
 
 from rest_framework import status
@@ -140,6 +141,79 @@ class ProductView(viewsets.ModelViewSet):
         except Exception:
              return Response({"Error: Bad Request"}, status=400)
     
+class BusinessCollectionView(viewsets.ModelViewSet):
+    serializer_class = BusinessPaymentSerializer
+    queryset = BusinessPayment.objects.all()
+
+    def create(self, request):
+        """Handles POST requests, deserializing date and setting status."""
+        data = request.data
+        username = data['payment_owner']
+        user = MyUser.objects.filter(username=username)
+        if not user:
+            return Response({"Error: User not found"}, status=404)
+        
+        api_user = Collections()
+        api_user.provision_sandbox(api_user.subscription_col_key)
+        api_user.create_api_token(api_user.subscription_col_key, 'collection')
+
+        serializer = BusinessPaymentSerializer(data=data)
+
+        if serializer.is_valid():
+            try:               
+                # Query external API handlers
+                amount = data['amount']
+                reference_id = api_user.x_reference_id
+                payer_account = data['payer_account']
+
+                # Query request to pay function
+                request_pay = api_user.request_to_pay(
+                    amount=amount, payer_account=payer_account, reference=str(reference_id))
+
+                if request_pay.status_code == 202:
+                    # save payment
+                    payment = serializer.save()
+                    payment.reference_id = reference_id
+                    payment.status = 'pending'  # Set status based on mapping
+                    payment.save()
+                    transaction = BusinessPayment.objects.filter(
+                        reference_id=reference_id)
+                    for r in transaction:
+                        status = api_user.get_payment_status(reference_id)
+                        if status.status_code == 200:
+                            payment.status = 'success'
+                            payment.save()
+                        else:
+                            payment.status = 'failed'
+                    payment.save()
+                    status_code = request_pay.status_code
+                    # Set status code
+                    return Response({'message': 'request accepted, wait for client approval'}, status=status_code)
+
+                elif request_pay.status_code == 403:
+                    status_code = request_pay.status_code
+                    # Set status code
+                    return Response({'message': 'Request exceeded'}, status=status_code)
+
+                elif request_pay.status_code == 400:
+                    status_code = request_pay.status_code
+                    # Set status code
+                    return Response({'message': 'Bad request from mtn'}, status=status_code)
+
+            except Exception as e:
+                return Response({'message': e}, status=400)
+        else:
+            # Set status code
+            return Response({'message': 'Invalid form fields'}, status=405)
+
+    def list(self, request, *args, **kwargs):
+        """Handles GET requests, serializing payment data."""
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception:
+            return Response({"Error: Bad Request"}, status=400)
 
 class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaPaymentSerializer

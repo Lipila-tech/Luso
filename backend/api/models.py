@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from backend import settings
 
+
 class MyUser(User):
     phone_number = models.CharField(max_length=20, blank=True)
     bio = models.TextField(blank=True)
@@ -48,13 +49,13 @@ class Parent(models.Model):
         return "{} {}".format(
             self.first_name, self.last_name
         )
-    
+
     def get_school_name(self):
         return self.school.school_name
 
     def get_contacts(self):
         return f"{self.email_address} {self.mobile_number}"
-    
+
 
 # Students Personal info class
 class Student(models.Model):
@@ -65,29 +66,30 @@ class Student(models.Model):
     parent_id = models.ForeignKey(Parent, related_name='student',
                                   on_delete=models.CASCADE)
     tuition = models.FloatField()
-   
+
     def __str__(self):
         return ("{} {} {} {} {}".format(
             self.enrollment_number, self.first_name, self.last_name, self.tuition, self.parent_id.school))
-    
+
     def get_parent_email(self):
         return self.parent_id.email_address
 
     def get_parent_phone(self):
         return self.parent_id.mobile_number
-        
+
     def get_school_name(self):
         return self.parent_id.school.school_name
 
     def get_tuition(self):
         return self.tuition
-    
+
     def get_student_names(self):
         return f"{self.first_name} {self.last_name}"
 
     def get_enrollemnt_number(self):
         """ returns the username of the student"""
         return self.enrollment_number
+
 
 class Payment(models.Model):
     """Defines a Payments Table"""
@@ -109,14 +111,45 @@ class Payment(models.Model):
 
     def __str__(self):
         return "{} {} {} {} {} {} {}".format(self.enrollment_number_id,
-                                          self.payment_amount,
-                                          self.payment_method,
-                                          self.transaction_id,
-                                          self.payment_date,
-                                          self.school,
-                                          self.description,
-                                          )
-    
+                                             self.payment_amount,
+                                             self.payment_method,
+                                             self.transaction_id,
+                                             self.payment_date,
+                                             self.school,
+                                             self.description,
+                                             )
+
+
+class LipilaDisbursement(models.Model):
+    payer = models.ForeignKey(User,
+                              related_name='disbursed',
+                              on_delete=models.CASCADE,
+                              )
+    payee = models.ForeignKey(MyUser,
+                              related_name='paid',
+                              on_delete=models.CASCADE,
+                              )
+    payee_account = models.CharField(max_length=30)
+    payment_amount = models.FloatField()
+    payment_method = models.CharField(max_length=55)
+    transaction_id = models.CharField(max_length=20)
+    payment_date = models.DateField()
+    description = models.CharField(max_length=255)
+
+    def get_account_number(self):
+        """ returns the username of the student"""
+        return self.payee.phone_number
+
+    def __str__(self):
+        return "{} {} {} {} {} {} {}".format(self.payee,
+                                             self.payment_amount,
+                                             self.payment_method,
+                                             self.transaction_id,
+                                             self.payment_date,
+                                             self.payee_account,
+                                             self.description,
+                                             )
+
 
 class LipilaPayment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -136,4 +169,22 @@ class LipilaPayment(models.Model):
 
     def get_reference_id(self):
         return self.reference_id
-    
+
+
+class BusinessPayment(models.Model):
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    reference_id = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    payer_account = models.CharField(max_length=10, null=False)
+    payer_email = models.EmailField(null=True)
+    payer_name = models.CharField(max_length=100, null=True)
+    payment_owner = models.CharField(max_length=100, null=False)
+    status = models.CharField(max_length=20, choices=(
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+    ))
+
+    def get_reference_id(self):
+        return self.reference_id

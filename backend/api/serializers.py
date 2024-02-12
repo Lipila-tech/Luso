@@ -5,7 +5,7 @@ from .models import (
     Payment, Student,
     School, Parent)
 from rest_framework import serializers
-from .models import LipilaPayment, Product, MyUser
+from .models import LipilaPayment, Product, MyUser, BusinessPayment
 # from rest_framework.authtoken.serializers import ObtainAuthTokenSerializer
 
 
@@ -27,6 +27,12 @@ class LipilaPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaPayment
         fields = '__all__'
+
+class BusinessPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusinessPayment
+        fields = '__all__'
+
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
