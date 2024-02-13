@@ -28,7 +28,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.authtoken.views import ObtainAuthToken
 from .forms.forms import DisburseForm
 
-
 # Django unauthenticated user views
 def index(request):
     return render(request, 'UI/index.html')
@@ -47,10 +46,16 @@ def disburse(request):
 
 # django authenticated user views
 def dashboard(request):
-    return render(request, 'AdminUI/index.html')
+    user = MyUser.objects.get(id=4)
+    context = {}
+    context['user'] = user
+    return render(request, 'AdminUI/index.html', context)
 
 def users_profile(request):
-    return render(request, 'AdminUI/users-profile.html')
+    user = MyUser.objects.get(id=4)
+    context = {}
+    context['user'] = user
+    return render(request, 'AdminUI/users-profile.html', context)
 
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')

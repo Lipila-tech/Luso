@@ -13,6 +13,10 @@ class MyUser(User):
 
     REQUIRED_FIELDS = ['email', 'phone_number']
 
+    @staticmethod
+    def get_user_by_id(ids):
+        return MyUser.objects.filter(id__in=str(ids))
+
 
 class Product(models.Model):
     product_name = models.CharField(max_length=300)
