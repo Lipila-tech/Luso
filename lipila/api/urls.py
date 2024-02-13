@@ -26,6 +26,8 @@ urlpatterns = [
 
      # authenticated user endpoints
      path('dashboard/', views.dashboard, name='dashboard'),
+     path('users-profile/', views.users_profile, name='users-profile'),
+     path('pages-faq/', views.pages_faq, name='pages-faq'),
 ]
 
 urlpatterns += router.urls

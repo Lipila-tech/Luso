@@ -49,6 +49,11 @@ def disburse(request):
 def dashboard(request):
     return render(request, 'NiceAdmin/index.html')
 
+def users_profile(request):
+    return render(request, 'NiceAdmin/users-profile.html')
+
+def pages_faq(request):
+    return render(request, 'NiceAdmin/pages-faq.html')
 
 # API Views
 User = get_user_model()
