@@ -31,13 +31,13 @@ from .forms.forms import DisburseForm
 
 # Django unauthenticated user views
 def index(request):
-    return render(request, 'Append/index.html')
+    return render(request, 'UI/index.html')
 
 def service_details(request):
-    return render(request, 'Append/services-details.html')
+    return render(request, 'UI/services-details.html')
 
 def portfolio_details(request):
-    return render(request, 'Append/portfolio-details.html')
+    return render(request, 'UI/portfolio-details.html')
 
 def disburse(request):
     """View for the page homapage"""
@@ -47,13 +47,13 @@ def disburse(request):
 
 # django authenticated user views
 def dashboard(request):
-    return render(request, 'NiceAdmin/index.html')
+    return render(request, 'AdminUI/index.html')
 
 def users_profile(request):
-    return render(request, 'NiceAdmin/users-profile.html')
+    return render(request, 'AdminUI/users-profile.html')
 
 def pages_faq(request):
-    return render(request, 'NiceAdmin/pages-faq.html')
+    return render(request, 'AdminUI/pages-faq.html')
 
 # API Views
 User = get_user_model()
