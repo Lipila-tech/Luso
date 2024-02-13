@@ -26,5 +26,5 @@ urlpatterns = [
 
     # api urls
     path('/', include('api.urls')),
-    path('lipila/api/v1/', include('api.urls')),
+    path('api/v1/', include('api.urls')),
 ]

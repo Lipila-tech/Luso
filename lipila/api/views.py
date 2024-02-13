@@ -29,18 +29,12 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from .forms.forms import DisburseForm
 
 
-# Django template views
+# Django unauthenticated user views
 def index(request):
     return render(request, 'Append/index.html')
 
-def blog(request):
-    return render(request, 'Append/blog.html')
-
-def blog_details(request):
-    return render(request, 'Append/blog-details.html')
-
 def service_details(request):
-    return render(request, 'Append/service-details.html')
+    return render(request, 'Append/services-details.html')
 
 def portfolio_details(request):
     return render(request, 'Append/portfolio-details.html')
@@ -50,6 +44,11 @@ def disburse(request):
     context ={} 
     context['form']= DisburseForm() 
     return render(request, 'disburse.html', context)
+
+# django authenticated user views
+def dashboard(request):
+    return render(request, 'NiceAdmin/index.html')
+
 
 # API Views
 User = get_user_model()

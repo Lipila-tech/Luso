@@ -19,8 +19,13 @@ router.register(r'profile', views.ProfileView, basename='profile')
 
 urlpatterns = [
      path('index/', views.index, name='index'),
+     path('service-details/', views.service_details, name='service-details'),
+     path('portfolio-details/', views.portfolio_details, name='portfolio-details'),
      path('disburse/', disburse, name='disburse'),
      path('login/', LoginView.as_view(), name='login'),
+
+     # authenticated user endpoints
+     path('dashboard/', views.dashboard, name='dashboard'),
 ]
 
 urlpatterns += router.urls
