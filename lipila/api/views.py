@@ -48,10 +48,10 @@ def disburse(request):
 # django authenticated user views
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def dashboard(request):
+def dashboard(request, id):
     context = {}
     try:
-        id = int(request.GET.get('user'))
+        # id = int(request.GET.get('user'))
         if not id:
             raise ValueError('User ID missing')
         else:
@@ -74,10 +74,10 @@ def dashboard(request):
 
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def users_profile(request):
+def users_profile(request, id):
     context = {}
     try:
-        id = int(request.GET.get('user'))
+        # id = int(request.GET.get('user'))
         if not id:
             raise ValueError('User ID missing')
         else:
@@ -119,8 +119,8 @@ class SignupViewSet(viewsets.ModelViewSet):
                 'token': token.key,
                 'user': serializer.data,
             })
-        except Exception:
-             return Response({"Error: Bad Request"}, status=400)
+        except Exception as e:
+             return Response({"Error": 'failed to signup'}, status=400)
 
     def perform_create(self, serializer):
         try:

@@ -7,7 +7,7 @@ from .models import (MyUser,
 
 class MyUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'bio',
-                    'address', 'company', 'city', 'country', 'profile_image')
+                    'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 
 class LipilaPaymentAdmin(admin.ModelAdmin):
@@ -58,6 +58,6 @@ admin.site.register(BusinessPayment, BusinessPaymentAdmin)
 admin.site.register(Product, ProductAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
-admin.site.site_url = ''
+admin.site.site_url = '/api/v1/index'
 
 # superuser: pita, password: test@123
