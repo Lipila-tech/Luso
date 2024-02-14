@@ -12,8 +12,11 @@ class Confirm  extends Component {
     Pay with MoMo
   </div>
   <div class="card-body">
-    <h5 class="card-title">User. You are Paying a sum of ZMW{this.props.amount} Using Mobile account#: {this.props.mobile}</h5>
-    <h5 class="card-title"> A prompt will be sent to your number for confirmation</h5>
+    <ul class="card-title">
+      <li>User. You are Paying a sum of ZMW{this.props.amount}</li>
+      <li>Using Mobile account#: {this.props.mobile}</li>
+      <li>A prompt will be sent to your number for confirmation</li>
+    </ul>
     <a href={'/'} class="btn btn-primary">Confirm</a>
   </div>
 </div>

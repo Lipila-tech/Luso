@@ -12,7 +12,11 @@ class Home extends Component {
   render() {
     return (
       <div className="Home">
+<<<<<<< HEAD
         <h2>Sign In</h2>
+=======
+        <h2 className='d-flex justify-content-center'>Enter Code to Make a Payment</h2>
+>>>>>>> e5e2db4 (update frontend)
         <Form className="form">
           <FormGroup>
             <Label for="exampleEmail">Username</Label>
