@@ -109,21 +109,32 @@ class ViewsTestCaseGet(TestCase):
     def test_dashboard_get(self):
         get_dashboard1 = Client().get('/api/v1/dashboard/?user=1&format=json')
         get_dashboard2 = Client().get('/api/v1/dashboard/?user=2&format=json')
-        get_dashboard3 = Client().get('/api/v1/dashboard/?user=3&format=json')
-        get_dashboard4 = Client().get('/api/v1/dashboard/?user=pit&format=json')
         self.assertEqual(get_dashboard1.status_code, 200)
         self.assertEqual(get_dashboard2.status_code, 200)
-        self.assertEqual(get_dashboard3.context['status'], 404)
-        self.assertTemplateUsed(get_dashboard3, 'AdminUI/pages-error.html')
-        self.assertEqual(get_dashboard4.context['status'], 400)
-        self.assertTemplateUsed(get_dashboard4, 'AdminUI/pages-error.html')
-        self.assertEqual(get_dashboard4.context['message'], 'User ID must be of type int')   
+        
 
     def test_users_profile_get(self):
         get_profile1 = Client().get('/api/v1/users-profile/?user=1&format=json')
+        self.assertEqual(get_profile1.status_code, 200)
+        
+    def test_apology_function(self):
+        # Test dashboard endpoint
+        get_dashboard3 = Client().get('/api/v1/dashboard/?user=3&format=json')
+        get_dashboard4 = Client().get('/api/v1/dashboard/?user=pit&format=json')
+        get_dashboard5 = Client().get('/api/v1/dashboard/')
+        self.assertEqual(get_dashboard3.context['status'], 404)
+        self.assertTemplateUsed(get_dashboard3, 'AdminUI/pages-error.html')
+        self.assertEqual(get_dashboard4.context['status'], 400)
+        self.assertTemplateUsed(get_dashboard4, 'AdminUI/pages-error.html')        
+        self.assertEqual(get_dashboard4.context['message'], 'User ID must be of type int')
+        self.assertEqual(get_dashboard5.context['status'], 400)
+        self.assertTemplateUsed(get_dashboard5, 'AdminUI/pages-error.html')
+        self.assertEqual(get_dashboard5.context['message'], 'Error, User argument missing')
+
+        # Test users-profile endpoint
         get_profile5 = Client().get('/api/v1/users-profile/?user=5&format=json')
         get_profile6 = Client().get('/api/v1/users-profile/?user=b&format=json')
-        self.assertEqual(get_profile1.status_code, 200)
+
         self.assertTemplateUsed(get_profile5, 'AdminUI/pages-error.html')
         self.assertEqual(get_profile5.context['status'], 404)
         self.assertEqual(get_profile5.context['message'], 'User Profile Not Found!')

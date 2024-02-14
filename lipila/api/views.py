@@ -19,12 +19,15 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from rest_framework.views import APIView
 from api.momo.mtn import Collections
-from api.helpers import unique_id
+from api.helpers import unique_id, apology
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.views import ObtainAuthToken
 from .forms.forms import DisburseForm
+
+
+from django.views.generic.base import TemplateView
 
 # Django unauthenticated user views
 def index(request):
@@ -57,11 +60,15 @@ def dashboard(request):
     except ValueError:
         context['status'] = 400
         context['message'] = 'User ID must be of type int'
-        return render(request, 'AdminUI/pages-error.html', context)
+        return apology(request, context)
+    except TypeError:
+        context['status'] = 400
+        context['message'] = 'Error, User argument missing'
+        return apology(request, context)
     except MyUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Not Found!'
-        return render(request, 'AdminUI/pages-error.html', context)
+        return apology(request, context)
     return render(request, 'AdminUI/index.html', context)
     
 
@@ -79,11 +86,15 @@ def users_profile(request):
     except ValueError:
         context['status'] = 400
         context['message'] = 'User ID must be of type int'
-        return render(request, 'AdminUI/pages-error.html', context)
+        return apology(request, context)
+    except TypeError:
+        context['status'] = 400
+        context['message'] = 'Error, User argument missing'
+        return apology(request, context)
     except MyUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Profile Not Found!'
-        return render(request, 'AdminUI/pages-error.html', context)
+        return apology(request, context)
     return render(request, 'AdminUI/users-profile.html', context)
 
 
@@ -358,7 +369,6 @@ class ProfileView(viewsets.ModelViewSet):
             username = request.query_params.get('user')
 
             if not username:
-                print('usermissing')
                 return Response({"Error": "Username is missing"}, status=400)
             else:
                 user = User.objects.get(username=username)

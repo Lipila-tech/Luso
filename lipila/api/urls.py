@@ -4,7 +4,7 @@ from .views import LoginView, disburse
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.http import HttpResponse
 
 
 router = DefaultRouter()
@@ -28,6 +28,8 @@ urlpatterns = [
      path('dashboard/', views.dashboard, name='dashboard'),
      path('users-profile/', views.users_profile, name='users-profile'),
      path('pages-faq/', views.pages_faq, name='pages-faq'),
+
+
 ]
 
 urlpatterns += router.urls
@@ -35,3 +37,5 @@ urlpatterns += router.urls
 # if settings.DEBUG:
 #     urlpatterns += static(settings.MEDIA_URL,
 #                           document_root=settings.MEDIA_ROOT)
+
+# handler404 = 

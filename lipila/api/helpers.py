@@ -5,9 +5,10 @@ import requests
 from base64 import b64encode
 import datetime
 import random
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.shortcuts import render
 
 unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"  # Example: '20231125154054_7548'
-
 
 def get_uuid4() -> str:
         """
@@ -33,3 +34,30 @@ def basic_auth(username:str, password:str):
     """
     token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
     return f'Basic {token}'
+
+
+def apology(request, context=None):
+    """
+    Renders a custom error page with the provided context.
+
+    Args:
+        request: The Django request object.
+        context: A dictionary of context variables to pass to the template.
+
+    Returns:
+        An HttpResponseNotFound object with the rendered 404 template.
+    """
+
+    template_name = 'AdminUI/pages-error.html'  # Customize this to your template name
+
+    if context is None:
+        context = {}
+
+    if context['status'] == 404:
+        return HttpResponseNotFound(
+            render(request, template_name, context)
+        )
+    elif context['status'] == 400:
+        return HttpResponseBadRequest(
+            render(request, template_name, context)
+        )

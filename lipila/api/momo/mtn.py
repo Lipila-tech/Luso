@@ -2,7 +2,6 @@
 import requests
 import json
 from rest_framework.response import Response
-from rest_framework import status
 from ..helpers import get_uuid4, basic_auth
 
 import environ
@@ -48,7 +47,6 @@ class MTNBase():
             elif response.status_code == 409:
                 raise ValueError("Conflict user exists")
             elif response.status_code == 500:
-                print(response)
                 raise ValueError("Mtn Server error")
         except ValueError:
             return Response(status=response.status_code)
@@ -79,7 +77,6 @@ class MTNBase():
             elif response.status_code == 404:
                 raise ValueError("Not found")
             elif response.status_code == 500:
-                print(response)
                 raise ValueError("Mtn Server error")
         except ValueError:
             return Response(status=response.status_code)
@@ -198,7 +195,6 @@ class Collections(MTNBase):
             if response.status_code == 202:
                 return response
             elif response.status_code == 400:
-                print('bad request from mtn', response)
                 raise ValueError("Bad request from mtn api")
             elif response.status_code == 409:
                 raise ValueError("Conflict user exists")
