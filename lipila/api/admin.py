@@ -6,7 +6,8 @@ from .models import (MyUser,
 
 
 class MyUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'bio')
+    list_display = ('username', 'email', 'phone_number', 'bio',
+                    'address', 'company', 'city', 'country', 'profile_image')
 
 
 class LipilaPaymentAdmin(admin.ModelAdmin):

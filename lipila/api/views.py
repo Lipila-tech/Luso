@@ -55,6 +55,7 @@ def users_profile(request):
     user = MyUser.objects.get(id=4)
     context = {}
     context['user'] = user
+    print(user.profile_image.url)
     return render(request, 'AdminUI/users-profile.html', context)
 
 def pages_faq(request):

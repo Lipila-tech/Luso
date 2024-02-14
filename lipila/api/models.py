@@ -6,10 +6,20 @@ from django.contrib.auth.models import User
 
 from django.contrib.auth.models import AbstractUser
 
+CITY_CHOICES = (
+    ('KITWE', 'Kitwe'),
+    ('LUSAKA', 'Lusaka'),
+)
 
 class MyUser(User):
     phone_number = models.CharField(max_length=20, blank=True)
     bio = models.TextField(blank=True)
+    country = models.CharField(max_length=10, default="Zambia")
+    address = models.CharField(max_length=255, default="")
+    company = models.CharField(max_length=255, default="")
+    city = models.CharField(max_length=9, choices=CITY_CHOICES, default='KITWE')
+    profile_image = models.ImageField(upload_to='img/profiles/', blank=True)
+
 
     REQUIRED_FIELDS = ['email', 'phone_number']
 
