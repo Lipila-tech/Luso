@@ -4,14 +4,11 @@ Test the MTN Views
 """
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from api.models import School
-from api.models import Student
-from api.models import Parent
-from api.models import Payment, LipilaPayment
+from api.models import LipilaPayment, MyUser
 
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
-
+from backend.settings import BASE_DIR
 
 class LipilaCollectionViewTest(APITestCase):
 
@@ -20,46 +17,51 @@ class LipilaCollectionViewTest(APITestCase):
         url = reverse('lipila-payment-list')  # Generate URL using basename
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, 200)  # Assert successful response
+        # Assert successful response
+        self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.data, list)  # Assert data is a list
 
     def test_create_payment(self):
         """Tests creating a payment with date deserialization."""
-        data1 =  {
-           "amount" : 100,
-            "description":"test description",
-            "payer_account":"8855994499",
-            "payer_name":"test payer name",
-            "payer_email":"test@bot.com",
-            "receiver_account":"9988557733",
-            "status":'success',
+        data1 = {
+            "amount": 100,
+            "description": "test description",
+            "payer_account": "8855994499",
+            "payer_name": "test payer name",
+            "payer_email": "test@bot.com",
+            "receiver_account": "9988557733",
+            "status": 'success',
         }
-        data2 =  {
-            "amount" : 400,
-            "description":"test description",
-            "payer_account":"8855994499",
-            "payer_name":"test payer name",
-            "payer_email":"test@bot.com",
-            "receiver_account":"9988557733",
-            "status":'pending',
+        data2 = {
+            "amount": 400,
+            "description": "test description",
+            "payer_account": "8855994499",
+            "payer_name": "test payer name",
+            "payer_email": "test@bot.com",
+            "receiver_account": "9988557733",
+            "status": 'pending',
         }
         url = reverse('lipila-payment-list')
         response = self.client.post(url, data1)
-        
-        self.assertEqual(response.status_code, 202)  # Assert successful creation
-        self.assertEqual(response.headers['Content-Type'] , 'application/json')  # Assert successful creation
-        
-        self.assertEqual(LipilaPayment.objects.count(), 1)
-        T1 = LipilaPayment.objects.get(id=1) # get first object
-        self.assertEqual(T1.amount, 100)        
-        self.assertEqual(T1.status, 'success') #assert success
 
-        response = self.client.post(url, data2) # make second payment
-        self.assertEqual(LipilaPayment.objects.count(), 2) # assert successful creation
-        T2 = LipilaPayment.objects.get(id=2) # get second object
+        self.assertEqual(response.status_code, 202)  # Assert payment accepted
+        # Assert successful creation
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        self.assertEqual(LipilaPayment.objects.count(), 1)
+        T1 = LipilaPayment.objects.get(id=1)  # get first object
+        self.assertEqual(T1.amount, 100)
+        self.assertEqual(T1.status, 'success')  # assert success
+
+        response = self.client.post(url, data2)  # make second payment
+        # assert successful creation
+        self.assertEqual(LipilaPayment.objects.count(), 2)
+        T2 = LipilaPayment.objects.get(id=2)  # get second object
         self.assertEqual(T2.amount, 400)
-        self.assertEqual(T2.status, 'success') #assert success
-        self.assertNotEqual(T1.reference_id, T2.reference_id) # assert unique reference_id
+        self.assertEqual(T2.payer_name, 'test payer name')
+        self.assertEqual(T2.status, 'success')  # assert success
+        # assert unique reference_id
+        self.assertNotEqual(T1.reference_id, T2.reference_id)
 
 
 class ViewsTestCaseGet(TestCase):
@@ -68,113 +70,85 @@ class ViewsTestCaseGet(TestCase):
         super(ViewsTestCaseGet, cls).setUpClass()
     # def setUp(self):
         # Endpoints
-        cls.payment_url = '/lipila/api/v1/payment/'
-        cls.school_url = '/lipila/api/v1/school/'
-        cls.student_url = '/lipila/api/v1/student/'
-        cls.parent_url = '/lipila/api/v1/parent/'
-        cls.profile_url = '/lipila/api/v1/profile/'
+        cls.payment_url = '/api/v1/payment/'
+        image_file = str(BASE_DIR) + 'api/static/img/logo.png'
+
+        cls.profile_url = '/api/v1/profile/?user=pita'
+        user0 = MyUser.objects.create_user(username='pita',
+                                           password='pwd_123',
+                                           email='pita@example.com',
+                                           profile_image=image_file)
+
+        user1 = MyUser.objects.create_user(username='pit',
+                                           password='pwd_123',
+                                           email='pita@example.com',
+                                           profile_image=image_file)
 
     # TEST GET REQUESTS
+
     def test_invalid_route(self):
         """ GET invalid route """
-        r1 = Client().get("/lipila/api/v1/not_a_view/")
+        r1 = Client().get("/api/v1/not_a_view/")
         self.assertEqual(r1.status_code, 404)
 
     def test_get_response_200(self):
         get_payment = Client().get(ViewsTestCaseGet.payment_url)
-        get_parent = Client().get(self.parent_url)
-        get_school = Client().get(self.school_url)
-        get_student = Client().get(self.student_url)
         get_profile = Client().get(self.profile_url)
 
         self.assertEqual(get_payment.status_code, 200)
-        self.assertEqual(get_parent.status_code, 200)
-        self.assertEqual(get_school.status_code, 200)
-        self.assertEqual(get_student.status_code, 200)
         self.assertEqual(get_profile.status_code, 200)
+
+    def test_index_200(self):
+        get_index = Client().get('/api/v1/index/')
+        self.assertEqual(get_index.status_code, 200)
+
+    def test_pages_faq_200(self):
+        get_faq = Client().get('/api/v1/pages-faq/')
+        self.assertEqual(get_faq.status_code, 200)
+
+    def test_dashboard_get(self):
+        get_dashboard1 = Client().get('/api/v1/dashboard/?user=1&format=json')
+        get_dashboard2 = Client().get('/api/v1/dashboard/?user=2&format=json')
+        get_dashboard3 = Client().get('/api/v1/dashboard/?user=3&format=json')
+        get_dashboard4 = Client().get('/api/v1/dashboard/?user=pit&format=json')
+        self.assertEqual(get_dashboard1.status_code, 200)
+        self.assertEqual(get_dashboard2.status_code, 200)
+        self.assertEqual(get_dashboard3.context['status'], 404)
+        self.assertTemplateUsed(get_dashboard3, 'AdminUI/pages-error.html')
+        self.assertEqual(get_dashboard4.context['status'], 400)
+        self.assertTemplateUsed(get_dashboard4, 'AdminUI/pages-error.html')
+        self.assertEqual(get_dashboard4.context['message'], 'User ID must be of type int')   
+
+    def test_users_profile_get(self):
+        get_profile1 = Client().get('/api/v1/users-profile/?user=1&format=json')
+        get_profile5 = Client().get('/api/v1/users-profile/?user=5&format=json')
+        get_profile6 = Client().get('/api/v1/users-profile/?user=b&format=json')
+        self.assertEqual(get_profile1.status_code, 200)
+        self.assertTemplateUsed(get_profile5, 'AdminUI/pages-error.html')
+        self.assertEqual(get_profile5.context['status'], 404)
+        self.assertEqual(get_profile5.context['message'], 'User Profile Not Found!')
+        self.assertEqual(get_profile6.context['status'], 400)
+        self.assertTemplateUsed(get_profile6, 'AdminUI/pages-error.html')
+        self.assertEqual(get_profile6.context['message'], 'User ID must be of type int')
+
 
 class ViewsTestCasePost(TestCase):
     """Tests for the application views."""
+
     def setUp(self):
         # Endpoints
         self.payment_url = '/lipila/api/v1/payment/'
-        self.school_url = '/lipila/api/v1/school/'
-        self.student_url = '/lipila/api/v1/student/'
-        self.parent_url = '/lipila/api/v1/parent/'
         self.profile_url = '/lipila/api/v1/profile/'
 
         # Create User objects
         self.user0 = User.objects.create_user(username='pita',
-                                             password='pwd_123',
-                                             email='pita@example.com')
-        self.user0.save() # save to db
+                                              password='pwd_123',
+                                              email='pita@example.com')
+        self.user0.save()  # save to db
         self.user1 = User.objects.create_user(username='sepi',
-                                             password='pwd_123',
-                                             email='sepi@example.com')
-        self.user1.save() # save to db
-
-        # Create School objects
-        self.school1 = School.objects.create(school_name="School1", administrator=self.user0)
-        self.school1.save()
-
-        # create Parent object
-        self.parent1 = Parent.objects.create(
-            first_name="Python Parentming",
-            school=self.school1)
-        self.parent1.save() # save to db
-        self.parent2 = Parent.objects.create(
-            first_name="Ruby Parentming", school=self.school1)
-        self.parent2.save() # save to db
-
-        # Create Students objects
-        self.std1 = Student.objects.create(first_name="test firstname",
-                                         parent_id=self.parent1, tuition=200.0, enrollment_number=123)
-        self.std1.save() # save to db
-        self.std2 = Student.objects.create(first_name="test firstname2",
-                                         parent_id=self.parent2, tuition=12.1, enrollment_number=124)
-        self.std2.save() # save to db
-                
-        # Get the school and student ids
-        student1_id = self.std1.id
-        school_id = self.school1.id     
-        
-        # Valid data
-        self.data1 =  {
-            "enrollment_number": student1_id,
-            "payment_amount": '2346',
-            "payment_method": '0971892260',
-            "transaction_id":'123456',
-            "payment_date": "2021-05-10",
-            "description": "paid",
-            "school": school_id
-            }
-        # Arguments missing required field
-        self.data2 =  {
-            "payment_amount": '2346',
-            "payment_method": '0971892260',
-            "transaction_id":'123456',
-            "payment_date": "2021-05-10",
-            "description": "paid",
-            "school": school_id
-            }
-        # Arguments with wring field type
-        self.data3 =  {
-            "enrollment_number": 'STRINGID',
-            "payment_amount": '2346',
-            "payment_method": '0971892260',
-            "transaction_id":'123456',
-            "payment_date": "2021-05-10",
-            "description": "paid",
-            "school": school_id
-            }
-        
-        # Valid post
-        self.post_payment1 = Client().post(self.payment_url, self.data1, format="json")
-        # POST payment with bad data
-        self.post_payment2 = Client().post(self.payment_url, self.data2)
-   
-        # POST request with invalid enrollment_number type
-        self.post_payment3 = Client().post(self.payment_url, self.data3)
+                                              password='pwd_123',
+                                              email='sepi@example.com')
+        self.user1.save()  # save to db
 
     # TEST AUTH
     def test_login_success(self):
@@ -190,20 +164,3 @@ class ViewsTestCasePost(TestCase):
     def test_wrong_credentials(self):
         login = Client().login(username='pitaz', password='pwd_123')
         self.assertFalse(login)
-
-    # TEST POST REQUESTS
-    def test_post_response_201(self):
-        """ valid post request"""
-        self.assertEqual(self.post_payment1.status_code, 201)
-        self.assertEqual(Payment.objects.count(), 1)  # Verify payment was created in database
-        post_payment = Client().post(self.payment_url, self.data1)
-        self.assertEqual(post_payment.status_code, 201)
-        self.assertEqual(Payment.objects.count(), 2)  # Verify payment was created in database
-
-    def test_post_response_bad_data_400(self):
-        """ invalid data arguments"""
-        self.assertEqual(self.post_payment3.status_code, 400)
-
-    def test_invalid_studenschool_id_400(self):
-        """ invalid data type""" 
-        self.assertEqual(self.post_payment2.status_code, 400)

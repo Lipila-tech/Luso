@@ -2,13 +2,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 
 from .models import (
-    Payment, Student, School, Parent, LipilaPayment,
-    Product, BusinessPayment, MyUser)
+    LipilaPayment, Product, BusinessPayment, MyUser)
 
-from .serializers import SchoolPaymentSerializer
-from .serializers import StudentSerializer
-from .serializers import ParentSerializer
-from .serializers import SchoolSerializer
 from .serializers import UserSerializer
 from .serializers import LipilaPaymentSerializer
 from .serializers import LipilaTransactionSerializer, BusinessPaymentSerializer
@@ -18,6 +13,9 @@ from rest_framework import status
 from rest_framework import views, viewsets
 from rest_framework.response import Response
 from django.shortcuts import render
+
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from rest_framework.views import APIView
 from api.momo.mtn import Collections
@@ -45,18 +43,49 @@ def disburse(request):
     return render(request, 'disburse.html', context)
 
 # django authenticated user views
+@api_view(('GET',))
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request):
-    user = MyUser.objects.get(id=4)
     context = {}
-    context['user'] = user
+    try:
+        id = int(request.GET.get('user'))
+        if not id:
+            raise ValueError('User ID missing')
+        else:
+            user = MyUser.objects.get(id=int(id))
+            context['user'] = user
+    except ValueError:
+        context['status'] = 400
+        context['message'] = 'User ID must be of type int'
+        return render(request, 'AdminUI/pages-error.html', context)
+    except MyUser.DoesNotExist:
+        context['status'] = 404
+        context['message'] = 'User Not Found!'
+        return render(request, 'AdminUI/pages-error.html', context)
     return render(request, 'AdminUI/index.html', context)
+    
 
+@api_view(('GET',))
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def users_profile(request):
-    user = MyUser.objects.get(id=4)
     context = {}
-    context['user'] = user
-    print(user.profile_image.url)
+    try:
+        id = int(request.GET.get('user'))
+        if not id:
+            raise ValueError('User ID missing')
+        else:
+            user = MyUser.objects.get(id=int(id))
+            context['user'] = user
+    except ValueError:
+        context['status'] = 400
+        context['message'] = 'User ID must be of type int'
+        return render(request, 'AdminUI/pages-error.html', context)
+    except MyUser.DoesNotExist:
+        context['status'] = 404
+        context['message'] = 'User Profile Not Found!'
+        return render(request, 'AdminUI/pages-error.html', context)
     return render(request, 'AdminUI/users-profile.html', context)
+
 
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
@@ -137,10 +166,6 @@ class UserTransactionsView(viewsets.ModelViewSet):
         except Exception:
             return Response({"Error: Bad Request"}, status=400)
 
-
-class PaymentView(viewsets.ModelViewSet):
-    serializer_class = SchoolPaymentSerializer
-    queryset = Payment.objects.all()
 
 class ProductView(viewsets.ModelViewSet):
     """
@@ -249,7 +274,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaPaymentSerializer
     queryset = LipilaPayment.objects.all()
 
-    def post(self, request):
+    def create(self, request):
         """Handles POST requests, deserializing date and setting status."""
         data = request.data
         serializer = LipilaPaymentSerializer(data=data)
@@ -267,7 +292,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 # Query request to pay function
                 request_pay = api_user.request_to_pay(
                     amount=amount, payer_account=payer_account, reference=str(reference_id))
-
+                
                 if request_pay.status_code == 202:
                     # save payment
                     payment = serializer.save()
@@ -314,21 +339,6 @@ class LipilaCollectionView(viewsets.ModelViewSet):
             return Response({"Error: Bad Request"}, status=400)
 
 
-class StudentView(viewsets.ModelViewSet):
-    serializer_class = StudentSerializer
-    queryset = Student.objects.all()
-
-
-class SchoolView(viewsets.ModelViewSet):
-    serializer_class = SchoolSerializer
-    queryset = School.objects.all()
-
-
-class ParentView(viewsets.ModelViewSet):
-    serializer_class = ParentSerializer
-    queryset = Parent.objects.all()
-
-
 class LogoutView(views.APIView):
     """" Logs out the current signed in user"""
 
@@ -348,11 +358,12 @@ class ProfileView(viewsets.ModelViewSet):
             username = request.query_params.get('user')
 
             if not username:
+                print('usermissing')
                 return Response({"Error": "Username is missing"}, status=400)
             else:
                 user = User.objects.get(username=username)
 
             serializer = UserSerializer(user, many=False)
             return Response(serializer.data)
-        except Exception:
-             return Response({"Error: Bad Request"}, status=400)
+        except Exception as e:
+             return Response({"User not found"}, status=404)

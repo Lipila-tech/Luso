@@ -9,10 +9,6 @@ from django.conf.urls.static import static
 
 router = DefaultRouter()
 
-# router.register(r'student', views.StudentView, basename='student')
-# router.register(r'parent', views.ParentView, basename='parent')
-# router.register(r'payment', views.PaymentView, basename='payment')
-# router.register(r'school', views.SchoolView, basename='school')
 router.register(r'lipila-payment', views.LipilaCollectionView, basename='lipila-payment')
 router.register(r'payment', views.BusinessCollectionView, basename='payment')
 router.register(r'user-transactions', views.UserTransactionsView, basename='user-transactions')
@@ -34,8 +30,8 @@ urlpatterns = [
      path('pages-faq/', views.pages_faq, name='pages-faq'),
 ]
 
-# urlpatterns += router.urls
+urlpatterns += router.urls
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL,
+#                           document_root=settings.MEDIA_ROOT)
