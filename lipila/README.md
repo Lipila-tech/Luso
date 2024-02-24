@@ -39,9 +39,10 @@ Once you subscribe to a product copy the keys and add in your .env file.
 
 **API Reference**
 
+## Root
 _Api Root: GET /lipila/api/v1/_
 
-Returns all avalabel endpoints.
+Returns all availabel endpoints.
 
 Response:
 
@@ -51,13 +52,44 @@ Response:
     Vary: Accept
 
     {
-        "student": "http://localhost:8000/lipila/api/v1/student/",
-        "parent": "http://localhost:8000/lipila/api/v1/parent/",
-        "payment": "http://localhost:8000/lipila/api/v1/payment/",
-        "school": "http://localhost:8000/lipila/api/v1/school/",
-        "lipila-payment": "http://localhost:8000/lipila/api/v1/lipila-payment/",
-        "profile": "http://localhost:8000/lipila/api/v1/profile/"
+        "lipila-payment": "http://localhost:8000/api/v1/lipila-payment/",
+        "user-transactions": "http://localhost:8000/api/v1/user-transactions/",
+        "products": "http://localhost:8000/api/v1/products/",
+        "signup": "http://localhost:8000/api/v1/signup/",
+        "profile": "http://localhost:8000/api/v1/profile/"
     }
+
+## Signup
+_Signup: POST /lipila/api/v1/signup_
+
+### Request Body:
+
+{
+    "username": "", 
+    "email": "",
+    "password": "",
+    "phone_number": "",
+    "bio": ""
+}
+
+### Response
+
+#### OK
+ *Status Code:* 201
+
+ *Response Body:*
+ {
+    "message": "Created"
+}
+
+#### BAD REQUEST
+*Status Code:* 400
+
+*Resonse Body*
+{
+    "Error": "Failed to signup"
+}
+
 
 **Contributing**
 

@@ -116,9 +116,8 @@ class SignupViewSet(viewsets.ModelViewSet):
             user = serializer.instance
             token, _ = Token.objects.get_or_create(user=user)
             return Response({
-                'token': token.key,
-                'user': serializer.data,
-            })
+                'message': "Created",
+            }, status=201)
         except Exception as e:
              return Response({"Error": 'failed to signup'}, status=400)
 
