@@ -20,8 +20,8 @@
           <p data-aos="fade-up" data-aos-delay="200">More Than Payments, It's About Possibilities. Choose Lipila.</p>
         </div>
         <div class="col-lg-5">
-          <form action="#" class="sign-up-form d-flex" data-aos="fade-up" data-aos-delay="300">
-            <input type="text" class="form-control" placeholder="Enter payment code">
+          <form method="get" action="/api/v1/payment/" class="sign-up-form d-flex" data-aos="fade-up" data-aos-delay="300">
+            <input name="payee_id" id="payee_id" type="text" class="form-control" placeholder="Enter payment code">
             <input type="submit" class="btn btn-primary" value="Send Money">
           </form>
         </div>

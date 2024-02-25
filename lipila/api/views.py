@@ -46,6 +46,20 @@ def service_details(request):
 def portfolio_details(request):
     return render(request, 'UI/portfolio-details.html')
 
+def send_money(request):
+    form = request.GET
+    if form:
+        payee_id =  form['payee_id']
+        try:
+            data = MyUser.objects.get(username=payee_id)
+            context = {}
+            context['payee'] = data.username
+            context['location'] = data.city
+        except MyUser.DoesNotExist:
+            context = {'message': "User id not found",}
+            return render(request, '404.html', context)
+        
+    return render(request, 'UI/send_money.html', context)
 
 def disburse(request):
     """View for the page homapage"""
@@ -117,7 +131,7 @@ User = get_user_model()
 
 
 class SignupViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = MyUser.objects.all()
     serializer_class = MyUserSerializer  # Replace with your serializer
 
     def create(self, request, *args, **kwargs):

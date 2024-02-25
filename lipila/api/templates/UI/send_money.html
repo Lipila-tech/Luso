@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Checkout</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS */
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div>
+                    <h2>Send to: {{ payee }}</h2>
+                    <h3>Location: {{ location }}</h3>
+                </div>
+                <div id="step1" style="display: block;">
+                    <label for="amount">Amount</label>
+                    <input  name="amount" type="number" class="form-control mb-3" placeholder="Ex. 100" required>
+                    <div class="form-group">
+                        <label for="paymentMethod">Select Payment Method:</label>
+                        <select class="form-control" id="paymentMethod">
+                            <option value="MTN">MTN</option>
+                            <option value="Airtel">Airtel</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary mr-2" onclick="prevStep('home')">Back</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                </div>
+                <div id="step2" style="display: none;">
+                    <h2>Submit for Payment</h2>
+                    <!-- Confirmation & Receipt details will be displayed here -->
+                    <button class="btn btn-primary mr-2" onclick="prevStep('step2')">Back</button>
+                    <button class="btn btn-success" onclick="submitPayment()">Submit Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function nextStep() {
+            const amount = document.getElementsByName('amount');
+            console.log('amount', amount.values);
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+
+        function prevStep(location) {
+            if (location === "step2"){
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+            }else {
+                window.location.assign('http://localhost:8000/api/v1/index');
+            }
+           
+        }
+
+        function submitPayment() {
+            // Payment submission logic here
+            const amount = document.getElementsByName('amount');
+            alert('amount', amount);
+        }
+    </script>
+</body>
+
+</html>

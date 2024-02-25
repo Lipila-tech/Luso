@@ -17,6 +17,7 @@ router.register(r'profile', views.ProfileView, basename='profile')
 
 urlpatterns = [
      path('index/', views.index, name='index'),
+     path('payment/', views.send_money, name='payment'),
      path('service-details/', views.service_details, name='service-details'),
      path('portfolio-details/', views.portfolio_details, name='portfolio-details'),
      path('disburse/', disburse, name='disburse'),
