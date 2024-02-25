@@ -196,15 +196,18 @@ class ProductView(viewsets.ModelViewSet):
 
             serializer = ProductSerializer(products, many=True)
             return Response(serializer.data)
-        except Exception:
-            return Response({"Error: Bad Request"}, status=400)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
 
     def post(self, request):
         try:
             data = request.data
             serializer = ProductSerializer(data=data)
+            return Response({
+                'message': "Created",
+            }, status=201)
         except Exception:
-             return Response({"Error: Bad Request"}, status=400)
+             return Response({"error: Bad Request"}, status=400)
     
 class BusinessCollectionView(viewsets.ModelViewSet):
     serializer_class = BusinessPaymentSerializer

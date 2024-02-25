@@ -60,7 +60,7 @@ Response:
     }
 
 ## Signup
-_Signup: POST /lipila/api/v1/signup_
+_Signup: POST /signup/_
 
 ### Request Body:
 
@@ -78,11 +78,12 @@ _Signup: POST /lipila/api/v1/signup_
  *Status Code:* 201
 
  *Response Body:*
- {
+{
     "message": "Created"
 }
 
-#### BAD REQUEST
+#### Error
+*Bad Request*
 *Status Code:* 400
 
 *Resonse Body*
@@ -90,6 +91,50 @@ _Signup: POST /lipila/api/v1/signup_
     "Error": "Failed to signup"
 }
 
+## Products
+_GET /products/?user=<username>/_
+
+### Response
+#### OK
+*Status Code* 200
+
+*Response Body:*
+
+[
+    {
+        "id": 1,
+        "product_name": "Piano lesson",
+        "price": 150.0,
+        "date_created": "2024-02-25T07:08:41.750854Z",
+        "status": true,
+        "product_owner": 1
+    }
+]
+
+
+_POST_ /products/_
+
+### Request Body:
+
+{
+    "product_name": "",
+    "price": null,
+    "status": false,
+    "product_owner": null
+}
+
+*Status Code* 201
+
+*Response Body:*
+
+{
+    "id": 2,
+    "product_name": "Karate Class",
+    "price": 350.0,
+    "date_created": "2024-02-25T07:28:25.555253Z",
+    "status": true,
+    "product_owner": 3
+}
 
 **Contributing**
 
