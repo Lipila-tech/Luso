@@ -29,7 +29,11 @@ Once you subscribe to a product copy the keys and add in your .env file.
 
 **Usage**
 
-    cd backend
+    cd lipila
+
+    *Copy and set your environment variables in the .env file.*
+
+    cp backend/example.env backend/.env
 
     python -m manage runserver
 
@@ -51,9 +55,8 @@ Response:
     Content-Type: application/json
     Vary: Accept
 
-    {
+   {
         "payments": "http://localhost:8000/api/v1/payments/",
-        "user-transactions": "http://localhost:8000/api/v1/user-transactions/",
         "products": "http://localhost:8000/api/v1/products/",
         "signup": "http://localhost:8000/api/v1/signup/",
         "profile": "http://localhost:8000/api/v1/profile/"
