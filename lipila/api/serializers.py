@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .models import LipilaPayment, Product, MyUser, BusinessPayment
+from .models import LipilaCollection, Product, MyUser
 
 
 class MyUserSerializer(serializers.ModelSerializer):
@@ -17,17 +17,11 @@ class MyUserSerializer(serializers.ModelSerializer):
         return user
 
 
-class LipilaPaymentSerializer(serializers.ModelSerializer):
+class LipilaCollectionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LipilaPayment
+        model = LipilaCollection
         fields = ('payee', 'payer_account', 'amount', 'timestamp',
                   'description', 'payer_email', 'payer_name')
-
-
-class BusinessPaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BusinessPayment
-        fields = '__all__'
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -38,7 +32,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class LipilaTransactionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LipilaPayment
+        model = LipilaCollection
         fields = '__all__'
 
 

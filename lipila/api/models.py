@@ -68,7 +68,7 @@ class LipilaDisbursement(models.Model):
                                              )
 
 
-class LipilaPayment(models.Model):
+class LipilaCollection(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     # currency = models.CharField(max_length=3)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -79,25 +79,6 @@ class LipilaPayment(models.Model):
     payer_email = models.EmailField(null=True)
     payee = models.ForeignKey(User, related_name='payment',
                                       on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=(
-        ('pending', 'Pending'),
-        ('success', 'Success'),
-        ('failed', 'Failed'),
-    ))
-
-    def get_reference_id(self):
-        return self.reference_id
-
-
-class BusinessPayment(models.Model):
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    reference_id = models.CharField(max_length=100, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    payer_account = models.CharField(max_length=10, null=False)
-    payer_email = models.EmailField(null=True)
-    payer_name = models.CharField(max_length=100, null=True)
-    payment_owner = models.CharField(max_length=100, null=False)
     status = models.CharField(max_length=20, choices=(
         ('pending', 'Pending'),
         ('success', 'Success'),

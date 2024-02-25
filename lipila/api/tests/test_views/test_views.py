@@ -4,7 +4,7 @@ Test the MTN Views
 """
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from api.models import LipilaPayment, MyUser
+from api.models import LipilaCollection, MyUser
 
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
@@ -48,15 +48,15 @@ class LipilaCollectionViewTest(APITestCase):
         # Assert successful creation
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        self.assertEqual(LipilaPayment.objects.count(), 1)
-        T1 = LipilaPayment.objects.get(id=1)  # get first object
+        self.assertEqual(LipilaCollection.objects.count(), 1)
+        T1 = LipilaCollection.objects.get(id=1)  # get first object
         self.assertEqual(T1.amount, 100)
         self.assertEqual(T1.status, 'success')  # assert success
 
         response = self.client.post(url, data2)  # make second payment
         # assert successful creation
-        self.assertEqual(LipilaPayment.objects.count(), 2)
-        T2 = LipilaPayment.objects.get(id=2)  # get second object
+        self.assertEqual(LipilaCollection.objects.count(), 2)
+        T2 = LipilaCollection.objects.get(id=2)  # get second object
         self.assertEqual(T2.amount, 400)
         self.assertEqual(T2.payer_name, 'test payer name')
         self.assertEqual(T2.status, 'success')  # assert success
