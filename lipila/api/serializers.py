@@ -50,5 +50,9 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'bio',
-            'phone_number'
+            'phone_number',
+            'country',
+            'address',
+            'city',
+            'profile_image'
         ]

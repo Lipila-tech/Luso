@@ -35,22 +35,29 @@ env = environ.Env()
 environ.Env.read_env()
 
 # Django unauthenticated user views
+
+
 def index(request):
     return render(request, 'UI/index.html')
+
 
 def service_details(request):
     return render(request, 'UI/services-details.html')
 
+
 def portfolio_details(request):
     return render(request, 'UI/portfolio-details.html')
 
+
 def disburse(request):
     """View for the page homapage"""
-    context ={} 
-    context['form']= DisburseForm() 
+    context = {}
+    context['form'] = DisburseForm()
     return render(request, 'disburse.html', context)
 
 # django authenticated user views
+
+
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, id):
@@ -75,7 +82,7 @@ def dashboard(request, id):
         context['message'] = 'User Not Found!'
         return apology(request, context)
     return render(request, 'AdminUI/index.html', context)
-    
+
 
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
@@ -106,8 +113,10 @@ def users_profile(request, id):
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
 
+
 # API Views
 User = get_user_model()
+
 
 class SignupViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -124,16 +133,17 @@ class SignupViewSet(viewsets.ModelViewSet):
                 'message': "Created",
             }, status=201)
         except Exception as e:
-             return Response({"Error": 'failed to signup'}, status=400)
+            return Response({"Error": 'failed to signup'}, status=400)
 
     def perform_create(self, serializer):
         try:
             user = serializer.save()
             # Set password, send verification email, etc. (optional)
         except Exception:
-             return Response({"Error: Bad Request"}, status=400)
+            return Response({"Error: Bad Request"}, status=400)
 
     permission_classes = [AllowAny]  # Allow anyone to register
+
 
 class LoginView(ObtainAuthToken):
     permission_classes = [AllowAny]
@@ -153,7 +163,7 @@ class LoginView(ObtainAuthToken):
             }, status=status.HTTP_200_OK)
         except Exception:
             return Response({"Error: Bad Request"}, status=400)
-    
+
 
 class UserTransactionsView(viewsets.ModelViewSet):
     serializer_class = LipilaTransactionSerializer
@@ -163,13 +173,15 @@ class UserTransactionsView(viewsets.ModelViewSet):
         try:
             # Get account from query parameters
             account = request.query_params.get('account')
-            role = request.query_params.get('role')  # Get role (payer or receiver)
+            # Get role (payer or receiver)
+            role = request.query_params.get('role')
 
             if not account or not role:
                 return Response({'error': 'Missing account or role parameter'}, status=400)
 
             if role == 'payer':
-                transactions = LipilaPayment.objects.filter(payer_account=account)
+                transactions = LipilaPayment.objects.filter(
+                    payer_account=account)
             elif role == 'receiver':
                 transactions = LipilaPayment.objects.filter(
                     payee=account)
@@ -188,7 +200,7 @@ class ProductView(viewsets.ModelViewSet):
     """
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    
+
     def list(self, request):
         try:
             username = request.query_params.get('user')
@@ -212,8 +224,9 @@ class ProductView(viewsets.ModelViewSet):
                 'message': "Created",
             }, status=201)
         except Exception:
-             return Response({"error: Bad Request"}, status=400)
-    
+            return Response({"error: Bad Request"}, status=400)
+
+
 class BusinessCollectionView(viewsets.ModelViewSet):
     serializer_class = BusinessPaymentSerializer
     queryset = BusinessPayment.objects.all()
@@ -225,7 +238,7 @@ class BusinessCollectionView(viewsets.ModelViewSet):
         user = MyUser.objects.filter(username=username)
         if not user:
             return Response({"Error: User not found"}, status=404)
-        
+
         api_user = Collections()
         api_user.provision_sandbox(api_user.subscription_col_key)
         api_user.create_api_token(api_user.subscription_col_key, 'collection')
@@ -233,7 +246,7 @@ class BusinessCollectionView(viewsets.ModelViewSet):
         serializer = BusinessPaymentSerializer(data=data)
 
         if serializer.is_valid():
-            try:               
+            try:
                 # Query external API handlers
                 amount = data['amount']
                 reference_id = api_user.x_reference_id
@@ -288,17 +301,18 @@ class BusinessCollectionView(viewsets.ModelViewSet):
         except Exception:
             return Response({"Error: Bad Request"}, status=400)
 
+
 class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaPaymentSerializer
     queryset = LipilaPayment.objects.all()
-    
+
     if env("ENV_STATUS") == "offline":
         def create(self, request):
             """No Internet connection, no querying the remote apis"""
             data = request.data
             serializer = LipilaPaymentSerializer(data=data)
             if serializer.is_valid():
-                try:               
+                try:
                     # Query external API handlers
                     reference_id = "examplerefernceid"
                     payment = serializer.save()
@@ -319,10 +333,11 @@ class LipilaCollectionView(viewsets.ModelViewSet):
             serializer = LipilaPaymentSerializer(data=data)
             api_user = Collections()
             api_user.provision_sandbox(api_user.subscription_col_key)
-            api_user.create_api_token(api_user.subscription_col_key, 'collection')
+            api_user.create_api_token(
+                api_user.subscription_col_key, 'collection')
 
             if serializer.is_valid():
-                try:               
+                try:
                     # Query external API handlers
                     amount = data['amount']
                     reference_id = api_user.x_reference_id
@@ -331,7 +346,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                     # Query request to pay function
                     request_pay = api_user.request_to_pay(
                         amount=amount, payer_account=payer_account, reference=str(reference_id))
-                    
+
                     if request_pay.status_code == 202:
                         # save payment
                         payment = serializer.save()
@@ -380,12 +395,12 @@ class LipilaCollectionView(viewsets.ModelViewSet):
 
             serializer = LipilaPaymentSerializer(payments, many=True)
             return Response(serializer.data, status=200)
-        
+
         except User.DoesNotExist:
             return Response({"error": "Payee not found"}, status=404)
     # def list(self, request, *args, **kwargs):
     #     """Handles GET requests, serializing payment data."""
-        
+
     #     try:
     #         queryset = self.filter_queryset(self.get_queryset())
     #         serializer = self.get_serializer(queryset, many=True)
@@ -406,7 +421,7 @@ class LogoutView(views.APIView):
 class ProfileView(viewsets.ModelViewSet):
     """Returns the profile of the user"""
     serializer_class = UserSerializer
-    queryset = User.objects.all()
+    queryset = MyUser.objects.all()
 
     def list(self, request):
         try:
@@ -415,9 +430,12 @@ class ProfileView(viewsets.ModelViewSet):
             if not username:
                 return Response({"Error": "Username is missing"}, status=400)
             else:
-                user = User.objects.get(username=username)
+                user = MyUser.objects.get(username=username)
 
             serializer = UserSerializer(user, many=False)
             return Response(serializer.data)
         except Exception as e:
-             return Response({"User not found"}, status=404)
+            return Response({"User not found"}, status=404)
+
+    def put(self, request):
+        pass
