@@ -30,7 +30,12 @@ Users navigate through the payment process sequentially:
     source .venv/bin/activate
     pip install -r requirements.txt
     
+
     cd lipila
+
+    *Copy and set your environment variables in the .env file.*
+
+    cp backend/example.env backend/.env
 
     python manage.py migrate
     python manage.py runserver
