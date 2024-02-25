@@ -14,7 +14,7 @@ class LipilaCollectionViewTest(APITestCase):
 
     def test_get_payments(self):
         """Tests retrieving a list of payments."""
-        url = reverse('lipila-payment-list')  # Generate URL using basename
+        url = reverse('payments-list')  # Generate URL using basename
         response = self.client.get(url)
 
         # Assert successful response
@@ -41,7 +41,7 @@ class LipilaCollectionViewTest(APITestCase):
             "receiver_account": "9988557733",
             "status": 'pending',
         }
-        url = reverse('lipila-payment-list')
+        url = reverse('payments-list')
         response = self.client.post(url, data1)
 
         self.assertEqual(response.status_code, 202)  # Assert payment accepted

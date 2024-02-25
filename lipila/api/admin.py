@@ -11,7 +11,7 @@ class MyUserAdmin(admin.ModelAdmin):
 
 
 class LipilaPaymentAdmin(admin.ModelAdmin):
-    list_display = ('receiver_account', 'payer_account', 'amount', 'timestamp',
+    list_display = ('payee', 'payer_account', 'amount', 'timestamp',
                     'reference_id', 'description', 'payer_email',
                     'payer_name', 'status')
 

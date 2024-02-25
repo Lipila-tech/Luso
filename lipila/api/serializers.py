@@ -20,7 +20,9 @@ class MyUserSerializer(serializers.ModelSerializer):
 class LipilaPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaPayment
-        fields = '__all__'
+        fields = ('payee', 'payer_account', 'amount', 'timestamp',
+                  'description', 'payer_email', 'payer_name')
+
 
 class BusinessPaymentSerializer(serializers.ModelSerializer):
     class Meta:

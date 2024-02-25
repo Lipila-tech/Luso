@@ -9,8 +9,7 @@ from django.http import HttpResponse
 
 router = DefaultRouter()
 
-router.register(r'lipila-payment', views.LipilaCollectionView, basename='lipila-payment')
-router.register(r'payment', views.BusinessCollectionView, basename='payment')
+router.register(r'payments', views.LipilaCollectionView, basename='payments')
 router.register(r'user-transactions', views.UserTransactionsView, basename='user-transactions')
 router.register(r'products', views.ProductView, basename='products')
 router.register(r'signup', views.SignupViewSet, basename='signup')

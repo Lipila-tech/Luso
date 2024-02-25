@@ -25,9 +25,14 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.views import ObtainAuthToken
 from .forms.forms import DisburseForm
-
-
 from django.views.generic.base import TemplateView
+
+
+import environ
+
+env = environ.Env()
+
+environ.Env.read_env()
 
 # Django unauthenticated user views
 def index(request):
@@ -167,7 +172,7 @@ class UserTransactionsView(viewsets.ModelViewSet):
                 transactions = LipilaPayment.objects.filter(payer_account=account)
             elif role == 'receiver':
                 transactions = LipilaPayment.objects.filter(
-                    receiver_account=account)
+                    payee=account)
             else:
                 return Response({'error': 'Invalid role'}, status=400)
 
@@ -286,70 +291,107 @@ class BusinessCollectionView(viewsets.ModelViewSet):
 class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaPaymentSerializer
     queryset = LipilaPayment.objects.all()
-
-    def create(self, request):
-        """Handles POST requests, deserializing date and setting status."""
-        data = request.data
-        serializer = LipilaPaymentSerializer(data=data)
-        api_user = Collections()
-        api_user.provision_sandbox(api_user.subscription_col_key)
-        api_user.create_api_token(api_user.subscription_col_key, 'collection')
-
-        if serializer.is_valid():
-            try:               
-                # Query external API handlers
-                amount = data['amount']
-                reference_id = api_user.x_reference_id
-                payer_account = data['payer_account']
-
-                # Query request to pay function
-                request_pay = api_user.request_to_pay(
-                    amount=amount, payer_account=payer_account, reference=str(reference_id))
-                
-                if request_pay.status_code == 202:
-                    # save payment
+    
+    if env("ENV_STATUS") == "offline":
+        def create(self, request):
+            """No Internet connection, no querying the remote apis"""
+            data = request.data
+            serializer = LipilaPaymentSerializer(data=data)
+            if serializer.is_valid():
+                try:               
+                    # Query external API handlers
+                    reference_id = "examplerefernceid"
                     payment = serializer.save()
                     payment.reference_id = reference_id
-                    payment.status = 'pending'  # Set status based on mapping
+                    payment.status = 'success'  # Set status to success
                     payment.save()
-                    transaction = LipilaPayment.objects.filter(
-                        reference_id=reference_id)
-                    for r in transaction:
-                        status = api_user.get_payment_status(reference_id)
-                        if status.status_code == 200:
-                            payment.status = 'success'
-                            payment.save()
-                        else:
-                            payment.status = 'failed'
-                    payment.save()
-                    status_code = request_pay.status_code
-                    # Set status code
-                    return Response({'message': 'request accepted, wait for client approval'}, status=status_code)
+                    status_code = 200
+                    return Response({'message': 'OK'}, status=status_code)
+                except Exception as e:
+                    return Response({'message': e}, status=400)
+            else:
+                # Set status code
+                return Response({'message': 'Invalid form fields'}, status=405)
+    else:
+        def create(self, request):
+            """Handles POST requests, deserializing date and setting status."""
+            data = request.data
+            serializer = LipilaPaymentSerializer(data=data)
+            api_user = Collections()
+            api_user.provision_sandbox(api_user.subscription_col_key)
+            api_user.create_api_token(api_user.subscription_col_key, 'collection')
 
-                elif request_pay.status_code == 403:
-                    status_code = request_pay.status_code
-                    # Set status code
-                    return Response({'message': 'Request exceeded'}, status=status_code)
+            if serializer.is_valid():
+                try:               
+                    # Query external API handlers
+                    amount = data['amount']
+                    reference_id = api_user.x_reference_id
+                    payer_account = data['payer_account']
 
-                elif request_pay.status_code == 400:
-                    status_code = request_pay.status_code
-                    # Set status code
-                    return Response({'message': 'Bad request from mtn'}, status=status_code)
+                    # Query request to pay function
+                    request_pay = api_user.request_to_pay(
+                        amount=amount, payer_account=payer_account, reference=str(reference_id))
+                    
+                    if request_pay.status_code == 202:
+                        # save payment
+                        payment = serializer.save()
+                        payment.reference_id = reference_id
+                        payment.status = 'pending'  # Set status based on mapping
+                        payment.save()
+                        transaction = LipilaPayment.objects.filter(
+                            reference_id=reference_id)
+                        for r in transaction:
+                            status = api_user.get_payment_status(reference_id)
+                            if status.status_code == 200:
+                                payment.status = 'success'
+                                payment.save()
+                            else:
+                                payment.status = 'failed'
+                        payment.save()
+                        status_code = request_pay.status_code
+                        # Set status code
+                        return Response({'message': 'request accepted, wait for client approval'}, status=status_code)
 
-            except Exception as e:
-                return Response({'message': e}, status=400)
-        else:
-            # Set status code
-            return Response({'message': 'Invalid form fields'}, status=405)
+                    elif request_pay.status_code == 403:
+                        status_code = request_pay.status_code
+                        # Set status code
+                        return Response({'message': 'Request exceeded'}, status=status_code)
 
-    def list(self, request, *args, **kwargs):
-        """Handles GET requests, serializing payment data."""
+                    elif request_pay.status_code == 400:
+                        status_code = request_pay.status_code
+                        # Set status code
+                        return Response({'message': 'Bad request from mtn'}, status=status_code)
+
+                except Exception as e:
+                    return Response({'message': e}, status=400)
+            else:
+                # Set status code
+                return Response({'message': 'Invalid form fields'}, status=405)
+
+    def list(self, request):
         try:
-            queryset = self.filter_queryset(self.get_queryset())
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
-        except Exception:
-            return Response({"Error: Bad Request"}, status=400)
+            payee = request.query_params.get('payee')
+
+            if not payee:
+                return Response({"error": "payee id is missing"}, status=400)
+            else:
+                user = User.objects.get(username=payee)
+                payments = LipilaPayment.objects.filter(payee=user.id)
+
+            serializer = LipilaPaymentSerializer(payments, many=True)
+            return Response(serializer.data, status=200)
+        
+        except User.DoesNotExist:
+            return Response({"error": "Payee not found"}, status=404)
+    # def list(self, request, *args, **kwargs):
+    #     """Handles GET requests, serializing payment data."""
+        
+    #     try:
+    #         queryset = self.filter_queryset(self.get_queryset())
+    #         serializer = self.get_serializer(queryset, many=True)
+    #         return Response(serializer.data)
+    #     except Exception:
+    #         return Response({"Error: Bad Request"}, status=400)
 
 
 class LogoutView(views.APIView):

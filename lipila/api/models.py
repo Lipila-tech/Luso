@@ -77,7 +77,8 @@ class LipilaPayment(models.Model):
     payer_account = models.CharField(max_length=10, null=False)
     payer_name = models.CharField(max_length=100, null=True)
     payer_email = models.EmailField(null=True)
-    receiver_account = models.CharField(max_length=10, null=False)
+    payee = models.ForeignKey(User, related_name='payment',
+                                      on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=(
         ('pending', 'Pending'),
         ('success', 'Success'),
