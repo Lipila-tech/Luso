@@ -12,11 +12,11 @@ CITY_CHOICES = (
 )
 
 class MyUser(User):
-    phone_number = models.CharField(max_length=20, blank=True)
-    bio = models.TextField(blank=True)
+    phone_number = models.CharField(max_length=20, blank=False, null=False, unique=True)
+    bio = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=10, default="Zambia")
-    address = models.CharField(max_length=255, default="")
-    company = models.CharField(max_length=255, default="")
+    address = models.CharField(max_length=255, default="", blank=False, null=False)
+    company = models.CharField(max_length=255, default="", blank=False, null=False)
     city = models.CharField(max_length=9, choices=CITY_CHOICES, default='KITWE')
     profile_image = models.ImageField(upload_to='img/profiles/', blank=True, null=True)
 
@@ -69,14 +69,14 @@ class LipilaDisbursement(models.Model):
 
 
 class LipilaCollection(models.Model):
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
     # currency = models.CharField(max_length=3)
     timestamp = models.DateTimeField(auto_now_add=True)
-    reference_id = models.CharField(max_length=100, blank=True, null=True)
+    reference_id = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
-    payer_account = models.CharField(max_length=10, null=False)
-    payer_name = models.CharField(max_length=100, null=True)
-    payer_email = models.EmailField(null=True)
+    payer_account = models.CharField(max_length=10, null=False, blank=False)
+    payer_name = models.CharField(max_length=100, null=True, blank=True)
+    payer_email = models.EmailField(null=True, blank=True)
     payee = models.ForeignKey(User, related_name='payment',
                                       on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=(

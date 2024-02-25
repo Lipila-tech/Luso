@@ -40,7 +40,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         fields = [
-            'username',
             'first_name',
             'last_name',
             'bio',
@@ -50,3 +49,4 @@ class UserSerializer(serializers.ModelSerializer):
             'city',
             'profile_image'
         ]
+        write_only_fields = ('password','username')
