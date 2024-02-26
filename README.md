@@ -32,8 +32,7 @@ Users navigate through the payment process sequentially:
 
 ## Usage on Your local machine
 Ensure you have python 3 installed
-
-    [Download it _here_](https://www.python.org/downloads/)
+[Download it here](https://www.python.org/downloads/)
 
     git clone git@github.com:your-username/lipila-dot-tech.git
 
