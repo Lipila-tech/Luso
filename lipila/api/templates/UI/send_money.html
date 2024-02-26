@@ -51,11 +51,14 @@
             document.getElementById('step2').style.display = 'block';
         }
 
+        // Add conditional navigation
         function prevStep(location) {
+            // Go to setp 1 if user is on step 2
             if (location === "step2"){
                 document.getElementById('step2').style.display = 'none';
                 document.getElementById('step1').style.display = 'block';
             }else {
+                // Otherwise redirect the user to the home page
                 window.location.assign('http://localhost:8000/api/v1/index');
             }
            
