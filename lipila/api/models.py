@@ -12,7 +12,7 @@ CITY_CHOICES = (
 )
 
 class MyUser(User):
-    phone_number = models.CharField(max_length=20, blank=False, null=False, unique=True)
+    phone_number = models.CharField(max_length=20, blank=False, null=False)
     bio = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=10, default="Zambia")
     address = models.CharField(max_length=255, default="", blank=False, null=False)
