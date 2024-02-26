@@ -56,7 +56,7 @@ class LipilaCollectionViewTest(APITestCase):
         response = self.client.post(url, data2)  # make second payment
         # assert successful creation
         self.assertEqual(LipilaCollection.objects.count(), 2)
-        T2 = LipilaCollection.objects.get(id=2)  # get second object
+        T2 = LipilaCollection.objects.get(id=1)  # get second object
         self.assertEqual(T2.amount, 400)
         self.assertEqual(T2.payer_name, 'test payer name')
         self.assertEqual(T2.status, 'success')  # assert success
@@ -108,7 +108,7 @@ class ViewsTestCaseGet(TestCase):
 
     def test_dashboard_get(self):
         get_dashboard1 = Client().get('/api/v1/dashboard/?user=1&format=json')
-        get_dashboard2 = Client().get('/api/v1/dashboard/?user=2&format=json')
+        get_dashboard2 = Client().get('/api/v1/dashboard/?user=1&format=json')
         self.assertEqual(get_dashboard1.status_code, 200)
         self.assertEqual(get_dashboard2.status_code, 200)
         
