@@ -25,7 +25,7 @@ Users navigate through the payment process sequentially:
 
 ## Contribution
 
-1. Fork the repository.
+1. Fork the repository[(lipila-dot-tech](https://github.com/Lipila-tech/Lipila-rest-api)
 2. Create a new branch for your changes. [see branching](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 3. Make changes and commit them.
 4. Submit a pull request.[See making a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
@@ -49,9 +49,34 @@ Ensure you have python 3 installed
 
     cd lipila
 
-    *Copy and set your environment variables in the .env file.*
+    <!-- *Copy and set your environment variables in the .env file.* -->
 
     cp backend/example.env backend/.env
 
     python manage.py migrate
     python manage.py runserver
+
+Access your website at:
+
+    localhost:8000/api/v1/index
+
+
+Access the Django Rest API Root at:
+
+    Access your website at:
+
+    localhost:8000/api/v1/
+
+### Admin section:
+
+    localhost:8000/admin
+
+    username: sangwa
+    password: test@123
+
+### Testing sellers ID's:
+
+- pita
+- zyambo
+- sangwani
+- sangwa - failing(this is a superuser)
