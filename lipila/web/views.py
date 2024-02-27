@@ -5,7 +5,7 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 # My Models
 from api.models import MyUser
 from .helpers import apology
-from .forms.forms import DisburseForm
+from .forms.forms import DisburseForm, LoginForm, SignupForm
 
 
 # Public Views
@@ -44,10 +44,14 @@ def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
 
 def signup(request):
-    return render(request, 'Auth/signup.html')
+    context = {}
+    context['form'] = SignupForm()
+    return render(request, 'Auth/signup.html', context)
 
 def login(request):
-    return render(request, 'Auth/login.html')
+    context = {}
+    context['form'] = LoginForm()
+    return render(request, 'Auth/login.html', context)
 
 
 # Authenticated User Views
@@ -107,3 +111,6 @@ def logout(request):
 
 def history(request):
     return render(request, 'AdminUI/history.html')
+
+def sales(request):
+    return render(request, 'AdminUI/sales.html')
