@@ -14,9 +14,9 @@ from rest_framework.authtoken.models import Token
 
 # My modules
 from .serializers import UserSerializer
-from .serializers import LipilaCollectionSerializer
+from .serializers import LipilaCollectionSerializer, BNPLSerializer
 from .serializers import ProductSerializer, MyUserSerializer
-from .models import LipilaCollection, Product, MyUser
+from .models import LipilaCollection, Product, MyUser, BNPL
 from api.momo.mtn import Collections
 
 
@@ -72,6 +72,7 @@ class LoginView(ObtainAuthToken):
         except Exception:
             return Response({"Error: Bad Request"}, status=400)
 
+
 class ProductView(viewsets.ModelViewSet):
     """
     Get a users products
@@ -103,6 +104,7 @@ class ProductView(viewsets.ModelViewSet):
             }, status=201)
         except Exception:
             return Response({"error: Bad Request"}, status=400)
+
 
 class LipilaCollectionView(viewsets.ModelViewSet):
     serializer_class = LipilaCollectionSerializer
@@ -200,7 +202,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
 
         except User.DoesNotExist:
             return Response({"error": "Payee not found"}, status=404)
-  
+
 
 class LogoutView(views.APIView):
     """" Logs out the current signed in user"""
@@ -232,3 +234,33 @@ class ProfileView(viewsets.ModelViewSet):
 
     def put(self, request):
         pass
+
+
+class BNPLView(viewsets.ModelViewSet):
+    serializer_class = BNPLSerializer
+    queryset = BNPL.objects.all()
+
+    def list(self, request):
+        try:
+            username = request.query_params.get('user')
+
+            if not username:
+                return Response({"Error": "Username is missing"}, status=400)
+            else:
+                user_id = MyUser.objects.get(username=username)
+                user = BNPL.objects.get(requested_by=user_id.id)
+
+            serializer = BNPLSerializer(user, many=False)
+            return Response(serializer.data)
+        except MyUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({
+                'status': 'pending'}, status=status.HTTP_202_ACCEPTED)
+        except Exception:
+            return Response({"message: Request failed"}, status=400)

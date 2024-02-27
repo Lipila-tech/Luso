@@ -1,31 +1,44 @@
-"""
-    This file contains the models for the student_transactions app.
-"""
 from django.db import models
 from django.contrib.auth.models import User
 
 from django.contrib.auth.models import AbstractUser
 
+# Global variables
 CITY_CHOICES = (
-    ('KITWE', 'Kitwe'),
-    ('LUSAKA', 'Lusaka'),
+    ('Kitwe', 'Kitwe'),
+    ('Lusaka', 'Lusaka'),
+    ('Ndola', 'Ndola'),
 )
 
+STATUS_CHOICES = (
+    ('pending', 'pending'),
+    ('success', 'success'),
+    ('failed', 'failed'),
+)
+
+
 class MyUser(User):
-    phone_number = models.CharField(max_length=20, blank=False, null=False)
+    phone_number = models.CharField(
+        max_length=20, blank=False, null=False, unique=True)
     bio = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=10, default="Zambia")
-    address = models.CharField(max_length=255, default="", blank=False, null=False)
-    company = models.CharField(max_length=255, default="", blank=False, null=False)
-    city = models.CharField(max_length=9, choices=CITY_CHOICES, default='KITWE')
-    profile_image = models.ImageField(upload_to='img/profiles/', blank=True, null=True)
-
+    address = models.CharField(
+        max_length=255, default="", blank=False, null=False)
+    company = models.CharField(
+        max_length=255, default="", blank=False, null=False)
+    city = models.CharField(
+        max_length=9, choices=CITY_CHOICES, default='KItwe')
+    profile_image = models.ImageField(
+        upload_to='img/profiles/', blank=True, null=True)
 
     REQUIRED_FIELDS = ['email', 'phone_number']
 
     @staticmethod
     def get_user_by_id(ids):
         return MyUser.objects.filter(id__in=str(ids))
+
+    def __str__(self):
+        return self.username
 
 
 class Product(models.Model):
@@ -35,6 +48,9 @@ class Product(models.Model):
     price = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "{} -> {}".format(self.product_name, self.product_owner)
 
 
 class LipilaDisbursement(models.Model):
@@ -52,25 +68,28 @@ class LipilaDisbursement(models.Model):
     transaction_id = models.CharField(max_length=20)
     payment_date = models.DateField()
     description = models.CharField(max_length=255)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def get_account_number(self):
         """ returns the username of the student"""
         return self.payee.phone_number
 
     def __str__(self):
-        return "{} {} {} {} {} {} {}".format(self.payee,
-                                             self.payment_amount,
-                                             self.payment_method,
-                                             self.transaction_id,
-                                             self.payment_date,
-                                             self.payee_account,
-                                             self.description,
-                                             )
+        return "{} {} {} {} {} {} {} {}".format(self.payee,
+                                                self.payment_amount,
+                                                self.payment_method,
+                                                self.transaction_id,
+                                                self.payment_date,
+                                                self.payee_account,
+                                                self.description,
+                                                self.status,
+                                                )
 
 
 class LipilaCollection(models.Model):
-    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
-    # currency = models.CharField(max_length=3)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, null=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     reference_id = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
@@ -78,12 +97,37 @@ class LipilaCollection(models.Model):
     payer_name = models.CharField(max_length=100, null=True, blank=True)
     payer_email = models.EmailField(null=True, blank=True)
     payee = models.ForeignKey(User, related_name='payment',
-                                      on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=(
-        ('pending', 'Pending'),
-        ('success', 'Success'),
-        ('failed', 'Failed'),
-    ))
+                              on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def get_reference_id(self):
         return self.reference_id
+
+
+class BNPL(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    requested_by = models.ForeignKey(MyUser, related_name='credit', on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, related_name='bnpl', on_delete=models.CASCADE)
+    initial_deposit = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, null=False)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, null=False)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
+    approved_by = models.ForeignKey(
+        User, related_name='approvals', on_delete=models.CASCADE, null=True)
+
+
+class LoanCollection(models.Model):
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, null=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    reference_id = models.CharField(max_length=100, blank=False, null=False)
+    description = models.TextField(blank=True, null=True)
+    payer_account = models.CharField(max_length=10, null=False, blank=False)
+    debtor = models.ForeignKey(MyUser, related_name='debtors',
+                              on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')

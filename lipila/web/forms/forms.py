@@ -11,7 +11,7 @@ class DisburseForm(forms.ModelForm):
 class LoginForm(forms.ModelForm):
     class Meta:
         model = User
-        
+        fields = ('username', 'password')
 
 class SignupForm(forms.ModelForm):
     class Meta:

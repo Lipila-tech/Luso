@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .models import LipilaCollection, Product, MyUser
+from .models import LipilaCollection, Product, MyUser, BNPL
 
 
 class MyUserSerializer(serializers.ModelSerializer):
@@ -27,13 +27,17 @@ class LipilaCollectionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['product_name', 'product_owner', 'price',
+                  'status'
+                  ]
 
 
 class LipilaTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
-        fields = '__all__'
+        fields = ['payee', 'payer_account', 'amount'
+                  'description', 'payer_email',  'payer_name'
+                  ]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,9 +48,19 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'bio',
             'phone_number',
-            'country',
             'address',
             'city',
             'profile_image'
         ]
-        write_only_fields = ('password','username')
+        write_only_fields = ('password', 'username')
+
+
+class BNPLSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BNPL
+        # fields = [
+        #     'requested_by',
+        #     'product',
+        #     'amount'
+        # ]
+        fields = '__all__'

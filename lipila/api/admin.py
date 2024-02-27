@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (MyUser,
                      Product, LipilaCollection,
-                     LipilaDisbursement
+                     LipilaDisbursement, BNPL
                      )
 
 
@@ -38,11 +38,23 @@ class ProductAdmin(admin.ModelAdmin):
             return Product.objects.none()
 
 
+class BNPLAdmin(admin.ModelAdmin):
+    list_display = (
+        'created_at',
+        'requested_by',
+        'product',
+        'amount',
+        'status',
+        'approved_by'
+    )
+
+
 # Register your models here.
 admin.site.register(MyUser, MyUserAdmin)
 admin.site.register(LipilaCollection, LipilaCollectionAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(BNPL, BNPLAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/api/v1/index'
