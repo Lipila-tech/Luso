@@ -47,7 +47,7 @@ localhost:8000/api/v1/
 
 **API Keys COnfiguration**
 
-- Register to use the MTN mom api at
+- Register to use the MTN momo api at
     
     https://momodeveloper.mtn.com
 
