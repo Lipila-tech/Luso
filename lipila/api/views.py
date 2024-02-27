@@ -18,7 +18,6 @@ from .serializers import LipilaCollectionSerializer
 from .serializers import ProductSerializer, MyUserSerializer
 from .models import LipilaCollection, Product, MyUser
 from api.momo.mtn import Collections
-from api.helpers import apology
 
 
 # Define global variables
