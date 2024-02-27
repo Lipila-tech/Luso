@@ -8,13 +8,12 @@ from .helpers import apology
 from .forms.forms import DisburseForm
 
 
+# Public Views
 def index(request):
     return render(request, 'UI/index.html')
 
-
 def service_details(request):
     return render(request, 'UI/services-details.html')
-
 
 def portfolio_details(request):
     return render(request, 'UI/portfolio-details.html')
@@ -34,15 +33,24 @@ def send_money(request):
         
     return render(request, 'UI/send_money.html', context)
 
+
 def disburse(request):
     """View for the page homapage"""
     context = {}
     context['form'] = DisburseForm()
     return render(request, 'disburse.html', context)
 
-# django authenticated user views
+def pages_faq(request):
+    return render(request, 'AdminUI/pages-faq.html')
+
+def signup(request):
+    return render(request, 'Auth/signup.html')
+
+def login(request):
+    return render(request, 'Auth/login.html')
 
 
+# Authenticated User Views
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, id):
@@ -94,10 +102,8 @@ def users_profile(request, id):
         return apology(request, context)
     return render(request, 'AdminUI/users-profile.html', context)
 
+def logout(request):
+    pass
 
-def pages_faq(request):
-    return render(request, 'AdminUI/pages-faq.html')
-
-
-def signup(request):
-    return render(request, 'Auth/signup.html')
+def history(request):
+    return render(request, 'AdminUI/history.html')
