@@ -9,7 +9,8 @@
 Ensure you have python 3 installed
 [Download it here](https://www.python.org/downloads/)
 
-- fork this repo then:
+**Fork this repo then:**
+
 
     git clone git@github.com:your-username/lipila-dot-tech.git
 
