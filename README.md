@@ -26,6 +26,6 @@ Users navigate through the payment process sequentially:
 
 [Here](./lipila)
 
-## API Usage on Your local machine
+## Download to Local machine
 
 [Here](./lipila/)
