@@ -107,3 +107,6 @@ def logout(request):
 
 def history(request):
     return render(request, 'AdminUI/history.html')
+
+def bnpl(request):
+    return render(request, 'AdminUI/bnpl.html')
