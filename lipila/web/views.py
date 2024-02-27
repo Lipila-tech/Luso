@@ -97,3 +97,7 @@ def users_profile(request, id):
 
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
+
+
+def signup(request):
+    return render(request, 'Auth/signup.html')
