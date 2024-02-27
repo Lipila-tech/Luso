@@ -1,10 +1,7 @@
 from django.urls import path
 from . import views
-from .views import LoginView, disburse
+from .views import LoginView
 from rest_framework.routers import DefaultRouter
-from django.conf import settings
-from django.conf.urls.static import static
-from django.http import HttpResponse
 
 
 router = DefaultRouter()
@@ -16,19 +13,7 @@ router.register(r'signup', views.SignupViewSet, basename='signup')
 router.register(r'profile', views.ProfileView, basename='profile')
 
 urlpatterns = [
-     path('index/', views.index, name='index'),
-     path('payment/', views.send_money, name='payment'),
-     path('service-details/', views.service_details, name='service-details'),
-     path('portfolio-details/', views.portfolio_details, name='portfolio-details'),
-     path('disburse/', disburse, name='disburse'),
      path('login/', LoginView.as_view(), name='login'),
-
-     # authenticated user endpoints
-     path('dashboard/<int:id>', views.dashboard, name='dashboard'),
-     path('users-profile/<int:id>', views.users_profile, name='users-profile'),
-     path('pages-faq/', views.pages_faq, name='pages-faq'),
-
-
 ]
 
 urlpatterns += router.urls

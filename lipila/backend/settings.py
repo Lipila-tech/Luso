@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
-    # Local apss
+    # My apps
     'api',
+    'web',
    
     # Default apps
     'django.contrib.admin',
