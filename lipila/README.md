@@ -33,16 +33,16 @@ Ensure you have python 3 installed
 
 Access your Web App at:
 
-    localhost:8000/
+localhost:8000/
 
-    [more](./lipila/web/README.md)
+[more](./lipila/web/)
 
 
 Access the Django Rest API Root at:
 
-    localhost:8000/api/v1/
+localhost:8000/api/v1/
 
-    [more](./lipila/api/README.md)
+[more](./lipila/api/)
 
 
 **API Keys COnfiguration**
