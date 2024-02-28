@@ -9,6 +9,9 @@
 Ensure you have python 3 installed
 [Download it here](https://www.python.org/downloads/)
 
+**Fork this repo then:**
+
+
     git clone git@github.com:your-username/lipila-dot-tech.git
 
     cd lipila-dot-tech    
@@ -33,21 +36,21 @@ Ensure you have python 3 installed
 
 Access your Web App at:
 
-    localhost:8000/
+localhost:8000/
 
-    [more](./lipila/web/README.md)
+[more](./lipila/web/)
 
 
 Access the Django Rest API Root at:
 
-    localhost:8000/api/v1/
+localhost:8000/api/v1/
 
-    [more](./lipila/api/README.md)
+[more](./lipila/api/)
 
 
 **API Keys COnfiguration**
 
-- Register to use the MTN mom api at
+- Register to use the MTN momo api at
     
     https://momodeveloper.mtn.com
 
@@ -65,7 +68,7 @@ web app Code:
 
 **Contributing**
 
-1. Fork the repository[(lipila-dot-tech](https://github.com/Lipila-tech/Lipila-rest-api)
+1. Fork the repository[lipila-dot-tech](https://github.com/Lipila-tech/Lipila-rest-api)
 2. Create a new branch for your changes. [see branching](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 3. Make changes and commit them.
 4. Submit a pull request.[See making a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
