@@ -284,12 +284,12 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-journal-text"></i><span>Disbursements</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="forms-elements.html">
-                            <i class="bi bi-circle"></i><span>Form Elements</span>
+                        <a href="{% url 'disburse' %}">
+                            <i class="bi bi-circle"></i><span>Send Bulk Transfers</span>
                         </a>
                     </li>
                 </ul>
@@ -303,8 +303,8 @@
                 <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
                     <li>
-                        <a href="tables-data.html">
-                            <i class="bi bi-circle"></i><span>Data Tables</span>
+                        <a href="{% url 'sales' %}">
+                            <i class="bi bi-circle"></i><span>Total Sales</span>
                         </a>
                     </li>
                 </ul>

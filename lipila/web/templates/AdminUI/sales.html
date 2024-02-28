@@ -1,0 +1,65 @@
+{% extends 'admin-layout.html' %}
+{% load static %}
+{% block main %}
+<main id="main" class="main">
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Total Payments Received</h5>
+      <!-- Table with hoverable rows -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Product</th>
+            <th scope="col">Date</th>
+            <th scope="col">Received From</th>
+            <th scope="col">Payment Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>4000</td>
+            <td>Karate class</td>
+            <td>23-02-2021</td>
+            <td>Test client</td>
+            <td>MTN</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>4000</td>
+            <td>Masterclass</td>
+            <td>23-02-2021</td>
+            <td>Test client</td>
+            <td>MTN</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>4000</td>
+            <td>Piano class</td>
+            <td>23-02-2021</td>
+            <td>Test client</td>
+            <td>BNPL</td>
+          </tr>
+          <tr>
+            <th scope="row">4</th>
+            <td>4000</td>
+            <td>Sales trainings</td>
+            <td>23-02-2021</td>
+            <td>Test client</td>
+            <td>BNPL</td>
+          </tr>
+          <tr>
+            <th scope="row">5</th>
+            <td>4000</td>
+            <td>Karate class</td>
+            <td>23-02-2021</td>
+            <td>Test client</td>
+            <td>MTN</td>
+          </tr>
+        </tbody>
+      </table>
+</main><!-- End #main -->
+{% endblock %}

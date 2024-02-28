@@ -24,8 +24,8 @@ Users navigate through the payment process sequentially:
 
 ## Contribution
 
-    [Here](./lipila/README.md)
+[Here](./lipila)
 
-## API Usage on Your local machine
+## Download to Local machine
 
-    [Here](./lipila/README.md)
+[Here](./lipila/)
