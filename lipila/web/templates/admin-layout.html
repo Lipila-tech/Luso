@@ -284,12 +284,22 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Disbursements</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'disburse' %}">
-                            <i class="bi bi-circle"></i><span>Send Bulk Transfers</span>
+                        <a href="{% url 'invoice' %}">
+                            <i class="bi bi-circle"></i><span>Invoice</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'products' %}">
+                            <i class="bi bi-circle"></i><span>Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'transfer' %}">
+                            <i class="bi bi-circle"></i><span>Transfer</span>
                         </a>
                     </li>
                 </ul>
@@ -297,14 +307,14 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
                     <li>
-                        <a href="{% url 'sales' %}">
-                            <i class="bi bi-circle"></i><span>Total Sales</span>
+                        <a href="{% url 'history' %}">
+                            <i class="bi bi-circle"></i><span>History</span>
                         </a>
                     </li>
                 </ul>

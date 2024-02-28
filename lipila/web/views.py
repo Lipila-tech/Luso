@@ -34,11 +34,11 @@ def send_money(request):
     return render(request, 'UI/send_money.html', context)
 
 
-def disburse(request):
+def transfer(request):
     """View for the page homapage"""
     context = {}
     context['form'] = DisburseForm()
-    return render(request, 'disburse.html', context)
+    return render(request, 'AdminUI/transfer.html', context)
 
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
@@ -115,5 +115,11 @@ def history(request):
 def bnpl(request):
     return render(request, 'AdminUI/bnpl.html')
 
-def sales(request):
-    return render(request, 'AdminUI/sales.html')
+def history(request):
+    return render(request, 'AdminUI/history.html')
+
+def invoice(request):
+    return render(request, 'AdminUI/invoice.html')
+
+def products(request):
+    return render(request, 'AdminUI/products.html')

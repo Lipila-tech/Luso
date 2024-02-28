@@ -16,11 +16,13 @@ urlpatterns = [
      # Authenticated User Urls
      path('dashboard/<int:id>', views.dashboard, name='dashboard'),
      path('users-profile/<int:id>', views.users_profile, name='users-profile'),
-     path('disburse/', views.disburse, name='disburse'),
+     path('transfer/', views.transfer, name='transfer'),
      path('logout/', views.logout, name='logout'),
      path('history/', views.history, name='history'),
      path('bnpl/', views.bnpl, name='bnpl'),
-     path('sales/', views.sales, name='sales'),
+     path('history/', views.history, name='history'),
+     path('invoice/', views.invoice, name='invoice'),
+     path('products/', views.products, name='products'),
 ]
 
 
