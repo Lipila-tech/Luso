@@ -324,6 +324,50 @@
 
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <script>
+        function nextStep(location) {
+            if (location === "step1") {
+                document.getElementById('step0').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+            } else if (location == "step2") {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+            }
+        }
+
+        // Add conditional navigation
+        function prevStep(location) {
+            // Go to setp 1 if user is on step 2
+            if (location === "step1") {
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+            } else if (location == "step0") {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step0').style.display = 'block';
+            }
+            else {
+                // Otherwise redirect the user to the home page
+                window.location.assign('http://localhost:8000/');
+            }
+
+        }
+
+        function submitPayment() {
+            // Payment submission logic here
+            alert('Submit Payment button clicked');
+        }
+
+        function submitInvoice() {
+            // Payment submission logic here
+            alert('Submit Invoice button clicked');
+        }
+
+        function submitProduct() {
+            // Payment submission logic here
+            alert('Submit Product button clicked');
+        }
+    </script>
 </body>
 
 </html>

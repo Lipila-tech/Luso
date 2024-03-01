@@ -6,6 +6,25 @@
   <div class="card">
     <div class="card-body">
       <h5 class="card-title">Products</h5>
-      
+    </div>
+  </div>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form>
+            <h2>New Product</h2>
+            <label for="product">Product Name</label>
+            <input name="product" type="text" class="form-control mb-3" placeholder="Ex. Iphone XS" required>
+            <label for="amount">Product Name</label>
+            <input name="amount" type="text" class="form-control mb-3" placeholder="Ex. 300" required>
+            <label for="descripion">Description</label>
+            <input name="descripion" type="text" class="form-control mb-3" placeholder="Ex. Latest products in.." required>
+            <button class="btn btn-success" onclick="submitProduct()">Submit Payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 </main><!-- End #main -->
 {% endblock %}
