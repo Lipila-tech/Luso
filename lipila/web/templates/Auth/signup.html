@@ -1,3 +1,5 @@
+{% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,7 +22,6 @@
 
     </div>
     {% endif %}
-    <!-- end message -->
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -29,15 +30,31 @@
                         <h2>Signup</h2>
                     </div>
                 </div>
-                <form action="" method="post">
+                <form action="" method="post" class="">
                     {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" value="Submit">
-                </form>
-                <p>Already registered <a href="/login">login</a></p>
+                    <form method="post" class="signup-form">
+                        {% csrf_token %}
+                        <!-- username -->
+                        {{form.username.errors}}
+                        {{form.username.label_tag}}
+                        {{form.username|add_class:'form-control mb-3'}}
+                        
+                        <!-- phone_number -->
+                        {{form.phone_number.errors}}
+                        {{form.phone_number.label_tag}}
+                        {{form.phone_number|add_class:'form-control mb-3'}}
+                        
+                        <!-- password 1 -->
+                        {{form.password.errors}}
+                        {{form.password.label_tag}}
+                        {{form.password|add_class:'form-control mb-3'}}
+                        
+                        <input type="submit" value="Signup" class="btn btn-primary">
+                    </form>
+                    <p>Already registered <a href="/login">login</a></p>
             </div>
         </div>
-    </div><!-- End #main -->
+    </div>
 </body>
 
 </html>

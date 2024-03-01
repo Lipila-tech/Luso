@@ -10,7 +10,7 @@ class DisburseForm(forms.ModelForm):
 
 class LoginForm(forms.ModelForm):
     class Meta:
-        model = User
+        model = MyUser
         fields = ('username', 'password')
 
 class SignupForm(forms.ModelForm):

@@ -1,3 +1,5 @@
+{% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,9 +27,17 @@
         <h2 style="text-align:center">Login</h2>
         <form method="post" class="signup-form">
             {% csrf_token %}
-            {{form.as_p}}
+            <!-- username -->
+            {{form.username.errors}}
+            {{form.username.label_tag}}
+            {{form.username|add_class:'form-control mb-3'}}
 
-            <button type="submit" class="btn btn-primary">Login</button>
+            <!-- password 1 -->
+            {{form.password.errors}}
+            {{form.password.label_tag}}
+            {{form.password|add_class:'form-control mb-3'}}
+
+            <input type="submit" value="Login" class="btn btn-primary">
         </form>
         <p>Not registered <a href="/signup">signup</a></p>
         <p><a href="#">forgot password</a></p>
