@@ -1,30 +1,18 @@
+{% extends 'layout_auth.html' %}
 {% load static %}
 {% load custom_filters %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% block title %} Login {% endblock %}
 
-</head>
-
-<body>
-    {% if messages %}
-    <div class="messages">
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-                {% endfor %}
-        </ul>
-
+{% block main %}
+<div class="col-md-8">
+    <div class="breadcrumbs" data-aos="fade-in">
+        <div class="container">
+            <h2>Login</h2>
+        </div>
     </div>
-    {% endif %}
-    <!-- end message -->
-    <div class="form-container">
-        <h2 style="text-align:center">Login</h2>
+    <form action="" method="post" class="">
+        {% csrf_token %}
         <form method="post" class="signup-form">
             {% csrf_token %}
             <!-- username -->
@@ -39,10 +27,7 @@
 
             <input type="submit" value="Login" class="btn btn-primary">
         </form>
-        <p>Not registered <a href="/signup">signup</a></p>
-        <p><a href="#">forgot password</a></p>
-
-    </div>
-</body>
-
-</html>
+        <p>Create Account <a href="/signup">signup</a></p>
+        <p><a href="#">Forgot Password</a></p>
+</div>
+{% endblock %}
