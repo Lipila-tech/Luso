@@ -35,13 +35,6 @@ def send_money(request):
         
     return render(request, 'UI/send_money.html', context)
 
-
-def transfer(request):
-    """View for the page homapage"""
-    context = {}
-    context['form'] = DisburseForm()
-    return render(request, 'AdminUI/transfer.html', context)
-
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
 
@@ -131,17 +124,27 @@ def users_profile(request, id):
 def logout(request):
     pass
 
-def history(request):
-    return render(request, 'AdminUI/history.html')
-
 def bnpl(request):
     return render(request, 'AdminUI/bnpl.html')
 
-def history(request):
-    return render(request, 'AdminUI/history.html')
+# Logs
+def log_transfer(request):
+    return render(request, 'AdminUI//log/transfer.html')
 
+def log_invoice(request):
+    return render(request, 'AdminUI/log/invoice.html')
+
+def log_products(request):
+    return render(request, 'AdminUI/log/products.html')
+
+# Actions
 def invoice(request):
-    return render(request, 'AdminUI/invoice.html')
+    return render(request, 'AdminUI/actions/invoice.html')
 
 def products(request):
-    return render(request, 'AdminUI/products.html')
+    return render(request, 'AdminUI/actions/products.html')
+
+def transfer(request):
+    context = {}
+    context['form'] = DisburseForm()
+    return render(request, 'AdminUI//actions/transfer.html', context)
