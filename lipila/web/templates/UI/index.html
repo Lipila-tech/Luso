@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
+{% load messages %}
 {% block title %}
 <title>Home</title>
 {% endblock %}
@@ -134,9 +135,9 @@
 
         <div class="col-lg-3 col-md-6">
           <div class="stats-item text-center w-100 h-100">
-            <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1"
+            <span data-purecounter-start="0" data-purecounter-end="{{value|get_users}}" data-purecounter-duration="1"
               class="purecounter"></span>
-            <p>Clients</p>
+            <p>Users</p>
           </div>
         </div><!-- End Stats Item -->
 
@@ -160,7 +161,7 @@
           <div class="stats-item text-center w-100 h-100">
             <span data-purecounter-start="0" data-purecounter-end="32" data-purecounter-duration="1"
               class="purecounter"></span>
-            <p>Workers</p>
+            <p>Entrepreneurs</p>
           </div>
         </div><!-- End Stats Item -->
 
@@ -287,7 +288,8 @@
     <!--  Section Title -->
     <div class="container section-title" data-aos="fade-up">
       <h2>Pricing</h2>
-      <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      <p>Choose the plan that’s right for you
+        and only pay based on what you earn.</p>
     </div><!-- End Section Title -->
 
     <div class="container" data-aos="zoom-in" data-aos-delay="100">
@@ -296,7 +298,7 @@
 
         <div class="col-lg-4">
           <div class="pricing-item">
-            <h3>Free Plan</h3>
+            <h3>School Plan</h3>
             <div class="icon">
               <i class="bi bi-box"></i>
             </div>
@@ -308,13 +310,13 @@
               <li class="na"><i class="bi bi-x"></i> <span>Pharetra massa massa ultricies</span></li>
               <li class="na"><i class="bi bi-x"></i> <span>Massa ultricies mi quis hendrerit</span></li>
             </ul>
-            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
+            <div class="text-center"><a href="#" class="buy-btn">Coming Soon</a></div>
           </div>
         </div><!-- End Pricing Item -->
 
         <div class="col-lg-4">
           <div class="pricing-item featured">
-            <h3>Business Plan</h3>
+            <h3>Free Plan</h3>
             <div class="icon">
               <i class="bi bi-rocket"></i>
             </div>
@@ -327,13 +329,14 @@
               <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
               <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
             </ul>
-            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
+            <div class="text-center"><a href="{% url 'login' %}" class="buy-btn">Get Started</a></div>
           </div>
-        </div><!-- End Pricing Item -->
+        </div>
+        <!-- End Pricing Item -->
 
         <div class="col-lg-4">
           <div class="pricing-item">
-            <h3>Developer Plan</h3>
+            <h3>Pro Plan</h3>
             <div class="icon">
               <i class="bi bi-send"></i>
             </div>
@@ -345,7 +348,7 @@
               <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
               <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
             </ul>
-            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
+            <div class="text-center"><a href="#" class="buy-btn">Coming Soon</a></div>
           </div>
         </div><!-- End Pricing Item -->
 

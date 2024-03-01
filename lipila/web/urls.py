@@ -10,7 +10,7 @@ urlpatterns = [
      path('service-details/', views.service_details, name='service-details'),
      path('portfolio-details/', views.portfolio_details, name='portfolio-details'),
      path('pages-faq/', views.pages_faq, name='pages-faq'),     
-     path('signup/', views.signup, name='signup'),
+     path('signup/', views.SignupView.as_view(), name='signup'),
      path('login/', views.login, name='login'),
      
      # Authenticated User Urls

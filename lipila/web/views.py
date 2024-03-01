@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from django.views import View
+from django.contrib import messages
 
 # My Models
 from api.models import MyUser
@@ -43,10 +45,30 @@ def transfer(request):
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
 
-def signup(request):
-    context = {}
-    context['form'] = SignupForm()
-    return render(request, 'Auth/signup.html', context)
+# Auth
+class SignupView(View):
+    
+    def get(self, request):
+        form = SignupForm()
+        context = {'form': form}
+        
+        return render(request, 'Auth/signup.html', context)
+
+    def post(self, request):
+        form = SignupForm(request.POST)
+        context = {'form': form}
+
+        try:
+            if form.is_valid():
+                form.save()
+                messages.add_message(request, messages.SUCCESS,
+                                    "Account created successfully")
+                return redirect('login')
+            else:
+                messages.add_message(request, messages.ERROR, "Error during signup!")
+                return render(request, 'Auth/signup.html', context)
+        except Exception as e:
+            print(e)
 
 def login(request):
     context = {}

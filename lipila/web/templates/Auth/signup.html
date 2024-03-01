@@ -10,6 +10,17 @@
 </head>
 
 <body>
+    {% if messages %}
+    <div class="messages">
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+
+    </div>
+    {% endif %}
+    <!-- end message -->
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -23,6 +34,7 @@
                     {{ form }}
                     <input type="submit" value="Submit">
                 </form>
+                <p>Already registered <a href="/login">login</a></p>
             </div>
         </div>
     </div><!-- End #main -->

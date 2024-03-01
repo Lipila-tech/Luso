@@ -1,4 +1,5 @@
 from django import template
+from api.models import User, MyUser, Product
 
 register = template.Library()
 
@@ -58,3 +59,9 @@ def notification_counter(value, id):
         return id
     else:
         return 0
+
+
+@register.filter
+def get_users(value):
+    users = User.objects.count()
+    return users

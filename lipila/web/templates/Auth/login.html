@@ -10,22 +10,29 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="breadcrumbs" data-aos="fade-in">
-                    <div class="container">
-                        <h2>Login</h2>
-                    </div>
-                </div>
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" value=Submit">
-                </form>
-            </div>
-        </div>
-    </div><!-- End #main -->
+    {% if messages %}
+    <div class="messages">
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+
+    </div>
+    {% endif %}
+    <!-- end message -->
+    <div class="form-container">
+        <h2 style="text-align:center">Login</h2>
+        <form method="post" class="signup-form">
+            {% csrf_token %}
+            {{form.as_p}}
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <p>Not registered <a href="/signup">signup</a></p>
+        <p><a href="#">forgot password</a></p>
+
+    </div>
 </body>
 
 </html>
