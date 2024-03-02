@@ -4,15 +4,22 @@ from django.contrib.auth.models import User
 
 # Global variables
 CITY_CHOICES = (
-    ('Kitwe', 'Kitwe'),
-    ('Lusaka', 'Lusaka'),
-    ('Ndola', 'Ndola'),
+    ('kitwe', 'Kitwe'),
+    ('lusaka', 'Lusaka'),
+    ('ndola', 'Ndola'),
 )
 
 STATUS_CHOICES = (
     ('pending', 'pending'),
     ('success', 'success'),
     ('failed', 'failed'),
+)
+
+
+INVOICE_STATUS_CHOICES = (
+    ('pending', 'pending'),
+    ('paid', 'paid'),
+    ('rejected', 'rejected'),
 )
 
 BUSINESS_TYPE_CHOICES = (
@@ -127,7 +134,7 @@ class BNPL(models.Model):
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
     approved_by = models.ForeignKey(
-        User, related_name='approvals', on_delete=models.CASCADE, null=True)
+        User, related_name='approvals', on_delete=models.CASCADE, null=True, blank=True)
 
 
 class LoanCollection(models.Model):
@@ -145,9 +152,9 @@ class LoanCollection(models.Model):
 
 class Invoice(models.Model):
     """
-    Model representing an invoice for Lipila.
+    Model representing an invoice for non lipila registered customers.
     """
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=255)
     customer_phone_number = models.CharField(max_length=20)
     customer_email = models.EmailField(blank=True)
@@ -157,6 +164,30 @@ class Invoice(models.Model):
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(
+        max_length=20, choices=INVOICE_STATUS_CHOICES, default='pending')
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Invoice for {self.customer_name} - {self.total_amount}"
+
+
+class InvoiceLipilaUser(models.Model):
+    """
+    Model representing an invoice for Lipila registereds customers.
+    """
+    creator = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='bill_from')
+    receiver =  models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='bill_to')
+    reference_number = models.CharField(max_length=50, blank=True)
+    due_date = models.DateField(blank=True, null=True)
+    description = models.TextField(blank=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(
+        max_length=20, choices=INVOICE_STATUS_CHOICES, default='pending')
 
     class Meta:
         ordering = ['-created_at']

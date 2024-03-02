@@ -11,10 +11,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 
 # My modules
-from .serializers import UserSerializer
+from .serializers import UserSerializer, InvoiceSerializer
 from .serializers import LipilaCollectionSerializer, BNPLSerializer
-from .serializers import ProductSerializer, MyUserSerializer
-from .models import LipilaCollection, Product, MyUser, BNPL
+from .serializers import ProductSerializer, MyUserSerializer, InvoiceLipilaUserSerializer
+from .models import LipilaCollection, Product, MyUser, BNPL, Invoice, InvoiceLipilaUser
 from api.momo.mtn import Collections
 
 
@@ -260,5 +260,69 @@ class BNPLView(viewsets.ModelViewSet):
             serializer.save()
             return Response({
                 'status': 'pending'}, status=status.HTTP_202_ACCEPTED)
+        except Exception:
+            return Response({"message: Request failed"}, status=400)
+
+
+class InvoiceView(viewsets.ModelViewSet):
+    serializer_class = InvoiceSerializer
+    queryset = Invoice.objects.all()
+
+    def list(seelf, request):
+        try:
+            username = request.query_params.get('user')
+
+            if not username:
+                return Response({"Error": "Username is missing"}, status=400)
+            else:
+                user_id = MyUser.objects.get(username=username)
+                invoices = Invoice.objects.get(creator=user_id.id)
+
+            serializer = InvoiceSerializer(invoices, many=False)
+            return Response(serializer.data)
+        except MyUser.DoesNotExist:
+            return Response({"message": "User not found"}, status=404)
+        except Invoice.DoesNotExist:
+            return Response({"message": "No invoice found"}, status=404)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({
+                'status': 'created'}, status=status.HTTP_201_CREATED)
+        except Exception:
+            return Response({"message: Request failed"}, status=400)
+
+
+class InvoiceLipilaUserView(viewsets.ModelViewSet):
+    serializer_class = InvoiceLipilaUserSerializer
+    queryset = InvoiceLipilaUser.objects.all()
+
+    def list(seelf, request):
+        try:
+            username = request.query_params.get('user')
+
+            if not username:
+                return Response({"Error": "Username is missing"}, status=400)
+            else:
+                user_id = MyUser.objects.get(username=username)
+                invoices = Invoice.objects.get(creator=user_id.id)
+
+            serializer = InvoiceSerializer(invoices, many=False)
+            return Response(serializer.data)
+        except MyUser.DoesNotExist:
+            return Response({"message": "User not found"}, status=404)
+        except Invoice.DoesNotExist:
+            return Response({"message": "No invoice found"}, status=404)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({
+                'status': 'created'}, status=status.HTTP_201_CREATED)
         except Exception:
             return Response({"message: Request failed"}, status=400)

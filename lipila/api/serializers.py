@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .models import LipilaCollection, Product, MyUser, BNPL
+from .models import LipilaCollection, Product, MyUser, BNPL, Invoice, InvoiceLipilaUser
 
 
 class MyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('id','username', 'city', 'email', 'password', 'phone_number', 'bio', 'business_type')
+        fields = ('id', 'username', 'city', 'email', 'password',
+                  'phone_number', 'bio', 'business_type')
         write_only_fields = ('password',)
 
     def create(self, validated_data):
@@ -58,9 +59,32 @@ class UserSerializer(serializers.ModelSerializer):
 class BNPLSerializer(serializers.ModelSerializer):
     class Meta:
         model = BNPL
-        # fields = [
-        #     'requested_by',
-        #     'product',
-        #     'amount'
-        # ]
         fields = '__all__'
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invoice
+        fields = (
+            'creator',
+            'customer_name',
+            'customer_phone_number',
+            'customer_email',
+            'due_date',
+            'description',
+            'total_amount',
+            'status',
+        )
+
+
+class InvoiceLipilaUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvoiceLipilaUser
+        fields = (
+            'creator',
+            'receiver',
+            'due_date',
+            'description',
+            'total_amount',
+            'status',
+        )
