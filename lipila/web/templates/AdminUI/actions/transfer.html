@@ -1,0 +1,61 @@
+{% extends 'layout_admin.html' %}
+{% load static %}
+{% block title %} Transfer {% endblock %}
+{% block main %}
+<main id="main" class="main">
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Transfer</h5>
+    </div>
+    <div>
+      <p>Step 1: Payee ID > Step2: Pament Details > Step3: Confirmation</p>
+    </div>
+  </div>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form>
+          <div id="step0" style="display: block;">
+            <h2>Payee Information</h2>
+            <label for="amount">Payee ID</label>
+            <input name="payee" type="text" class="form-control mb-3" placeholder="Ex. lipila" required>
+            <button class="btn btn-primary mr-2" onclick="prevStep('home')">Back</button>
+            <button class="btn btn-success" onclick="nextStep('step1')">Next</button>
+          </div>
+
+          <div id="step1" style="display: none;">
+            <h2>Payment Details</h2>
+            <h6>Send to: {{ payee }}</h6>
+            <label for="amount">Amount</label>
+            <input name="amount" type="number" class="form-control mb-3" placeholder="Ex. 100" required>
+
+            <div class="form-group">
+              <label for="paymentMethod">Select Payment Method:</label>
+              <select class="form-control" id="paymentMethod">
+                <option value="MTN">MTN</option>
+                <option value="Airtel">Airtel</option>
+              </select>
+            </div>
+            <button class="btn btn-primary mr-2" onclick="prevStep('step0')">Back</button>
+            <button class="btn btn-primary" onclick="nextStep('step2')">Next</button>
+          </div>
+
+          <div id="step2" style="display: none;">
+            <h2>Confirmation</h2>
+            <p>Pay: K {{amount}}</p>
+            <p>To: {{payee}}</p>
+            <p>Using account: {{account}}</p>
+            <p>Commision: K1</p>
+            <p>Total: K 2200</p>
+            <!-- Confirmation & Receipt details will be displayed here -->
+            <button class="btn btn-primary mr-2" onclick="prevStep('step1')">Back</button>
+            <button class="btn btn-success" onclick="submitPayment()">Submit Payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</main><!-- End #main -->
+{% endblock %}

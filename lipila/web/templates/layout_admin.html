@@ -1,4 +1,5 @@
 {% load static %}
+{% load messages %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    {% block title %}{% endblock%}
+    <title>Lipila-{% block title %}{% endblock%}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -69,89 +70,54 @@
 
                     <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-bell"></i>
-                        <span class="badge bg-primary badge-number">4</span>
+                        <span class="badge bg-primary badge-number">{{count|notification_counter:3}}</span>
                     </a><!-- End Notification Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                         <li class="dropdown-header">
-                            You have 4 new notifications
+                            You have {{count|notification_counter:3}} new notifications
                             <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-
-                        <li class="notification-item">
-                            <i class="bi bi-exclamation-circle text-warning"></i>
-                            <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>30 min. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="notification-item">
-                            <i class="bi bi-x-circle text-danger"></i>
-                            <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>1 hr. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="notification-item">
-                            <i class="bi bi-check-circle text-success"></i>
-                            <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>2 hrs. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
+                        {% get_notifications as user_notifications %}
+                        {% for notifications in user_notifications %}
                         <li class="notification-item">
                             <i class="bi bi-info-circle text-primary"></i>
                             <div>
-                                <h4>Dicta reprehenderit</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>4 hrs. ago</p>
+                                <h4>{{notifications.title}}</h4>
+                                <p>{{notifications.body}}</p>
+                                <p>{{notifications.time}}</p>
                             </div>
                         </li>
 
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+                        {% endfor %}
                         <li class="dropdown-footer">
                             <a href="#">Show all notifications</a>
                         </li>
+
 
                     </ul><!-- End Notification Dropdown Items -->
 
                 </li><!-- End Notification Nav -->
 
                 <li class="nav-item dropdown">
-
                     <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-chat-left-text"></i>
-                        <span class="badge bg-success badge-number">3</span>
+                        <span class="badge bg-success badge-number">{{ count|message_counter:2 }}</span>
                     </a><!-- End Messages Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
                         <li class="dropdown-header">
-                            You have 3 new messages
+                            You have {{ count|message_counter:2 }} new messages
                             <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
                         </li>
+                        {% get_messages as user_messages %}
+                        {% for messages in user_messages %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -160,43 +126,16 @@
                             <a href="#">
                                 <img src="{% static 'assets/img/messages-1.jpg' %}" alt="" class="rounded-circle">
                                 <div>
-                                    <h4>Maria Hudson</h4>
-                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                    <p>4 hrs. ago</p>
+                                    <h4>{{ messages.sender}}</h4>
+                                    <p>{{ messages.message}}</p>
+                                    <p>{{ messages.time}}</p>
                                 </div>
                             </a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="{% static 'assets/img/messages-2.jpg' %}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>Anna Nelson</h4>
-                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                    <p>6 hrs. ago</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="{% static 'assets/img/messages-3.jpg' %}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>David Muldon</h4>
-                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                    <p>8 hrs. ago</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        {% endfor %}
 
                         <li class="dropdown-footer">
                             <a href="#">Show all messages</a>
@@ -209,10 +148,13 @@
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        {% if user.profile_image %}
+
                         {% if user.profile_image.url %}
                         <img src="{{user.profile_image.url}}" alt="Profile" class="rounded-circle">
                         {% else%}
                         <img src="#" alt="Profile" class="rounded-circle">
+                        {% endif %}
                         {% endif %}
                         <span class="d-none d-md-block dropdown-toggle ps-2">{{user.username}}</span>
                     </a><!-- End Profile Iamge Icon -->
@@ -284,12 +226,23 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Disbursements</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'disburse' %}">
-                            <i class="bi bi-circle"></i><span>Send Bulk Transfers</span>
+                        <a href="{% url 'invoice' %}">
+                            <i class="bi bi-circle"></i><span>Invoice</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'products' %}">
+                            <i class="bi bi-circle"></i><span>Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'transfer' %}">
+                            <i class="bi bi-circle"></i><span>Transfer</span>
                         </a>
                     </li>
                 </ul>
@@ -297,14 +250,24 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
                     <li>
-                        <a href="{% url 'sales' %}">
-                            <i class="bi bi-circle"></i><span>Total Sales</span>
+                        <a href="{% url 'log_invoice' %}">
+                            <i class="bi bi-circle"></i><span>Invoice</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_products' %}">
+                            <i class="bi bi-circle"></i><span>Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'log_transfer' %}">
+                            <i class="bi bi-circle"></i><span>Transfer</span>
                         </a>
                     </li>
                 </ul>
@@ -343,11 +306,7 @@
         <div class="container copyright text-center mt-4">
             <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila</strong> <span>All Rights Reserved</span></p>
             <div class="credits">
-                <!-- All the links in the footer should remain intact. -->
-                <!-- You can delete the links only if you've purchased the pro version. -->
-                <!-- Licensing information: https://bootstrapmade.com/license/ -->
-                <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                Designed by <a href="zyambo.pythonanywhere.com">Zyambo</a>
             </div>
         </div>
 
@@ -375,6 +334,50 @@
 
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <script>
+        function nextStep(location) {
+            if (location === "step1") {
+                document.getElementById('step0').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+            } else if (location == "step2") {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+            }
+        }
+
+        // Add conditional navigation
+        function prevStep(location) {
+            // Go to setp 1 if user is on step 2
+            if (location === "step1") {
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+            } else if (location == "step0") {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step0').style.display = 'block';
+            }
+            else {
+                // Otherwise redirect the user to the home page
+                window.location.assign('http://localhost:8000/');
+            }
+
+        }
+
+        function submitPayment() {
+            // Payment submission logic here
+            alert('Submit Payment button clicked');
+        }
+
+        function submitInvoice() {
+            // Payment submission logic here
+            alert('Submit Invoice button clicked');
+        }
+
+        function submitProduct() {
+            // Payment submission logic here
+            alert('Submit Product button clicked');
+        }
+    </script>
 </body>
 
 </html>

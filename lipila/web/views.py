@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from django.views import View
+from django.contrib import messages
 
 # My Models
 from api.models import MyUser
@@ -33,20 +35,33 @@ def send_money(request):
         
     return render(request, 'UI/send_money.html', context)
 
-
-def disburse(request):
-    """View for the page homapage"""
-    context = {}
-    context['form'] = DisburseForm()
-    return render(request, 'disburse.html', context)
-
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
 
-def signup(request):
-    context = {}
-    context['form'] = SignupForm()
-    return render(request, 'Auth/signup.html', context)
+# Auth
+class SignupView(View):
+    
+    def get(self, request):
+        form = SignupForm()
+        context = {'form': form}
+        
+        return render(request, 'Auth/signup.html', context)
+
+    def post(self, request):
+        form = SignupForm(request.POST)
+        context = {'form': form}
+
+        try:
+            if form.is_valid():
+                form.save()
+                messages.add_message(request, messages.SUCCESS,
+                                    "Account created successfully")
+                return redirect('login')
+            else:
+                messages.add_message(request, messages.ERROR, "Error during signup!")
+                return render(request, 'Auth/signup.html', context)
+        except Exception as e:
+            print(e)
 
 def login(request):
     context = {}
@@ -109,8 +124,27 @@ def users_profile(request, id):
 def logout(request):
     pass
 
-def history(request):
-    return render(request, 'AdminUI/history.html')
+def bnpl(request):
+    return render(request, 'AdminUI/bnpl.html')
 
-def sales(request):
-    return render(request, 'AdminUI/sales.html')
+# Logs
+def log_transfer(request):
+    return render(request, 'AdminUI//log/transfer.html')
+
+def log_invoice(request):
+    return render(request, 'AdminUI/log/invoice.html')
+
+def log_products(request):
+    return render(request, 'AdminUI/log/products.html')
+
+# Actions
+def invoice(request):
+    return render(request, 'AdminUI/actions/invoice.html')
+
+def products(request):
+    return render(request, 'AdminUI/actions/products.html')
+
+def transfer(request):
+    context = {}
+    context['form'] = DisburseForm()
+    return render(request, 'AdminUI//actions/transfer.html', context)

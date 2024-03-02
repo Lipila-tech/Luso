@@ -12,7 +12,7 @@ router.register(r'profile', views.ProfileView, basename='profile')
 router.register(r'bnpl', views.BNPLView, basename='bnpl')
 
 urlpatterns = [
-     path('login/', views.LoginView.as_view(), name='login'),
+     path('login/', views.LoginView.as_view(), name='api-login'),
 ]
 
 urlpatterns += router.urls

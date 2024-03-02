@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    {% block title%} {% endblock %}
+    <title>Lipila-{% block title %} {% endblock %}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -63,15 +63,27 @@
                     <li><a href="/#team">Team</a></li>
                     <li><a href="/#contact">Contact</a></li>
                     <li><a href="/#faq">Faq</a></li>
-                  </ul>
-          
-                  <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-                </nav><!-- End Nav Menu -->
-          
-                <a id="btn-getstarted" class="btn-getstarted" href="/#about">Get Started</a>
+                </ul>
+
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav><!-- End Nav Menu -->
+
+            <a id="btn-getstarted" class="btn-getstarted" href="/#about">Get Started</a>
 
         </div>
     </header><!-- End Header -->
+    <!-- display any message -->
+    {% if messages %}
+    <div class="messages">
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+
+    </div>
+    {% endif %}
+    <!-- end message -->
 
     {% block main %}
     {% endblock %}
@@ -129,11 +141,7 @@
         <div class="container copyright text-center mt-4">
             <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila</strong> <span>All Rights Reserved</span></p>
             <div class="credits">
-                <!-- All the links in the footer should remain intact. -->
-                <!-- You can delete the links only if you've purchased the pro version. -->
-                <!-- Licensing information: https://bootstrapmade.com/license/ -->
-                <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                Designed by <a href="zyambo.pythonanywhere.com">Zyambo</a>
             </div>
         </div>
 
@@ -162,6 +170,34 @@
 
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
+    <script>
+        function nextStep() {
+            const amount = document.getElementsByName('amount');
+            console.log('amount', amount.values);
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('payee').style.display = 'none';
+        }
+
+        // Add conditional navigation
+        function prevStep(location) {
+            // Go to setp 1 if user is on step 2
+            if (location === "step1") {
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+                document.getElementById('payee').style.display = 'block';
+            } else {
+                // Otherwise redirect the user to the home page
+                window.location.assign('http://localhost:8000/');
+            }
+
+        }
+
+        function submitPayment() {
+            // Payment submission logic here
+            alert('Send money button clicked');
+        }
+    </script>
 
 </body>
 
