@@ -6,7 +6,7 @@ from .models import LipilaCollection, Product, MyUser, BNPL
 class MyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('id','username', 'email', 'password', 'phone_number', 'bio')
+        fields = ('id','username', 'city', 'email', 'password', 'phone_number', 'bio', 'business_type')
         write_only_fields = ('password',)
 
     def create(self, validated_data):

@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from django.contrib.auth.models import AbstractUser
 
 # Global variables
 CITY_CHOICES = (
@@ -14,6 +13,14 @@ STATUS_CHOICES = (
     ('pending', 'pending'),
     ('success', 'success'),
     ('failed', 'failed'),
+)
+
+BUSINESS_TYPE_CHOICES = (
+    ('clothing', 'Clothing Shop'),
+    ('creator', 'Content Creator'),
+    ('grocery', 'Grocery Store'),
+    ('school', 'Tuition Center'),
+    ('other', 'Other'),
 )
 
 
@@ -30,6 +37,8 @@ class MyUser(User):
         max_length=9, choices=CITY_CHOICES, default='KItwe')
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
+    business_type = models.CharField(
+        max_length=30, choices=BUSINESS_TYPE_CHOICES, default='other')
 
     REQUIRED_FIELDS = ['email', 'phone_number']
 
@@ -107,11 +116,12 @@ class LipilaCollection(models.Model):
 
 class BNPL(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    requested_by = models.ForeignKey(MyUser, related_name='credit', on_delete=models.CASCADE)
+    requested_by = models.ForeignKey(
+        MyUser, related_name='credit', on_delete=models.CASCADE)
     product = models.ForeignKey(
         Product, related_name='bnpl', on_delete=models.CASCADE)
     initial_deposit = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=False, null=False)
+        max_digits=10, decimal_places=2, blank=False, null=False, default=0)
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, blank=False, null=False)
     status = models.CharField(
@@ -128,7 +138,7 @@ class LoanCollection(models.Model):
     description = models.TextField(blank=True, null=True)
     payer_account = models.CharField(max_length=10, null=False, blank=False)
     debtor = models.ForeignKey(MyUser, related_name='debtors',
-                              on_delete=models.CASCADE)
+                               on_delete=models.CASCADE)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
 
@@ -153,4 +163,3 @@ class Invoice(models.Model):
 
     def __str__(self):
         return f"Invoice for {self.customer_name} - {self.total_amount}"
-

@@ -25,10 +25,18 @@
             {{form.phone_number.label_tag}}
             {{form.phone_number|add_class:'form-control mb-3'}}
 
-            <!-- password 1 -->
+            <!-- password -->
             {{form.password.errors}}
             {{form.password.label_tag}}
             {{form.password|add_class:'form-control mb-3'}}
+
+             <!-- city -->
+             {{form.city.label_tag}}
+             {{form.city | add_class:'form-control mb-3'}}
+
+              <!-- business type -->
+            {{form.business_type.label_tag}}
+            {{form.business_type | add_class:'form-control mb-3'}}
 
             <input type="submit" value="Signup" class="btn btn-primary">
         </form>
