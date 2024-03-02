@@ -1,9 +1,7 @@
 {% extends 'layout_base.html' %}
 {% load static %}
 {% load messages %}
-{% block title %}
-<title>Home</title>
-{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block main %}
 
@@ -22,7 +20,8 @@
         </div>
         <div class="col-lg-5">
           <form method="get" action="/payment/" class="sign-up-form d-flex" data-aos="fade-up" data-aos-delay="300">
-            <input name="payee_id" id="payee_id" type="text" class="form-control" placeholder="Ex. lipila">
+            <label for="payee_id" class="form-control">Enter Payment Code:</label>
+            <input name="payee_id" id="payee_id" type="text" class="form-control" placeholder="Ex. lipila" autofocus>
             <input type="submit" class="btn btn-primary" value="Send Money">
           </form>
         </div>
