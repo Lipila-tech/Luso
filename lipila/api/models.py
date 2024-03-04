@@ -104,22 +104,48 @@ class LipilaDisbursement(models.Model):
 
 
 class LipilaCollection(models.Model):
+    """
+    COllect payment from a non registered user to a registered user
+    """
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, blank=False, null=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     reference_id = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
     payer_account = models.CharField(max_length=10, null=False, blank=False)
-    payer_name = models.CharField(max_length=100, null=True, blank=True)
-    payer_email = models.EmailField(null=True, blank=True)
-    payee = models.ForeignKey(User, related_name='payment',
+    payee = models.ForeignKey(User, related_name='user_payment',
                               on_delete=models.CASCADE)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    class Meta:
+        ordering = ['-timestamp']
 
     def get_reference_id(self):
         return self.reference_id
 
+
+class LipilaUserCollection(models.Model):
+    """
+    COllect payment from a registered user to a registered user.
+    """
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=False, null=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    reference_id = models.CharField(max_length=100, blank=False, null=False)
+    description = models.TextField(blank=True, null=True)
+    payer = models.ForeignKey(MyUser, related_name='receipts',
+                              on_delete=models.CASCADE)
+    payee = models.ForeignKey(User, related_name='payment',
+                              on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    class Meta:
+        ordering = ['-timestamp']
+
+    def get_reference_id(self):
+        return self.reference_id
 
 class BNPL(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -144,7 +170,7 @@ class LoanCollection(models.Model):
     reference_id = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
     payer_account = models.CharField(max_length=10, null=False, blank=False)
-    debtor = models.ForeignKey(MyUser, related_name='debtors',
+    debtor = models.ForeignKey(MyUser, related_name='loan',
                                on_delete=models.CASCADE)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -154,7 +180,7 @@ class Invoice(models.Model):
     """
     Model representing an invoice for non lipila registered customers.
     """
-    creator = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='invoice')
     customer_name = models.CharField(max_length=255)
     customer_phone_number = models.CharField(max_length=20)
     customer_email = models.EmailField(blank=True)

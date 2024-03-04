@@ -12,9 +12,11 @@ from rest_framework.authtoken.models import Token
 
 # My modules
 from .serializers import UserSerializer, InvoiceSerializer
-from .serializers import LipilaCollectionSerializer, BNPLSerializer
-from .serializers import ProductSerializer, MyUserSerializer, InvoiceLipilaUserSerializer
-from .models import LipilaCollection, Product, MyUser, BNPL, Invoice, InvoiceLipilaUser
+from .serializers import LipilaCollectionSerializer, BNPLSerializer, LipilaUserCollectionSerializer
+from .serializers import (
+    ProductSerializer, MyUserSerializer, InvoiceLipilaUserSerializer)
+from .models import (LipilaCollection, Product, MyUser,
+                     BNPL, Invoice, InvoiceLipilaUser, LipilaUserCollection)
 from api.momo.mtn import Collections
 
 
@@ -39,6 +41,7 @@ class SignupViewSet(viewsets.ModelViewSet):
                 'message': "Created",
             }, status=201)
         except Exception as e:
+            print(e)
             return Response({"Error": 'failed to signup'}, status=400)
 
     def perform_create(self, serializer):
@@ -111,8 +114,9 @@ class LipilaCollectionView(viewsets.ModelViewSet):
     if env("ENV_STATUS") == "offline":
         def create(self, request):
             """No Internet connection, no querying the remote apis"""
-            data = request.data
+            data = request.data 
             serializer = LipilaCollectionSerializer(data=data)
+           
             if serializer.is_valid():
                 try:
                     # Query external API handlers
@@ -128,11 +132,33 @@ class LipilaCollectionView(viewsets.ModelViewSet):
             else:
                 # Set status code
                 return Response({'message': 'Invalid form fields'}, status=405)
+        def list(self, request):
+            try:
+                payee = request.query_params.get('payee')
+
+                if not payee:
+                    return Response({"error": "payee id is missing"}, status=400)
+                else:
+                    user = User.objects.get(username=payee) 
+                    payments = LipilaCollection.objects.filter(payee=user.id)
+                    serializer = LipilaCollectionSerializer(payments, many=True)
+                    
+                return Response(serializer.data, status=200)
+
+            except User.DoesNotExist:
+                return Response({"error": "Payee not found"}, status=404)
     else:
         def create(self, request):
             """Handles POST requests, deserializing date and setting status."""
+            payer = request.query_params.get('payer')
             data = request.data
-            serializer = LipilaCollectionSerializer(data=data)
+            if payer == 'lipila':
+                serializer = LipilaUserCollectionSerializer(data=data)
+            elif payer == 'nonlipila':
+                serializer = LipilaCollectionSerializer(data=data)
+            elif not payer:
+                return Response({"error": "payer type missing"}, status=400)
+                    
             api_user = Collections()
             api_user.provision_sandbox(api_user.subscription_col_key)
             api_user.create_api_token(
@@ -186,6 +212,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 return Response({'message': 'Invalid form fields'}, status=405)
 
     def list(self, request):
+        print('Online')
         try:
             payee = request.query_params.get('payee')
 
