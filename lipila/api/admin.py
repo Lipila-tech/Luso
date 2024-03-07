@@ -11,9 +11,9 @@ class MyUserAdmin(admin.ModelAdmin):
 
 
 class LipilaCollectionAdmin(admin.ModelAdmin):
-    list_display = ('payee', 'payer_account', 'amount', 'timestamp',
-                    'reference_id', 'description', 'payer_email',
-                    'payer_name', 'status')
+    list_display = ('payer_account', 'amount', 'timestamp',
+                    'reference_id', 'description',
+                    'payee', 'status')
 
     def get_queryset(self, request):
         if request.user.is_superuser:

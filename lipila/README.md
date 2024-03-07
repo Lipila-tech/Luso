@@ -20,7 +20,7 @@ Ensure you have python 3 installed
 
     source .venv/bin/activate <!-- Linux -->
 
-    .venv/scripts/activate <!-- Windows -->
+    .venv/Scripts/activate <!-- Windows -->
 
     pip install -r requirements.txt
     
