@@ -18,7 +18,6 @@ Including another URLconf
 # Uncomment next two lines to enable admin:
 from django.contrib import admin
 from django.urls import path, include
-from api import views
 
 urlpatterns = [
     # adminstrations urls
@@ -26,5 +25,6 @@ urlpatterns = [
 
     # api urls
     path('', include('web.urls')),
+    path('ise/', include('patrons.urls')),
     path('api/v1/', include('api.urls')),
 ]

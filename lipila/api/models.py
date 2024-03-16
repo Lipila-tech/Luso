@@ -162,6 +162,9 @@ class BNPL(models.Model):
     approved_by = models.ForeignKey(
         User, related_name='approvals', on_delete=models.CASCADE, null=True, blank=True)
 
+    def _str__(self):
+        return f"{self.requsted_by.username}, requested: {self.amount}"
+
 
 class LoanCollection(models.Model):
     amount = models.DecimalField(
