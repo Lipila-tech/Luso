@@ -20,8 +20,7 @@
         </div>
         <div class="col-lg-5">
           <form method="get" action="/payment/" class="sign-up-form d-flex" data-aos="fade-up" data-aos-delay="300">
-            <label for="payee_id" class="form-control">Enter Payment Code:</label>
-            <input name="payee_id" id="payee_id" type="text" class="form-control" placeholder="Ex. lipila" autofocus>
+            <input name="payee_id" id="payee_id" type="text" class="form-control" placeholder="Enter Payment Code" autofocus>
             <input type="submit" class="btn btn-primary" value="Send Money">
           </form>
         </div>
@@ -59,10 +58,7 @@
         <div class="col-xl-5 content">
           <h3>About Us</h3>
           <h2>Empowering Zambia's Micro-Entrepreneurs</h2>
-          <p>Lipila is a mobile-first fintech platform designed to empower Zambia's micro-entrepreneurs – the coaches,
-            wedding committees, and individual sellers who fuel our communities and drive local economies. We understand
-            the challenges you face: managing multiple mobile money accounts, inefficient payment processes, and limited
-            data to make informed business decisions.
+          <p>Lipila is a mobile-first fintech platform designed to empower Zambia's micro-entrepreneurs.
           </p>
           <a href="{% url 'signup' %}" class="read-more"><span>Signup</span><i class="bi bi-arrow-right"></i></a>
         </div>
@@ -73,26 +69,34 @@
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
               <div class="icon-box">
                 <i class="bi bi-buildings"></i>
-                <h3>Effortless Collections</h3>
-                <p>Create single collection groups, accept payments from various mobile money providers, and automate
-                  reminders – all in one user-friendly app.</p>
+                <h3>Digital Creators</h3>
+                <ul>
+                  <li>Youtubers</li>
+                  <li>Vloggers</li>
+                  <li>Comedians</li>
+                  <li>Musicians</li>
+                  <li>Artists</li>
+                </ul>
+                <p>Get paid for your work by your fans. Receive donations, contributions and payments from your fans in one place.</p>
               </div>
             </div> <!-- End Icon Box -->
 
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
               <div class="icon-box">
                 <i class="bi bi-clipboard-pulse"></i>
-                <h3>Seamless Data Management</h3>
-                <p>Track income, expenses, and customer details in one place. Gain valuable insights to optimize your
-                  pricing, understand trends, and make data-driven decisions.</p>
+                <h3>Traders</h3>
+                <p>Selling items via facebook or WhatsApp? Never worry about sharing your mobile numbers, get paid
+                  via our app securely. Utilize analytics on payments, customer behavior, and even "Buy Now Pay Later" usage to refine your
+                  offerings and boost your business</p>
               </div>
             </div> <!-- End Icon Box -->
 
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
               <div class="icon-box">
                 <i class="bi bi-command"></i>
-                <h3>Actionable Insights</h3>
-                <p>Utilize analytics on payments, customer behavior, and even "Buy Now Pay Later" usage to refine your
+                <h3>Coaches</h3>
+                <p>Share your pay ID with your students and focus on creating quality content and not verifying momo transaction messages.
+                  Utilize analytics on payments, customer behavior, and even "Buy Now Pay Later" usage to refine your
                   offerings and boost your business.</p>
               </div>
             </div> <!-- End Icon Box -->
@@ -104,11 +108,8 @@
                 <p>Lipila is more than just a platform. We are committed to building a community where
                   micro-entrepreneurs can.</p>
                 <UL>
-                  <li>Access Financial Literacy: Partner with us for workshops and resources to improve your financial
-                    knowledge and skills.</li>
-                  <li>Connect and Collaborate: Join our online and offline communities to share experiences, learn from
-                    each
-                    other, and build your network.</li>
+                  <li>Access Financial Literacy.</li>
+                  <li>Connect and Collaborate.</li>
                   <li>Shape the Future: Share your voice and help us develop solutions that truly address your needs and
                     aspirations.</li>
                 </UL>
@@ -188,8 +189,8 @@
             <div class="icon flex-shrink-0"><i class="bi bi-briefcase"></i></div>
             <div>
               <h4 class="title"><a href="/service-details" class="stretched-link">Payment Collection</a></h4>
-              <p class="description">In general terms, payment collection refers to the process of receiving payment for
-                goods or services rendered. This encompasses a wide range of methods, including:</p>
+              <p class="description">Payment collection refers to the process of receiving payment for
+                goods or services rendered.</p>
             </div>
           </div>
         </div>
@@ -199,7 +200,7 @@
           <div class="service-item d-flex">
             <div class="icon flex-shrink-0"><i class="bi bi-card-checklist"></i></div>
             <div>
-              <h4 class="title"><a href="/service-details" class="stretched-link">Buy NOw Pay later (BNPL)</a>
+              <h4 class="title"><a href="/service-details" class="stretched-link">Buy Now Pay later (BNPL)</a>
               </h4>
               <p class="description">BNPL is a growing payment option that allows customers to purchase goods or
                 services and split the cost into smaller installments over time. This can be particularly appealing to
@@ -213,7 +214,7 @@
             <div class="icon flex-shrink-0"><i class="bi bi-bar-chart"></i></div>
             <div>
               <h4 class="title"><a href="/service-details" class="stretched-link">Transfer</a></h4>
-              <p class="description">Send money to MTN and Airtel numbers</p>
+              <p class="description">Transfer money to several recepients at once.</p>
             </div>
           </div>
         </div><!-- End Service Item -->
@@ -248,28 +249,20 @@
         <div class="col-lg-5 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
           <h3>Buy Now Pay Later</h3>
           <p>
-            Let your customers pay in installments, and let us pay you the full price.
+            Let your customers pay in installments, and let us pay you the full price upfront.
           </p>
           <a href="#" class="btn btn-get-started">Get Started</a>
-        </div>
-        <div class="col-lg-7 order-1 order-lg-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-          <div class="image-stack">
-            <img src="{% static 'assets/img/features-light-1.jpg' %}" alt="" class="stack-front">
-            <img src="{% static 'assets/img/features-light-2.jpg' %}" alt="" class="stack-back">
-          </div>
         </div>
       </div><!-- Features Item -->
 
       <div class="row gy-4 align-items-stretch justify-content-between features-item ">
-        <div class="col-lg-6 d-flex align-items-center features-img-bg" data-aos="zoom-out">
-          <img src="{% static 'assets/img/features-light-3.jpg' %}" class="img-fluid" alt="">
-        </div>
         <div class="col-lg-5 d-flex justify-content-center flex-column" data-aos="fade-up">
           <h3>Collect payments</h3>
           <p>Easily collect payments from your customers and manage them in a user friendly dashboard.</p>
           <ul>
             <li><i class="bi bi-check"></i> <span>Supports MTN and Airtel </span></li>
             <li><i class="bi bi-check"></i><span> Secure</span></li>
+            <li><i class="bi bi-check"></i> <span>Send Digital Invoices</span>.</li>
             <li><i class="bi bi-check"></i> <span>Data driven</span>.</li>
           </ul>
           <a href="#" class="btn btn-get-started align-self-start">Get Started</a>
@@ -301,13 +294,13 @@
             <div class="icon">
               <i class="bi bi-box"></i>
             </div>
-            <h4><sup>$</sup>0<span> / month</span></h4>
+            <h4><sup>K</sup>100<span> / month</span></h4>
             <ul>
-              <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-              <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-              <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-              <li class="na"><i class="bi bi-x"></i> <span>Pharetra massa massa ultricies</span></li>
-              <li class="na"><i class="bi bi-x"></i> <span>Massa ultricies mi quis hendrerit</span></li>
+              <li><i class="bi bi-check"></i> <span>Receive Payments</span></li>
+              <li><i class="bi bi-check"></i> <span>Invoice Clients</span></li>
+              <li><i class="bi bi-check"></i> <span>Payment Processing(4 hours)</span></li>
+              <li><i class="bi bi-check"></i> <span>Buy Now Pay Later(5 clients/week)</span></li>
+              <li><i class="bi bi-check"></i> <span>24/7 Support</span></li>
             </ul>
             <div class="text-center"><a href="#" class="buy-btn">Coming Soon</a></div>
           </div>
@@ -320,13 +313,13 @@
               <i class="bi bi-rocket"></i>
             </div>
 
-            <h4><sup>$</sup>29<span> / month</span></h4>
+            <h4><sup>K</sup>0<span> / month</span></h4>
             <ul>
-              <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-              <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-              <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-              <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
-              <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
+              <li><i class="bi bi-check"></i> <span>Receive Payments</span></li>
+              <li><i class="bi bi-check"></i> <span>Invoice Clients</span></li>
+              <li><i class="bi bi-check"></i> <span>Payment Processing(24 hours)</span></li>
+              <li class="na"><i class="bi bi-check"></i> <span>Buy Now Pay Later</span></li>
+              <li><i class="bi bi-check"></i> <span>24/7 Support</span></li>
             </ul>
             <div class="text-center"><a href="{% url 'login' %}" class="buy-btn">Get Started</a></div>
           </div>
@@ -339,13 +332,13 @@
             <div class="icon">
               <i class="bi bi-send"></i>
             </div>
-            <h4><sup>$</sup>49<span> / month</span></h4>
+            <h4><sup>K</sup>300<span> / month</span></h4>
             <ul>
-              <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-              <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-              <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-              <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
-              <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
+              <li><i class="bi bi-check"></i> <span>Receive Payments</span></li>
+              <li><i class="bi bi-check"></i> <span>Invoice Clients</span></li>
+              <li><i class="bi bi-check"></i> <span>Payment Processing(Instant)</span></li>
+              <li><i class="bi bi-check"></i> <span>Buy Now Pay Later(10 clients/week)</span></li>
+              <li><i class="bi bi-check"></i> <span>24/7 Support</span></li>
             </ul>
             <div class="text-center"><a href="#" class="buy-btn">Coming Soon</a></div>
           </div>
@@ -518,10 +511,8 @@
         <div class="col-xl-10">
           <div class="text-center">
             <h3>Call To Action</h3>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-              laborum.</p>
-            <a class="cta-btn" href="#">Call To Action</a>
+            <p>Grow your business with Lipila.</p>
+            <a class="cta-btn" href="{% url 'signup' %}">Signup Today</a>
           </div>
         </div>
       </div>
