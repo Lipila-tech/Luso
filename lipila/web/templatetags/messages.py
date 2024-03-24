@@ -65,3 +65,15 @@ def notification_counter(value, id):
 def get_users(value):
     users = User.objects.count()
     return users
+
+@register.filter
+def get_hours(value):
+    return 125
+
+@register.filter
+def get_transactions(value):
+    return 231
+
+@register.filter
+def get_creators(value):
+    return 301
