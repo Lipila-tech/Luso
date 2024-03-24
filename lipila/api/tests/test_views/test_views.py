@@ -8,7 +8,7 @@ from api.models import LipilaCollection, MyUser
 
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
-from backend.settings import BASE_DIR
+from lipila.backend.settings_dev import BASE_DIR
 
 class LipilaCollectionViewTest(APITestCase):
 
