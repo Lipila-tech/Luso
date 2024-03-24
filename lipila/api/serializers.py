@@ -23,7 +23,7 @@ class LipilaCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
         fields = ('payee', 'payer_account', 'amount', 'timestamp',
-                  'description', 'payer_email', 'payer_name')
+                  'description', 'payee')
 
 
 class LipilaUserCollectionSerializer(serializers.ModelSerializer):
@@ -45,7 +45,7 @@ class LipilaTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
         fields = ['payee', 'payer_account', 'amount'
-                  'description', 'payer_email',  'payer_name'
+                  'description', 'payer',  'payee'
                   ]
 
 
