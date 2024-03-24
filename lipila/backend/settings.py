@@ -30,7 +30,7 @@ SECRET_KEY = '27b2941e-c58e-413f-8f8e-d132fef39246'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['lipila.pythonanywhere.com']
 
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
@@ -133,11 +133,6 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
 # AUTH_USER_MODEL = 'api.MyUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
@@ -157,8 +152,8 @@ REST_FRAMEWORK = {
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
+STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "index"
