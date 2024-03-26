@@ -3,7 +3,9 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.views import View
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 # My Models
 from api.models import MyUser
 from .helpers import apology
@@ -20,6 +22,7 @@ def service_details(request):
 def portfolio_details(request):
     return render(request, 'UI/portfolio-details.html')
 
+@login_required
 def send_money(request):
     form = request.GET
     if form:
@@ -38,7 +41,7 @@ def send_money(request):
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
 
-# Auth
+# Authentication views
 class SignupView(View):
     
     def get(self, request):
@@ -63,13 +66,17 @@ class SignupView(View):
         except Exception as e:
             print(e)
 
-def login(request):
-    context = {}
-    context['form'] = LoginForm()
-    return render(request, 'Auth/login.html', context)
+
+class CustomLoginView(LoginView):
+    next_page = reverse_lazy('dashboard')  # Set default redirect path
+
+    def get_success_url(self):
+        user = self.request.user
+        return reverse_lazy('dashboard', kwargs={'id': user.id})
 
 
 # Authenticated User Views
+@login_required
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, id):
@@ -95,7 +102,7 @@ def dashboard(request, id):
         return apology(request, context)
     return render(request, 'AdminUI/index.html', context)
 
-
+@login_required
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def users_profile(request, id):
@@ -121,29 +128,34 @@ def users_profile(request, id):
         return apology(request, context)
     return render(request, 'AdminUI/users-profile.html', context)
 
-def logout(request):
-    pass
-
+    
 def bnpl(request):
     return render(request, 'AdminUI/bnpl.html')
 
+
 # Logs
+@login_required
 def log_transfer(request):
     return render(request, 'AdminUI//log/transfer.html')
 
+@login_required
 def log_invoice(request):
     return render(request, 'AdminUI/log/invoice.html')
 
+@login_required
 def log_products(request):
     return render(request, 'AdminUI/log/products.html')
 
 # Actions
+@login_required
 def invoice(request):
     return render(request, 'AdminUI/actions/invoice.html')
 
+@login_required
 def products(request):
     return render(request, 'AdminUI/actions/products.html')
 
+@login_required
 def transfer(request):
     context = {}
     context['form'] = DisburseForm()

@@ -57,6 +57,7 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
-admin.site.site_url = '/api/v1/index'
+admin.site.site_url = '/'
+admin.site.site_title = 'lipila'
 
 # superuser: pita, password: test@123

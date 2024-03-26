@@ -201,7 +201,10 @@
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="#">
                                 <i class="bi bi-box-arrow-right"></i>
-                                <span>Sign Out</span>
+                                <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link">Logout</button>
+                                </form>
                             </a>
                         </li>
 
@@ -304,9 +307,10 @@
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="container copyright text-center mt-4">
-            <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila</strong> <span>All Rights Reserved</span></p>
+            <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila Technologies Ltd</strong> <span>All Rights
+                    Reserved</span></p>
             <div class="credits">
-                Designed by <a href="zyambo.pythonanywhere.com">Zyambo</a>
+                Designed by <a href="#">Lipila</a>
             </div>
         </div>
 

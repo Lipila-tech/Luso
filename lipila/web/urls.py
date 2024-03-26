@@ -13,12 +13,11 @@ urlpatterns = [
      
      # Auth
      path('signup/', views.SignupView.as_view(), name='signup'),
-     path('login/', views.login, name='login'),
+     path('login/', views.CustomLoginView.as_view(), name='login'),
      
      # Authenticated User Urls
      path('dashboard/<int:id>', views.dashboard, name='dashboard'),
      path('users-profile/<int:id>', views.users_profile, name='users-profile'),
-     path('logout/', views.logout, name='logout'),
      path('bnpl/', views.bnpl, name='bnpl'),
      
      # Logs
