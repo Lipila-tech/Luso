@@ -16,7 +16,7 @@ urlpatterns = [
      path('login/', views.CustomLoginView.as_view(), name='login'),
      
      # Authenticated User Urls
-     path('dashboard/<int:id>', views.dashboard, name='dashboard'),
+     path('dashboard/', views.dashboard, name='dashboard'),
      path('users-profile/<int:id>', views.users_profile, name='users-profile'),
      path('bnpl/', views.bnpl, name='bnpl'),
      
