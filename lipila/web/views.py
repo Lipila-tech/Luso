@@ -51,7 +51,7 @@ class SignupView(View):
         form = SignupForm()
         context = {'form': form}
         
-        return render(request, 'Auth/signup.html', context)
+        return render(request, 'registration/signup.html', context)
 
     def post(self, request):
         form = SignupForm(request.POST)
@@ -65,7 +65,7 @@ class SignupView(View):
                 return redirect('login')
             else:
                 messages.add_message(request, messages.ERROR, "Error during signup!")
-                return render(request, 'Auth/signup.html', context)
+                return render(request, 'registration/signup.html', context)
         except Exception as e:
             print(e)
 

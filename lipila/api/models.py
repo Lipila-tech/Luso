@@ -22,7 +22,7 @@ INVOICE_STATUS_CHOICES = (
     ('rejected', 'rejected'),
 )
 
-BUSINESS_TYPE_CHOICES = (
+USER_CATEGORY_CHOICES = (
     ('clothing', 'Clothing Shop'),
     ('creator', 'Content Creator'),
     ('grocery', 'Grocery Store'),
@@ -44,8 +44,8 @@ class MyUser(User):
         max_length=9, choices=CITY_CHOICES, default='KItwe')
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
-    business_type = models.CharField(
-        max_length=30, choices=BUSINESS_TYPE_CHOICES, default='other')
+    user_category = models.CharField(
+        max_length=30, choices=USER_CATEGORY_CHOICES, default='other')
 
     REQUIRED_FIELDS = ['email', 'phone_number']
 
