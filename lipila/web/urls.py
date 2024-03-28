@@ -12,12 +12,12 @@ urlpatterns = [
      path('pages-faq/', views.pages_faq, name='pages-faq'),     
      
      # Auth
-     path('signup/', views.SignupView.as_view(), name='signup'),
-     path('login/', views.CustomLoginView.as_view(), name='login'),
+     path('accounts/signup/', views.SignupView.as_view(), name='signup'),
+     path('accounts/login/', views.login, name='login'),
      
      # Authenticated User Urls
-     path('dashboard/', views.dashboard, name='dashboard'),
-     path('users-profile/<int:id>', views.users_profile, name='users-profile'),
+     path('me/<str:user>', views.dashboard, name='dashboard'),
+     path('accounts/profile/', views.profile, name='profile'),
      path('bnpl/', views.bnpl, name='bnpl'),
      
      # Logs

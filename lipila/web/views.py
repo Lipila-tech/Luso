@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
@@ -5,7 +6,9 @@ from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.urls import reverse_lazy
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as my_login
+from django.contrib.auth.forms import AuthenticationForm
 # My Models
 from api.models import MyUser
 from .helpers import apology
@@ -67,26 +70,39 @@ class SignupView(View):
             print(e)
 
 
-class CustomLoginView(LoginView):
-    next_page = reverse_lazy('dashboard')  # Set default redirect path
 
-    def get_success_url(self):
-        user = self.request.user
-        return reverse_lazy('dashboard', kwargs={'id': user.id})
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username,password=password)
+        if user:
+            if user.is_active:
+                my_login(request,user)
+                return redirect(reverse('dashboard', kwargs={'user':username}))
+        else:
+            messages.error(request,'username or password not correct')
+            return redirect(reverse('login'))
+        
+                
+    else:
+        form = AuthenticationForm()
+    return render(request,'registration/login.html',{'form':form})
 
 
 # Authenticated User Views
 @login_required
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def dashboard(request, id):
+def dashboard(request, user):
     context = {}
     try:
         # id = int(request.GET.get('user'))
-        if not id:
-            raise ValueError('User ID missing')
+        if not user:
+            raise ValueError('Username missing')
         else:
-            user = MyUser.objects.get(id=int(id))
+            user = MyUser.objects.get(username=user)
             context['user'] = user
     except ValueError:
         context['status'] = 400
@@ -105,14 +121,14 @@ def dashboard(request, id):
 @login_required
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def users_profile(request, id):
+def users_profile(request, user):
     context = {}
     try:
         # id = int(request.GET.get('user'))
-        if not id:
+        if not user:
             raise ValueError('User ID missing')
         else:
-            user = MyUser.objects.get(id=int(id))
+            user = MyUser.objects.get(username=user)
             context['user'] = user
     except ValueError:
         context['status'] = 400
@@ -160,3 +176,8 @@ def transfer(request):
     context = {}
     context['form'] = DisburseForm()
     return render(request, 'AdminUI//actions/transfer.html', context)
+
+
+@login_required
+def profile(request):
+    return render(request, 'AdminUI/users-profile.html')
