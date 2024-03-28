@@ -201,7 +201,7 @@
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="#">
                                 <i class="bi bi-box-arrow-right"></i>
-                                <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+                                <form id="logout-form" method="post" action="{% url 'logout' %}">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-link">Logout</button>
                                 </form>

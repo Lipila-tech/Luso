@@ -82,7 +82,7 @@ def login(request):
                 my_login(request,user)
                 return redirect(reverse('dashboard', kwargs={'user':username}))
         else:
-            messages.error(request,'username or password not correct')
+            messages.error(request,"Your username and password didn't match. Please try again.")
             return redirect(reverse('login'))
         
                 
