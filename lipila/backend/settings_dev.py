@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'api',
     'web',
     'patrons',
-   
+
     # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -94,21 +94,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': "lipiladb",
-#         'USER': 'lipila_dev',
-#         'PASSWORD': '200Hot@#2',
-#         'HOST': 'localhost',
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('SQL_NAME'),
+        'USER': env('SQL_USER'),
+        'PASSWORD':  env('SQL_PASSWORD'),
+        'HOST':env('SQL_HOST'),
+        'PORT':env('SQL_PORT'),
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -157,7 +158,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        #'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
