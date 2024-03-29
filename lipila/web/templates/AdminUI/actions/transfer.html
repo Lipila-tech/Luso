@@ -20,7 +20,6 @@
             <h2>Payee Information</h2>
             <label for="amount">Payee ID</label>
             <input name="payee" type="text" class="form-control mb-3" placeholder="Ex. lipila" required>
-            <button class="btn btn-primary mr-2" onclick="prevStep('home')">Back</button>
             <button class="btn btn-success" onclick="nextStep('step1')">Next</button>
           </div>
 
@@ -37,7 +36,7 @@
                 <option value="Airtel">Airtel</option>
               </select>
             </div>
-            <button class="btn btn-primary mr-2" onclick="prevStep('step0')">Back</button>
+            <button id="back-btn" class="btn btn-primary mr-2" onclick="prevStep('step0')">Back</button>
             <button class="btn btn-primary" onclick="nextStep('step2')">Next</button>
           </div>
 

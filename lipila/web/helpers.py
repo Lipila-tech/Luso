@@ -3,6 +3,7 @@ Helper Functions
 """
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render
+from api.models import MyUser
 
 
 def apology(request, context=None):
@@ -30,3 +31,27 @@ def apology(request, context=None):
         return HttpResponseBadRequest(
             render(request, template_name, context)
         )
+
+
+def set_context(request, user):
+    context = {}
+    try:
+        if not user:
+            raise ValueError('Username missing')
+        else:
+            user = MyUser.objects.get(username=user)
+            context['status'] = 200
+            context['user'] = user
+    except ValueError:
+        context['status'] = 400
+        context['message'] = 'User ID must be of type int'
+        return apology(request, context)
+    except TypeError:
+        context['status'] = 400
+        context['message'] = 'Error, User argument missing'
+        return apology(request, context)
+    except MyUser.DoesNotExist:
+        context['status'] = 404
+        context['message'] = 'User Not Found!'
+        return apology(request, context)
+    return context
