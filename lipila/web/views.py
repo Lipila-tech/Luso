@@ -30,12 +30,12 @@ def portfolio_details(request):
 
 
 def send_money(request):
+    context = {}
     form = request.GET
     if form:
         payee_id = form['payee_id']
         try:
             data = LipilaUser.objects.get(username=payee_id)
-            context = {}
             context['payee'] = payee_id
             context['location'] = data.city
         except LipilaUser.DoesNotExist:

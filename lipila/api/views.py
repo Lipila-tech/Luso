@@ -82,7 +82,17 @@ class LipilaCollectionView(viewsets.ModelViewSet):
         def create(self, request):
             """No Internet connection, no querying the remote apis"""
             data = request.data 
-            serializer = LipilaCollectionSerializer(data=data)
+            payer = data['payer'][0]  # Access the first value for 'payer'
+            payee = data['payee'][0]  # Access the first value for 'payee'
+            amount = data['amount'][0]  # Access the first value for 'amount'
+            description = data['description'][0]  # Access the first value for 'description'
+
+            serializer = LipilaCollectionSerializer(data={
+                'payer': payer,
+                'payee': payee,
+                'amount': amount,
+                'description': description,
+            })
            
             if serializer.is_valid():
                 try:
@@ -117,15 +127,20 @@ class LipilaCollectionView(viewsets.ModelViewSet):
     else:
         def create(self, request):
             """Handles POST requests, deserializing date and setting status."""
-            payer = request.query_params.get('payer')
             data = request.data
-            if payer == 'lipila':
-                serializer = LipilaCollectionSerializer(data=data)
-            elif payer == 'nonlipila':
-                serializer = LipilaCollectionSerializer(data=data)
-            elif not payer:
-                return Response({"error": "payer type missing"}, status=400)
-                    
+            payer = data['payer']  # Access the first value for 'payer'
+            payee = data['payee'] # Access the first value for 'payee'
+            amount = data['amount'] # Access the first value for 'amount'
+            description = data['description']  # Access the first value for 'description'
+
+            serializer = LipilaCollectionSerializer(data={
+                'payer': payer,
+                'payee': payee,
+                'amount': amount,
+                'description': description,
+            })
+            print(serializer)
+            # serializer = LipilaCollectionSerializer(data=data)
             api_user = Collections()
             api_user.provision_sandbox(api_user.subscription_col_key)
             api_user.create_api_token(
@@ -179,7 +194,6 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 return Response({'message': 'Invalid form fields'}, status=405)
 
     def list(self, request):
-        print('Online')
         try:
             payee = request.query_params.get('payee')
 

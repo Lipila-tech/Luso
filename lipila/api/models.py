@@ -57,7 +57,7 @@ class LipilaCollection(models.Model):
     description = models.TextField(blank=True, null=True)
     payer = models.ForeignKey(LipilaUser, related_name='receipts',
                               on_delete=models.CASCADE)
-    payee = models.ForeignKey(LipilaUser, related_name='payment',
+    payee = models.ForeignKey(User, related_name='payment',
                               on_delete=models.CASCADE)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
