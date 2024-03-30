@@ -92,16 +92,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': env('SQL_NAME'),
+#         'USER': env('SQL_USER'),
+#         'PASSWORD':  env('SQL_PASSWORD'),
+#         'HOST':env('SQL_HOST'),
+#         'PORT':env('SQL_PORT'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('SQL_NAME'),
-        'USER': env('SQL_USER'),
-        'PASSWORD':  env('SQL_PASSWORD'),
-        'HOST':env('SQL_HOST'),
-        'PORT':env('SQL_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
