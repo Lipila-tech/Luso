@@ -6,10 +6,7 @@
 
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Invoice</h5>
-    </div>
-    <div>
-      <p>Step 1: Customer Details > Step2: Bill Details > Step3: Confirmation</p>
+      <h5 class="card-title">Invoicing...</h5>
     </div>
   </div>
   <div class="container mt-5">
@@ -17,14 +14,14 @@
       <div class="col-md-8">
         <form>
           <div id="step0" style="display: block;">
-            <h2>Customer Details</h2>
+            <h2>Customer Information</h2>
             <label for="amount">Payee ID</label>
             <input name="payee" type="text" class="form-control mb-3" placeholder="Ex. lipila" required>
-            <button class="btn btn-success" onclick="nextStep('step1')">Next</button>
+            <button class="btn btn-primary" onclick="nextStep('step1')">Continue</button>
           </div>
 
           <div id="step1" style="display: none;">
-            <h2>Bill Details</h2>
+            <h2>Invoice Details</h2>
             <label for="amount">Amount</label>
             <input name="amount" type="number" class="form-control mb-3" placeholder="Ex. 100" required>
             <div class="form-group">
@@ -32,16 +29,16 @@
               <textarea name="details" type="text" class="form-control mb-3" placeholder="Ex. 100"></textarea>
             </div>
             <button class="btn btn-primary mr-2" onclick="prevStep('step0')">Back</button>
-            <button class="btn btn-primary" onclick="nextStep('step2')">Next</button>
+            <button class="btn btn-primary" onclick="nextStep('step2')">Continue</button>
           </div>
 
           <div id="step2" style="display: none;">
-            <h2>Confirmation</h2>
+            <h2>Review Information</h2>
             <p>Bill to: Test customer</p>
             <p>Amount: k200</p>
             <p>Description: Product descripion</p>
             <button class="btn btn-primary mr-2" onclick="prevStep('step1')">Back</button>
-            <button class="btn btn-success" onclick="submitInvoice()">Submit Payment</button>
+            <button class="btn btn-primary" onclick="submitInvoice()">Submit Payment</button>
           </div>
         </form>
       </div>

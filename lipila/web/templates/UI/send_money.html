@@ -22,10 +22,10 @@
                     </select>
                 </div>
                 <button class="btn btn-primary mr-2" onclick="prevStep('home')">Back</button>
-                <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                <button class="btn btn-primary" onclick="nextStep()">Continue</button>
             </div>
             <div id="step2" style="display: none;">
-                <h2>Confirmation</h2>
+                <h2>Review Information</h2>
                 <p>Pay: {{ payee }}</p>
                 <p>Amount: k 200</p>
                 <p>Commision: k 1</p>
@@ -33,7 +33,7 @@
                 <p>Total: k201</p>
                 <!-- Confirmation & Receipt details will be displayed here -->
                 <button class="btn btn-primary mr-2" onclick="prevStep('step1')">Back</button>
-                <button class="btn btn-success" onclick="submitPayment()">Submit Payment</button>
+                <button class="btn btn-primary" onclick="submitPayment()">Submit Payment</button>
             </div>
         </div>
     </div>
