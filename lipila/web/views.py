@@ -65,7 +65,9 @@ class SignupView(View):
 
         try:
             if form.is_valid():
-                form.save()
+                user = form.save(commit=False)  # Don't save directly
+                user.set_password(user.password)
+                user.save()
                 messages.add_message(request, messages.SUCCESS,
                                      "Account created successfully")
                 return redirect('login')
