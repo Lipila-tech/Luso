@@ -22,9 +22,3 @@ class LipilaCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
         fields = ('payer', 'payee', 'amount', 'description')
-
-
-class LipilaDisbursementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LipilaDisbursement
-        fields = '__all__'
