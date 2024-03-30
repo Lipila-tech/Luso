@@ -144,6 +144,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # from
 CORS_ORIGIN_ALLOW_ALL = True
 
+# Bootstrap
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 # Rest Framework config. Add all of this.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
