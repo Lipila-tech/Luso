@@ -11,12 +11,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 
 # My modules
-from .serializers import UserSerializer, InvoiceSerializer
-from .serializers import LipilaCollectionSerializer, BNPLSerializer, LipilaUserCollectionSerializer
-from .serializers import (
-    ProductSerializer, MyUserSerializer, InvoiceLipilaUserSerializer)
-from .models import (LipilaCollection, Product, MyUser,
-                     BNPL, Invoice, InvoiceLipilaUser, LipilaUserCollection)
+from .serializers import LipilaCollectionSerializer
+from .serializers import LipilaUserSerializer
+from .models import (LipilaUser, LipilaCollection)
+from web.models import (Product, BNPL, Invoice, InvoiceLipilaUser)
 from api.momo.mtn import Collections
 
 
@@ -27,8 +25,9 @@ User = get_user_model()
 
 
 class SignupViewSet(viewsets.ModelViewSet):
-    queryset = MyUser.objects.all()
-    serializer_class = MyUserSerializer  # Replace with your serializer
+    """Register API user"""
+    queryset = LipilaUser.objects.all()
+    serializer_class = LipilaUserSerializer  # Replace with your serializer
 
     def create(self, request, *args, **kwargs):
         try:
@@ -74,40 +73,8 @@ class LoginView(ObtainAuthToken):
             return Response({"Error: Bad Request"}, status=400)
 
 
-class ProductView(viewsets.ModelViewSet):
-    """
-    Get a users products
-    """
-    serializer_class = ProductSerializer
-    queryset = Product.objects.all()
-
-    def list(self, request):
-        try:
-            username = request.query_params.get('user')
-
-            if not username:
-                return Response({"error": "Username is missing"}, status=400)
-            else:
-                user = User.objects.get(username=username)
-                products = Product.objects.filter(product_owner=user.id)
-
-            serializer = ProductSerializer(products, many=True)
-            return Response(serializer.data)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=404)
-
-    def post(self, request):
-        try:
-            data = request.data
-            serializer = ProductSerializer(data=data)
-            return Response({
-                'message': "Created",
-            }, status=201)
-        except Exception:
-            return Response({"error: Bad Request"}, status=400)
-
-
 class LipilaCollectionView(viewsets.ModelViewSet):
+    """Collects Payments for registered users."""
     serializer_class = LipilaCollectionSerializer
     queryset = LipilaCollection.objects.all()
 
@@ -153,7 +120,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
             payer = request.query_params.get('payer')
             data = request.data
             if payer == 'lipila':
-                serializer = LipilaUserCollectionSerializer(data=data)
+                serializer = LipilaCollectionSerializer(data=data)
             elif payer == 'nonlipila':
                 serializer = LipilaCollectionSerializer(data=data)
             elif not payer:
@@ -236,120 +203,3 @@ class LogoutView(views.APIView):
         """GET request to flash user cookies and log them out"""
         logout(request)
         return Response(status=status.HTTP_200_OK)
-
-
-class ProfileView(viewsets.ModelViewSet):
-    """Returns the profile of the user"""
-    serializer_class = UserSerializer
-    queryset = MyUser.objects.all()
-
-    def list(self, request):
-        try:
-            username = request.query_params.get('user')
-
-            if not username:
-                return Response({"Error": "Username is missing"}, status=400)
-            else:
-                user = MyUser.objects.get(username=username)
-
-            serializer = UserSerializer(user, many=False)
-            return Response(serializer.data)
-        except Exception as e:
-            return Response({"User not found"}, status=404)
-
-    def put(self, request):
-        pass
-
-
-class BNPLView(viewsets.ModelViewSet):
-    serializer_class = BNPLSerializer
-    queryset = BNPL.objects.all()
-
-    def list(self, request):
-        try:
-            username = request.query_params.get('user')
-
-            if not username:
-                return Response({"Error": "Username is missing"}, status=400)
-            else:
-                user_id = MyUser.objects.get(username=username)
-                user = BNPL.objects.get(requested_by=user_id.id)
-
-            serializer = BNPLSerializer(user, many=False)
-            return Response(serializer.data)
-        except MyUser.DoesNotExist:
-            return Response({"error": "User not found"}, status=404)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            serializer = self.serializer_class(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response({
-                'status': 'pending'}, status=status.HTTP_202_ACCEPTED)
-        except Exception:
-            return Response({"message: Request failed"}, status=400)
-
-
-class InvoiceView(viewsets.ModelViewSet):
-    serializer_class = InvoiceSerializer
-    queryset = Invoice.objects.all()
-
-    def list(seelf, request):
-        try:
-            username = request.query_params.get('user')
-
-            if not username:
-                return Response({"Error": "Username is missing"}, status=400)
-            else:
-                user_id = MyUser.objects.get(username=username)
-                invoices = Invoice.objects.get(creator=user_id.id)
-
-            serializer = InvoiceSerializer(invoices, many=False)
-            return Response(serializer.data)
-        except MyUser.DoesNotExist:
-            return Response({"message": "User not found"}, status=404)
-        except Invoice.DoesNotExist:
-            return Response({"message": "No invoice found"}, status=404)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            serializer = self.serializer_class(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response({
-                'status': 'created'}, status=status.HTTP_201_CREATED)
-        except Exception:
-            return Response({"message: Request failed"}, status=400)
-
-
-class InvoiceLipilaUserView(viewsets.ModelViewSet):
-    serializer_class = InvoiceLipilaUserSerializer
-    queryset = InvoiceLipilaUser.objects.all()
-
-    def list(seelf, request):
-        try:
-            username = request.query_params.get('user')
-
-            if not username:
-                return Response({"Error": "Username is missing"}, status=400)
-            else:
-                user_id = MyUser.objects.get(username=username)
-                invoices = Invoice.objects.get(creator=user_id.id)
-
-            serializer = InvoiceSerializer(invoices, many=False)
-            return Response(serializer.data)
-        except MyUser.DoesNotExist:
-            return Response({"message": "User not found"}, status=404)
-        except Invoice.DoesNotExist:
-            return Response({"message": "No invoice found"}, status=404)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            serializer = self.serializer_class(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response({
-                'status': 'created'}, status=status.HTTP_201_CREATED)
-        except Exception:
-            return Response({"message: Request failed"}, status=400)

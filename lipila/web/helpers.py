@@ -3,7 +3,7 @@ Helper Functions
 """
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render
-from api.models import MyUser
+from api.models import LipilaUser
 
 
 def apology(request, context=None):
@@ -39,7 +39,7 @@ def set_context(request, user):
         if not user:
             raise ValueError('Username missing')
         else:
-            user = MyUser.objects.get(username=user)
+            user = LipilaUser.objects.get(username=user)
             context['status'] = 200
             context['user'] = user
     except ValueError:
@@ -50,7 +50,7 @@ def set_context(request, user):
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
         return apology(request, context)
-    except MyUser.DoesNotExist:
+    except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Not Found!'
         return apology(request, context)

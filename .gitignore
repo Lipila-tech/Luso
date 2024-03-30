@@ -5,3 +5,4 @@ migrations/
 db.sqlite3
 .env
 media/
+static/

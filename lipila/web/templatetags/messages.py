@@ -1,5 +1,5 @@
 from django import template
-from api.models import User, MyUser, Product
+from django.contrib.auth.models import User
 
 register = template.Library()
 

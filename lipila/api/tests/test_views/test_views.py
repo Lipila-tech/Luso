@@ -2,19 +2,21 @@
 """
 Test the MTN Views
 """
+import os
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from api.models import LipilaCollection, MyUser
+from api.models import LipilaCollection, LipilaUser
 
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
-from lipila.backend.settings_dev import BASE_DIR
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 class LipilaCollectionViewTest(APITestCase):
 
     def test_get_payments(self):
         """Tests retrieving a list of payments."""
-        url = reverse('payments-list')  # Generate URL using basename
+        url = reverse('payment')  # Generate URL using basename
         response = self.client.get(url)
 
         # Assert successful response
@@ -41,7 +43,7 @@ class LipilaCollectionViewTest(APITestCase):
             "receiver_account": "9988557733",
             "status": 'pending',
         }
-        url = reverse('payments-list')
+        url = reverse('payment')
         response = self.client.post(url, data1)
 
         self.assertEqual(response.status_code, 202)  # Assert payment accepted
@@ -74,12 +76,12 @@ class ViewsTestCaseGet(TestCase):
         image_file = str(BASE_DIR) + 'api/static/img/logo.png'
 
         cls.profile_url = '/api/v1/profile/?user=pita'
-        user0 = MyUser.objects.create_user(username='pita',
+        user0 = LipilaUser.objects.create_user(username='pita',
                                            password='pwd_123',
                                            email='pita@example.com',
                                            profile_image=image_file)
 
-        user1 = MyUser.objects.create_user(username='pit',
+        user1 = LipilaUser.objects.create_user(username='pit',
                                            password='pwd_123',
                                            email='pita@example.com',
                                            profile_image=image_file)

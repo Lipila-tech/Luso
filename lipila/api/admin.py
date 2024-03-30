@@ -1,25 +1,11 @@
 from django.contrib import admin
-from .models import (MyUser,
-                     Product, LipilaCollection,
-                     LipilaDisbursement, BNPL
-                     )
+from .models import (LipilaUser, LipilaDisbursement)
 
+from web.models import Product, BNPL
 
-class MyUserAdmin(admin.ModelAdmin):
+class LipilaUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'bio',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
-
-
-class LipilaCollectionAdmin(admin.ModelAdmin):
-    list_display = ('payer_account', 'amount', 'timestamp',
-                    'reference_id', 'description',
-                    'payee', 'status')
-
-    def get_queryset(self, request):
-        if request.user.is_superuser:
-            return LipilaCollection.objects.all()
-        else:
-            return LipilaCollection.objects.none()
 
 
 class DisbursementAdmin(admin.ModelAdmin):
@@ -50,8 +36,7 @@ class BNPLAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(MyUser, MyUserAdmin)
-admin.site.register(LipilaCollection, LipilaCollectionAdmin)
+admin.site.register(LipilaUser, LipilaUserAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)

@@ -1,8 +1,6 @@
 """
 Tests the mtn momo API
 """
-
-
 from django.test import TestCase, Client
 from api.momo.mtn import Collections, Disbursement
 from api.helpers import get_uuid4

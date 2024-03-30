@@ -3,7 +3,7 @@ from django.urls import reverse
 from web.forms.forms import SignupForm
 from django.contrib.messages import get_messages
 from django.contrib.auth.models import AnonymousUser  # For anonymous user test
-from api.models import MyUser
+from api.models import LipilaUser
 from .helpers import set_context
 
 # TEST SignupView
@@ -33,7 +33,7 @@ class SignupViewTest(TestCase):
 
         # check that a user with a specified username is created
         # but not active
-        user = MyUser.objects.get(username='testuser')
+        user = LipilaUser.objects.get(username='testuser')
         self.assertTrue(user.is_active)
 
     def test_post_invalid_form(self):
@@ -55,7 +55,7 @@ class SetContextTests(TestCase):
 
     def test_valid_user(self):
         # Create a test user
-        user = MyUser.objects.create_user(username='testuser', password='password123')
+        user = LipilaUser.objects.create_user(username='testuser', password='password123')
 
         # Call the function with the user
         context = set_context(None, user)
@@ -73,7 +73,7 @@ class SetContextTests(TestCase):
         self.assertEqual(context['message'], 'Error, User argument missing')
 
     def test_invalid_user_type(self):
-        # Pass an invalid user type (string instead of MyUser object)
+        # Pass an invalid user type (string instead of LipilaUser object)
         invalid_user = 'invalid_username'
 
         # Call the function with the invalid user

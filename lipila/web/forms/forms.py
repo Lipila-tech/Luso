@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from api.models import LipilaDisbursement, MyUser
+from api.models import LipilaDisbursement, LipilaUser
 
 class DisburseForm(forms.ModelForm):
     class Meta:
@@ -10,10 +10,10 @@ class DisburseForm(forms.ModelForm):
 
 class LoginForm(forms.ModelForm):
     class Meta:
-        model = MyUser
+        model = LipilaUser
         fields = ('username', 'password')
 
 class SignupForm(forms.ModelForm):
     class Meta:
-        model = MyUser
+        model = LipilaUser
         fields = ('username', 'city', 'user_category', 'phone_number', 'password')

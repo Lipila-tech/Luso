@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
 from django.contrib.auth.forms import AuthenticationForm
 # My Models
-from api.models import MyUser
+from api.models import LipilaUser
 from .helpers import apology
 from .forms.forms import DisburseForm, LoginForm, SignupForm
 from datetime import datetime
@@ -34,11 +34,11 @@ def send_money(request):
     if form:
         payee_id = form['payee_id']
         try:
-            data = MyUser.objects.get(username=payee_id)
+            data = LipilaUser.objects.get(username=payee_id)
             context = {}
             context['payee'] = payee_id
             context['location'] = data.city
-        except MyUser.DoesNotExist:
+        except LipilaUser.DoesNotExist:
             context = {'message': "User id not found", }
             return render(request, '404.html', context)
 
@@ -152,7 +152,7 @@ def dashboard(request, user):
         if not user:
             raise ValueError('Username missing')
         else:
-            user = MyUser.objects.get(username=user)
+            user = LipilaUser.objects.get(username=user)
             context['user'] = user
     except ValueError:
         context['status'] = 400
@@ -162,7 +162,7 @@ def dashboard(request, user):
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
         return apology(request, context)
-    except MyUser.DoesNotExist:
+    except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Not Found!'
         return apology(request, context)
@@ -179,7 +179,7 @@ def profile(request, user):
         if not user:
             raise ValueError('User ID missing')
         else:
-            user = MyUser.objects.get(username=user)
+            user = LipilaUser.objects.get(username=user)
             context['user'] = user
     except ValueError:
         context['status'] = 400
@@ -189,7 +189,7 @@ def profile(request, user):
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
         return apology(request, context)
-    except MyUser.DoesNotExist:
+    except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Profile Not Found!'
         return apology(request, context)
