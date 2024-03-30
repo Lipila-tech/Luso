@@ -27,7 +27,7 @@ User = get_user_model()
 class SignupViewSet(viewsets.ModelViewSet):
     """Register API user"""
     queryset = LipilaUser.objects.all()
-    serializer_class = LipilaUserSerializer  # Replace with your serializer
+    serializer_class = LipilaUserSerializer
 
     def create(self, request, *args, **kwargs):
         try:
@@ -40,15 +40,14 @@ class SignupViewSet(viewsets.ModelViewSet):
                 'message': "Created",
             }, status=201)
         except Exception as e:
-            print(e)
-            return Response({"Error": 'failed to signup'}, status=400)
+            return Response({"Error": e}, status=400)
 
     def perform_create(self, serializer):
         try:
             user = serializer.save()
             # Set password, send verification email, etc. (optional)
-        except Exception:
-            return Response({"Error: Bad Request"}, status=400)
+        except Exception as e:
+            return Response({"Error": e}, status=400)
 
     permission_classes = [AllowAny]  # Allow anyone to register
 
@@ -77,121 +76,72 @@ class LipilaCollectionView(viewsets.ModelViewSet):
     """Collects Payments for registered users."""
     serializer_class = LipilaCollectionSerializer
     queryset = LipilaCollection.objects.all()
-
-    if env("ENV_STATUS") == "offline":
-        def create(self, request):
-            """No Internet connection, no querying the remote apis"""
-            data = request.data 
-            payer = data['payer'][0]  # Access the first value for 'payer'
-            payee = data['payee'][0]  # Access the first value for 'payee'
-            amount = data['amount'][0]  # Access the first value for 'amount'
-            description = data['description'][0]  # Access the first value for 'description'
-
-            serializer = LipilaCollectionSerializer(data={
-                'payer': payer,
-                'payee': payee,
-                'amount': amount,
-                'description': description,
-            })
-           
-            if serializer.is_valid():
-                try:
-                    # Query external API handlers
-                    reference_id = "examplerefernceid"
-                    payment = serializer.save()
-                    payment.reference_id = reference_id
-                    payment.status = 'success'  # Set status to success
-                    payment.save()
-                    status_code = 200
-                    return Response({'message': 'OK'}, status=status_code)
-                except Exception as e:
-                    return Response({'message': e}, status=400)
-            else:
-                # Set status code
-                return Response({'message': 'Invalid form fields'}, status=405)
-        def list(self, request):
-            try:
-                payee = request.query_params.get('payee')
-
-                if not payee:
-                    return Response({"error": "payee id is missing"}, status=400)
-                else:
-                    user = User.objects.get(username=payee) 
-                    payments = LipilaCollection.objects.filter(payee=user.id)
-                    serializer = LipilaCollectionSerializer(payments, many=True)
-                    
-                return Response(serializer.data, status=200)
-
-            except User.DoesNotExist:
-                return Response({"error": "Payee not found"}, status=404)
-    else:
-        def create(self, request):
-            """Handles POST requests, deserializing date and setting status."""
+    
+    def create(self, request):
+        """Handles POST requests, deserializing date and setting status."""
+        try:
             data = request.data
             payer = data['payer']  # Access the first value for 'payer'
             payee = data['payee'] # Access the first value for 'payee'
             amount = data['amount'] # Access the first value for 'amount'
             description = data['description']  # Access the first value for 'description'
 
-            serializer = LipilaCollectionSerializer(data={
-                'payer': payer,
-                'payee': payee,
-                'amount': amount,
-                'description': description,
-            })
+            serializer = LipilaCollectionSerializer(data=data)
             print(serializer)
-            # serializer = LipilaCollectionSerializer(data=data)
+        
             api_user = Collections()
             api_user.provision_sandbox(api_user.subscription_col_key)
             api_user.create_api_token(
                 api_user.subscription_col_key, 'collection')
 
             if serializer.is_valid():
-                try:
-                    # Query external API handlers
-                    amount = data['amount']
-                    reference_id = api_user.x_reference_id
-                    payer_account = data['payer_account']
+                print('VALID SER')
+            # try:
+                # Query external API handlers
+                amount = data['amount']
+                reference_id = api_user.x_reference_id
+                payer_account = '8877665544'
 
-                    # Query request to pay function
-                    request_pay = api_user.request_to_pay(
-                        amount=amount, payer_account=payer_account, reference=str(reference_id))
+                # Query request to pay function
+                request_pay = api_user.request_to_pay(
+                    amount=amount, payer_account=payer_account, reference=str(reference_id))
 
-                    if request_pay.status_code == 202:
-                        # save payment
-                        payment = serializer.save()
-                        payment.reference_id = reference_id
-                        payment.status = 'pending'  # Set status based on mapping
-                        payment.save()
-                        transaction = LipilaCollection.objects.filter(
-                            reference_id=reference_id)
-                        for r in transaction:
-                            status = api_user.get_payment_status(reference_id)
-                            if status.status_code == 200:
-                                payment.status = 'success'
-                                payment.save()
-                            else:
-                                payment.status = 'failed'
-                        payment.save()
-                        status_code = request_pay.status_code
-                        # Set status code
-                        return Response({'message': 'request accepted, wait for client approval'}, status=status_code)
+                if request_pay.status_code == 202:
+                    print('PAYMENT SENT SUCCESS')
+                    # save payment
+                    payment = serializer.save()
+                    payment.reference_id = reference_id
+                    payment.status = 'pending'  # Set status based on mapping
+                    payment.save()
+                    transaction = LipilaCollection.objects.filter(
+                        reference_id=reference_id)
+                    for r in transaction:
+                        status = api_user.get_payment_status(reference_id)
+                        if status.status_code == 200:
+                            payment.status = 'success'
+                            payment.save()
+                        else:
+                            payment.status = 'failed'
+                    payment.save()
+                    status_code = request_pay.status_code
+                    # Set status code
+                    return Response({'message': 'request accepted, wait for client approval'}, status=status_code)
 
-                    elif request_pay.status_code == 403:
-                        status_code = request_pay.status_code
-                        # Set status code
-                        return Response({'message': 'Request exceeded'}, status=status_code)
+                elif request_pay.status_code == 403:
+                    status_code = request_pay.status_code
+                    # Set status code
+                    return Response({'message': 'Request exceeded'}, status=status_code)
 
-                    elif request_pay.status_code == 400:
-                        status_code = request_pay.status_code
-                        # Set status code
-                        return Response({'message': 'Bad request from mtn'}, status=status_code)
+                elif request_pay.status_code == 400:
+                    status_code = request_pay.status_code
+                    # Set status code
+                    return Response({'message': 'Bad request from mtn'}, status=status_code)
 
-                except Exception as e:
-                    return Response({'message': e}, status=400)
-            else:
-                # Set status code
-                return Response({'message': 'Invalid form fields'}, status=405)
+        except Exception as e:
+            return Response({'message': e}, status=400)
+        else:
+            # Set status code
+            return Response({'message': 'Invalid form fields'}, status=405)
 
     def list(self, request):
         try:
