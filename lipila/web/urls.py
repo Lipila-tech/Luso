@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
+
 
 urlpatterns = [
      # Public URLS
@@ -18,7 +20,7 @@ urlpatterns = [
      # Authenticated User Urls
      path('me/<str:user>', views.dashboard, name='dashboard'),
      path('accounts/profile/<str:user>', views.profile, name='profile'),
-     path('accounts/profile/<str:user>/edit', views.UpdateUserInfoView.as_view(), name='update_profile'),
+     path('accounts/profile/<str:user>/edit', login_required(views.UpdateUserInfoView.as_view()), name='update_profile'),
      path('bnpl/', views.bnpl, name='bnpl'),
      
      # Logs

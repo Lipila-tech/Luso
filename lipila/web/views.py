@@ -103,7 +103,7 @@ class UpdateUserInfoView(View):
 
     def post(self, request, user, *args, **kwargs):
         user_object = get_object_or_404(LipilaUser, username=user)
-        form = EditLipilaUserForm(request.POST, request.FILES, instance=request.user)
+        form = EditLipilaUserForm(request.POST, request.FILES, instance=user_object)
         if form.is_valid():
             form.save()
             return redirect(reverse('profile', kwargs={'user': user_object}))

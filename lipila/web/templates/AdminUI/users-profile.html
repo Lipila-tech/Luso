@@ -41,6 +41,7 @@
             {% endif %}
             <h2>{{ user.username }}</h2>
             <h3>{{user.city | upper}}</h3>
+            <h3>{{user.country | upper}}</h3>
             <div class="social-links mt-2">
               <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
               <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
@@ -172,6 +173,8 @@
               <!-- Change Password Form -->
               <form action="{% url 'password_change' %}" method="get">
                 <div class="text-center">
+                  {% csrf_token %}
+                  {{form}}
                   <button type="submit" class="btn btn-primary">Change Password</button>
                 </div>
               </form><!-- End Change Password Form -->
