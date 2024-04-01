@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+ {% extends 'layout_auth.html' %}
 
-<head>
-  {% block title %}
-  <title>Local Library</title>
-  {% endblock %}
-</head>
-<body>
+
+{%block main %}
   {% block sidebar %}
   <ul class="sidebar-nav">
     {% if user.is_authenticated %}
     <li>User: {{ user.get_username }}</li>
     <li>
-      <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+      <form id="logout-form" method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-link">Logout</button>
       </form>
@@ -22,9 +17,12 @@
     {% endif %}
   </ul>
   {% endblock %}
-  {% block content %}
-  <!-- default content text (typically empty) -->
-  {% endblock %}
+  <div class="col-md-8">
+
+    {% block content %}
+
+    {% endblock %}
+  </div>
 </body>
 
-</html>
+{% endblock %}
