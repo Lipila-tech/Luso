@@ -28,7 +28,6 @@ INVOICE_STATUS_CHOICES = (
     ('rejected', 'rejected'),
 )
 
-
 class LipilaUser(User):
     phone_number = models.CharField(
         max_length=20)
@@ -45,7 +44,7 @@ class LipilaUser(User):
     user_category = models.CharField(
         max_length=30, choices=USER_CATEGORY_CHOICES, default='other')
 
-    REQUIRED_FIELDS = ['email', 'phone_number']
+    REQUIRED_FIELDS = ['email']
 
     @staticmethod
     def get_user_by_id(ids):

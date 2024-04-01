@@ -12,22 +12,18 @@ from django.contrib.auth.forms import AuthenticationForm
 # My Models
 from api.models import LipilaUser
 from .helpers import apology
-from .forms.forms import DisburseForm, LoginForm, SignupForm
+from .forms.forms import DisburseForm, LoginForm, SignupForm, EditLipilaUserForm
 from datetime import datetime
-
 
 # Public Views
 def index(request):
     return render(request, 'UI/index.html')
 
-
 def service_details(request):
     return render(request, 'UI/services-details.html')
 
-
 def portfolio_details(request):
     return render(request, 'UI/portfolio-details.html')
-
 
 def send_money(request):
     context = {}
@@ -44,11 +40,8 @@ def send_money(request):
 
     return render(request, 'UI/send_money.html', context)
 
-
 def pages_faq(request):
     return render(request, 'AdminUI/pages-faq.html')
-
-# Authentication views
 
 
 class SignupView(View):
@@ -76,7 +69,9 @@ class SignupView(View):
                     request, messages.ERROR, "Error during signup!")
                 return render(request, 'registration/signup.html', context)
         except Exception as e:
-            print(e)
+            messages.add_message(
+                    request, messages.ERROR, "Error during signup!")
+            return render(request, 'registration/signup.html', context)
 
 
 def login(request):
@@ -87,6 +82,7 @@ def login(request):
         user = authenticate(username=username, password=password)
         if user:
             if user.is_active:
+                request.session['username'] = username
                 my_login(request, user)
                 return redirect(reverse('profile', kwargs={'user': username}))
         else:
@@ -99,7 +95,29 @@ def login(request):
     return render(request, 'registration/login.html', {'form': form})
 
 
-# Authenticated User Views
+# AUTHENTICATED USER VIEWS
+@login_required
+def edit_user_info(request, user):
+    if request.method == 'POST':
+        try:
+            form = EditLipilaUserForm(request.POST, instance=request.session.get("username"))
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your information has been updated successfully!')
+                return redirect(reverse('profile', kwargs={'user': request.user}))
+        except Exception as e:
+            messages.error(request, "Failed to update information.")
+            return redirect(reverse('profile', kwargs={'user': request.session.get('username')}))
+    else:
+        context = {}
+        context['user'] = request.user
+        print(request.user)
+        form = EditLipilaUserForm(instance=request.user)
+        context['form'] = form
+        return render(request, 'AdminUI/edit_user_info.html', context)
+  
+
+
 @login_required
 @api_view(('GET',))
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
@@ -174,6 +192,7 @@ def dashboard(request, user):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def profile(request, user):
     context = {}
+    context['user'] = user
     try:
         # id = int(request.GET.get('user'))
         if not user:
