@@ -16,28 +16,7 @@
         {% csrf_token %}
         <form method="post" class="signup-form">
             {% csrf_token %}
-            <!-- username -->
-            {{form.username.errors}}
-            {{form.username.label_tag}}
-            {{form.username|add_class:'form-control mb-1'}}
-
-            <!-- phone_number -->
-            {{form.phone_number.errors}}
-            {{form.phone_number.label_tag}}
-            {{form.phone_number|add_class:'form-control mb-1'}}
-
-            <!-- password -->
-            {{form.password.errors}}
-            {{form.password.label_tag}}
-            {{form.password|add_class:'form-control mb-1'}}
-
-             <!-- city -->
-             {{form.city.label_tag}}
-             {{form.city | add_class:'form-control mb-1'}}
-
-              <!-- business type -->
-            {{form.user_category.label_tag}}
-            {{form.user_category | add_class:'form-control mb-1'}}
+            {{form | crispy}}
 
             <input type="submit" value="Signup" onclick="signup()" class="btn btn-primary">
         </form>

@@ -19,7 +19,7 @@ class LoginForm(forms.ModelForm):
 class SignupForm(forms.ModelForm):
     class Meta:
         model = LipilaUser
-        fields = ('username', 'city', 'user_category', 'phone_number', 'password')
+        fields = ('username', 'email', 'password')
 
 
 class EditLipilaUserForm(UserChangeForm):

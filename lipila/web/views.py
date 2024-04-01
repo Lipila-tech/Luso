@@ -83,7 +83,7 @@ def login(request):
         if user:
             if user.is_active:
                 my_login(request, user)
-                return redirect(reverse('profile', kwargs={'user': username}))
+                return redirect(reverse('update_profile', kwargs={'user': username}))
         else:
             messages.error(
                 request, "Your username and password didn't match. Please try again.")
