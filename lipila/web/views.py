@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.views import View
@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 # My Models
 from api.models import LipilaUser
 from .helpers import apology
@@ -82,7 +82,6 @@ def login(request):
         user = authenticate(username=username, password=password)
         if user:
             if user.is_active:
-                request.session['username'] = username
                 my_login(request, user)
                 return redirect(reverse('profile', kwargs={'user': username}))
         else:
@@ -96,27 +95,24 @@ def login(request):
 
 
 # AUTHENTICATED USER VIEWS
-@login_required
-def edit_user_info(request, user):
-    if request.method == 'POST':
-        try:
-            form = EditLipilaUserForm(request.POST, instance=request.session.get("username"))
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Your information has been updated successfully!')
-                return redirect(reverse('profile', kwargs={'user': request.user}))
-        except Exception as e:
-            messages.error(request, "Failed to update information.")
-            return redirect(reverse('profile', kwargs={'user': request.session.get('username')}))
-    else:
-        context = {}
-        context['user'] = request.user
-        print(request.user)
-        form = EditLipilaUserForm(instance=request.user)
-        context['form'] = form
-        return render(request, 'AdminUI/edit_user_info.html', context)
-  
+class UpdateUserInfoView(View):
+    def get(self, request, user, *args, **kwargs):
+        user_object = get_object_or_404(LipilaUser, username=user)
+        form = EditLipilaUserForm(instance=user_object)
+        return render(request, 'AdminUI/edit_user_info.html', {'form': form, 'user':user_object})
 
+    def post(self, request, user, *args, **kwargs):
+        user_object = get_object_or_404(LipilaUser, username=user)
+        form = EditLipilaUserForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('profile', kwargs={'user': user_object}))
+        else:
+            # If form is not valid, print out the form errors for debugging
+            print(form.errors)
+        return render(request, 'AdminUI/edit_user_info.html', {'form': form, 'user':user_object})
+    
+  
 
 @login_required
 @api_view(('GET',))

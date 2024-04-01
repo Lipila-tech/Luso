@@ -18,7 +18,7 @@ urlpatterns = [
      # Authenticated User Urls
      path('me/<str:user>', views.dashboard, name='dashboard'),
      path('accounts/profile/<str:user>', views.profile, name='profile'),
-     path('accounts/profile/<str:user>/edit', views.edit_user_info, name='update_profile'),
+     path('accounts/profile/<str:user>/edit', views.UpdateUserInfoView.as_view(), name='update_profile'),
      path('bnpl/', views.bnpl, name='bnpl'),
      
      # Logs

@@ -30,13 +30,13 @@ INVOICE_STATUS_CHOICES = (
 
 class LipilaUser(User):
     phone_number = models.CharField(
-        max_length=20)
+        max_length=20, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=10, default="Zambia")
     address = models.CharField(
-        max_length=255, default="", blank=False, null=False)
+        max_length=255, default="", blank=True, null=True)
     company = models.CharField(
-        max_length=255, default="", blank=False, null=False)
+        max_length=255, default="", blank=True, null=True)
     city = models.CharField(
         max_length=9, choices=CITY_CHOICES, default='KItwe')
     profile_image = models.ImageField(
