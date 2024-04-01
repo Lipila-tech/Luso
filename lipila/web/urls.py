@@ -13,26 +13,27 @@ urlpatterns = [
      path('portfolio-details/', views.portfolio_details, name='portfolio-details'),
      path('pages-faq/', views.pages_faq, name='pages-faq'),     
      
-     # Auth
+     # Accounts URLS
      path('accounts/signup/', views.SignupView.as_view(), name='signup'),
      path('accounts/login/', views.login, name='login'),
      
-     # Authenticated User Urls
+     # Authenticated User Accounts Urls
      path('me/<str:user>', views.dashboard, name='dashboard'),
      path('accounts/profile/<str:user>', views.profile, name='profile'),
      path('accounts/profile/<str:user>/edit', login_required(views.UpdateUserInfoView.as_view()), name='update_profile'),
-     path('bnpl/', views.bnpl, name='bnpl'),
-     
-     # Logs
+          
+     # User Logs URLS
      path('transfer-history/', views.log_transfer, name='log_transfer'),
      path('invoice-history/', views.log_invoice, name='log_invoice'),
      path('product-history/', views.log_products, name='log_products'),
-     # Actions
+     # User Actions URLS
      path('invoice/', views.invoice, name='invoice'),
      path('transfer/', views.transfer, name='transfer'),
      path('products/', views.products, name='products'),
-]
 
+     # Lipila Admin specific URLS
+     path('bnpl/', views.bnpl, name='bnpl'),
+]
 
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,
