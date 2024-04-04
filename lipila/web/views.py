@@ -99,18 +99,21 @@ class UpdateUserInfoView(View):
     def get(self, request, user, *args, **kwargs):
         user_object = get_object_or_404(LipilaUser, username=user)
         form = EditLipilaUserForm(instance=user_object)
-        return render(request, 'AdminUI/edit_user_info.html', {'form': form, 'user':user_object})
+        return render(request, 'AdminUI/profile/edit_user_info.html', {'form': form, 'user':user_object})
 
     def post(self, request, user, *args, **kwargs):
         user_object = get_object_or_404(LipilaUser, username=user)
         form = EditLipilaUserForm(request.POST, request.FILES, instance=user_object)
         if form.is_valid():
             form.save()
+            messages.success(
+                request, "Your profile has been update.")
             return redirect(reverse('profile', kwargs={'user': user_object}))
         else:
             # If form is not valid, print out the form errors for debugging
-            print(form.errors)
-        return render(request, 'AdminUI/edit_user_info.html', {'form': form, 'user':user_object})
+            messages.error(
+                request, "Failed to update profile.")
+        return render(request, 'AdminUI/profile/edit_user_info.html', {'form': form, 'user':user_object})
     
   
 
@@ -208,7 +211,7 @@ def profile(request, user):
         context['status'] = 404
         context['message'] = 'User Profile Not Found!'
         return apology(request, context)
-    return render(request, 'AdminUI/users-profile.html', context)
+    return render(request, 'AdminUI/profile/users-profile.html', context)
 
 
 def bnpl(request):
@@ -230,9 +233,8 @@ def log_invoice(request):
 def log_products(request):
     return render(request, 'AdminUI/log/products.html')
 
+
 # Actions
-
-
 @login_required
 def invoice(request):
     return render(request, 'AdminUI/actions/invoice.html')

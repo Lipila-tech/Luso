@@ -18,7 +18,7 @@ def apology(request, context=None):
         An HttpResponseNotFound object with the rendered 404 template.
     """
 
-    template_name = 'AdminUI/pages-error.html'  # Customize this to your template name
+    template_name = 'pages-error.html'
 
     if context is None:
         context = {}
