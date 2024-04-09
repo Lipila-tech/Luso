@@ -14,65 +14,26 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Product Name</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Date Created</th>
+            <th scope="col">Price</th>
             <th scope="col">Description</th>
+            <th scope="col">quantity</th>
             <th scope="col">Sold</th>
             <th scope="col">Available</th>
-            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
+
+          {% for product in products %}
           <tr>
-            <th scope="row">1</th>
-            <td>Iphone Pro</td>
-            <td>5000</td>
-            <td>23-02-2021</td>
-            <td>Latest phone in store</td>
-            <td>400</td>
-            <td>3</td>
-            <td>Active</td>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{product.name}}</td>
+            <td>{{product.price}}</td>
+            <td>{{product.description}}</td>
+            <td>{{product.quantity}}</td>
+            <td>{{sold}}</td>
+            <td>{{available}}</td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Iphone Pro</td>
-            <td>5000</td>
-            <td>23-02-2021</td>
-            <td>Latest phone in store</td>
-            <td>400</td>
-            <td>3</td>
-            <td>Active</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Iphone Pro</td>
-            <td>5000</td>
-            <td>23-02-2021</td>
-            <td>Latest phone in store</td>
-            <td>400</td>
-            <td>3</td>
-            <td>Active</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>Iphone Pro</td>
-            <td>5000</td>
-            <td>23-02-2021</td>
-            <td>Latest phone in store</td>
-            <td>400</td>
-            <td>3</td>
-            <td>Active</td>
-          </tr>
-          <tr>
-            <th scope="row">5</th>
-            <td>Iphone Pro</td>
-            <td>5000</td>
-            <td>23-02-2021</td>
-            <td>Latest phone in store</td>
-            <td>400</td>
-            <td>3</td>
-            <td>Active</td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
 </main><!-- End #main -->

@@ -42,10 +42,10 @@ class LipilaUser(User):
         upload_to='img/profiles/', blank=True, null=True)
     user_category = models.CharField(
         max_length=30, choices=USER_CATEGORY_CHOICES, default='other')
-    facebook_url = models.CharField(max_length=250, null=True, blank=True, default='#')
-    linkedin_url = models.CharField(max_length=250, null=True, blank=True, default='#')
-    twitter_url = models.CharField(max_length=250, null=True, blank=True, default='#')
-    instagram_url = models.CharField(max_length=250, null=True, blank=True, default='#')
+    facebook_url = models.CharField(max_length=250, null=True, blank=True, default='')
+    linkedin_url = models.CharField(max_length=250, null=True, blank=True, default='')
+    twitter_url = models.CharField(max_length=250, null=True, blank=True, default='')
+    instagram_url = models.CharField(max_length=250, null=True, blank=True, default='')
 
     REQUIRED_FIELDS = ['email']
 
@@ -58,15 +58,16 @@ class LipilaUser(User):
 
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=300)
-    product_owner = models.ForeignKey(User, related_name='product',
+    name = models.CharField(max_length=150)
+    description = models.CharField(max_length=300)
+    owner = models.ForeignKey(User, related_name='product',
                                       on_delete=models.CASCADE)
     price = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
-    status = models.BooleanField(default=True)
+    quantity = models.IntegerField()
 
     def __str__(self):
-        return "{} -> {}".format(self.product_name, self.product_owner)
+        return "{} -> {}".format(self.product_name, self.product_owner, self.quantity)
 
 
 class BNPL(models.Model):
