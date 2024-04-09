@@ -122,7 +122,7 @@ class UpdateUserInfoView(View):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, user):
     context = {}
-
+    print('dashbord', user)
     #Dasboard  Reports 
     context['sales'] = 0
     context['sales_increase'] = 0
@@ -174,15 +174,15 @@ def dashboard(request, user):
     except ValueError:
         context['status'] = 400
         context['message'] = 'User ID must be of type int'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except TypeError:
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Not Found!'
-        return apology(request, context)
+        return apology(request, context, user=user)
     return render(request, 'AdminUI/index.html', context)
 
 
@@ -192,6 +192,7 @@ def dashboard(request, user):
 def profile(request, user):
     context = {}
     context['user'] = user
+    print('profile',user)
     try:
         # id = int(request.GET.get('user'))
         if not user:
@@ -202,15 +203,16 @@ def profile(request, user):
     except ValueError:
         context['status'] = 400
         context['message'] = 'User ID must be of type int'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except TypeError:
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Profile Not Found!'
-        return apology(request, context)
+        print(user)
+        return apology(request, context, user='auth')
     return render(request, 'AdminUI/profile/users-profile.html', context)
 
 
