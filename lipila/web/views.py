@@ -5,15 +5,15 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
-from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
+from django.contrib.auth.forms import AuthenticationForm
 # My Models
 from api.models import LipilaUser
 from .helpers import apology
-from .forms.forms import DisburseForm, LoginForm, SignupForm, EditLipilaUserForm
+from .forms.forms import DisburseForm, AddProductForm, SignupForm, EditLipilaUserForm
 from datetime import datetime
+from web.models import Product
 
 # Public Views
 def index(request):
@@ -122,7 +122,7 @@ class UpdateUserInfoView(View):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, user):
     context = {}
-
+    print('dashbord', user)
     #Dasboard  Reports 
     context['sales'] = 0
     context['sales_increase'] = 0
@@ -174,15 +174,15 @@ def dashboard(request, user):
     except ValueError:
         context['status'] = 400
         context['message'] = 'User ID must be of type int'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except TypeError:
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Not Found!'
-        return apology(request, context)
+        return apology(request, context, user=user)
     return render(request, 'AdminUI/index.html', context)
 
 
@@ -192,6 +192,7 @@ def dashboard(request, user):
 def profile(request, user):
     context = {}
     context['user'] = user
+    print('profile',user)
     try:
         # id = int(request.GET.get('user'))
         if not user:
@@ -202,15 +203,16 @@ def profile(request, user):
     except ValueError:
         context['status'] = 400
         context['message'] = 'User ID must be of type int'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except TypeError:
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
-        return apology(request, context)
+        return apology(request, context, user=user)
     except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Profile Not Found!'
-        return apology(request, context)
+        print(user)
+        return apology(request, context, user='auth')
     return render(request, 'AdminUI/profile/users-profile.html', context)
 
 
@@ -227,12 +229,59 @@ def log_transfer(request):
 @login_required
 def log_invoice(request):
     return render(request, 'AdminUI/log/invoice.html')
+    
+
+class CreateProductView(View):
+    def get(self, request):
+        form = AddProductForm()
+        return render(request, 'AdminUI/actions/products.html', {'form': form})
+    
+    def post(self, request):
+        form = AddProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)  # Don't save yet
+            product.owner = request.user  # Set owner to current user
+            product.save()
+            messages.success(
+                request, "Product Added Successfully.")
+            return redirect(reverse('log_products'))
+        else:
+            messages.error(
+                request, "Failed to create product.")
+        return render(request, 'AdminUI/actions/products.html', {'form': form})
+    
+
+class EditProductView(View):
+    def get(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)  # Fetch product by ID
+        form = AddProductForm(instance=product)  # Pre-populate form with product data
+        return render(request, 'AdminUI/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
+
+    def post(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)
+        form = AddProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Product Edited Successfully.")
+            return redirect('log_products')
+        else:
+            messages.error(
+                request, "Failed to edit product.")
+        return render(request, 'AdminUI/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
 
 
-@login_required
-def log_products(request):
-    return render(request, 'AdminUI/log/products.html')
+class DeleteProductView(View):
+    def get(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)
+        return render(request, 'AdminUI/actions/product_delete.html', {'product': product, 'product_id':product_id})
 
+    def post(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)
+        product.delete()
+        messages.success(
+            request, "Product Deleted Successfully.")
+        return redirect('log_products')
 
 # Actions
 @login_required
@@ -241,8 +290,12 @@ def invoice(request):
 
 
 @login_required
-def products(request):
-    return render(request, 'AdminUI/actions/products.html')
+def log_products(request):
+    context = {}
+    user_object = get_object_or_404(LipilaUser, username=request.user)
+    products = Product.objects.filter(owner=user_object.id)
+    context['products'] = products
+    return render(request, 'AdminUI/log/products.html', context)
 
 
 @login_required

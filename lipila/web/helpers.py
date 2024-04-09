@@ -6,7 +6,7 @@ from django.shortcuts import render
 from api.models import LipilaUser
 
 
-def apology(request, context=None):
+def apology(request, context=None, user=None):
     """
     Renders a custom error page with the provided context.
 

@@ -14,8 +14,8 @@ class DisbursementAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'product_owner', 'price',
-                    'date_created', 'status')
+    list_display = ('name', 'owner', 'price',
+                    'date_created', 'description', 'quantity')
 
     def get_queryset(self, request):
         if request.user.is_superuser:
