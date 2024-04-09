@@ -25,11 +25,13 @@ urlpatterns = [
      # User Logs URLS
      path('transfer-history/', views.log_transfer, name='log_transfer'),
      path('invoice-history/', views.log_invoice, name='log_invoice'),
-     path('product-history/', views.log_products, name='log_products'),
-     # User Actions URLS
+
      path('invoice/', views.invoice, name='invoice'),
      path('transfer/', views.transfer, name='transfer'),
+     path('products/history/', views.log_products, name='log_products'),
      path('products/create/', views.CreateProductView.as_view(), name='products'),
+     path('products/<int:product_id>/edit/', views.EditProductView.as_view(), name='edit_product'),
+     path('products/<int:product_id>/delete/', views.DeleteProductView.as_view(), name='delete_product'),
 
      # Lipila Admin specific URLS
      path('bnpl/', views.bnpl, name='bnpl'),

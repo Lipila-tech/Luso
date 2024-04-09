@@ -251,6 +251,34 @@ class CreateProductView(View):
         return render(request, 'AdminUI/actions/products.html', {'form': form})
     
 
+class EditProductView(View):
+    def get(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)  # Fetch product by ID
+        form = AddProductForm(instance=product)  # Pre-populate form with product data
+        return render(request, 'AdminUI/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
+
+    def post(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)
+        form = AddProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Product Edited Successfully.")
+            return redirect('log_products')
+        else:
+            messages.error(
+                request, "Failed to edit product.")
+        return render(request, 'AdminUI/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
+
+
+class DeleteProductView(View):
+    def get(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)
+        product.delete()
+        messages.success(
+            request, "Product Deleted Successfully.")
+        return redirect('log_products')
+
 # Actions
 @login_required
 def invoice(request):
