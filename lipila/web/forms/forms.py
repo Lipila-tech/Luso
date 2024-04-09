@@ -4,6 +4,7 @@ from django import forms
 from api.models import LipilaDisbursement
 from web.models import LipilaUser
 
+
 class DisburseForm(forms.ModelForm):
     class Meta:
         model = LipilaDisbursement
@@ -25,7 +26,22 @@ class SignupForm(forms.ModelForm):
 class EditLipilaUserForm(UserChangeForm):
     class Meta:
         model = LipilaUser
-        fields = ['profile_image', 'first_name', 'last_name', 'phone_number', 'bio', 'city', 'address', 'company', 'user_category']
+        fields = [
+            'profile_image',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'bio',
+            'city',
+            'address',
+            'company',
+            'user_category',
+            'facebook_url',
+            'twitter_url',
+            'instagram_url',
+            'linkedin_url',
+            ]
         widgets = {
-            'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),  # Restrict file types
+            # Restrict file types
+            'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
         }

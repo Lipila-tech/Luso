@@ -9,10 +9,9 @@ STATUS_CHOICES = (
 )
 
 USER_CATEGORY_CHOICES = (
-    ('clothing', 'Clothing Shop'),
-    ('creator', 'Content Creator'),
-    ('grocery', 'Grocery Store'),
-    ('school', 'Tuition Center'),
+    ('entrepreneur', 'Entrepreneur'),
+    ('creator', 'Creator'),
+    ('patron', 'Patron'),
     ('other', 'Other'),
 )
 
@@ -43,6 +42,10 @@ class LipilaUser(User):
         upload_to='img/profiles/', blank=True, null=True)
     user_category = models.CharField(
         max_length=30, choices=USER_CATEGORY_CHOICES, default='other')
+    facebook_url = models.CharField(max_length=250, null=True, blank=True, default='#')
+    linkedin_url = models.CharField(max_length=250, null=True, blank=True, default='#')
+    twitter_url = models.CharField(max_length=250, null=True, blank=True, default='#')
+    instagram_url = models.CharField(max_length=250, null=True, blank=True, default='#')
 
     REQUIRED_FIELDS = ['email']
 
