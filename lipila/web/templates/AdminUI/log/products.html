@@ -26,6 +26,7 @@
             <th scope="col">quantity</th>
             <th scope="col">Sold</th>
             <th scope="col">Available</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -39,6 +40,7 @@
             <td>{{product.quantity}}</td>
             <td>{{sold}}</td>
             <td>{{available}}</td>
+            <td><a href="{% url 'edit_product' product.id %}">Change</a></td>
           </tr>
           {% endfor %}
         </tbody>

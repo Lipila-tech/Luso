@@ -274,6 +274,10 @@ class EditProductView(View):
 class DeleteProductView(View):
     def get(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
+        return render(request, 'AdminUI/actions/product_delete.html', {'product': product, 'product_id':product_id})
+
+    def post(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, pk=product_id)
         product.delete()
         messages.success(
             request, "Product Deleted Successfully.")

@@ -5,27 +5,30 @@
 {% block main %}
 <main id="main" class="main">
 
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Adding Product</h5>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Adding Product</h5>
+        </div>
     </div>
-  </div>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <form action="{% url 'edit_product' product_id%}" , method="post" enctype="multipart/form-data">
-            <h2>Add Product</h2>
-            <div class="row mb-3">
-              {% csrf_token %}
-              {{form | crispy}}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form action="{% url 'edit_product' product_id%}" , method="post" enctype="multipart/form-data">
+                    <h2>Add Product</h2>
+                    <div class="row mb-3">
+                        {% csrf_token %}
+                        {{form | crispy}}
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+                <h2>Danger Zone</h2>
+                    <a href="{% url 'delete_product' product_id %}" class="btn btn-danger">Delete</a>
+                </form>
             </div>
-            <div class="text-center">
-              <button type="submit" class="btn btn-primary">Update</button>
-            </div>
-        </form>
-      </div>
+        </div>
     </div>
-  </div>
 
 </main><!-- End #main -->
 {% endblock %}
