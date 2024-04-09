@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
 from api.models import LipilaDisbursement
-from web.models import LipilaUser
+from web.models import LipilaUser, Product
 
 
 class DisburseForm(forms.ModelForm):
@@ -45,3 +45,9 @@ class EditLipilaUserForm(UserChangeForm):
             # Restrict file types
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
+
+
+class AddProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ('name', 'description', 'price', 'quantity',)

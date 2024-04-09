@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.5/dist/quill.bubble.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
 
-    
+
     <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
 
@@ -226,7 +226,6 @@
                     <span>Dashboard</span>
                 </a>
             </li><!-- End Dashboard Nav -->
-
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i
@@ -300,9 +299,11 @@
                 </a>
             </li><!-- End Contact Page Nav -->
         </ul>
-
+       
     </aside><!-- End Sidebar-->
+    
     {% block main %}
+   
     {% endblock %}
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
@@ -338,7 +339,7 @@
             theme: 'bubble', // Specify theme in configuration
         });
     </script>
-   <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
 
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>

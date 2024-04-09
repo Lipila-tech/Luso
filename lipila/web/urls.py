@@ -29,7 +29,7 @@ urlpatterns = [
      # User Actions URLS
      path('invoice/', views.invoice, name='invoice'),
      path('transfer/', views.transfer, name='transfer'),
-     path('products/', views.products, name='products'),
+     path('products/create/', views.CreateProductView.as_view(), name='products'),
 
      # Lipila Admin specific URLS
      path('bnpl/', views.bnpl, name='bnpl'),
