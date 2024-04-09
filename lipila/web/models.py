@@ -67,7 +67,7 @@ class Product(models.Model):
     quantity = models.IntegerField()
 
     def __str__(self):
-        return "{} -> {}".format(self.product_name, self.product_owner, self.quantity)
+        return "{} -> {}".format(self.name, self.owner, self.quantity)
 
 
 class BNPL(models.Model):

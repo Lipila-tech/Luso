@@ -5,15 +5,15 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
-from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
+from django.contrib.auth.forms import AuthenticationForm
 # My Models
 from api.models import LipilaUser
 from .helpers import apology
-from .forms.forms import DisburseForm, LoginForm, SignupForm, EditLipilaUserForm
+from .forms.forms import DisburseForm, AddProductForm, SignupForm, EditLipilaUserForm
 from datetime import datetime
+from web.models import Product
 
 # Public Views
 def index(request):
@@ -229,12 +229,27 @@ def log_transfer(request):
 @login_required
 def log_invoice(request):
     return render(request, 'AdminUI/log/invoice.html')
+    
 
-
-@login_required
-def log_products(request):
-    return render(request, 'AdminUI/log/products.html')
-
+class CreateProductView(View):
+    def get(self, request):
+        form = AddProductForm()
+        return render(request, 'AdminUI/actions/products.html', {'form': form})
+    
+    def post(self, request):
+        form = AddProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)  # Don't save yet
+            product.owner = request.user  # Set owner to current user
+            product.save()
+            messages.success(
+                request, "Product Added Successfully.")
+            return redirect(reverse('log_products'))
+        else:
+            messages.error(
+                request, "Failed to create product.")
+        return render(request, 'AdminUI/actions/products.html', {'form': form})
+    
 
 # Actions
 @login_required
@@ -243,8 +258,12 @@ def invoice(request):
 
 
 @login_required
-def products(request):
-    return render(request, 'AdminUI/actions/products.html')
+def log_products(request):
+    context = {}
+    user_object = get_object_or_404(LipilaUser, username=request.user)
+    products = Product.objects.filter(owner=user_object.id)
+    context['products'] = products
+    return render(request, 'AdminUI/log/products.html', context)
 
 
 @login_required
