@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
+    'crispy_forms',
+    'crispy_bootstrap4',
     # My apps
     'api',
     'web',
@@ -156,7 +158,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
 STATIC_URL = "static/"
