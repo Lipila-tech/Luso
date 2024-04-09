@@ -40,13 +40,13 @@
             {% endif %}
             {% endif %}
             <h2>{{ user.username }}</h2>
-            <h3>{{user.city | upper}}</h3>
-            <h3>{{user.country | upper}}</h3>
+            <h3>{{user.user_category | upper}}</h3>
+            <h3>{{user.city | upper}}, {{user.country | upper}}</h3>
             <div class="social-links mt-2">
-              <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-              <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-              <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-              <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+              <a href="{{user.twitter_url}}" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
+              <a href="{{user.facebook_url}}" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+              <a href="{{user.instagram_url}}" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+              <a href="{{link.linkedin_url}}" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></a>
             </div>
           </div>
         </div>
