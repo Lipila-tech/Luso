@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 
 urlpatterns = [
+     path('<username>/', views.user_profile, name='user_profile'),
      # Public URLS
      path('', views.index, name='index'),
      path('payment/', views.send_money, name='payment'),
