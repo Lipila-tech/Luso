@@ -27,7 +27,7 @@ INVOICE_STATUS_CHOICES = (
     ('rejected', 'rejected'),
 )
 
-class LipilaUser(User):
+class BusinessUser(User):
     phone_number = models.CharField(
         max_length=20, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
@@ -51,7 +51,7 @@ class LipilaUser(User):
 
     @staticmethod
     def get_user_by_id(ids):
-        return LipilaUser.objects.filter(id__in=str(ids))
+        return BusinessUser.objects.filter(id__in=str(ids))
 
     def __str__(self):
         return self.username
@@ -73,7 +73,7 @@ class Product(models.Model):
 class BNPL(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     requested_by = models.ForeignKey(
-        LipilaUser, related_name='credit', on_delete=models.CASCADE)
+        BusinessUser, related_name='credit', on_delete=models.CASCADE)
     product = models.ForeignKey(
         Product, related_name='bnpl', on_delete=models.CASCADE)
     initial_deposit = models.DecimalField(
@@ -96,7 +96,7 @@ class LoanCollection(models.Model):
     reference_id = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
     payer_account = models.CharField(max_length=10, null=False, blank=False)
-    debtor = models.ForeignKey(LipilaUser, related_name='loan',
+    debtor = models.ForeignKey(BusinessUser, related_name='loan',
                                on_delete=models.CASCADE)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -106,7 +106,7 @@ class Invoice(models.Model):
     """
     Model representing an invoice for non lipila registered customers.
     """
-    creator = models.ForeignKey(LipilaUser, on_delete=models.CASCADE, related_name='invoice')
+    creator = models.ForeignKey(BusinessUser, on_delete=models.CASCADE, related_name='invoice')
     customer_name = models.CharField(max_length=255)
     customer_phone_number = models.CharField(max_length=20)
     customer_email = models.EmailField(blank=True)
@@ -126,12 +126,12 @@ class Invoice(models.Model):
         return f"Invoice for {self.customer_name} - {self.total_amount}"
 
 
-class InvoiceLipilaUser(models.Model):
+class InvoiceBusinessUser(models.Model):
     """
     Model representing an invoice for Lipila registereds customers.
     """
-    creator = models.ForeignKey(LipilaUser, on_delete=models.CASCADE, related_name='bill_from')
-    receiver =  models.ForeignKey(LipilaUser, on_delete=models.CASCADE, related_name='bill_to')
+    creator = models.ForeignKey(BusinessUser, on_delete=models.CASCADE, related_name='bill_from')
+    receiver =  models.ForeignKey(BusinessUser, on_delete=models.CASCADE, related_name='bill_to')
     reference_number = models.CharField(max_length=50, blank=True)
     due_date = models.DateField(blank=True, null=True)
     description = models.TextField(blank=True)

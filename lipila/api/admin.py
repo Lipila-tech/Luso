@@ -1,12 +1,15 @@
 from django.contrib import admin
-from .models import (LipilaUser, LipilaDisbursement)
-
+from .models import (BusinessUser, LipilaDisbursement)
 from business.models import Product, BNPL
+from creators.models import CreatorUser
 
-class LipilaUserAdmin(admin.ModelAdmin):
+class BusinessUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'bio',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
+class CreatorUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'phone_number', 'bio',
+                    'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 class DisbursementAdmin(admin.ModelAdmin):
     list_display = ('payer', 'payee', 'payee_account', 'payment_amount', 'payment_method',
@@ -36,11 +39,11 @@ class BNPLAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(LipilaUser, LipilaUserAdmin)
+admin.site.register(BusinessUser, BusinessUserAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)
-
+admin.site.register(CreatorUser, CreatorUserAdmin)
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/'
 admin.site.site_title = 'lipila'

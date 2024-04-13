@@ -9,9 +9,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
 from django.contrib.auth.forms import AuthenticationForm
 # My Models
-from api.models import LipilaUser
+from api.models import BusinessUser
 from .helpers import apology
-from .forms.forms import DisburseForm, AddProductForm, SignupForm, EditLipilaUserForm
+from .forms.forms import DisburseForm, AddProductForm, SignupForm, EditBusinessUserForm
 from datetime import datetime
 from business.models import Product
 from django.urls.exceptions import NoReverseMatch
@@ -20,17 +20,20 @@ def redirect_to_creator(request, username):
     """Redirects user to lipila.tech/<username>."""
     context = {}
     try:
-        user_object = get_object_or_404(LipilaUser, username=username)
+        user_object = get_object_or_404(BusinessUser, username=username)
         if user_object:
             url = f"http://localhost:8000/profile/?username={username}"
             return redirect(url)
-    except LipilaUser.DoesNotExist:
+    except BusinessUser.DoesNotExist:
         return apology(request, context)
 
 
 # Public Views
 def index(request):
     return render(request, 'UI/index.html')
+
+def business(request):
+    return render(request, 'UI/business/home.html')
 
 def service_details(request):
     return render(request, 'UI/services-details.html')
@@ -44,10 +47,10 @@ def send_money(request):
     if form:
         payee_id = form['payee_id']
         try:
-            data = LipilaUser.objects.get(username=payee_id)
+            data = BusinessUser.objects.get(username=payee_id)
             context['payee'] = payee_id
             context['location'] = data.city
-        except LipilaUser.DoesNotExist:
+        except BusinessUser.DoesNotExist:
             context = {'message': "User id not found", }
             return render(request, '404.html', context)
 
@@ -110,13 +113,13 @@ def login(request):
 # AUTHENTICATED USER VIEWS
 class UpdateUserInfoView(View):
     def get(self, request, user, *args, **kwargs):
-        user_object = get_object_or_404(LipilaUser, username=user)
-        form = EditLipilaUserForm(instance=user_object)
+        user_object = get_object_or_404(BusinessUser, username=user)
+        form = EditBusinessUserForm(instance=user_object)
         return render(request, 'AdminUI/profile/edit_user_info.html', {'form': form, 'user':user_object})
 
     def post(self, request, user, *args, **kwargs):
-        user_object = get_object_or_404(LipilaUser, username=user)
-        form = EditLipilaUserForm(request.POST, request.FILES, instance=user_object)
+        user_object = get_object_or_404(BusinessUser, username=user)
+        form = EditBusinessUserForm(request.POST, request.FILES, instance=user_object)
         if form.is_valid():
             form.save()
             messages.success(
@@ -182,7 +185,7 @@ def dashboard(request, user):
         if not user:
             raise ValueError('Username missing')
         else:
-            user = LipilaUser.objects.get(username=user)
+            user = BusinessUser.objects.get(username=user)
             context['user'] = user
     except ValueError:
         context['status'] = 400
@@ -192,7 +195,7 @@ def dashboard(request, user):
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
         return apology(request, context, user=user)
-    except LipilaUser.DoesNotExist:
+    except BusinessUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Not Found!'
         return apology(request, context, user=user)
@@ -211,7 +214,7 @@ def profile(request, user):
         if not user:
             raise ValueError('User ID missing')
         else:
-            user = LipilaUser.objects.get(username=user)
+            user = BusinessUser.objects.get(username=user)
             context['user'] = user
     except ValueError:
         context['status'] = 400
@@ -221,7 +224,7 @@ def profile(request, user):
         context['status'] = 400
         context['message'] = 'Error, User argument missing'
         return apology(request, context, user=user)
-    except LipilaUser.DoesNotExist:
+    except BusinessUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Profile Not Found!'
         print(user)
@@ -305,7 +308,7 @@ def invoice(request):
 @login_required
 def log_products(request):
     context = {}
-    user_object = get_object_or_404(LipilaUser, username=request.user)
+    user_object = get_object_or_404(BusinessUser, username=request.user)
     products = Product.objects.filter(owner=user_object.id)
     context['products'] = products
     return render(request, 'AdminUI/log/products.html', context)

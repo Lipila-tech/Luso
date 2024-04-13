@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from business.models import LipilaUser
+from business.models import BusinessUser
 from business.helpers import apology
 
 def index(request):
@@ -13,9 +13,9 @@ def user_profile(request, username):
     try:
         # username = request.GET.get('username')
         # Logic to retrieve user data based on username (e.g., from database)
-        user_data = LipilaUser.objects.get(username=username)
+        user_data = BusinessUser.objects.get(username=username)
         context['user'] = user_data
-    except LipilaUser.DoesNotExist:
+    except BusinessUser.DoesNotExist:
         context['status'] = 404
         context['message'] = f'{username} Not Found!'
         return apology(request, context, user=username)

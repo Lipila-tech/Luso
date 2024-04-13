@@ -151,7 +151,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# AUTH_USER_MODEL = 'api.LipilaUser'
+# AUTH_USER_MODEL = 'api.BusinessUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 

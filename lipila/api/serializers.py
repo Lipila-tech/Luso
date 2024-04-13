@@ -1,18 +1,18 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .models import (LipilaUser, LipilaCollection, LipilaDisbursement)
-from business.models import Product, BNPL, Invoice, InvoiceLipilaUser
+from .models import (BusinessUser, LipilaCollection, LipilaDisbursement)
+from business.models import Product, BNPL, Invoice, InvoiceBusinessUser
 
-class LipilaUserSerializer(serializers.ModelSerializer):
+class BusinessUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LipilaUser
+        model = BusinessUser
         fields = ('id', 'username', 'city', 'email', 'password',
                   'phone_number', 'bio', 'user_category')
         write_only_fields = ('password',)
 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        user = LipilaUser.objects.create_user(**validated_data)
+        user = BusinessUser.objects.create_user(**validated_data)
         user.set_password(password)
         user.save()
         return user

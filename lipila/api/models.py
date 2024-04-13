@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from business.models import LipilaUser
+from business.models import BusinessUser
 
 
 # Global variables
@@ -17,7 +17,7 @@ class LipilaDisbursement(models.Model):
                               related_name='disbursed',
                               on_delete=models.CASCADE,
                               )
-    payee = models.ForeignKey(LipilaUser,
+    payee = models.ForeignKey(BusinessUser,
                               related_name='paid',
                               on_delete=models.CASCADE,
                               )
@@ -55,7 +55,7 @@ class LipilaCollection(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     reference_id = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
-    payer = models.ForeignKey(LipilaUser, related_name='receipts',
+    payer = models.ForeignKey(BusinessUser, related_name='receipts',
                               on_delete=models.CASCADE)
     payee = models.ForeignKey(User, related_name='payment',
                               on_delete=models.CASCADE)

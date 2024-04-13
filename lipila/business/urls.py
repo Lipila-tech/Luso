@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),
+     path('biz', views.business, name='business'),
      path('payment/', views.send_money, name='payment'),
      path('service-details/', views.service_details, name='service-details'),
      path('portfolio-details/', views.portfolio_details, name='portfolio-details'),
