@@ -25,7 +25,7 @@ urlpatterns = [
 
     # api urls
     path('', include('web.urls')),
-    # path('ise/', include('patrons.urls')),
+    path('creators/', include(('creators.urls', 'creators'), namespace='creators')),
     path('api/v1/', include('api.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 ]

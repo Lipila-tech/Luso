@@ -49,16 +49,17 @@
 
             <a href="{% url 'index' %}" class="logo d-flex align-items-center me-auto me-xl-4">
                 <img src="{% static 'assets/img/logo.png' %}" alt="">
+                <span>Lipila</span>
             </a>
 
             <!-- Nav Menu -->
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="/#hero" class="active">Home</a></li>
-                    <li><a href="/#about">About</a></li>
-                    <li><a href="/#services">Services</a></li>
+                    <li><a href="{% url 'creators:index' %}">For Creators</a></li>
+                    <li><a href="/#">For Business</a></li>
                     <li><a href="/#pricing">Pricing</a></li>
-                    <li><a href="/#team">Team</a></li>
+                    <!-- <li><a href="/#team">Team</a></li> -->
                     <li><a href="/#contact">Contact</a></li>
                     <li><a href="/#faq">Faq</a></li>
                 </ul>
@@ -106,8 +107,7 @@
                     <a href="{% url 'index' %}" class="logo d-flex align-items-center">
                         <span>Lipila</span>
                     </a>
-                    <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita
-                        valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
+                    <p>Building a Zambia Powered by Tech.</p>
                     <div class="social-links d-flex mt-4">
                         <a href=""><i class="bi bi-twitter"></i></a>
                         <a href=""><i class="bi bi-facebook"></i></a>

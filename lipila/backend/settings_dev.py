@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     # My apps
     'api',
     'web',
-    'patrons',
+    'creators',
 
     # Default apps
     'django.contrib.admin',

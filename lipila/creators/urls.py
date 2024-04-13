@@ -7,7 +7,7 @@ urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),
      path('<str:user>/contribute', views.contribute, name='contribute'),
-     
+     path('<username>/', views.user_profile, name='user_profile'),
 ]
 
 

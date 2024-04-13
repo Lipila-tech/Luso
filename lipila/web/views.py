@@ -16,7 +16,7 @@ from datetime import datetime
 from web.models import Product
 from django.urls.exceptions import NoReverseMatch
 
-def redirect_to_lipila(request, username):
+def redirect_to_creator(request, username):
     """Redirects user to lipila.tech/<username>."""
     context = {}
     try:
@@ -26,20 +26,6 @@ def redirect_to_lipila(request, username):
             return redirect(url)
     except LipilaUser.DoesNotExist:
         return apology(request, context)
-
-
-def user_profile(request, username):
-    context = {}
-    try:
-        # username = request.GET.get('username')
-        # Logic to retrieve user data based on username (e.g., from database)
-        user_data = LipilaUser.objects.get(username=username)
-        context['user'] = user_data
-    except LipilaUser.DoesNotExist:
-        context['status'] = 404
-        context['message'] = f'{username} Not Found!'
-        return apology(request, context, user=username)
-    return render(request, 'profile/home.html', context)
 
 
 # Public Views
