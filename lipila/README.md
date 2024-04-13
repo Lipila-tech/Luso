@@ -38,7 +38,7 @@ Access your Web App at:
 
 localhost:8000/
 
-[more](./lipila/web/)
+[more](./lipila/business/)
 
 
 Access the Django Rest API Root at:
@@ -62,7 +62,7 @@ Once you subscribe to a product copy the keys and add in your .env file.
 api Code:
     python -m manage.py test api.tests
 
-web app Code:
+business app Code:
     python -m manage.py test api.tests
 
 

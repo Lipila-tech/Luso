@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from web.models import LipilaUser
-from web.helpers import apology
+from business.models import LipilaUser
+from business.helpers import apology
 
 def index(request):
     return render(request, 'creators/index.html')

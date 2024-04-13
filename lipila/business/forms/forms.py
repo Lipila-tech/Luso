@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
 from api.models import LipilaDisbursement
-from web.models import LipilaUser, Product
+from business.models import LipilaUser, Product
 
 
 class DisburseForm(forms.ModelForm):

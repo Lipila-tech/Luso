@@ -14,7 +14,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import LipilaCollectionSerializer
 from .serializers import LipilaUserSerializer
 from .models import (LipilaUser, LipilaCollection)
-from web.models import (Product, BNPL, Invoice, InvoiceLipilaUser)
+from business.models import (Product, BNPL, Invoice, InvoiceLipilaUser)
 from api.momo.mtn import Collections
 
 

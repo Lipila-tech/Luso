@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     # My apps
     'api',
-    'web',
+    'business',
     'creators',
    
     # Default apps

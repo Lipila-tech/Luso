@@ -1,5 +1,5 @@
 # Lipila Web App
-This is the lipila web application
+This is the lipila business application
 
 ## Web App Usage on Your local machine
 

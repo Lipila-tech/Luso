@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from web.models import LipilaUser
+from business.models import LipilaUser
 
 
 # Global variables

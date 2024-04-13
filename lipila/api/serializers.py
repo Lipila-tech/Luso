@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import (LipilaUser, LipilaCollection, LipilaDisbursement)
-from web.models import Product, BNPL, Invoice, InvoiceLipilaUser
+from business.models import Product, BNPL, Invoice, InvoiceLipilaUser
 
 class LipilaUserSerializer(serializers.ModelSerializer):
     class Meta:

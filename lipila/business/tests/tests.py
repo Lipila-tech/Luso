@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from web.forms.forms import SignupForm
+from business.forms.forms import SignupForm
 from django.contrib.messages import get_messages
 from django.contrib.auth.models import AnonymousUser  # For anonymous user test
 from api.models import LipilaUser

@@ -13,7 +13,7 @@ from api.models import LipilaUser
 from .helpers import apology
 from .forms.forms import DisburseForm, AddProductForm, SignupForm, EditLipilaUserForm
 from datetime import datetime
-from web.models import Product
+from business.models import Product
 from django.urls.exceptions import NoReverseMatch
 
 def redirect_to_creator(request, username):

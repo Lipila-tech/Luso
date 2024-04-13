@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (LipilaUser, LipilaDisbursement)
 
-from web.models import Product, BNPL
+from business.models import Product, BNPL
 
 class LipilaUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'bio',

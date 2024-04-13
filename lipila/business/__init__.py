@@ -2,7 +2,7 @@ from django.apps import AppConfig
 from django import template
 
 class WebAppConfig(AppConfig):
-  name = 'web'
+  name = 'business'
 
   def ready(self):
     from .templatetags import messages
