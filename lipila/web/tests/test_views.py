@@ -1,11 +1,33 @@
 import os
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from api.models import LipilaCollection, LipilaUser
-
+from api.models import LipilaUser
+from django.urls.exceptions import NoReverseMatch
+from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+class RedirectToLipilaTest(APITestCase):
+    def test_redirect_no_user(self):
+        username = 'test_user'
+        url = reverse('lipila_profile', kwargs={'username': username})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+   
+    def test_redirect_with_user_created(self):
+        image_file = str(BASE_DIR) + 'api/static/img/logo.png'
+        user = LipilaUser.objects.create_user(username='test_user',
+                                           password='pwd_123',
+                                           email='pita@example.com',
+                                           profile_image=image_file)
+        username = 'test_user'
+        url = reverse('lipila_profile', kwargs={'username': username})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.url, f"http://localhost:8000/profile/?username={username}")
 
 
 class ViewsTestCaseGet(TestCase):
