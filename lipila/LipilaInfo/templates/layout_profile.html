@@ -40,7 +40,7 @@
             {% endif %}
             {% endif %}
             <h2>{{ user.username }}</h2>
-            <h3>{{user.user_category | upper}}</h3>
+            <h3>{{user.category | upper}}</h3>
             <h3>{{user.city | upper}}, {{user.country | upper}}</h3>
             <div class="social-links mt-2">
               <a href="{{user.twitter_url}}" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>

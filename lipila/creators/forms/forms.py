@@ -15,7 +15,7 @@ class SignupForm(forms.ModelForm):
         fields = ('creator_category', 'username', 'email', 'password')
 
 
-class EditBusinessUserForm(UserChangeForm):
+class EditCreatorUserForm(UserChangeForm):
     class Meta:
         model = CreatorUser
         fields = [

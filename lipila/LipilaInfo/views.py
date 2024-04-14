@@ -12,6 +12,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from business.helpers import apology
 from LipilaInfo.models import ContactInfo, LipilaUser
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
+from business.forms.forms import EditBusinessUserForm
+from creators.forms.forms import EditCreatorUserForm
 from business.models import BusinessUser
 from creators.models import CreatorUser
 from datetime import datetime
@@ -106,22 +108,23 @@ def login(request):
                 try:
                     user_object = BusinessUser.objects.get(username=user)
                     my_login(request, user)
-                    return redirect(reverse('dashboard', kwargs={'user':username}))
+                    return redirect(reverse('dashboard', kwargs={'user': username}))
                 except BusinessUser.DoesNotExist:
                     pass  # Continue to next check
                 try:
                     user_object = CreatorUser.objects.get(username=user)
                     my_login(request, user)
-                    return redirect(reverse('dashboard', kwargs={'user':username}))
+                    return redirect(reverse('dashboard', kwargs={'user': username}))
                 except CreatorUser.DoesNotExist:
                     pass  # Continue to next check
                 try:
                     user_object = LipilaUser.objects.get(username=user)
                     my_login(request, user)
-                    return redirect(reverse('dashboard', kwargs={'user':username}))
+                    return redirect(reverse('dashboard', kwargs={'user': username}))
                 except LipilaUser.DoesNotExist:
                     messages.error(request, "Invalid username or password.")
-                    return redirect('login')  # Redirect to login with error message
+                    # Redirect to login with error message
+                    return redirect('login')
         else:
             messages.error(
                 request, "Your username and password didn't match. Please try again.")
@@ -153,7 +156,6 @@ def contact(request):
 def profile(request, user):
     context = {}
     context['user'] = user
-    print('profile',user)
     try:
         user_object = BusinessUser.objects.get(username=user)
         context['user'] = user_object
@@ -174,30 +176,69 @@ def profile(request, user):
         context['status'] = 404
         context['message'] = 'User Not Found!'
         return apology(request, context, user='auth')
-    return render(request, 'business/admin/profile/users-profile.html', context)
 
 
 # AUTHENTICATED USER VIEWS
 class UpdateUserInfoView(View):
     def get(self, request, user, *args, **kwargs):
-        user_object = get_object_or_404(LipilaUser, username=user)
-        form = EditLipilaUserForm(instance=user_object)
-        return render(request, 'disburse/profile/edit_user_info.html', {'form': form, 'user': user_object})
-
-    def post(self, request, user, *args, **kwargs):
-        user_object = get_object_or_404(LipilaUser, username=user)
-        form = EditLipilaUserForm(
-            request.POST, request.FILES, instance=user_object)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                request, "Your profile has been update.")
-            return redirect(reverse('profile', kwargs={'user': user_object}))
-        else:
-            # If form is not valid, print out the form errors for debugging
+        try:
+            user_object = BusinessUser.objects.get(username=user)
+            form = EditBusinessUserForm(instance=user_object)
+            return render(request, 'business/admin//profile/edit_user_info.html', {'form': form, 'user': user_object})
+        except BusinessUser.DoesNotExist:
+            pass  # Continue to next check
+        try:
+            user_object = CreatorUser.objects.get(username=user)
+            form = EditCreatorUserForm(instance=user_object)
+            return render(request, 'creators/admin/profile/edit_user_info.html', {'form': form, 'user': user_object})
+        except CreatorUser.DoesNotExist:
+            pass  # Continue to next check
+        try:
+            user_object = LipilaUser.objects.get(username=user)
+            form = EditLipilaUserForm(instance=user_object)
+            return render(request, 'disburse/profile/edit_user_info.html', {'form': form, 'user': user_object})
+        except LipilaUser.DoesNotExist:
             messages.error(
                 request, "Failed to update profile.")
-        return render(request, 'disburse/profile/edit_user_info.html', {'form': form, 'user': user_object})
+            return redirect(reverse('profile', kwargs={'user': user}))
+        
+
+    def post(self, request, user, *args, **kwargs):
+        try:
+            user_object = BusinessUser.objects.get(username=user)
+            form = EditLipilaUserForm(
+                request.POST, request.FILES, instance=user_object)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, "Your profile has been update.")
+                return redirect(reverse('profile', kwargs={'user': user_object}))
+        except BusinessUser.DoesNotExist:
+            pass  # Continue to next check
+        try:
+            user_object = CreatorUser.objects.get(username=user)
+            form = EditLipilaUserForm(
+                request.POST, request.FILES, instance=user_object)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, "Your profile has been update.")
+                return redirect(reverse('profile', kwargs={'user': user_object}))
+        except CreatorUser.DoesNotExist:
+            pass  # Continue to next check
+        try:
+            user_object = LipilaUser.objects.get(username=user)
+            form = EditLipilaUserForm(
+                request.POST, request.FILES, instance=user_object)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, "Your profile has been update.")
+                return redirect(reverse('profile', kwargs={'user': user_object}))
+        except LipilaUser.DoesNotExist:
+            messages.error(
+                request, "Failed to update profile.")
+            return redirect(reverse('profile', kwargs={'user': user}))
 
 
 @login_required
@@ -205,7 +246,7 @@ class UpdateUserInfoView(View):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, user):
     context = {}
-    #Dasboard  Reports 
+    # Dasboard  Reports
     context['sales'] = 0
     context['sales_increase'] = 0
     context['revenue'] = 0
@@ -231,7 +272,6 @@ def dashboard(request, user):
         ('12/03/24', 'customer5', 'product123',  200, 'Approved'),
         ('12/03/24', 'customer6', 'product123',  200, 'Approved'),
     ]
-
 
     now = datetime.now()
     request.session['last_login_time'] = now.strftime("%H:%M:%S")
