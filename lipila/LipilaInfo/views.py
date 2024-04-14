@@ -155,24 +155,24 @@ def profile(request, user):
     context['user'] = user
     print('profile',user)
     try:
-        # id = int(request.GET.get('user'))
-        if not user:
-            raise ValueError('User ID missing')
-        else:
-            user = BusinessUser.objects.get(username=user)
-            context['user'] = user
-    except ValueError:
-        context['status'] = 400
-        context['message'] = 'User ID must be of type int'
-        return apology(request, context, user=user)
-    except TypeError:
-        context['status'] = 400
-        context['message'] = 'Error, User argument missing'
-        return apology(request, context, user=user)
+        user_object = BusinessUser.objects.get(username=user)
+        context['user'] = user_object
+        return render(request, 'business/admin/profile/users-profile.html', context)
     except BusinessUser.DoesNotExist:
+        pass  # Continue to next check
+    try:
+        user_object = CreatorUser.objects.get(username=user)
+        context['user'] = user_object
+        return render(request, 'creators/admin/profile/users-profile.html', context)
+    except CreatorUser.DoesNotExist:
+        pass  # Continue to next check
+    try:
+        user_object = LipilaUser.objects.get(username=user)
+        context['user'] = user_object
+        return render(request, 'disburse/profile/users-profile.html', context)
+    except LipilaUser.DoesNotExist:
         context['status'] = 404
-        context['message'] = 'User Profile Not Found!'
-        print(user)
+        context['message'] = 'User Not Found!'
         return apology(request, context, user='auth')
     return render(request, 'business/admin/profile/users-profile.html', context)
 

@@ -9,7 +9,6 @@ urlpatterns = [
      path('', views.index, name='index'),   
         
      # Authenticated User Accounts Urls
-     # path('accounts/profile/<str:user>', views.profile, name='profile'),
      path('accounts/signup/', views.SignupView.as_view(), name='signup'),
           
      # User Logs URLS
