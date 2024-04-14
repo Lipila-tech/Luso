@@ -161,6 +161,7 @@
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ user.username }}</h6>
+                            <h6>{{ user.category }}</h6>
                             <span>{{user.city}}</span>
                         </li>
                         <li>
@@ -188,7 +189,7 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{% url 'pages-faq' %}">
+                            <a class="dropdown-item d-flex align-items-center" href="#">
                                 <i class="bi bi-question-circle"></i>
                                 <span>Need Help?</span>
                             </a>
@@ -233,17 +234,17 @@
                 </a>
                 <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'invoice' %}">
+                        <a href="#">
                             <i class="bi bi-circle"></i><span>Invoice</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'products' %}">
+                        <a href="#">
                             <i class="bi bi-circle"></i><span>Products</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'transfer' %}">
+                        <a href="#">
                             <i class="bi bi-circle"></i><span>Transfer</span>
                         </a>
                     </li>
@@ -258,17 +259,17 @@
                 <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
                     <li>
-                        <a href="{% url 'log_invoice' %}">
+                        <a href="#">
                             <i class="bi bi-circle"></i><span>Invoice</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'log_products' %}">
+                        <a href="#">
                             <i class="bi bi-circle"></i><span>Products</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'log_transfer' %}">
+                        <a href="#">
                             <i class="bi bi-circle"></i><span>Transfer</span>
                         </a>
                     </li>
@@ -286,7 +287,7 @@
             </li><!-- End Profile Page Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{% url 'pages-faq' %}">
+                <a class="nav-link collapsed" href=""#"">
                     <i class="bi bi-question-circle"></i>
                     <span>F.A.Q</span>
                 </a>

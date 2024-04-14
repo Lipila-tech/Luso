@@ -37,8 +37,7 @@ class LipilaUser(User):
         max_length=255, default="", blank=True, null=True)
     city = models.CharField(
         max_length=9, choices=CITY_CHOICES, default='Kitwe')
-    user_category = models.CharField(
-        max_length=9, choices=CITY_CHOICES, default='Member')
+    category = models.CharField(max_length=9, default='Member')
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
     REQUIRED_FIELDS = ['phone_number']

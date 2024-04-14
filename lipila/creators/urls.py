@@ -11,7 +11,6 @@ urlpatterns = [
       path('accounts/signup/', views.SignupView.as_view(), name='signup'),
 
       # Authenticated User Accounts Urls
-     path('me/<str:user>', views.dashboard, name='creators_dashboard'),
 ]
 
 

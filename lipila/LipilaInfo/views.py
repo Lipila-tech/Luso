@@ -106,19 +106,19 @@ def login(request):
                 try:
                     user_object = BusinessUser.objects.get(username=user)
                     my_login(request, user)
-                    return redirect(reverse('business:business_dashboard', kwargs={'user':username}))
+                    return redirect(reverse('dashboard', kwargs={'user':username}))
                 except BusinessUser.DoesNotExist:
                     pass  # Continue to next check
                 try:
                     user_object = CreatorUser.objects.get(username=user)
                     my_login(request, user)
-                    return redirect(reverse('creators:creators_dashboard', kwargs={'user':username}))
+                    return redirect(reverse('dashboard', kwargs={'user':username}))
                 except CreatorUser.DoesNotExist:
                     pass  # Continue to next check
                 try:
                     user_object = LipilaUser.objects.get(username=user)
                     my_login(request, user)
-                    return redirect(reverse('lipila_dashboard', kwargs={'user':username}))
+                    return redirect(reverse('dashboard', kwargs={'user':username}))
                 except LipilaUser.DoesNotExist:
                     messages.error(request, "Invalid username or password.")
                     return redirect('login')  # Redirect to login with error message
@@ -145,6 +145,36 @@ def contact(request):
             request, "Failed to send message")
         form = ContactForm()
     return render(request, 'contact_form.html', {'form': form})
+
+
+@login_required
+@api_view(('GET',))
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+def profile(request, user):
+    context = {}
+    context['user'] = user
+    print('profile',user)
+    try:
+        # id = int(request.GET.get('user'))
+        if not user:
+            raise ValueError('User ID missing')
+        else:
+            user = BusinessUser.objects.get(username=user)
+            context['user'] = user
+    except ValueError:
+        context['status'] = 400
+        context['message'] = 'User ID must be of type int'
+        return apology(request, context, user=user)
+    except TypeError:
+        context['status'] = 400
+        context['message'] = 'Error, User argument missing'
+        return apology(request, context, user=user)
+    except BusinessUser.DoesNotExist:
+        context['status'] = 404
+        context['message'] = 'User Profile Not Found!'
+        print(user)
+        return apology(request, context, user='auth')
+    return render(request, 'business/admin/profile/users-profile.html', context)
 
 
 # AUTHENTICATED USER VIEWS
@@ -216,23 +246,23 @@ def dashboard(request, user):
         ('Pay Outs', 100),
         ('Sent Invoices', 5),
     ]
-
     try:
-        if not user:
-            raise ValueError('Username missing')
-        else:
-            user = LipilaUser.objects.get(username=user)
-            context['user'] = user
-    except ValueError:
-        context['status'] = 400
-        context['message'] = 'User ID must be of type int'
-        return apology(request, context, user=user)
-    except TypeError:
-        context['status'] = 400
-        context['message'] = 'Error, User argument missing'
-        return apology(request, context, user=user)
+        user_object = BusinessUser.objects.get(username=user)
+        context['user'] = user_object
+        return render(request, 'business/admin/index.html', context)
+    except BusinessUser.DoesNotExist:
+        pass  # Continue to next check
+    try:
+        user_object = CreatorUser.objects.get(username=user)
+        context['user'] = user_object
+        return render(request, 'creators/admin/index.html', context)
+    except CreatorUser.DoesNotExist:
+        pass  # Continue to next check
+    try:
+        user_object = LipilaUser.objects.get(username=user)
+        context['user'] = user_object
+        return render(request, 'disburse/index.html', context)
     except LipilaUser.DoesNotExist:
         context['status'] = 404
         context['message'] = 'User Not Found!'
         return apology(request, context, user=user)
-    return render(request, 'business/admin/index.html', context)

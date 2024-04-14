@@ -16,7 +16,7 @@ class CreatorUserAdmin(admin.ModelAdmin):
 
 
 class LipilaUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'user_category',
+    list_display = ('username', 'email', 'phone_number', 'category',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 

@@ -13,8 +13,9 @@ urlpatterns = [
      # Accounts URLS
      path('accounts/signup/', views.SignupView.as_view(), name='signup'),
      path('accounts/login/', views.login, name='login'),
+     path('accounts/profile/<str:user>', views.profile, name='profile'),
      # Authenticated User Accounts Urls
-     path('me/<str:user>', views.dashboard, name='lipila_dashboard'),
+     path('me/<str:user>', views.dashboard, name='dashboard'),
 ]
 
 if settings.DEBUG:

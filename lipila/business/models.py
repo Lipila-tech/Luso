@@ -40,6 +40,7 @@ class BusinessUser(User):
         max_length=9, choices=CITY_CHOICES, default='Kitwe')
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
+    category = models.CharField(max_length=9, default='Business')
     business_category = models.CharField(
         max_length=30, choices=BUSINESS_CATEGORY_CHOICES, default='other')
     facebook_url = models.CharField(max_length=250, null=True, blank=True, default='')
