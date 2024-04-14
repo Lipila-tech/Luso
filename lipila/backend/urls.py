@@ -24,7 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # api urls
-    path('', include('business.urls')),
+    path('', include('LipilaInfo.urls')),
+    path('business/', include(('business.urls', 'business'), namespace='business')),
     path('creators/', include(('creators.urls', 'creators'), namespace='creators')),
     path('api/v1/', include('api.urls')),
     path('accounts/', include('django.contrib.auth.urls')),

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'api',
     'business',
     'creators',
+    'LipilaInfo',
 
     # Default apps
     'django.contrib.admin',
