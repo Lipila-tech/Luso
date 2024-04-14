@@ -1,10 +1,22 @@
 from django.contrib import admin
-from .models import (LipilaUser, LipilaDisbursement)
+from .models import (BusinessUser, LipilaDisbursement)
+from business.models import Product, BNPL
+from creators.models import CreatorUser
+from LipilaInfo.models import ContactInfo, LipilaUser, Contact
 
-from web.models import Product, BNPL
+
+class BusinessUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'phone_number', 'bio', 'business_category',
+                    'address', 'company', 'city', 'country', 'first_name', 'profile_image')
+
+
+class CreatorUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'phone_number', 'bio', 'creator_category',
+                    'address', 'company', 'city', 'country', 'first_name', 'profile_image')
+
 
 class LipilaUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'bio',
+    list_display = ('username', 'email', 'phone_number', 'category',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 
@@ -24,6 +36,15 @@ class ProductAdmin(admin.ModelAdmin):
             return Product.objects.none()
 
 
+class ContactInfoAdmin(admin.ModelAdmin):
+    list_display = ('street', 'location', 'phone1', 'phone2',
+                    'email1', 'email2', 'hours', 'days')
+
+
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'number', 'subject', 'message')
+
+
 class BNPLAdmin(admin.ModelAdmin):
     list_display = (
         'created_at',
@@ -36,10 +57,14 @@ class BNPLAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(LipilaUser, LipilaUserAdmin)
+admin.site.register(BusinessUser, BusinessUserAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)
+admin.site.register(CreatorUser, CreatorUserAdmin)
+admin.site.register(ContactInfo, ContactInfoAdmin)
+admin.site.register(LipilaUser, LipilaUserAdmin)
+admin.site.register(Contact, ContactAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/'

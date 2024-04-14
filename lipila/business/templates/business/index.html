@@ -1,0 +1,28 @@
+{% extends 'layout_base.html' %}
+{% load static %}
+{% load messages %}
+{% block title %}Home{% endblock %}
+
+
+{% block main %}
+
+<main id="main">
+
+  <!-- Hero Section - Home Page -->
+  <section id="hero" class="hero">
+
+    <img src="{% static 'assets/img/guy.jpeg' %}" alt="" data-aos="fade-in">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-10">
+          <h2 data-aos="fade-up" data-aos-delay="100">Lipila For Business</h2>
+          <p data-aos="fade-up" data-aos-delay="200">Simplify your business with Zambia's hi-tech mobile money payment platform with reliable data storage – Lipila.</p>
+        </div>
+    </div>
+
+  </section><!-- End Hero Section -->
+ 
+
+</main>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'layout_auth.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %} Signup {% endblock %}
+
+{% block main %}
+<div class="col-md-8">
+    <div class="breadcrumbs" data-aos="fade-in">
+        <div class="container">
+            <h2>{{category}} Signup</h2>
+        </div>
+        <div>
+            <a href="{% url 'business:signup' %}" class="">Business signup</a>
+            <a href="{% url 'creators:signup' %}" class="">Creators signup</a>
+            <a href="{% url 'signup' %}" class="">Consumer signup</a>
+        </div>
+    </div>
+    <form action="" method="post" class="">
+        {% csrf_token %}
+        <form method="post" class="signup-form">
+            {% csrf_token %}
+            {{form | crispy}}
+
+            <input type="submit" value="Signup" onclick="signup()" class="btn btn-primary">
+        </form>
+        <p>Already registered: <a href="{% url 'login' %}">login</a></p>
+</div>
+{% endblock %}

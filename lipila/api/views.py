@@ -12,9 +12,9 @@ from rest_framework.authtoken.models import Token
 
 # My modules
 from .serializers import LipilaCollectionSerializer
-from .serializers import LipilaUserSerializer
-from .models import (LipilaUser, LipilaCollection)
-from web.models import (Product, BNPL, Invoice, InvoiceLipilaUser)
+from .serializers import BusinessUserSerializer
+from .models import (BusinessUser, LipilaCollection)
+from business.models import (Product, BNPL, Invoice, InvoiceBusinessUser)
 from api.momo.mtn import Collections
 
 
@@ -26,8 +26,8 @@ User = get_user_model()
 
 class SignupViewSet(viewsets.ModelViewSet):
     """Register API user"""
-    queryset = LipilaUser.objects.all()
-    serializer_class = LipilaUserSerializer
+    queryset = BusinessUser.objects.all()
+    serializer_class = BusinessUserSerializer
 
     def create(self, request, *args, **kwargs):
         try:

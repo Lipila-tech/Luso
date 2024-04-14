@@ -44,8 +44,9 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     # My apps
     'api',
-    'web',
-    'patrons',
+    'business',
+    'creators',
+    'LipilaInfo',
 
     # Default apps
     'django.contrib.admin',
@@ -94,22 +95,36 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('SQL_NAME'),
-        'USER': env('SQL_USER'),
-        'PASSWORD':  env('SQL_PASSWORD'),
-        'HOST':env('SQL_HOST'),
-        'PORT':env('SQL_PORT'),
+
+if env ('BACKEND') == 'postgres':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': env('PSQL_NAME'),
+            'USER': env('PSQL_USER'),
+            'PASSWORD': env('PSQL_PASSWORD'),
+            'HOST': env('PSQL_HOST'),
+            'PORT': env('PSQL_PORT'),
+        }
     }
-}
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': 'db.sqlite3',
-#     }
-# }
+elif env('BACKEND') == 'mysql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': env('SQL_NAME'),
+            'USER': env('SQL_USER'),
+            'PASSWORD':  env('SQL_PASSWORD'),
+            'HOST':env('SQL_HOST'),
+            'PORT':env('SQL_PORT'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -141,7 +156,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# AUTH_USER_MODEL = 'api.LipilaUser'
+# AUTH_USER_MODEL = 'api.BusinessUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 

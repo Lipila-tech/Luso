@@ -1,7 +1,7 @@
 import os
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from api.models import LipilaCollection, LipilaUser
+from api.models import LipilaCollection, BusinessUser
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
