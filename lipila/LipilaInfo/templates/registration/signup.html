@@ -9,7 +9,12 @@
 <div class="col-md-8">
     <div class="breadcrumbs" data-aos="fade-in">
         <div class="container">
-            <h2>Signup</h2>
+            <h2>{{category}} Signup</h2>
+        </div>
+        <div>
+            <a href="{% url 'business:signup' %}" class="">Business signup</a>
+            <a href="{% url 'creators:signup' %}" class="">Creators signup</a>
+            <a href="{% url 'signup' %}" class="">Consumer signup</a>
         </div>
     </div>
     <form action="" method="post" class="">

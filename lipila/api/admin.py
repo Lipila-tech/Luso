@@ -2,20 +2,21 @@ from django.contrib import admin
 from .models import (BusinessUser, LipilaDisbursement)
 from business.models import Product, BNPL
 from creators.models import CreatorUser
-from LipilaInfo.models import ContactInfo, LipilaUser
+from LipilaInfo.models import ContactInfo, LipilaUser, Contact
 
 
 class BusinessUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'bio',
+    list_display = ('username', 'email', 'phone_number', 'bio', 'business_category',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 
 class CreatorUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'bio',
+    list_display = ('username', 'email', 'phone_number', 'bio', 'creator_category',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
-    
+
+
 class LipilaUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'bio',
+    list_display = ('username', 'email', 'phone_number', 'user_category',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 
@@ -40,6 +41,10 @@ class ContactInfoAdmin(admin.ModelAdmin):
                     'email1', 'email2', 'hours', 'days')
 
 
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'number', 'subject', 'message')
+
+
 class BNPLAdmin(admin.ModelAdmin):
     list_display = (
         'created_at',
@@ -59,6 +64,8 @@ admin.site.register(BNPL, BNPLAdmin)
 admin.site.register(CreatorUser, CreatorUserAdmin)
 admin.site.register(ContactInfo, ContactInfoAdmin)
 admin.site.register(LipilaUser, LipilaUserAdmin)
+admin.site.register(Contact, ContactAdmin)
+
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/'
 admin.site.site_title = 'lipila'

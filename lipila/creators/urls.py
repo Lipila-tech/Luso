@@ -8,6 +8,10 @@ urlpatterns = [
      path('', views.index, name='index'),
      path('<str:user>/contribute', views.contribute, name='contribute'),
      path('<username>/', views.user_profile, name='user_profile'),
+      path('accounts/signup/', views.SignupView.as_view(), name='signup'),
+
+      # Authenticated User Accounts Urls
+     path('me/<str:user>', views.dashboard, name='creators_dashboard'),
 ]
 
 

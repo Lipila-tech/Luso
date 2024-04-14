@@ -9,8 +9,9 @@ urlpatterns = [
      path('', views.index, name='index'),   
         
      # Authenticated User Accounts Urls
-     path('me/<str:user>', views.dashboard, name='dashboard'),
+     path('me/<str:user>', views.dashboard, name='business_dashboard'),
      path('accounts/profile/<str:user>', views.profile, name='profile'),
+      path('accounts/signup/', views.SignupView.as_view(), name='signup'),
           
      # User Logs URLS
      path('transfer-history/', views.log_transfer, name='log_transfer'),

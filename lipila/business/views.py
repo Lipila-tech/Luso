@@ -6,6 +6,9 @@ from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
+from django.contrib.auth import login as my_login
+from django.contrib.auth.forms import AuthenticationForm
+
 # My Models
 from api.models import BusinessUser
 from .helpers import apology
@@ -203,3 +206,31 @@ def transfer(request):
     context = {}
     context['form'] = DisburseForm()
     return render(request, 'business/admin//actions/transfer.html', context)
+
+class SignupView(View):
+
+    def get(self, request):
+        form = SignupForm()
+        context = {'form': form, 'category': 'Business'}
+        return render(request, 'registration/signup.html', context)
+
+    def post(self, request):
+        form = SignupForm(request.POST)
+        context = {'form': form}
+
+        try:
+            if form.is_valid():
+                user = form.save(commit=False)  # Don't save directly
+                user.set_password(user.password)
+                user.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     "Account created successfully")
+                return redirect('login')
+            else:
+                messages.add_message(
+                    request, messages.ERROR, "Error during signup!")
+                return render(request, 'registration/signup.html', context)
+        except Exception as e:
+            messages.add_message(
+                    request, messages.ERROR, "Error during signup!")
+            return render(request, 'registration/signup.html', context)

@@ -8,10 +8,10 @@ STATUS_CHOICES = (
     ('failed', 'failed'),
 )
 
-USER_CATEGORY_CHOICES = (
-    ('entrepreneur', 'Entrepreneur'),
-    ('creator', 'Creator'),
-    ('patron', 'Patron'),
+BUSINESS_CATEGORY_CHOICES = (
+    ('school', 'School'),
+    ('grocery', 'Grocery'),
+    ('independent_online_retailers', 'Independent Online Retailers'),
     ('other', 'Other'),
 )
 
@@ -37,11 +37,11 @@ class BusinessUser(User):
     company = models.CharField(
         max_length=255, default="", blank=True, null=True)
     city = models.CharField(
-        max_length=9, choices=CITY_CHOICES, default='KItwe')
+        max_length=9, choices=CITY_CHOICES, default='Kitwe')
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
-    user_category = models.CharField(
-        max_length=30, choices=USER_CATEGORY_CHOICES, default='other')
+    business_category = models.CharField(
+        max_length=30, choices=BUSINESS_CATEGORY_CHOICES, default='other')
     facebook_url = models.CharField(max_length=250, null=True, blank=True, default='')
     linkedin_url = models.CharField(max_length=250, null=True, blank=True, default='')
     twitter_url = models.CharField(max_length=250, null=True, blank=True, default='')

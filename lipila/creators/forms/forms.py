@@ -1,31 +1,23 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
-from api.models import LipilaDisbursement
-from business.models import BusinessUser, Product
-
-
-class DisburseForm(forms.ModelForm):
-    class Meta:
-        model = LipilaDisbursement
-        fields = '__all__'
-
+from creators.models import CreatorUser
 
 class LoginForm(forms.ModelForm):
     class Meta:
-        model = BusinessUser
+        model = CreatorUser
         fields = ('username', 'password')
 
 
 class SignupForm(forms.ModelForm):
     class Meta:
-        model = BusinessUser
-        fields = ('business_category', 'username', 'email', 'password')
+        model = CreatorUser
+        fields = ('creator_category', 'username', 'email', 'password')
 
 
 class EditBusinessUserForm(UserChangeForm):
     class Meta:
-        model = BusinessUser
+        model = CreatorUser
         fields = [
             'profile_image',
             'first_name',
@@ -35,7 +27,7 @@ class EditBusinessUserForm(UserChangeForm):
             'city',
             'address',
             'company',
-            'business_category',
+            'creator_category',
             'facebook_url',
             'twitter_url',
             'instagram_url',
@@ -45,9 +37,3 @@ class EditBusinessUserForm(UserChangeForm):
             # Restrict file types
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
-
-
-class AddProductForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = ('name', 'description', 'price', 'quantity',)
