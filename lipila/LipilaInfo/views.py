@@ -13,9 +13,11 @@ from api.models import BusinessUser
 from business.helpers import apology
 from business.forms.forms import SignupForm, EditBusinessUserForm
 from LipilaInfo.models import ContactInfo
+from LipilaInfo.forms.forms import ContactForm
 
 # Public Views
 def index(request):
+    form = ContactForm()
     context = {}
     contact_info =  ContactInfo.objects.get(id=1)
     context['street'] = contact_info.street
@@ -26,6 +28,7 @@ def index(request):
     context['email2'] = contact_info.email2
     context['days'] = contact_info.days
     context['hours'] = contact_info.hours
+    context['form'] = form
     
     return render(request, 'UI/index.html', context)
 
@@ -102,6 +105,17 @@ def login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
+
+
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save contact information to the database
+            return redirect('success')  # Redirect to a success page (optional)
+    else:
+        form = ContactForm()
+    return render(request, 'contact_form.html', {'form': form})
 
 
 # AUTHENTICATED USER VIEWS
