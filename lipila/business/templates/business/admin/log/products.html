@@ -1,4 +1,4 @@
-{% extends 'layout_admin.html' %}
+{% extends 'business_admin.html' %}
 {% load static %}
 {% block title %} Products {% endblock %}
 
@@ -40,7 +40,7 @@
             <td>{{product.quantity}}</td>
             <td>{{sold}}</td>
             <td>{{available}}</td>
-            <td><a href="{% url 'edit_product' product.id %}">Change</a></td>
+            <td><a href="{% url 'business:edit_product' product.id %}">Change</a></td>
           </tr>
           {% endfor %}
         </tbody>

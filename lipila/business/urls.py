@@ -14,6 +14,8 @@ urlpatterns = [
      # User Logs URLS
      path('transfer-history/', views.log_transfer, name='log_transfer'),
      path('invoice-history/', views.log_invoice, name='log_invoice'),
+     # User Logs URLS
+    
 
      path('invoice/', views.invoice, name='invoice'),
      path('transfer/', views.transfer, name='transfer'),

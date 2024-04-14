@@ -50,7 +50,7 @@ class CreateProductView(View):
             product.save()
             messages.success(
                 request, "Product Added Successfully.")
-            return redirect(reverse('log_products'))
+            return redirect(reverse('business:log_products'))
         else:
             messages.error(
                 request, "Failed to create product.")
@@ -70,7 +70,7 @@ class EditProductView(View):
             form.save()
             messages.success(
                 request, "Product Edited Successfully.")
-            return redirect('log_products')
+            return redirect('business:log_products')
         else:
             messages.error(
                 request, "Failed to edit product.")

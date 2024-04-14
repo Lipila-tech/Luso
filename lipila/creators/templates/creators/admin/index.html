@@ -4,6 +4,86 @@
 {% block title%} Dashboard - Lipila {% endblock %}
 
 <body>
+  {% block content %}
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <li class="nav-item">
+      <a class="nav-link " href="{% url 'dashboard' user=user %}">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="#">
+            <i class="bi bi-circle"></i><span>Invoice</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bi bi-circle"></i><span>Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bi bi-circle"></i><span>Transfer</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Forms Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+        <li>
+          <a href="">
+            <i class="bi bi-circle"></i><span>Invoice</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bi bi-circle"></i><span>Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="bi bi-circle"></i><span>Transfer</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Tables Nav -->
+
+
+    <li class="nav-heading">Pages</li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'profile' user=user %}">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#">
+        <i class="bi bi-question-circle"></i>
+        <span>F.A.Q</span>
+      </a>
+    </li><!-- End F.A.Q Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'index' %}">
+        <i class="bi bi-envelope"></i>
+        <span>Contact</span>
+      </a>
+    </li><!-- End Contact Page Nav -->
+  </ul>
+  {% endblock%}
   {% block main %}
   <main id="main" class="main">
 
@@ -11,11 +91,11 @@
       <h1>Dashboard</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href=/>Home</a></li>
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
           <li class="breadcrumb-item active">Dashboard</li>
         </ol>
       </nav>
-      
+
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
@@ -136,7 +216,7 @@
             </div><!-- End Customers Card -->
 
             <!-- Reports -->
-           
+
 
             <!-- Recent Sales -->
             <div class="col-12">
@@ -271,17 +351,17 @@
                 </div><!-- End activity item-->
                 {% endfor %}
 
-            </div>
-          </div><!-- End Recent Activity -->
+              </div>
+            </div><!-- End Recent Activity -->
 
-          <!-- Budget Report  goes here-->
-          
-          <!-- Website Traffic goes here-->
+            <!-- Budget Report  goes here-->
 
-          <!-- News and updates go here -->
-        </div><!-- End Right side columns -->
+            <!-- Website Traffic goes here-->
 
-      </div>
+            <!-- News and updates go here -->
+          </div><!-- End Right side columns -->
+
+        </div>
     </section>
 
   </main><!-- End #main -->
