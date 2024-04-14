@@ -13,6 +13,7 @@ CREATOR_CATEGORY_CHOICES = (
     ('musician', 'Musician'),
     ('videocreator', 'Video Creator'),
     ('podcaster', 'Podcaster'),
+    ('other', 'Other'),
 )
 
 CITY_CHOICES = (

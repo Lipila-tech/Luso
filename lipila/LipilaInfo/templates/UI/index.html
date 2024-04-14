@@ -15,10 +15,12 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-10">
-          <h2 data-aos="fade-up" data-aos-delay="100">Get Paid Faster.<br> Get Paid Securely.<br> Get Paid with Lipila.</h2>
-          <p data-aos="fade-up" data-aos-delay="200">Simplify your business with Zambia's hi-tech mobile money payment platform with reliable data storage – Lipila.</p>
+          <h2 data-aos="fade-up" data-aos-delay="100">Get Paid Faster.<br> Get Paid Securely.<br> Get Paid with Lipila.
+          </h2>
+          <p data-aos="fade-up" data-aos-delay="200">Simplify your business with Zambia's hi-tech mobile money payment
+            platform with reliable data storage – Lipila.</p>
         </div>
-    </div>
+      </div>
 
   </section><!-- End Hero Section -->
 
@@ -30,11 +32,11 @@
       <div class="row gy-4">
 
         <div class="col-xl-2 col-md-3 col-6 client-logo">
-          <img src="{% static 'assets/img/clients/client-1.png' %}" class="img-fluid" alt="">
+          <!-- client logo goes here -->
         </div><!-- End Client Item -->
 
         <div class="col-xl-2 col-md-3 col-6 client-logo">
-          <img src="{% static 'assets/img/clients/client-2.png' %}" class="img-fluid" alt="">
+          <!-- client logo goes here -->
         </div><!-- End Client Item -->
       </div>
 
@@ -50,10 +52,9 @@
 
         <div class="col-xl-5 content">
           <h3>About Us</h3>
-          <h2>Empowering Zambia's Micro-Entrepreneurs</h2>
+          <h2>Building a Zambia Powered by Tech.</h2>
           <p>Lipila is a mobile-first fintech platform designed to empower Zambia's micro-entrepreneurs.
           </p>
-          <a href="{% url 'signup' %}" class="read-more"><span>Signup</span><i class="bi bi-arrow-right"></i></a>
         </div>
 
         <div class="col-xl-7">
@@ -61,51 +62,34 @@
 
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
               <div class="icon-box">
-                <i class="bi bi-buildings"></i>
-                <h3>Digital Creators</h3>
+                <h3>Lipila For Creators</h3>
                 <ul>
-                  <li>Youtubers</li>
-                  <li>Vloggers</li>
-                  <li>Comedians</li>
-                  <li>Musicians</li>
                   <li>Artists</li>
+                  <li>Musicians</li>
+                  <li>Video Creators</li>
+                  <li>Podcasters</li>
+                  <li>Writers</li>
                 </ul>
-                <p>Get paid for your work by your fans. Receive donations, contributions and payments from your fans in one place.</p>
-              </div>
-            </div> <!-- End Icon Box -->
+                <p>Get paid for your work by your fans. Receive donations, contributions and payments from your fans in
+                  one place.</p>
+                <a href="{% url 'creators:signup' %}" class="read-more"><span>Get started</span><i
+                    class="bi bi-arrow-right"></i></a>
 
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
-              <div class="icon-box">
-                <i class="bi bi-clipboard-pulse"></i>
-                <h3>Traders</h3>
-                <p>Selling items via facebook or WhatsApp? Never worry about sharing your mobile numbers, get paid
-                  via our app securely. Utilize analytics on payments, customer behavior, and even "Buy Now Pay Later" usage to refine your
-                  offerings and boost your business</p>
               </div>
             </div> <!-- End Icon Box -->
 
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
               <div class="icon-box">
-                <i class="bi bi-command"></i>
-                <h3>Coaches</h3>
-                <p>Share your pay ID with your students and focus on creating quality content and not verifying momo transaction messages.
-                  Utilize analytics on payments, customer behavior, and even "Buy Now Pay Later" usage to refine your
-                  offerings and boost your business.</p>
-              </div>
-            </div> <!-- End Icon Box -->
-
-            <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
-              <div class="icon-box">
-                <i class="bi bi-graph-up-arrow"></i>
-                <h3>Beyond the App</h3>
-                <p>Lipila is more than just a platform. We are committed to building a community where
-                  micro-entrepreneurs can.</p>
-                <UL>
-                  <li>Access Financial Literacy.</li>
-                  <li>Connect and Collaborate.</li>
-                  <li>Shape the Future: Share your voice and help us develop solutions that truly address your needs and
-                    aspirations.</li>
-                </UL>
+                <h3>Lipila For Business</h3>
+                <ul>
+                  <li>Schools</li>
+                  <li>Independent sellers</li>
+                  <li>Loan Providers</li>
+                  <li>Writers</li>
+                </ul>
+                <p>For independent traders to medium businesses simplify invoicing, payment collection and data storage.</p>
+                <a href="{% url 'business:signup' %}" class="read-more"><span>Get started</span><i
+                    class="bi bi-arrow-right"></i></a>
               </div>
             </div> <!-- End Icon Box -->
 
@@ -136,8 +120,8 @@
 
         <div class="col-lg-3 col-md-6">
           <div class="stats-item text-center w-100 h-100">
-            <span data-purecounter-start="0" data-purecounter-end="{{value|get_transactions}}" data-purecounter-duration="1"
-              class="purecounter"></span>
+            <span data-purecounter-start="0" data-purecounter-end="{{value|get_transactions}}"
+              data-purecounter-duration="1" class="purecounter"></span>
             <p>Transactions</p>
           </div>
         </div><!-- End Stats Item -->
@@ -667,8 +651,9 @@
         </div>
 
         <div class="col-lg-6">
-          <form action="{% url 'contact' %}" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
-            {% csrf_token %} 
+          <form action="{% url 'contact' %}" method="post" class="php-email-form" data-aos="fade-up"
+            data-aos-delay="200">
+            {% csrf_token %}
             <div class="row gy-4">
 
               <div class="col-md-6">
