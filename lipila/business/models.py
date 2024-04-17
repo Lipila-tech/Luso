@@ -27,6 +27,7 @@ INVOICE_STATUS_CHOICES = (
     ('rejected', 'rejected'),
 )
 
+
 class BusinessUser(User):
     phone_number = models.CharField(
         max_length=20, blank=True, null=True)
@@ -41,6 +42,7 @@ class BusinessUser(User):
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
     category = models.CharField(max_length=9, default='Business')
+    bank_account_number = models.CharField(max_length=100, null=True, blank=True)
     business_category = models.CharField(
         max_length=30, choices=BUSINESS_CATEGORY_CHOICES, default='other')
     facebook_url = models.CharField(max_length=250, null=True, blank=True, default='')
@@ -56,6 +58,20 @@ class BusinessUser(User):
 
     def __str__(self):
         return self.username
+
+
+class Student(models.Model):
+    first_name = models.CharField(max_length=55, null=False, blank=False)
+    last_name = models.CharField(max_length=55, null=False, blank=False)
+    other_name = models.CharField(max_length=100, null=True, blank=True)
+    school = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+    address = models.CharField(max_length=55, null=True, blank=True)
+    grade = models.CharField(max_length=55, null=False, blank=False)
+    tuition = models.FloatField(default=0, null=False, blank=False)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.first_name, self.last_name, self.school.username}"
 
 
 class Product(models.Model):

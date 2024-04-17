@@ -12,36 +12,84 @@ from django.contrib.auth.forms import AuthenticationForm
 # My Models
 from api.models import BusinessUser
 from .helpers import apology
-from .forms.forms import DisburseForm, AddProductForm, SignupForm, EditBusinessUserForm
+from .forms.forms import (DisburseForm, AddProductForm,
+                          SignupForm, EditBusinessUserForm,
+                          AddStudentForm)
 from datetime import datetime
-from business.models import Product
+from business.models import Product, Student
 
 
 def index(request):
     return render(request, 'business/index.html')
 
 
+class CreateStudentView(View):
+    def get(self, request):
+        form = AddStudentForm()
+        return render(request, 'business/admin/actions/students.html', {'form': form})
 
-def bnpl(request):
-    return render(request, 'business/admin/bnpl.html')
+    def post(self, request):
+        user_object = get_object_or_404(BusinessUser, username=request.user)
+        school = user_object  # Assign the user's BusinessUser object to school
+
+        form = AddStudentForm(request.POST, request.FILES)
+        if form.is_valid():
+            student = form.save(commit=False)  # Don't save yet
+            student.school = school  # Set the school based on the logged-in user
+            student.save()
+            messages.success(
+                request, "Student Added Successfully.")
+            return redirect(reverse('business:list_student'))
+        else:
+            messages.error(
+                request, "Failed to create Student.")
+        return render(request, 'business/admin/actions/students.html', {'form': form})
 
 
-# Logs
-@login_required
-def log_transfer(request):
-    return render(request, 'business/admin//log/transfer.html')
+class EditStudentView(View):
+    def get(self, request, student_id, *args, **kwargs):
+        student = get_object_or_404(
+            Student, pk=student_id)  # Fetch student by ID
+        # Pre-populate form with student data
+        form = AddStudentForm(instance=student)
+        return render(request,
+                      'business/admin/actions/student_edit.html',
+                      {'form': form, 'student': student, 'student_id': student_id})
 
+    def post(self, request, student_id, *args, **kwargs):
+        student = get_object_or_404(Student, pk=student_id)
+        form = AddStudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Student Edited Successfully.")
+            return redirect('business:list_student')
+        else:
+            messages.error(
+                request, "Failed to edit student.")
+        return render(request, 
+                      'business/admin/actions/student_edit.html',
+                      {'form': form, 'student': student, 'student_id': student_id})
 
-@login_required
-def log_invoice(request):
-    return render(request, 'business/admin/log/invoice.html')
+class DeleteStudentView(View):
+    def get(self, request, student_id, *args, **kwargs):
+        student = get_object_or_404(Student, pk=student_id)
+        return render(request,
+                      'business/admin/actions/student_delete.html',
+                      {'student': student, 'student_id': student_id})
+
+    def post(self, request, student_id, *args, **kwargs):
+        student = get_object_or_404(Student, pk=student_id)
+        student.delete()
+        messages.success(
+            request, "Student Deleted Successfully.")
+        return redirect('list_student')
     
-
 class CreateProductView(View):
     def get(self, request):
         form = AddProductForm()
         return render(request, 'business/admin/actions/products.html', {'form': form})
-    
+
     def post(self, request):
         form = AddProductForm(request.POST, request.FILES)
         if form.is_valid():
@@ -55,12 +103,14 @@ class CreateProductView(View):
             messages.error(
                 request, "Failed to create product.")
         return render(request, 'business/admin/actions/products.html', {'form': form})
-    
+
 
 class EditProductView(View):
     def get(self, request, product_id, *args, **kwargs):
-        product = get_object_or_404(Product, pk=product_id)  # Fetch product by ID
-        form = AddProductForm(instance=product)  # Pre-populate form with product data
+        product = get_object_or_404(
+            Product, pk=product_id)  # Fetch product by ID
+        # Pre-populate form with product data
+        form = AddProductForm(instance=product)
         return render(request, 'business/admin/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
 
     def post(self, request, product_id, *args, **kwargs):
@@ -80,7 +130,9 @@ class EditProductView(View):
 class DeleteProductView(View):
     def get(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
-        return render(request, 'business/admin/actions/product_delete.html', {'product': product, 'product_id':product_id})
+        return render(request,
+                      'business/admin/actions/product_delete.html', 
+                      {'product': product, 'product_id': product_id})
 
     def post(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
@@ -89,7 +141,26 @@ class DeleteProductView(View):
             request, "Product Deleted Successfully.")
         return redirect('log_products')
 
-# Actions
+
+def bnpl(request):
+    return render(request, 'business/admin/bnpl.html')
+
+
+# Logs
+@login_required
+def log_transfer(request):
+    return render(request, 'business/admin//log/transfer.html')
+
+
+@login_required
+def list_student(request):
+    context = {}
+    user_object = get_object_or_404(BusinessUser, username=request.user)
+    students = Student.objects.filter(school=user_object.id)
+    context['students'] = students
+    return render(request, 'business/admin/log/student.html', context)
+
+
 @login_required
 def invoice(request):
     return render(request, 'business/admin/actions/invoice.html')
@@ -109,6 +180,7 @@ def transfer(request):
     context = {}
     context['form'] = DisburseForm()
     return render(request, 'business/admin//actions/transfer.html', context)
+
 
 class SignupView(View):
 
@@ -135,5 +207,5 @@ class SignupView(View):
                 return render(request, 'registration/signup.html', context)
         except Exception as e:
             messages.add_message(
-                    request, messages.ERROR, "Error during signup!")
+                request, messages.ERROR, "Error during signup!")
             return render(request, 'registration/signup.html', context)

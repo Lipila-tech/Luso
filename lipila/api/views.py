@@ -95,7 +95,6 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 api_user.subscription_col_key, 'collection')
 
             if serializer.is_valid():
-                print('VALID SER')
             # try:
                 # Query external API handlers
                 amount = data['amount']

@@ -14,7 +14,7 @@ from LipilaInfo.models import ContactInfo, LipilaUser
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
 from business.forms.forms import EditBusinessUserForm
 from creators.forms.forms import EditCreatorUserForm
-from business.models import BusinessUser
+from business.models import BusinessUser, Student
 from creators.models import CreatorUser
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
@@ -287,7 +287,10 @@ def dashboard(request, user):
         ('Sent Invoices', 5),
     ]
     try:
+        context = {}
         user_object = BusinessUser.objects.get(username=user)
+        students = Student.objects.filter(school=user_object.id)
+        context['students'] = students.count()
         context['user'] = user_object
         return render(request, 'business/admin/index.html', context)
     except BusinessUser.DoesNotExist:
