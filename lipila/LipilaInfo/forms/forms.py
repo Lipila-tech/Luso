@@ -1,6 +1,7 @@
 from django import forms
 from LipilaInfo.models import Contact, LipilaUser
 from django.contrib.auth.forms import UserChangeForm
+from creators.models import Patron
 
 
 class ContactForm(forms.ModelForm):
@@ -38,3 +39,10 @@ class EditLipilaUserForm(UserChangeForm):
             # Restrict file types
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
+
+
+class JoinForm(forms.ModelForm):
+    class Meta:
+        model = Patron
+        fields = ('subscription',)
+       

@@ -1,29 +1,28 @@
 {% extends 'layout_admin.html' %}
 {% load static%}
 {% load custom_filters %}
+{% load crispy_forms_tags %}
 {% block title%} Creators {% endblock %}
 
 
 {% block main %}
 <main id="main" class="main">
     <section class="section dashboard">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+        {% endif %}
         <div class="row">
             <!-- Creators -->
             <div class="col-12">
                 <section class="section profile">
                     <div class="row">
                         <div class="col-xl-4">
-                            {% if messages %}
-                            <ul class="messages">
-                                {% for message in messages %}
-                                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-                                    {% endfor %}
-                            </ul>
-                            {% endif %}
-                            <div class="card">
-                                {% for creator in creators %}
+                            <div class="">
                                 <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-
                                     {% if creator.profile_image %}
                                     {% if creator.profile_image.url %}
 
@@ -34,9 +33,8 @@
                                     {% endif %}
                                     {% endif %}
                                     <h2>{{ creator.username }}</h2>
-                                    <h3>{{creator.city }}, {{creator.country}}</h3>
+                                    <h4>{{creator.city }}, {{creator.country}}</h4>
                                     <h6>{{creator.bio}}</h6>
-                                    <a href="{% url 'join' creator=creator.username %}" class="">Join</a>
                                     <div class="social-links mt-2">
                                         <a href="{{creator.twitter_url}}" class="twitter" target="_blank"><i
                                                 class="bi bi-twitter"></i></a>
@@ -48,7 +46,20 @@
                                                 class="bi bi-linkedin"></i></a>
                                     </div>
                                 </div>
-                                {% endfor %}
+                                {% if is_patron == True %}
+                                <p>Already a member</p>
+                                <a href="#" class="btn btn-primary">Change Subscription type</a>
+                                {% else %}
+                                <h3>Choose your membership</h3>
+                                <form method="post" action="{% url 'join' creator=creator  %}">
+                                    {{ join_form | crispy }}
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Join</button>
+                                </form>
+                                {% endif %}
+
+                                <hr>
+
                             </div>
                         </div>
                     </div><!-- End Creators -->

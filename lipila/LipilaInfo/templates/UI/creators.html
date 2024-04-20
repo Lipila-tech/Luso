@@ -30,7 +30,7 @@
                                     <h2>{{ creator.username }}</h2>
                                     <h3>{{creator.city }}, {{creator.country}}</h3>
                                     <h6>{{creator.bio}}</h6>
-                                    <a href="{{creator.id}}" class="">Join</a>
+                                    <a href="{% url 'join' creator=creator.username %}" class="">Join</a>
                                     <div class="social-links mt-2">
                                         <a href="{{creator.twitter_url}}" class="twitter" target="_blank"><i
                                                 class="bi bi-twitter"></i></a>
