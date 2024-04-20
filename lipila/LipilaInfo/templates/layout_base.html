@@ -31,6 +31,7 @@
 
     <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
 
     <!-- =======================================================
   * Template Name: Lipila
@@ -58,6 +59,7 @@
                     <li><a href="/#hero" class="active">Home</a></li>
                     <li><a href="{% url 'creators:index' %}">For Creators</a></li>
                     <li><a href="{% url 'business:index' %}">For Business</a></li>
+                    <li><a href="{% url 'creators' %}">Find Creators</a></li>
                     <li><a href="/#pricing">Pricing</a></li>
                     <li><a href="/#contact">Contact</a></li>
                     <li><a href="/#about">About</a></li>

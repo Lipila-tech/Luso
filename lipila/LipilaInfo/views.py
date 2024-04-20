@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from django.urls import reverse
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view, renderer_classes
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
 from django.contrib.auth.forms import AuthenticationForm
-# My Models
+from django.contrib.auth.decorators import login_required
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from datetime import datetime
+# Custom Models
 from LipilaInfo.helpers import apology, get_lipila_contact_info, get_user_object
 from LipilaInfo.models import ContactInfo, LipilaUser
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
@@ -16,9 +18,6 @@ from business.forms.forms import EditBusinessUserForm
 from creators.forms.forms import EditCreatorUserForm
 from business.models import BusinessUser, Student
 from creators.models import CreatorUser
-from datetime import datetime
-from django.contrib.auth.decorators import login_required
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 
 # Public Views
@@ -26,14 +25,18 @@ def index(request):
     form = ContactForm()
     context = get_lipila_contact_info()
     context['form'] = form
-
+    
     return render(request, 'UI/index.html', context)
 
 def creators(request):
     context = {}
     creators = CreatorUser.objects.all()
     context['creators'] = creators
-    return render(request, 'UI/creators.html', context)
+
+    if request.user.is_authenticated:
+        return render(request, 'disburse/creators.html', context)
+    else:
+        return render(request, 'UI/creators.html', context)
 
 def service_details(request):
     return render(request, 'UI/services-details.html')
@@ -231,33 +234,8 @@ class UpdateUserInfoView(View):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, user):
     context = {}
-    # Dasboard  Reports
-    context['sales'] = 0
-    context['sales_increase'] = 0
-    context['revenue'] = 0
-    context['increase'] = 0
-    context['customers'] = 0
-
-    # Top selling
-    context['topselling'] = [
-        (1245, 'product1', 199,  200, 3599),
-        (1233, 'product2', 199,  200, 3599),
-        (2345, 'product3', 199,  200, 3599),
-        (2345, 'product4', 199,  200, 3599),
-        (3333, 'product5', 199,  200, 3599),
-        (4355, 'product6', 199,  200, 3599),
-    ]
-
-    # Recent sales
-    context['recentsales'] = [
-        ('12/03/24', 'customer1', 'product123',  343, 'Approved'),
-        ('12/03/24', 'customer2', 'product123',  200, 'Approved'),
-        ('12/03/24', 'customer3', 'product123',  240, 'Approved'),
-        ('12/03/24', 'customer4', 'product123',  200, 'Approved'),
-        ('12/03/24', 'customer5', 'product123',  200, 'Approved'),
-        ('12/03/24', 'customer6', 'product123',  200, 'Approved'),
-    ]
-
+    
+    context['patrons'] = 10
     now = datetime.now()
     request.session['last_login_time'] = now.strftime("%H:%M:%S")
     last_login_time = request.session.get('last_login_time')
