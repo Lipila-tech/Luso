@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
 from django.contrib.auth.forms import AuthenticationForm
 # My Models
-from business.helpers import apology
+from lipila.LipilaInfo.helpers import apology
 from LipilaInfo.models import ContactInfo, LipilaUser
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
 from business.forms.forms import EditBusinessUserForm

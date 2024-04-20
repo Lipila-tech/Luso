@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (BusinessUser, LipilaDisbursement)
 from business.models import Product, BNPL, Student
-from creators.models import CreatorUser
+from creators.models import CreatorUser, Patron
 from LipilaInfo.models import ContactInfo, LipilaUser, Contact
 
 
@@ -11,10 +11,15 @@ class BusinessUserAdmin(admin.ModelAdmin):
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'other_name', 'school', 'address', 'grade')
+
+
 class CreatorUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'bio', 'creator_category',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
+
+class PatronAdmin(admin.ModelAdmin):
+    list_display = ('username', 'subscription', 'creator', 'active')
 
 class LipilaUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'category',
@@ -67,6 +72,7 @@ admin.site.register(ContactInfo, ContactInfoAdmin)
 admin.site.register(LipilaUser, LipilaUserAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(Student, StudentAdmin)
+admin.site.register(Patron, PatronAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/'

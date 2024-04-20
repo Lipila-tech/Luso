@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from creators.models import CreatorUser
-from business.helpers import apology
+from lipila.LipilaInfo.helpers import apology
 from django.contrib import messages
 from django.views import View
 from django.contrib.auth import authenticate
@@ -12,7 +11,8 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.decorators import api_view, renderer_classes
-
+from creators.models import Patron, CreatorUser
+from business.models import Product
 
 def index(request):
     return render(request, 'creators/index.html')
@@ -63,3 +63,25 @@ class SignupView(View):
                     request, messages.ERROR, "Error during signup!")
             return render(request, 'registration/signup.html', context)
         
+
+@login_required
+def list_patrons(request):
+    context = {}
+    user_object = get_object_or_404(CreatorUser, username=request.user)
+    patrons = Patron.objects.filter(creator=user_object.id)
+    context['patrons'] = patrons
+    return render(request, 'creators/admin/log/patrons.html', context)
+
+
+@login_required
+def withdraw(request):
+    return render(request, 'creators/admin/actions/withdraw.html')
+
+
+@login_required
+def log_products(request):
+    context = {}
+    user_object = get_object_or_404(CreatorUser, username=request.user)
+    products = Product.objects.filter(owner=user_object.id)
+    context['products'] = products
+    return render(request, 'creators/admin/log/products.html', context)

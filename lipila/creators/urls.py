@@ -2,15 +2,21 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from business.views import CreateProductView, EditProductView, DeleteProductView
 
 urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),
      path('<str:user>/contribute', views.contribute, name='contribute'),
      path('<username>/', views.user_profile, name='user_profile'),
-      path('accounts/signup/', views.SignupView.as_view(), name='signup'),
+     path('accounts/signup/', views.SignupView.as_view(), name='signup'),
 
-      # Authenticated User Accounts Urls
+     path('withdraw', views.withdraw, name='withdraw'),
+     path('patrons', views.list_patrons, name='patrons'),
+     path('history', CreateProductView.as_view(), name='history'),
+     path('product/all', CreateProductView.as_view(), name='products'),
+     path('product/<int:product_id>/edit/', EditProductView.as_view(), name='edit_product'),
+     path('product/<int:product_id>/delete/', DeleteProductView.as_view(), name='delete_product'),
 ]
 
 

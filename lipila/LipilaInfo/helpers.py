@@ -2,8 +2,9 @@
 Helper Functions
 """
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from api.models import BusinessUser
+
 
 
 def apology(request, context=None, user=None):

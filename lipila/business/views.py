@@ -11,7 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # My Models
 from api.models import BusinessUser
-from .helpers import apology
+from ..LipilaInfo.helpers import apology
 from .forms.forms import (DisburseForm, AddProductForm,
                           SignupForm, EditBusinessUserForm,
                           AddStudentForm)
