@@ -1,7 +1,7 @@
 from django import forms
 from LipilaInfo.models import Contact, LipilaUser
 from django.contrib.auth.forms import UserChangeForm
-from creators.models import Patron
+from LipilaInfo.models import Patron
 
 
 class ContactForm(forms.ModelForm):

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from creators.models import CreatorUser
+
 
 # Options
 STATUS_CHOICES = (
@@ -26,6 +28,12 @@ INVOICE_STATUS_CHOICES = (
     ('paid', 'paid'),
     ('rejected', 'rejected'),
 )
+SUBSCRIPTION_CHOICES = (
+    ('one', 'K 10'),
+    ('two', 'K 20'),
+    ('three', 'K 30'),
+)
+
 
 class LipilaUser(User):
     phone_number = models.CharField(
@@ -40,6 +48,7 @@ class LipilaUser(User):
     category = models.CharField(max_length=9, default='Member')
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
+    creator = models.ForeignKey(CreatorUser, on_delete=models.SET_NULL, null=True, blank=True)
     REQUIRED_FIELDS = ['phone_number']
 
     @staticmethod
@@ -48,6 +57,16 @@ class LipilaUser(User):
 
     def __str__(self):
         return self.username
+    
+class Patron(models.Model):
+    username = models.OneToOneField(LipilaUser, on_delete=models.CASCADE, primary_key=True)
+    subscription = models.CharField(
+        max_length=55, null=False, blank=False,
+        choices=SUBSCRIPTION_CHOICES, default='one')
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.username}"
     
 # Create your models here.
 class ContactInfo(models.Model):

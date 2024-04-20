@@ -1,8 +1,8 @@
 from django.contrib import admin
 from .models import (BusinessUser, LipilaDisbursement)
 from business.models import Product, BNPL, Student
-from creators.models import CreatorUser, Patron
-from LipilaInfo.models import ContactInfo, LipilaUser, Contact
+from creators.models import CreatorUser
+from LipilaInfo.models import ContactInfo, LipilaUser, Contact, Patron
 
 
 class BusinessUserAdmin(admin.ModelAdmin):
@@ -19,7 +19,7 @@ class CreatorUserAdmin(admin.ModelAdmin):
 
 
 class PatronAdmin(admin.ModelAdmin):
-    list_display = ('username', 'subscription', 'creator', 'active')
+    list_display = ('username', 'subscription', 'active')
 
 class LipilaUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'category',
