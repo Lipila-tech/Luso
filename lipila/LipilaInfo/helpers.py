@@ -2,9 +2,64 @@
 Helper Functions
 """
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
-from django.shortcuts import render, get_object_or_404
-from api.models import BusinessUser
+from django.shortcuts import render
+from business.models import BusinessUser
+from creators.models import CreatorUser
+from LipilaInfo.models import LipilaUser
+from LipilaInfo.models import ContactInfo
 
+
+def get_lipila_contact_info():
+    context = {}
+    try:
+        contact_info = ContactInfo.objects.get(id=1)
+        context['street'] = contact_info.street
+        context['location'] = contact_info.location
+        context['phone3'] = contact_info.phone1
+        context['phone2'] = contact_info.phone2
+        context['email1'] = contact_info.email1
+        context['email2'] = contact_info.email2
+        context['days'] = contact_info.days
+        context['hours'] = contact_info.hours
+    except ContactInfo.DoesNotExist:
+        context['street'] = ''
+        context['location'] = ''
+        context['phone3'] = ''
+        context['phone2'] = ''
+        context['email1'] = ''
+        context['email2'] = ''
+        context['days'] = ''
+        context['hours'] = ''
+
+    return context
+
+def get_user_object(user):
+    """
+    Gets a user object from the database.
+
+    Args:
+        user: The user object to check.
+
+    Returns:
+        A user_object or 404
+    """
+    context = {}
+    try:
+        user_object = BusinessUser.objects.get(username=user)
+        return user_object
+    except BusinessUser.DoesNotExist:
+        pass  # Continue to next check
+    try:
+        user_object = CreatorUser.objects.get(username=user)
+        return user_object
+    except CreatorUser.DoesNotExist:
+        pass  # Continue to next check
+    try:
+        user_object = LipilaUser.objects.get(username=user)
+        return user_object
+    except LipilaUser.DoesNotExist:
+        context['status'] = 404
+        return context
 
 
 def apology(request, context=None, user=None):

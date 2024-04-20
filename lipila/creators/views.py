@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from lipila.LipilaInfo.helpers import apology
+from LipilaInfo.helpers import apology
 from django.contrib import messages
 from django.views import View
 from django.contrib.auth import authenticate

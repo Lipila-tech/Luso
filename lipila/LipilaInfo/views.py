@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
 from django.contrib.auth.forms import AuthenticationForm
 # My Models
-from lipila.LipilaInfo.helpers import apology
+from LipilaInfo.helpers import apology, get_lipila_contact_info
 from LipilaInfo.models import ContactInfo, LipilaUser
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
 from business.forms.forms import EditBusinessUserForm
@@ -24,16 +24,7 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 # Public Views
 def index(request):
     form = ContactForm()
-    context = {}
-    contact_info = ContactInfo.objects.get(id=1)
-    context['street'] = contact_info.street
-    context['location'] = contact_info.location
-    context['phone3'] = contact_info.phone1
-    context['phone2'] = contact_info.phone2
-    context['email1'] = contact_info.email1
-    context['email2'] = contact_info.email2
-    context['days'] = contact_info.days
-    context['hours'] = contact_info.hours
+    context = get_lipila_contact_info()
     context['form'] = form
 
     return render(request, 'UI/index.html', context)
@@ -136,6 +127,7 @@ def login(request):
 
 
 def contact(request):
+    context = get_lipila_contact_info()
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -147,7 +139,8 @@ def contact(request):
         messages.error(
             request, "Failed to send message")
         form = ContactForm()
-    return render(request, 'contact_form.html', {'form': form})
+        context['form'] = form
+    return render(request, 'UI/index.html', context)
 
 
 @login_required
