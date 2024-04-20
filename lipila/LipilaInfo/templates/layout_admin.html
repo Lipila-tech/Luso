@@ -44,7 +44,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
                 <img src="{% static 'assets/img/logo.png' %}" alt="">
-                <span class="d-none d-lg-block">Lipila Admin</span>
+                <span class="d-none d-lg-block">administration</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -99,50 +99,11 @@
                             <a href="#">Show all notifications</a>
                         </li>
 
-
                     </ul><!-- End Notification Dropdown Items -->
 
                 </li><!-- End Notification Nav -->
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-chat-left-text"></i>
-                        <span class="badge bg-success badge-number">{{ count|message_counter:2 }}</span>
-                    </a><!-- End Messages Icon -->
 
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                        <li class="dropdown-header">
-                            You have {{ count|message_counter:2 }} new messages
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                        </li>
-                        {% get_messages as user_messages %}
-                        {% for messages in user_messages %}
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="{% static 'assets/img/messages-1.jpg' %}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>{{ messages.sender}}</h4>
-                                    <p>{{ messages.message}}</p>
-                                    <p>{{ messages.time}}</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        {% endfor %}
-
-                        <li class="dropdown-footer">
-                            <a href="#">Show all messages</a>
-                        </li>
-
-                    </ul><!-- End Messages Dropdown Items -->
-
-                </li><!-- End Messages Nav -->
 
                 <li class="nav-item dropdown pe-3">
 
@@ -219,13 +180,87 @@
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
 
-        {% block content %}
-        {% endblock %}
-       
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'dashboard' user=user %}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Actions </span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'withdraw'%}">
+                            <i class="bi bi-circle"></i><span>Contribute</span>
+                        </a>
+                    </li>
+                    <li>
+                    <li>
+                        <!-- Products url go here -->
+                    </li>
+            </li>
+            <li>
+
+            </li>
+        </ul>
+        </li><!-- End Forms Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+
+                <li>
+                    <a href="{% url 'creators' %}">
+                        <i class="bi bi-circle"></i><span>Creators</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'history' %}">
+                        <i class="bi bi-circle"></i><span>History</span>
+                    </a>
+                </li>
+                <li>
+
+                </li>
+            </ul>
+        </li><!-- End Tables Nav -->
+
+
+        <li class="nav-heading">Pages</li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'profile' user=user %}">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+        </li><!-- End Profile Page Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'index' %}">
+                <i class="bi bi-question-circle"></i>
+                <span>F.A.Q</span>
+            </a>
+        </li><!-- End F.A.Q Page Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'index' %}">
+                <i class="bi bi-envelope"></i>
+                <span>Contact</span>
+            </a>
+        </li><!-- End Contact Page Nav -->
+        </ul>
+
     </aside><!-- End Sidebar-->
-    
+
     {% block main %}
-   
+
     {% endblock %}
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">

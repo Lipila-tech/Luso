@@ -33,7 +33,7 @@ def get_lipila_contact_info():
 
     return context
 
-def get_user_object(user):
+def get_user_object(user: str):
     """
     Gets a user object from the database.
 
@@ -41,7 +41,8 @@ def get_user_object(user):
         user: The user object to check.
 
     Returns:
-        A user_object or 404
+        A user_object instance(BusinessUser or CreatorUser or LipilauSE or)
+         otherwise returns 404.
     """
     context = {}
     try:

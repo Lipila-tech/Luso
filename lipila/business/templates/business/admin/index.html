@@ -137,55 +137,6 @@
             </div><!-- End StudentsCard -->
 
             <!-- Reports -->
-
-
-            <!-- Recent Sales -->
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Recent Sales <span>| Today</span></h5>
-
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Student</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for recent in recentsales %}
-                      <tr>
-                        <th scope="row"><a href="#">{{recent.0}}</a></th>
-                        <td>{{recent.1}}</td>
-                        <td><a href="#" class="text-primary">{{recent.2}}</a></td>
-                        <td>K{{recent.3|comma_format}}</td>
-                        <td><span class="badge bg-success">{{recent.4}}</span></td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-
-                </div>
-
-              </div>
-            </div><!-- End Recent Sales -->
           </div>
         </div><!-- End Left side columns -->
 

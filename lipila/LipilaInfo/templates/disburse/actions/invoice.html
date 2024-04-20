@@ -1,12 +1,12 @@
-{% extends 'school_layout.html' %}
+{% extends 'layout_admin.html' %}
 {% load static %}
-{% block title %} Transfer {% endblock %}
+{% block title %} New Invoice {% endblock %}
 {% block main %}
 <main id="main" class="main">
 
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Sending....</h5>
+      <h5 class="card-title">Invoicing...</h5>
     </div>
   </div>
   <div class="container mt-5">
@@ -14,40 +14,31 @@
       <div class="col-md-8">
         <form>
           <div id="step0" style="display: block;">
-            <h2>Receiver Information</h2>
+            <h2>Customer Information</h2>
             <label for="amount">Payee ID</label>
             <input name="payee" type="text" class="form-control mb-3" placeholder="Ex. lipila" required>
             <button class="btn btn-primary" onclick="nextStep('step1')">Continue</button>
           </div>
 
           <div id="step1" style="display: none;">
-            <h2>Payment Details</h2>
-            <h6>Send to: {{ payee }}</h6>
+            <h2>Invoice Details</h2>
             <label for="amount">Amount</label>
             <input name="amount" type="number" class="form-control mb-3" placeholder="Ex. 100" required>
-
             <div class="form-group">
-              <label for="paymentMethod">Send From</label>
-              <select class="form-control" id="paymentMethod">
-                <option value="MTN">Personal account 1</option>
-                <option value="Airtel">Savings account1</option>
-                <option value="Airtel">Savings account2</option>
-              </select>
+              <label for="paymentMethod">Description</label>
+              <textarea name="details" type="text" class="form-control mb-3" placeholder="Ex. 100"></textarea>
             </div>
-            <button id="back-btn" class="btn btn-primary mr-2" onclick="prevStep('step0')">Back</button>
+            <button class="btn btn-primary mr-2" onclick="prevStep('step0')">Back</button>
             <button class="btn btn-primary" onclick="nextStep('step2')">Continue</button>
           </div>
 
           <div id="step2" style="display: none;">
             <h2>Review Information</h2>
-            <p>Pay: K {{amount}}</p>
-            <p>To: {{payee}}</p>
-            <p>Using account: {{account}}</p>
-            <p>Commision: K1</p>
-            <p>Total: K 2200</p>
-            <!-- Confirmation & Receipt details will be displayed here -->
+            <p>Bill to: Test customer</p>
+            <p>Amount: k200</p>
+            <p>Description: Product descripion</p>
             <button class="btn btn-primary mr-2" onclick="prevStep('step1')">Back</button>
-            <button class="btn btn-primary" onclick="submitPayment()">Submit Payment</button>
+            <button class="btn btn-primary" onclick="submitInvoice()">Submit Payment</button>
           </div>
         </form>
       </div>

@@ -97,44 +97,6 @@
 
                 </li><!-- End Notification Nav -->
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-chat-left-text"></i>
-                        <span class="badge bg-success badge-number">{{ count|message_counter:2 }}</span>
-                    </a><!-- End Messages Icon -->
-
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                        <li class="dropdown-header">
-                            You have {{ count|message_counter:2 }} new messages
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                        </li>
-                        {% get_messages as user_messages %}
-                        {% for messages in user_messages %}
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="{% static 'assets/img/messages-1.jpg' %}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>{{ messages.sender}}</h4>
-                                    <p>{{ messages.message}}</p>
-                                    <p>{{ messages.time }}</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        {% endfor %}
-
-                        <li class="dropdown-footer">
-                            <a href="#">Show all messages</a>
-                        </li>
-
-                    </ul><!-- End Messages Dropdown Items -->
-
                 </li><!-- End Messages Nav -->
 
                 <li class="nav-item dropdown pe-3">
@@ -235,8 +197,8 @@
           </a>
         </li>
         <li>
-          <a href="{% url 'business:transfer' %}">
-            <i class="bi bi-circle"></i><span>Transfer</span>
+          <a href="{% url 'withdraw'%}">
+            <i class="bi bi-circle"></i><span>Withdraw</span>
           </a>
         </li>
       </ul>
@@ -259,8 +221,8 @@
           </a>
         </li>
         <li>
-          <a href="{% url 'business:log_transfer' %}">
-            <i class="bi bi-circle"></i><span>Transfer</span>
+          <a href="{% url 'history' %}">
+            <i class="bi bi-circle"></i><span>History</span>
           </a>
         </li>
       </ul>

@@ -11,12 +11,13 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # My Models
 from api.models import BusinessUser
-from LipilaInfo.helpers import apology
+from LipilaInfo.helpers import apology, get_user_object
 from .forms.forms import (DisburseForm, AddProductForm,
                           SignupForm, EditBusinessUserForm,
                           AddStudentForm)
 from datetime import datetime
 from business.models import Product, Student
+from creators.models import CreatorUser
 
 
 def index(request):
@@ -67,9 +68,10 @@ class EditStudentView(View):
         else:
             messages.error(
                 request, "Failed to edit student.")
-        return render(request, 
+        return render(request,
                       'business/admin/actions/student_edit.html',
                       {'form': form, 'student': student, 'student_id': student_id})
+
 
 class DeleteStudentView(View):
     def get(self, request, student_id, *args, **kwargs):
@@ -84,21 +86,27 @@ class DeleteStudentView(View):
         messages.success(
             request, "Student Deleted Successfully.")
         return redirect('list_student')
-    
+
+
 class CreateProductView(View):
+    """Creats a user product"""
     def get(self, request):
         form = AddProductForm()
         return render(request, 'business/admin/actions/products.html', {'form': form})
 
     def post(self, request):
         form = AddProductForm(request.POST, request.FILES)
+        user_object = get_user_object(request.user)
         if form.is_valid():
             product = form.save(commit=False)  # Don't save yet
             product.owner = request.user  # Set owner to current user
             product.save()
             messages.success(
                 request, "Product Added Successfully.")
-            return redirect(reverse('business:log_products'))
+            if isinstance(user_object, BusinessUser):
+                return redirect('business:log_products')
+            elif isinstance(user_object, CreatorUser):
+                return redirect('creators:history')
         else:
             messages.error(
                 request, "Failed to create product.")
@@ -106,6 +114,7 @@ class CreateProductView(View):
 
 
 class EditProductView(View):
+    """Edits a users product"""
     def get(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(
             Product, pk=product_id)  # Fetch product by ID
@@ -116,11 +125,15 @@ class EditProductView(View):
     def post(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
         form = AddProductForm(request.POST, request.FILES, instance=product)
+        user_object = get_user_object(request.user)
         if form.is_valid():
             form.save()
             messages.success(
                 request, "Product Edited Successfully.")
-            return redirect('business:log_products')
+            if isinstance(user_object, BusinessUser):
+                return redirect('business:log_products')
+            elif isinstance(user_object, CreatorUser):
+                return redirect('creators:history')
         else:
             messages.error(
                 request, "Failed to edit product.")
@@ -128,18 +141,23 @@ class EditProductView(View):
 
 
 class DeleteProductView(View):
+    """Deletes a user products"""
     def get(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
         return render(request,
-                      'business/admin/actions/product_delete.html', 
+                      'business/admin/actions/product_delete.html',
                       {'product': product, 'product_id': product_id})
 
     def post(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
         product.delete()
+        user_object = get_user_object(request.user)
         messages.success(
             request, "Product Deleted Successfully.")
-        return redirect('log_products')
+        if isinstance(user_object, BusinessUser):
+            return redirect('business:log_products')
+        elif isinstance(user_object, CreatorUser):
+            return redirect('creators:history')
 
 
 def bnpl(request):

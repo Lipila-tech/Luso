@@ -1,0 +1,51 @@
+{% extends 'school_layout.html' %}
+{% load static %}
+{% block title %} History {% endblock %}
+
+{% block main %}
+<main id="main" class="main">
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Transaction History</h5>
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+      <div class="search-bar">
+        <form class="search-form d-flex align-items-center" method="POST" action="#">
+          <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+          <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+        </form>
+      </div><!-- End Search Bar -->
+      <!-- Table with hoverable rows -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Action</th>
+            <th scope="col">Acccount</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for transaction in transactions %}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{tansaction.date}}</td>
+            <td>{{tansaction.amount}}</td>
+            <td>{{tansaction.action}}</td>
+            <td>{{tansaction.account}}</td>
+            <td>{{tansaction.status}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+</main><!-- End #main -->
+{% endblock %}

@@ -1,13 +1,13 @@
 {% extends 'creator_admin.html' %}
 {% load static %}
-{% block title %} History {% endblock %}
+{% block title %} Patrons {% endblock %}
 
 {% block main %}
 <main id="main" class="main">
 
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Transaction History</h5>
+      <h5 class="card-title">Patrons</h5>
       {% if messages %}
       <ul class="messages">
         {% for message in messages %}
@@ -26,23 +26,19 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Date</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Action</th>
-            <th scope="col">Acccount</th>
-            <th scope="col">Status</th>
+            <th scope="col">Patron Username</th>
+            <th scope="col">Subscription</th>
+            <th scope="col">Active</th>
           </tr>
         </thead>
         <tbody>
 
-          {% for transaction in transactions %}
+          {% for patron in patrons %}
           <tr>
             <th scope="row">{{forloop.counter}}</th>
-            <td>{{tansaction.date}}</td>
-            <td>{{tansaction.amount}}</td>
-            <td>{{tansaction.action}}</td>
-            <td>{{tansaction.account}}</td>
-            <td>{{tansaction.status}}</td>
+            <td>{{patron.username}}</td>
+            <td>{{patron.subscription}}</td>
+            <td>{{patron.active}}</td>
           </tr>
           {% endfor %}
         </tbody>

@@ -74,11 +74,6 @@ def list_patrons(request):
 
 
 @login_required
-def withdraw(request):
-    return render(request, 'creators/admin/actions/withdraw.html')
-
-
-@login_required
 def log_products(request):
     context = {}
     user_object = get_object_or_404(CreatorUser, username=request.user)
