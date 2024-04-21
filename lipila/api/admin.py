@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (BusinessUser, LipilaDisbursement)
+from .models import (BusinessUser, LipilaDisbursement, LipilaCollection)
 from business.models import Product, BNPL, Student
 from creators.models import CreatorUser
 from LipilaInfo.models import ContactInfo, LipilaUser, Contact, Patron
@@ -30,6 +30,9 @@ class DisbursementAdmin(admin.ModelAdmin):
     list_display = ('payer', 'payee', 'payee_account', 'payment_amount', 'payment_method',
                     'description', 'transaction_id', 'payment_date')
 
+class LipilaCOllectionAdmin(admin.ModelAdmin):
+    list_display = ('payer', 'payee', 'amount',
+                    'description', 'reference_id', 'timestamp', 'status')
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'price',
@@ -65,6 +68,7 @@ class BNPLAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(BusinessUser, BusinessUserAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
+admin.site.register(LipilaCollection, LipilaCOllectionAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)
 admin.site.register(CreatorUser, CreatorUserAdmin)
