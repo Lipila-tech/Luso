@@ -37,15 +37,15 @@ def index(request):
     return render(request, 'UI/index.html', context)
 
 
-def creators(request, user):
+def creators(request):
     context = {}
     creators = CreatorUser.objects.all()
-    user_object = get_user_object(user)
+    # user_object = get_user_object(user)
     context['creators'] = creators
 
 
     if request.user.is_authenticated:
-        context['user'] = user_object
+        # context['user'] = user_object
         return render(request, 'LipilaInfo/admin/creators.html', context)
     else:
         return render(request, 'UI/creators.html', context)
@@ -87,7 +87,7 @@ def join(request, creator, user):
                 
                 messages.success(request, f"Subscribed to {creator_object.username}")
 
-            return redirect('creators', kwargs={'user':user_obj})
+            return redirect('creators')
     patron_exists = check_if_user_is_patron(user_obj, creator_object)
     print('user',user_obj)
     print('get request')

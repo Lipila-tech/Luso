@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),
-     path('creators/<str:user>/all/', views.creators, name='creators'),
+     path('creators/all/', views.creators, name='creators'),
      path('creators/join/<str:user>/<str:creator>/', views.join, name='join'),
      path('contact', views.contact, name='contact'),
      
