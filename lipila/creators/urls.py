@@ -8,7 +8,6 @@ urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),
      path('<str:user>/contribute', views.contribute, name='contribute'),
-     path('<username>/', views.user_profile, name='user_profile'),
      path('accounts/signup/', views.SignupView.as_view(), name='signup'),
 
      path('patrons', views.list_patrons, name='patrons'),
