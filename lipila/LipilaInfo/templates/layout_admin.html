@@ -199,7 +199,7 @@
                 </a>
                 <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'creators' %}">
+                        <a href="{% url 'creators' user=user %}">
                             <i class="bi bi-circle"></i><span>Creators</span>
                         </a>
                     </li>
@@ -211,6 +211,7 @@
                 </ul>
             </li>
             {% elif user.category == 'Creator' %}
+            
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
@@ -242,6 +243,7 @@
                 </ul>
             </li>
             {% else %}
+            BUSINESS
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i

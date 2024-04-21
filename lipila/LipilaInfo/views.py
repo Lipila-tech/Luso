@@ -37,19 +37,22 @@ def index(request):
     return render(request, 'UI/index.html', context)
 
 
-def creators(request):
+def creators(request, user):
     context = {}
     creators = CreatorUser.objects.all()
+    user_object = get_user_object(user)
     context['creators'] = creators
 
+
     if request.user.is_authenticated:
+        context['user'] = user_object
         return render(request, 'admin/creators.html', context)
     else:
         return render(request, 'UI/creators.html', context)
 
 
 @login_required
-def join(request, creator):
+def join(request, creator, user):
     """Handles user subscription to a creator.
 
     Args:
@@ -59,11 +62,10 @@ def join(request, creator):
     Returns:
         A rendered response with the join form and subscription status.
     """
-
     form = JoinForm()
     context = {}
-    creator_object = CreatorUser.objects.get(username=creator)  # Assuming username is unique
-    user_obj = get_user_object(request.user)
+    creator_object = CreatorUser.objects.get(username=creator)
+    user_obj = get_user_object(user)
 
     if request.method == 'POST':
         form = JoinForm(request.POST)
@@ -85,12 +87,15 @@ def join(request, creator):
                 
                 messages.success(request, f"Subscribed to {creator_object.username}")
 
-            return redirect('creators')
+            return redirect('creators', kwargs={'user':user_obj})
     patron_exists = check_if_user_is_patron(user_obj, creator_object)
+    print('user',user_obj)
+    print('get request')
     context = {
         'join_form': form,
         'creator': creator_object,
-        'is_patron': patron_exists
+        'is_patron': patron_exists,
+        'user':user_obj
     }
 
     return render(request, 'admin/join.html', context)
@@ -216,11 +221,10 @@ def contact(request):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def profile(request, user):
     context = {}
-    context['user'] = user
     user_object = get_user_object(user)
     if isinstance(user_object, BusinessUser):
         context['user'] = user_object
-        return render(request, 'business/admin/profile/users-profile.html', context)
+        return render(request, 'business/LipilaInfo/admin/profile/users-profile.html', context)
     elif isinstance(user_object, CreatorUser):
         context['user'] = user_object
         return render(request, 'creators/admin/profile/users-profile.html', context)
@@ -240,7 +244,7 @@ class UpdateUserInfoView(View):
         if isinstance(user_object, BusinessUser):
             form = EditBusinessUserForm(instance=user_object)
             return render(request,
-                          'business/admin//profile/edit_user_info.html',
+                          'business/LipilaInfo/admin//profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
         elif isinstance(user_object, CreatorUser):
             form = EditCreatorUserForm(instance=user_object)
@@ -314,7 +318,7 @@ def dashboard(request, user):
         students = Student.objects.filter(school=user_object.id)
         context['students'] = students.count()
         context['user'] = user_object
-        return render(request, 'business/admin/index.html', context)
+        return render(request, 'business/LipilaInfo/admin/index.html', context)
     elif isinstance(user_object, CreatorUser):
         user_object = CreatorUser.objects.get(username=user)
         context['user'] = user_object
@@ -337,7 +341,7 @@ def withdraw(request, user):
     user_object = get_user_object(request.user)
     context['user'] = user_object
     if isinstance(user_object, BusinessUser):
-        return render(request, 'business/admin/actions/withdraw.html', context)
+        return render(request, 'business/LipilaInfo/admin/actions/withdraw.html', context)
     elif isinstance(user_object, CreatorUser):
         return render(request, 'creators/admin/actions/withdraw.html', context)
     else:
@@ -350,7 +354,7 @@ def history(request, user):
     user_object = get_user_object(request.user)
     context['user'] = user_object
     if isinstance(user_object, BusinessUser):
-        return render(request, 'business/admin/log/withdraw.html', context)
+        return render(request, 'business/LipilaInfo/admin/log/withdraw.html', context)
     elif isinstance(user_object, CreatorUser):
         return render(request, 'creators/admin/log/withdraw.html', context)
     else:
