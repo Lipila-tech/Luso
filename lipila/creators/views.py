@@ -1,15 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from LipilaInfo.helpers import apology
 from django.contrib import messages
 from django.views import View
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as my_login
-from django.contrib.auth.forms import AuthenticationForm
-from creators.forms.forms import SignupForm, LoginForm
+from creators.forms.forms import SignupForm
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.decorators import api_view, renderer_classes
 from creators.models import CreatorUser
 from business.models import Product

@@ -6,6 +6,7 @@ from business.models import BusinessUser
 # Global variables
 STATUS_CHOICES = (
     ('pending', 'pending'),
+    ('accepted', 'accepted'),
     ('success', 'success'),
     ('failed', 'failed'),
 )
@@ -55,10 +56,9 @@ class LipilaCollection(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     reference_id = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
-    payer = models.ForeignKey(BusinessUser, related_name='receipts',
+    payee = models.ForeignKey(User, related_name='receipts',
                               on_delete=models.CASCADE)
-    payee = models.ForeignKey(User, related_name='payment',
-                              on_delete=models.CASCADE)
+    payer = models.CharField(max_length=150)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
     
