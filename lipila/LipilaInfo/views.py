@@ -27,6 +27,13 @@ def index(request):
     context = get_lipila_contact_info()
     context['form'] = form
 
+    testimonial = {
+        'user':'Sangwani',
+        'category':'member',
+        'comment':'Great app'
+    }
+    context['testimony'] = testimonial
+
     return render(request, 'UI/index.html', context)
 
 
@@ -39,7 +46,6 @@ def creators(request):
         return render(request, 'disburse/creators.html', context)
     else:
         return render(request, 'UI/creators.html', context)
-
 
 
 @login_required

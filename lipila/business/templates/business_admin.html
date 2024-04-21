@@ -1,5 +1,5 @@
 {% load static %}
-{% load messages %}
+{% load custom_filters%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -284,7 +284,7 @@
     </li><!-- End Profile Page Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="{% url 'index' %}">
+      <a class="nav-link collapsed" href="{% url 'faq' %}">
         <i class="bi bi-question-circle"></i>
         <span>F.A.Q</span>
       </a>
@@ -293,7 +293,7 @@
     <li class="nav-item">
       <a class="nav-link collapsed" href="{% url 'index' %}">
         <i class="bi bi-envelope"></i>
-        <span>Contact</span>
+        <span>Contact Us</span>
       </a>
     </li><!-- End Contact Page Nav -->
   </ul>

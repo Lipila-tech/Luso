@@ -21,6 +21,7 @@ urlpatterns = [
      path('me/<str:user>', views.dashboard, name='dashboard'),
      path('withdraw', views.withdraw, name='withdraw'),
      path('history', views.history, name='history'),
+     path('lipila/faq', views.pages_faq, name='faq'),
 ]
 
 if settings.DEBUG:
