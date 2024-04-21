@@ -27,7 +27,7 @@ class TestJoinView(TestCase):
         self.client.login(username='test_user', password='password123')
         response = self.client.get(reverse('join', kwargs={'creator': self.creator_object.username}))
         self.assertEqual(response.status_code, 200)  # Successful GET request (200)
-        self.assertTemplateUsed(response, 'disburse/join.html')  # Check for used template
+        self.assertTemplateUsed(response, 'admin/join.html')  # Check for used template
 
     def test_get_logged_in_patron_not_subscribed(self):
         """Test GET request, logged in as patron but not subscribed"""
@@ -35,7 +35,7 @@ class TestJoinView(TestCase):
         self.client.login(username='test_user', password='password123')
         response = self.client.get(reverse('join', kwargs={'creator': self.creator_object.username}))
         self.assertEqual(response.status_code, 200)  # Successful GET request (200)
-        self.assertTemplateUsed(response, 'disburse/join.html')  # Check for used template
+        self.assertTemplateUsed(response, 'admin/join.html')  # Check for used template
         self.assertFalse(response.context['is_patron'])  # Check if 'is_patron' is False
 
     def test_get_logged_in_patron_subscribed(self):
@@ -45,7 +45,7 @@ class TestJoinView(TestCase):
         self.client.login(username='test_user', password='password123')
         response = self.client.get(reverse('join', kwargs={'creator': self.creator_object.username}))
         self.assertEqual(response.status_code, 200)  # Successful GET request (200)
-        self.assertTemplateUsed(response, 'disburse/join.html')  # Check for used template
+        self.assertTemplateUsed(response, 'admin/join.html')  # Check for used template
         self.assertTrue(response.context['is_patron'])  # Check if 'is_patron' is True
 
     def test_post_not_logged_in(self):
@@ -58,7 +58,7 @@ class TestJoinView(TestCase):
         self.client.login(username='test_user', password='password123')
         response = self.client.post(reverse('join', kwargs={'creator': self.creator_object.username}), {'invalid_field': 'invalid_data'})
         self.assertEqual(response.status_code, 200)  # Render form again (200)
-        self.assertTemplateUsed(response, 'disburse/join.html')  # Check for used template
+        self.assertTemplateUsed(response, 'admin/join.html')  # Check for used template
 
     @mock.patch('LipilaInfo.helpers.check_if_user_is_patron')  # Mock the check_if_user_is_patron function
     def test_post_valid_form_new_patron(self, mock_check):
@@ -74,7 +74,7 @@ class TestJoinView(TestCase):
         # Check for successful form submission and redirection
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('creators'))  # Redirect to creators list after successful join
-        self.assertTemplateUsed('disburse/creators.html')
+        self.assertTemplateUsed('admin/creators.html')
         # Assert that Patron object is created and saved
         patron = Patron.objects.get(user=self.user_object)
         self.assertTrue(patron.pk is not None)  # Check if Patron has a primary key (saved)

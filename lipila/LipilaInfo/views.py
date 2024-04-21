@@ -43,7 +43,7 @@ def creators(request):
     context['creators'] = creators
 
     if request.user.is_authenticated:
-        return render(request, 'disburse/creators.html', context)
+        return render(request, 'admin/creators.html', context)
     else:
         return render(request, 'UI/creators.html', context)
 
@@ -93,7 +93,7 @@ def join(request, creator):
         'is_patron': patron_exists
     }
 
-    return render(request, 'disburse/join.html', context)
+    return render(request, 'admin/join.html', context)
 
 
 
@@ -122,7 +122,7 @@ def send_money(request):
 
 
 def pages_faq(request):
-    return render(request, 'disburse/pages-faq.html')
+    return render(request, 'admin/pages-faq.html')
 
 
 class SignupView(View):
@@ -226,7 +226,7 @@ def profile(request, user):
         return render(request, 'creators/admin/profile/users-profile.html', context)
     elif isinstance(user_object, LipilaUser):
         context['user'] = user_object
-        return render(request, 'disburse/profile/users-profile.html', context)
+        return render(request, 'admin/profile/users-profile.html', context)
     else:
         context['status'] = 404
         context['message'] = 'User Not Found!'
@@ -250,7 +250,7 @@ class UpdateUserInfoView(View):
         elif isinstance(user_object, LipilaUser):
             form = EditLipilaUserForm(instance=user_object)
             return render(request,
-                          'disburse/profile/edit_user_info.html',
+                          'admin/profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
         else:
             messages.error(
@@ -324,7 +324,7 @@ def dashboard(request, user):
         user_object = LipilaUser.objects.get(username=user)
         context['user'] = user_object
         # context['patrons'] = user_objects[1]
-        return render(request, 'disburse/index.html', context)
+        return render(request, 'admin/index.html', context)
     else:
         context['status'] = 404
         context['message'] = 'User Not Found!'
@@ -341,7 +341,7 @@ def withdraw(request, user):
     elif isinstance(user_object, CreatorUser):
         return render(request, 'creators/admin/actions/withdraw.html', context)
     else:
-        return render(request, 'disburse/actions/withdraw.html', context)
+        return render(request, 'admin/actions/withdraw.html', context)
 
 
 @login_required
@@ -354,4 +354,4 @@ def history(request, user):
     elif isinstance(user_object, CreatorUser):
         return render(request, 'creators/admin/log/withdraw.html', context)
     else:
-        return render(request, 'disburse/log/withdraw.html', context)
+        return render(request, 'admin/log/withdraw.html', context)

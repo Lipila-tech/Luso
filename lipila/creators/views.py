@@ -20,7 +20,7 @@ def index(request):
     return render(request, 'creators/index.html')
 
 def contribute(request, user):
-    return render(request, 'creators/contribute.html')
+    return render(request, 'creators/admin/actions/contribute.html')
 
 
 class SignupView(View):
