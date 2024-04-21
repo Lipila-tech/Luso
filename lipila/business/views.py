@@ -27,7 +27,7 @@ def index(request):
 class CreateStudentView(View):
     def get(self, request):
         form = AddStudentForm()
-        return render(request, 'business/admin/actions/students.html', {'form': form})
+        return render(request, 'business/LipilaInfo/admin/actions/students.html', {'form': form})
 
     def post(self, request):
         user_object = get_object_or_404(BusinessUser, username=request.user)
@@ -44,7 +44,7 @@ class CreateStudentView(View):
         else:
             messages.error(
                 request, "Failed to create Student.")
-        return render(request, 'business/admin/actions/students.html', {'form': form})
+        return render(request, 'business/LipilaInfo/admin/actions/students.html', {'form': form})
 
 
 class EditStudentView(View):
@@ -54,7 +54,7 @@ class EditStudentView(View):
         # Pre-populate form with student data
         form = AddStudentForm(instance=student)
         return render(request,
-                      'business/admin/actions/student_edit.html',
+                      'business/LipilaInfo/admin/actions/student_edit.html',
                       {'form': form, 'student': student, 'student_id': student_id})
 
     def post(self, request, student_id, *args, **kwargs):
@@ -69,7 +69,7 @@ class EditStudentView(View):
             messages.error(
                 request, "Failed to edit student.")
         return render(request,
-                      'business/admin/actions/student_edit.html',
+                      'business/LipilaInfo/admin/actions/student_edit.html',
                       {'form': form, 'student': student, 'student_id': student_id})
 
 
@@ -77,7 +77,7 @@ class DeleteStudentView(View):
     def get(self, request, student_id, *args, **kwargs):
         student = get_object_or_404(Student, pk=student_id)
         return render(request,
-                      'business/admin/actions/student_delete.html',
+                      'business/LipilaInfo/admin/actions/student_delete.html',
                       {'student': student, 'student_id': student_id})
 
     def post(self, request, student_id, *args, **kwargs):
@@ -92,7 +92,7 @@ class CreateProductView(View):
     """Creats a user product"""
     def get(self, request):
         form = AddProductForm()
-        return render(request, 'business/admin/actions/products.html', {'form': form})
+        return render(request, 'business/LipilaInfo/admin/actions/products.html', {'form': form})
 
     def post(self, request):
         form = AddProductForm(request.POST, request.FILES)
@@ -110,7 +110,7 @@ class CreateProductView(View):
         else:
             messages.error(
                 request, "Failed to create product.")
-        return render(request, 'business/admin/actions/products.html', {'form': form})
+        return render(request, 'business/LipilaInfo/admin/actions/products.html', {'form': form})
 
 
 class EditProductView(View):
@@ -120,7 +120,7 @@ class EditProductView(View):
             Product, pk=product_id)  # Fetch product by ID
         # Pre-populate form with product data
         form = AddProductForm(instance=product)
-        return render(request, 'business/admin/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
+        return render(request, 'business/LipilaInfo/admin/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
 
     def post(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
@@ -137,7 +137,7 @@ class EditProductView(View):
         else:
             messages.error(
                 request, "Failed to edit product.")
-        return render(request, 'business/admin/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
+        return render(request, 'business/LipilaInfo/admin/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
 
 
 class DeleteProductView(View):
@@ -145,7 +145,7 @@ class DeleteProductView(View):
     def get(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
         return render(request,
-                      'business/admin/actions/product_delete.html',
+                      'business/LipilaInfo/admin/actions/product_delete.html',
                       {'product': product, 'product_id': product_id})
 
     def post(self, request, product_id, *args, **kwargs):
@@ -161,13 +161,13 @@ class DeleteProductView(View):
 
 
 def bnpl(request):
-    return render(request, 'business/admin/bnpl.html')
+    return render(request, 'business/LipilaInfo/admin/bnpl.html')
 
 
 # Logs
 @login_required
 def log_transfer(request):
-    return render(request, 'business/admin//log/transfer.html')
+    return render(request, 'business/LipilaInfo/admin//log/transfer.html')
 
 
 @login_required
@@ -176,12 +176,12 @@ def list_student(request):
     user_object = get_object_or_404(BusinessUser, username=request.user)
     students = Student.objects.filter(school=user_object.id)
     context['students'] = students
-    return render(request, 'business/admin/log/student.html', context)
+    return render(request, 'business/LipilaInfo/admin/log/student.html', context)
 
 
 @login_required
 def invoice(request):
-    return render(request, 'business/admin/actions/invoice.html')
+    return render(request, 'business/LipilaInfo/admin/actions/invoice.html')
 
 
 @login_required
@@ -190,14 +190,14 @@ def log_products(request):
     user_object = get_object_or_404(BusinessUser, username=request.user)
     products = Product.objects.filter(owner=user_object.id)
     context['products'] = products
-    return render(request, 'business/admin/log/products.html', context)
+    return render(request, 'business/LipilaInfo/admin/log/products.html', context)
 
 
 @login_required
 def transfer(request):
     context = {}
     context['form'] = DisburseForm()
-    return render(request, 'business/admin//actions/transfer.html', context)
+    return render(request, 'business/LipilaInfo/admin//actions/transfer.html', context)
 
 
 class SignupView(View):
