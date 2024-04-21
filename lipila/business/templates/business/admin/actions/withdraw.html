@@ -1,0 +1,57 @@
+{% extends 'layout_admin.html' %}
+{% load static %}
+{% block title %} Withdraw {% endblock %}
+{% block main %}
+<main id="main" class="main">
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Withdrawing....</h5>
+    </div>
+  </div>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form>
+          <div id="step0" style="display: block;">
+            <h2>Withdraw</h2>
+            <label for="amount">Account Number</label>
+            <input name="payee" type="text" class="form-control mb-3" placeholder="Ex. 255288" required>
+            <button class="btn btn-primary" onclick="nextStep('step1')">Continue</button>
+          </div>
+
+          <div id="step1" style="display: none;">
+            <h2>Amount</h2>
+            <h6>Send to: {{ payee }}</h6>
+            <label for="amount">Amount</label>
+            <input name="amount" type="number" class="form-control mb-3" placeholder="Ex. 100" required>
+
+            <div class="form-group">
+              <label for="paymentMethod">Selecte Amount</label>
+              <select class="form-control" id="paymentMethod">
+                <option value="three">300</option>
+                <option value="five">500</option>
+                <option value="max">Maximum</option>
+              </select>
+            </div>
+            <button id="back-btn" class="btn btn-primary mr-2" onclick="prevStep('step0')">Back</button>
+            <button class="btn btn-primary" onclick="nextStep('step2')">Continue</button>
+          </div>
+
+          <div id="step2" style="display: none;">
+            <h2>Review Information</h2>
+            <p>Withdraw: K {{amount}}</p>
+            <p>Account number: {{payee}}</p>
+            <p>Commission: 2.0 %</p>
+            <p>Total: K 2200</p>
+            <!-- Confirmation & Receipt details will be displayed here -->
+            <button class="btn btn-primary mr-2" onclick="prevStep('step1')">Back</button>
+            <button class="btn btn-primary" onclick="submitPayment()">Complete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</main><!-- End #main -->
+{% endblock %}

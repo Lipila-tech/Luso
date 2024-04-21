@@ -1,5 +1,5 @@
 {% load static %}
-{% load messages %}
+{% load custom_filters%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,14 +37,13 @@
 </head>
 
 <body>
-
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
             <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
                 <img src="{% static 'assets/img/logo.png' %}" alt="">
-                <span class="d-none d-lg-block">Lipila Admin</span>
+                <span class="d-none d-lg-block">administration</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -90,7 +89,6 @@
                                 <p>{{notifications.time}}</p>
                             </div>
                         </li>
-
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -98,54 +96,9 @@
                         <li class="dropdown-footer">
                             <a href="#">Show all notifications</a>
                         </li>
-
-
                     </ul><!-- End Notification Dropdown Items -->
-
                 </li><!-- End Notification Nav -->
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-chat-left-text"></i>
-                        <span class="badge bg-success badge-number">{{ count|message_counter:2 }}</span>
-                    </a><!-- End Messages Icon -->
-
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                        <li class="dropdown-header">
-                            You have {{ count|message_counter:2 }} new messages
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                        </li>
-                        {% get_messages as user_messages %}
-                        {% for messages in user_messages %}
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="{% static 'assets/img/messages-1.jpg' %}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>{{ messages.sender}}</h4>
-                                    <p>{{ messages.message}}</p>
-                                    <p>{{ messages.time}}</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        {% endfor %}
-
-                        <li class="dropdown-footer">
-                            <a href="#">Show all messages</a>
-                        </li>
-
-                    </ul><!-- End Messages Dropdown Items -->
-
-                </li><!-- End Messages Nav -->
-
                 <li class="nav-item dropdown pe-3">
-
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         {% if user.profile_image %}
 
@@ -218,15 +171,174 @@
 
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'dashboard' user=user %}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
 
-        {% block content %}
-        {% endblock %}
-       
+            {% if user.category == 'Member' %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'withdraw' user=user %}">
+                            <i class="bi bi-circle"></i><span>Contribute</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Forms Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'creators' %}">
+                            <i class="bi bi-circle"></i><span>Creators</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'history' user=user %}">
+                            <i class="bi bi-circle"></i><span>History</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% elif user.category == 'Creator' %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'withdraw' user=user %}">
+                            <i class="bi bi-circle"></i><span>Withdraw</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Forms Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'creators:patrons' user=user %}">
+                            <i class="bi bi-circle"></i><span>Patrons</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'history' user=user %}">
+                            <i class="bi bi-circle"></i><span>History</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'business:students' %}">
+                            <i class="bi bi-circle"></i><span>Add Student</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'business:products'%}">
+                            <i class="bi bi-circle"></i><span>Add Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'withdraw' user=user %}">
+                            <i class="bi bi-circle"></i><span>Withdraw</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Forms Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+
+                    <li>
+                        <a href="{% url 'business:list_student' %}">
+                            <i class="bi bi-circle"></i><span>Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'business:log_products' %}">
+                            <i class="bi bi-circle"></i><span>Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'history' user=user %}">
+                            <i class="bi bi-circle"></i><span>History</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Tables Nav -->
+            {% endif %}
+
+            <li class="nav-heading">Pages</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{% url 'profile' user=user %}">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{% url 'faq' %}">
+                    <i class="bi bi-question-circle"></i>
+                    <span>F.A.Q</span>
+                </a>
+            </li><!-- End F.A.Q Page Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{% url 'index' %}">
+                    <i class="bi bi-envelope"></i>
+                    <span>Contact Us</span>
+                </a>
+            </li><!-- End Contact Page Nav -->
+        </ul>
+
     </aside><!-- End Sidebar-->
-    
-    {% block main %}
-   
-    {% endblock %}
+    <div class="pagetitle">
+        <h1>Dashboard</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+        {% block main %}
+
+        {% endblock %}
+    </main>
+
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="container copyright text-center mt-4">

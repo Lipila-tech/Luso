@@ -14,7 +14,7 @@
             <div class="col-md-8">
                 <h2>Delete</h2>
                 <p>{{product.name}}</p>
-                <form action="{% url 'business:delete_product' product_id %}" method="post">
+                <form action="{% url 'delete_product' product_id %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="product_id" value="{{ product_id }}">
                     <button type="submit" class="btn btn-danger">Delete</button>

@@ -158,19 +158,24 @@ class Collections(MTNBase):
         self.subscription_col_key = env("MTN_MOMO_COLLECTIONS_KEY")
 
     def request_to_pay(self, amount: str, payer_account: str, reference: str):
+        
         """ Query the Collections API"""
         if len(payer_account) != 10 or int(amount) < 10:
+            
             raise ValueError(
                 "PartyId must be 10 digits and Amount value should be greater than 10")
-
         if not isinstance(amount, str):
+            
             raise TypeError("Amount must be string great than 10")
         if not isinstance(payer_account, str):
+            
             raise TypeError("PartyId must be string with 10 digits")
         if not isinstance(reference, str):
+            
             raise TypeError("ExternalId must be string")
-
+        
         try:
+            
             url = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
 
             payload = json.dumps({

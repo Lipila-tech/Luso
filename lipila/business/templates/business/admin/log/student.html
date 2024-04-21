@@ -1,13 +1,14 @@
 {% extends 'layout_admin.html' %}
 {% load static %}
-{% block title %} Products {% endblock %}
+{% load custom_filters %}
+{% block title %} Students {% endblock %}
 
 {% block main %}
 <main id="main" class="main">
 
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Products</h5>
+      <h5 class="card-title">Students</h5>
       {% if messages %}
       <ul class="messages">
         {% for message in messages %}
@@ -26,27 +27,28 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Product Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Description</th>
-            <th scope="col">quantity</th>
-            <th scope="col">Sold</th>
-            <th scope="col">Available</th>
-            <th scope="col">Actions</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Other Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Grade</th>
+            <th scope="col">Tution</th>
+            <th scope="col">Active</th>
           </tr>
         </thead>
         <tbody>
 
-          {% for product in products %}
+          {% for student in students %}
           <tr>
             <th scope="row">{{forloop.counter}}</th>
-            <td>{{product.name}}</td>
-            <td>{{product.price}}</td>
-            <td>{{product.description}}</td>
-            <td>{{product.quantity}}</td>
-            <td>{{sold}}</td>
-            <td>{{available}}</td>
-            <td><a href="{% url 'business:edit_product' product.id %}">Change</a></td>
+            <td>{{student.first_name}}</td>
+            <td>{{student.last_name}}</td>
+            <td>{{student.other_name}}</td>
+            <td>{{student.address}}</td>
+            <td>{{student.grade}}</td>
+            <td>{{student.tuition | comma_format}}</td>
+            <td>{{student.active}}</td>
+            <td><a href="{% url 'business:edit_student' student.id %}">Change</a></td>
           </tr>
           {% endfor %}
         </tbody>

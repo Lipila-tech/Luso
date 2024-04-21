@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, BaseUserManager, AbstractBaseUser
 
 # Options
 STATUS_CHOICES = (
@@ -27,6 +27,41 @@ INVOICE_STATUS_CHOICES = (
     ('rejected', 'rejected'),
 )
 
+
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, date_of_birth, password=None):
+        """
+        Creates and saves a User with the given email, date of
+        birth and password.
+        """
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        user = self.model(
+            email=self.normalize_email(email),
+            date_of_birth=date_of_birth,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+
+    def create_superuser(self, email, date_of_birth, password=None):
+        """
+        Creates and saves a superuser with the given email, date of
+        birth and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+            date_of_birth=date_of_birth,
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+    
+    
 class BusinessUser(User):
     phone_number = models.CharField(
         max_length=20, blank=True, null=True)
@@ -41,6 +76,7 @@ class BusinessUser(User):
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
     category = models.CharField(max_length=9, default='Business')
+    bank_account_number = models.CharField(max_length=100, null=True, blank=True)
     business_category = models.CharField(
         max_length=30, choices=BUSINESS_CATEGORY_CHOICES, default='other')
     facebook_url = models.CharField(max_length=250, null=True, blank=True, default='')
@@ -56,6 +92,20 @@ class BusinessUser(User):
 
     def __str__(self):
         return self.username
+
+
+class Student(models.Model):
+    first_name = models.CharField(max_length=55, null=False, blank=False)
+    last_name = models.CharField(max_length=55, null=False, blank=False)
+    other_name = models.CharField(max_length=100, null=True, blank=True)
+    school = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+    address = models.CharField(max_length=55, null=True, blank=True)
+    grade = models.CharField(max_length=55, null=False, blank=False)
+    tuition = models.FloatField(default=0, null=False, blank=False)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.first_name, self.last_name, self.school.username}"
 
 
 class Product(models.Model):

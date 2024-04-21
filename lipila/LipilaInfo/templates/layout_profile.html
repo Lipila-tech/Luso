@@ -9,9 +9,9 @@
     <h1>Profile</h1>
     {% if messages %}
     <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-            {% endfor %}
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
     </ul>
     {% endif %}
     <nav>
@@ -42,12 +42,15 @@
             <h2>{{ user.username }}</h2>
             <h3>{{user.category | upper}}</h3>
             <h3>{{user.city | upper}}, {{user.country | upper}}</h3>
+            {% if user.category == 'Member' %}
+            {% else %}
             <div class="social-links mt-2">
               <a href="{{user.twitter_url}}" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
               <a href="{{user.facebook_url}}" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
               <a href="{{user.instagram_url}}" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
               <a href="{{user.linkedin_url}}" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></a>
             </div>
+            {% endif %}
           </div>
         </div>
 
@@ -75,12 +78,12 @@
             {% block content %}
             {% endblock %}
 
-            </div>
+          </div>
 
-          </div><!-- End Bordered Tabs -->
+        </div><!-- End Bordered Tabs -->
 
-        </div>
       </div>
+    </div>
 
     </div>
     </div>

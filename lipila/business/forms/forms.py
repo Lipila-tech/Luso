@@ -2,8 +2,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
 from api.models import LipilaDisbursement
-from business.models import BusinessUser, Product
+from business.models import BusinessUser, Product, Student
 
+
+class AddStudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ('first_name', 'last_name', 'other_name', 'tuition', 'address', 'grade', 'active')
 
 class DisburseForm(forms.ModelForm):
     class Meta:

@@ -21,4 +21,4 @@ class BusinessUserSerializer(serializers.ModelSerializer):
 class LipilaCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
-        fields = ('payer', 'payee', 'amount', 'description', 'status', 'reference_id')
+        fields = ('payer', 'payee', 'amount', 'description')

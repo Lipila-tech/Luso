@@ -1,42 +1,100 @@
 from django.shortcuts import render
 from django.urls import reverse
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view, renderer_classes
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
 from django.contrib.auth.forms import AuthenticationForm
-# My Models
-from business.helpers import apology
-from LipilaInfo.models import ContactInfo, LipilaUser
-from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
-from business.forms.forms import EditBusinessUserForm
-from creators.forms.forms import EditCreatorUserForm
-from business.models import BusinessUser
-from creators.models import CreatorUser
-from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from datetime import datetime
+# Custom Models
+from LipilaInfo.helpers import (
+    apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron)
+from LipilaInfo.models import ContactInfo, LipilaUser, Patron
+from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm, JoinForm
+from business.forms.forms import EditBusinessUserForm
+from creators.forms.forms import EditCreatorUserForm
+from business.models import BusinessUser, Student
+from creators.models import CreatorUser
 
 
 # Public Views
 def index(request):
     form = ContactForm()
-    context = {}
-    contact_info = ContactInfo.objects.get(id=1)
-    context['street'] = contact_info.street
-    context['location'] = contact_info.location
-    context['phone3'] = contact_info.phone1
-    context['phone2'] = contact_info.phone2
-    context['email1'] = contact_info.email1
-    context['email2'] = contact_info.email2
-    context['days'] = contact_info.days
-    context['hours'] = contact_info.hours
+    context = get_lipila_contact_info()
     context['form'] = form
 
+    testimonial = {
+        'user':'Sangwani',
+        'category':'member',
+        'comment':'Great app'
+    }
+    context['testimony'] = testimonial
+
     return render(request, 'UI/index.html', context)
+
+
+def creators(request):
+    context = {}
+    creators = CreatorUser.objects.all()
+    context['creators'] = creators
+
+    if request.user.is_authenticated:
+        return render(request, 'admin/creators.html', context)
+    else:
+        return render(request, 'UI/creators.html', context)
+
+
+@login_required
+def join(request, creator):
+    """Handles user subscription to a creator.
+
+    Args:
+        request: The incoming HTTP request object.
+        creator: The username of the creator the user wants to join.
+
+    Returns:
+        A rendered response with the join form and subscription status.
+    """
+
+    form = JoinForm()
+    context = {}
+    creator_object = CreatorUser.objects.get(username=creator)  # Assuming username is unique
+    user_obj = get_user_object(request.user)
+
+    if request.method == 'POST':
+        form = JoinForm(request.POST)
+        if form.is_valid():
+            patron, created = Patron.objects.get_or_create(user=user_obj)  # Get or create Patron
+            
+            if not created:  # User already a Patron
+                # Check if already subscribed (implement logic based on your model fields)
+                if patron.creators.filter(pk=creator_object.pk).exists():
+                    
+                    messages.info(request, f"You're already subscribed to {creator_object.user}.")
+                else:
+                    # Subscribe to creator
+                    patron.creators.add(creator_object)
+                    
+                    messages.success(request, f"Subscribed to {creator_object.username}")
+            else:
+                patron.save()  # Save additional Patron details if applicable
+                
+                messages.success(request, f"Subscribed to {creator_object.username}")
+
+            return redirect('creators')
+    patron_exists = check_if_user_is_patron(user_obj, creator_object)
+    context = {
+        'join_form': form,
+        'creator': creator_object,
+        'is_patron': patron_exists
+    }
+
+    return render(request, 'admin/join.html', context)
+
 
 
 def service_details(request):
@@ -64,7 +122,7 @@ def send_money(request):
 
 
 def pages_faq(request):
-    return render(request, 'disburse/pages-faq.html')
+    return render(request, 'admin/pages-faq.html')
 
 
 class SignupView(View):
@@ -107,35 +165,37 @@ def login(request):
             if user.is_active:
                 try:
                     user_object = BusinessUser.objects.get(username=user)
-                    my_login(request, user)
+                    my_login(request, user_object)
                     return redirect(reverse('dashboard', kwargs={'user': username}))
                 except BusinessUser.DoesNotExist:
                     pass  # Continue to next check
                 try:
                     user_object = CreatorUser.objects.get(username=user)
-                    my_login(request, user)
+                    my_login(request, user_object)
+
                     return redirect(reverse('dashboard', kwargs={'user': username}))
                 except CreatorUser.DoesNotExist:
                     pass  # Continue to next check
                 try:
                     user_object = LipilaUser.objects.get(username=user)
-                    my_login(request, user)
+                    my_login(request, user_object)
+
                     return redirect(reverse('dashboard', kwargs={'user': username}))
                 except LipilaUser.DoesNotExist:
                     messages.error(request, "Invalid username or password.")
                     # Redirect to login with error message
                     return redirect('login')
         else:
-            messages.error(
-                request, "Your username and password didn't match. Please try again.")
-            return redirect(reverse('login'))
-
+            form = AuthenticationForm()
+            messages.error(request, "Your username and password didn't match")
+            return render(request, 'registration/login.html', {'form': form})
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
 
 
 def contact(request):
+    context = get_lipila_contact_info()
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -147,7 +207,8 @@ def contact(request):
         messages.error(
             request, "Failed to send message")
         form = ContactForm()
-    return render(request, 'contact_form.html', {'form': form})
+        context['form'] = form
+    return render(request, 'UI/index.html', context)
 
 
 @login_required
@@ -156,23 +217,17 @@ def contact(request):
 def profile(request, user):
     context = {}
     context['user'] = user
-    try:
-        user_object = BusinessUser.objects.get(username=user)
+    user_object = get_user_object(user)
+    if isinstance(user_object, BusinessUser):
         context['user'] = user_object
         return render(request, 'business/admin/profile/users-profile.html', context)
-    except BusinessUser.DoesNotExist:
-        pass  # Continue to next check
-    try:
-        user_object = CreatorUser.objects.get(username=user)
+    elif isinstance(user_object, CreatorUser):
         context['user'] = user_object
         return render(request, 'creators/admin/profile/users-profile.html', context)
-    except CreatorUser.DoesNotExist:
-        pass  # Continue to next check
-    try:
-        user_object = LipilaUser.objects.get(username=user)
+    elif isinstance(user_object, LipilaUser):
         context['user'] = user_object
-        return render(request, 'disburse/profile/users-profile.html', context)
-    except LipilaUser.DoesNotExist:
+        return render(request, 'admin/profile/users-profile.html', context)
+    else:
         context['status'] = 404
         context['message'] = 'User Not Found!'
         return apology(request, context, user='auth')
@@ -181,31 +236,46 @@ def profile(request, user):
 # AUTHENTICATED USER VIEWS
 class UpdateUserInfoView(View):
     def get(self, request, user, *args, **kwargs):
-        try:
-            user_object = BusinessUser.objects.get(username=user)
+        user_object = get_user_object(user)
+        if isinstance(user_object, BusinessUser):
             form = EditBusinessUserForm(instance=user_object)
-            return render(request, 'business/admin//profile/edit_user_info.html', {'form': form, 'user': user_object})
-        except BusinessUser.DoesNotExist:
-            pass  # Continue to next check
-        try:
-            user_object = CreatorUser.objects.get(username=user)
+            return render(request,
+                          'business/admin//profile/edit_user_info.html',
+                          {'form': form, 'user': user_object})
+        elif isinstance(user_object, CreatorUser):
             form = EditCreatorUserForm(instance=user_object)
-            return render(request, 'creators/admin/profile/edit_user_info.html', {'form': form, 'user': user_object})
-        except CreatorUser.DoesNotExist:
-            pass  # Continue to next check
-        try:
-            user_object = LipilaUser.objects.get(username=user)
+            return render(request,
+                          'creators/admin/profile/edit_user_info.html',
+                          {'form': form, 'user': user_object})
+        elif isinstance(user_object, LipilaUser):
             form = EditLipilaUserForm(instance=user_object)
-            return render(request, 'disburse/profile/edit_user_info.html', {'form': form, 'user': user_object})
-        except LipilaUser.DoesNotExist:
+            return render(request,
+                          'admin/profile/edit_user_info.html',
+                          {'form': form, 'user': user_object})
+        else:
             messages.error(
                 request, "Failed to update profile.")
             return redirect(reverse('profile', kwargs={'user': user}))
-        
 
     def post(self, request, user, *args, **kwargs):
-        try:
-            user_object = BusinessUser.objects.get(username=user)
+        user_object = get_user_object(user)
+        if isinstance(user_object, BusinessUser):
+            form = EditBusinessUserForm(
+                request.POST, request.FILES, instance=user_object)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, "Your profile has been update.")
+                return redirect(reverse('profile', kwargs={'user': user_object}))
+        elif isinstance(user_object, CreatorUser):
+            form = EditCreatorUserForm(
+                request.POST, request.FILES, instance=user_object)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, "Your profile has been update.")
+                return redirect(reverse('profile', kwargs={'user': user_object}))
+        elif isinstance(user_object, LipilaUser):
             form = EditLipilaUserForm(
                 request.POST, request.FILES, instance=user_object)
             if form.is_valid():
@@ -213,29 +283,7 @@ class UpdateUserInfoView(View):
                 messages.success(
                     request, "Your profile has been update.")
                 return redirect(reverse('profile', kwargs={'user': user_object}))
-        except BusinessUser.DoesNotExist:
-            pass  # Continue to next check
-        try:
-            user_object = CreatorUser.objects.get(username=user)
-            form = EditLipilaUserForm(
-                request.POST, request.FILES, instance=user_object)
-            if form.is_valid():
-                form.save()
-                messages.success(
-                    request, "Your profile has been update.")
-                return redirect(reverse('profile', kwargs={'user': user_object}))
-        except CreatorUser.DoesNotExist:
-            pass  # Continue to next check
-        try:
-            user_object = LipilaUser.objects.get(username=user)
-            form = EditLipilaUserForm(
-                request.POST, request.FILES, instance=user_object)
-            if form.is_valid():
-                form.save()
-                messages.success(
-                    request, "Your profile has been update.")
-                return redirect(reverse('profile', kwargs={'user': user_object}))
-        except LipilaUser.DoesNotExist:
+        else:
             messages.error(
                 request, "Failed to update profile.")
             return redirect(reverse('profile', kwargs={'user': user}))
@@ -246,32 +294,6 @@ class UpdateUserInfoView(View):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def dashboard(request, user):
     context = {}
-    # Dasboard  Reports
-    context['sales'] = 0
-    context['sales_increase'] = 0
-    context['revenue'] = 0
-    context['increase'] = 0
-    context['customers'] = 0
-
-    # Top selling
-    context['topselling'] = [
-        (1245, 'product1', 199,  200, 3599),
-        (1233, 'product2', 199,  200, 3599),
-        (2345, 'product3', 199,  200, 3599),
-        (2345, 'product4', 199,  200, 3599),
-        (3333, 'product5', 199,  200, 3599),
-        (4355, 'product6', 199,  200, 3599),
-    ]
-
-    # Recent sales
-    context['recentsales'] = [
-        ('12/03/24', 'customer1', 'product123',  343, 'Approved'),
-        ('12/03/24', 'customer2', 'product123',  200, 'Approved'),
-        ('12/03/24', 'customer3', 'product123',  240, 'Approved'),
-        ('12/03/24', 'customer4', 'product123',  200, 'Approved'),
-        ('12/03/24', 'customer5', 'product123',  200, 'Approved'),
-        ('12/03/24', 'customer6', 'product123',  200, 'Approved'),
-    ]
 
     now = datetime.now()
     request.session['last_login_time'] = now.strftime("%H:%M:%S")
@@ -286,23 +308,50 @@ def dashboard(request, user):
         ('Pay Outs', 100),
         ('Sent Invoices', 5),
     ]
-    try:
-        user_object = BusinessUser.objects.get(username=user)
+    user_object = get_user_object(user)
+
+    if isinstance(user_object, BusinessUser):
+        students = Student.objects.filter(school=user_object.id)
+        context['students'] = students.count()
         context['user'] = user_object
         return render(request, 'business/admin/index.html', context)
-    except BusinessUser.DoesNotExist:
-        pass  # Continue to next check
-    try:
+    elif isinstance(user_object, CreatorUser):
         user_object = CreatorUser.objects.get(username=user)
         context['user'] = user_object
+        # context['patrons'] = user_objects[1]
         return render(request, 'creators/admin/index.html', context)
-    except CreatorUser.DoesNotExist:
-        pass  # Continue to next check
-    try:
+    elif isinstance(user_object, LipilaUser):
         user_object = LipilaUser.objects.get(username=user)
         context['user'] = user_object
-        return render(request, 'disburse/index.html', context)
-    except LipilaUser.DoesNotExist:
+        # context['patrons'] = user_objects[1]
+        return render(request, 'admin/index.html', context)
+    else:
         context['status'] = 404
         context['message'] = 'User Not Found!'
         return apology(request, context, user=user)
+
+
+@login_required
+def withdraw(request, user):
+    context = {}
+    user_object = get_user_object(request.user)
+    context['user'] = user_object
+    if isinstance(user_object, BusinessUser):
+        return render(request, 'business/admin/actions/withdraw.html', context)
+    elif isinstance(user_object, CreatorUser):
+        return render(request, 'creators/admin/actions/withdraw.html', context)
+    else:
+        return render(request, 'admin/actions/withdraw.html', context)
+
+
+@login_required
+def history(request, user):
+    context = {}
+    user_object = get_user_object(request.user)
+    context['user'] = user_object
+    if isinstance(user_object, BusinessUser):
+        return render(request, 'business/admin/log/withdraw.html', context)
+    elif isinstance(user_object, CreatorUser):
+        return render(request, 'creators/admin/log/withdraw.html', context)
+    else:
+        return render(request, 'admin/log/withdraw.html', context)

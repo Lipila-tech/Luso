@@ -14,7 +14,6 @@ from rest_framework.authtoken.models import Token
 from .serializers import LipilaCollectionSerializer
 from .serializers import BusinessUserSerializer
 from .models import (BusinessUser, LipilaCollection)
-from business.models import (Product, BNPL, Invoice, InvoiceBusinessUser)
 from api.momo.mtn import Collections
 
 
@@ -79,35 +78,28 @@ class LipilaCollectionView(viewsets.ModelViewSet):
     
     def create(self, request):
         """Handles POST requests, deserializing date and setting status."""
+        status_code = ''
         try:
             data = request.data
-            payer = data['payer']  # Access the first value for 'payer'
-            payee = data['payee'] # Access the first value for 'payee'
-            amount = data['amount'] # Access the first value for 'amount'
-            description = data['description']  # Access the first value for 'description'
-
+            payer = data['payer']
+            payee = data['payee']
+            amount = data['amount']
+            description = data['description']
             serializer = LipilaCollectionSerializer(data=data)
-            print(serializer)
-        
             api_user = Collections()
             api_user.provision_sandbox(api_user.subscription_col_key)
             api_user.create_api_token(
                 api_user.subscription_col_key, 'collection')
-
             if serializer.is_valid():
-                print('VALID SER')
-            # try:
                 # Query external API handlers
-                amount = data['amount']
+                amount = str(amount)
                 reference_id = api_user.x_reference_id
-                payer_account = '8877665544'
+                payer_account = payer
 
                 # Query request to pay function
                 request_pay = api_user.request_to_pay(
                     amount=amount, payer_account=payer_account, reference=str(reference_id))
-
                 if request_pay.status_code == 202:
-                    print('PAYMENT SENT SUCCESS')
                     # save payment
                     payment = serializer.save()
                     payment.reference_id = reference_id
@@ -118,15 +110,12 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                     for r in transaction:
                         status = api_user.get_payment_status(reference_id)
                         if status.status_code == 200:
-                            payment.status = 'success'
+                            payment.description = description
+                            payment.status = 'accepted'
                             payment.save()
                         else:
                             payment.status = 'failed'
                     payment.save()
-                    status_code = request_pay.status_code
-                    # Set status code
-                    return Response({'message': 'request accepted, wait for client approval'}, status=status_code)
-
                 elif request_pay.status_code == 403:
                     status_code = request_pay.status_code
                     # Set status code
@@ -137,11 +126,12 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                     # Set status code
                     return Response({'message': 'Bad request from mtn'}, status=status_code)
 
-        except Exception as e:
-            return Response({'message': e}, status=400)
-        else:
-            # Set status code
-            return Response({'message': 'Invalid form fields'}, status=405)
+        except TypeError:
+            return Response({'message': 'Error in submitted data'}, status=400)
+        except KeyError as e:
+            return Response({'message': f'Key Error in submitted data {e}'}, status=400)
+        return Response({'message': 'request accepted, wait for client approval'}, status=202)
+        
 
     def list(self, request):
         try:

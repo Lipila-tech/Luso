@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 # Options
 STATUS_CHOICES = (
     ('pending', 'pending'),
@@ -28,6 +27,7 @@ INVOICE_STATUS_CHOICES = (
     ('rejected', 'rejected'),
 )
 
+
 class CreatorUser(User):
     phone_number = models.CharField(
         max_length=20, blank=True, null=True)
@@ -44,10 +44,14 @@ class CreatorUser(User):
     category = models.CharField(max_length=9, default='Creator')
     creator_category = models.CharField(
         max_length=30, choices=CREATOR_CATEGORY_CHOICES, default='other')
-    facebook_url = models.CharField(max_length=250, null=True, blank=True, default='')
-    linkedin_url = models.CharField(max_length=250, null=True, blank=True, default='')
-    twitter_url = models.CharField(max_length=250, null=True, blank=True, default='')
-    instagram_url = models.CharField(max_length=250, null=True, blank=True, default='')
+    facebook_url = models.CharField(
+        max_length=250, null=True, blank=True, default='')
+    linkedin_url = models.CharField(
+        max_length=250, null=True, blank=True, default='')
+    twitter_url = models.CharField(
+        max_length=250, null=True, blank=True, default='')
+    instagram_url = models.CharField(
+        max_length=250, null=True, blank=True, default='')
 
     REQUIRED_FIELDS = ['email']
 
@@ -57,3 +61,4 @@ class CreatorUser(User):
 
     def __str__(self):
         return self.username
+

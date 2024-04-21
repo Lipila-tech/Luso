@@ -2,7 +2,6 @@ import os
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from api.models import BusinessUser
-from django.urls.exceptions import NoReverseMatch
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse

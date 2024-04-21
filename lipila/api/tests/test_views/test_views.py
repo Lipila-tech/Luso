@@ -12,39 +12,34 @@ class LipilaCollectionViewTest(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create(username='test_user1')
+        self.business_user = BusinessUser.objects.create(username='test_business_user')
         self.user1 = User.objects.create(username='test_user2')
 
-    def test_create_lipila_success(self):
+    def test_create_payment_success(self):
         url = reverse('payments-list')
-        data = {'payer': 1, 'payee':2, 'amount': 100, 'payer_account': '0809123456'}
+        data = {'payee':self.business_user.id, 'amount': 100, 'payer': '0809123456', 'description': 'example payer'}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(LipilaCollection.objects.count(), 1)
-        self.assertEqual(LipilaCollection.objects.get().status, 'pending')
+        self.assertEqual(LipilaCollection.objects.get().status, 'accepted')
+        self.assertEqual(LipilaCollection.objects.get().description, 'example payer')
 
     def test_create_lipila_fail_validation(self):
         url = reverse('payments-list')
         data = {'payer': 'lipila', 'amount': 'invalid'}
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        self.assertEqual(LipilaCollection.objects.count(), 0)
-
-    def test_create_nonlipila_success(self):
-        url = reverse('payments-list')
-        data = {'payer': 'nonlipila', 'amount': 100, 'payer_account': '0809123456'}
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertEqual(LipilaCollection.objects.count(), 1)
-        self.assertEqual(LipilaCollection.objects.get().status, 'pending')
-
-    def test_create_nonlipila_fail_payer(self):
-        url = reverse('payments-list')
-        data = {'amount': 100, 'payer_account': '0809123456'}
-        response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(LipilaCollection.objects.count(), 0)
 
-    def test_list_success(self):
+
+    def test_create_nonlipila_fail_payer(self):
+        url = reverse('payments-list')
+        data = {'amount': 100, 'payer': '0809123456'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(LipilaCollection.objects.count(), 0)
+
+    def test_payment_with_user_instance_success(self):
         LipilaCollection.objects.create(payee=self.user, amount=100, status='success')
         url = reverse('payments-list')
         response = self.client.get(url, {'payee': self.user.username})
