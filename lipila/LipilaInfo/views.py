@@ -332,22 +332,26 @@ def dashboard(request, user):
 
 
 @login_required
-def withdraw(request):
+def withdraw(request, user):
+    context = {}
     user_object = get_user_object(request.user)
+    context['user'] = user_object
     if isinstance(user_object, BusinessUser):
-        return render(request, 'business/admin/actions/withdraw.html')
+        return render(request, 'business/admin/actions/withdraw.html', context)
     elif isinstance(user_object, CreatorUser):
-        return render(request, 'creators/admin/actions/withdraw.html')
+        return render(request, 'creators/admin/actions/withdraw.html', context)
     else:
-        return render(request, 'disburse/actions/withdraw.html')
+        return render(request, 'disburse/actions/withdraw.html', context)
 
 
 @login_required
-def history(request):
+def history(request, user):
+    context = {}
     user_object = get_user_object(request.user)
+    context['user'] = user_object
     if isinstance(user_object, BusinessUser):
-        return render(request, 'business/admin/log/withdraw.html')
+        return render(request, 'business/admin/log/withdraw.html', context)
     elif isinstance(user_object, CreatorUser):
-        return render(request, 'creators/admin/log/withdraw.html')
+        return render(request, 'creators/admin/log/withdraw.html', context)
     else:
-        return render(request, 'disburse/log/withdraw.html')
+        return render(request, 'disburse/log/withdraw.html', context)

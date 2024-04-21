@@ -106,7 +106,7 @@ class CreateProductView(View):
             if isinstance(user_object, BusinessUser):
                 return redirect('business:log_products')
             elif isinstance(user_object, CreatorUser):
-                return redirect('creators:history')
+                return redirect('creators:history', kwags={'user':user_object})
         else:
             messages.error(
                 request, "Failed to create product.")
@@ -133,7 +133,7 @@ class EditProductView(View):
             if isinstance(user_object, BusinessUser):
                 return redirect('business:log_products')
             elif isinstance(user_object, CreatorUser):
-                return redirect('creators:history')
+                return redirect('creators:history', kwags={'user':user_object})
         else:
             messages.error(
                 request, "Failed to edit product.")
@@ -157,7 +157,7 @@ class DeleteProductView(View):
         if isinstance(user_object, BusinessUser):
             return redirect('business:log_products')
         elif isinstance(user_object, CreatorUser):
-            return redirect('creators:history')
+            return redirect('creators:history', kwags={'user':user_object})
 
 
 def bnpl(request):

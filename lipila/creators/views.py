@@ -54,18 +54,20 @@ class SignupView(View):
         
 
 @login_required
-def list_patrons(request):
+def list_patrons(request, user):
     context = {}
     user_object = get_object_or_404(CreatorUser, username=request.user)
-    patrons = Patron.objects.filter(creator=user_object.id)
+    patrons = Patron.objects.filter(creators=user_object.id)
     context['patrons'] = patrons
+    context['user'] = user_object
     return render(request, 'creators/admin/log/patrons.html', context)
 
 
 @login_required
-def log_products(request):
+def log_products(request, user):
     context = {}
     user_object = get_object_or_404(CreatorUser, username=request.user)
     products = Product.objects.filter(owner=user_object.id)
     context['products'] = products
+    context['user'] = user_object
     return render(request, 'creators/admin/log/products.html', context)

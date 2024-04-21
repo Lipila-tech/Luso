@@ -19,8 +19,8 @@ urlpatterns = [
      path('accounts/profile/<str:user>/edit', login_required(views.UpdateUserInfoView.as_view()), name='update_profile'),
      # Authenticated User Accounts Urls
      path('me/<str:user>', views.dashboard, name='dashboard'),
-     path('withdraw', views.withdraw, name='withdraw'),
-     path('history', views.history, name='history'),
+     path('withdraw/<str:user>', views.withdraw, name='withdraw'),
+     path('history/<str:user>', views.history, name='history'),
      path('lipila/faq', views.pages_faq, name='faq'),
 ]
 

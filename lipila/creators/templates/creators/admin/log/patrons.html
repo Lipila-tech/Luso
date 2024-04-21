@@ -1,4 +1,4 @@
-{% extends 'creator_admin.html' %}
+{% extends 'layout_admin.html' %}
 {% load static %}
 {% block title %} Patrons {% endblock %}
 
@@ -36,7 +36,7 @@
           {% for patron in patrons %}
           <tr>
             <th scope="row">{{forloop.counter}}</th>
-            <td>{{patron.username}}</td>
+            <td>{{patron.creators}}</td>
             <td>{{patron.subscription}}</td>
             <td>{{patron.active}}</td>
           </tr>
