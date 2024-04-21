@@ -6,6 +6,7 @@ from django.shortcuts import render, get_list_or_404
 from business.models import BusinessUser
 from creators.models import CreatorUser
 from LipilaInfo.models import LipilaUser, Patron, ContactInfo
+from django.contrib.auth.models import User
 
 
 def get_lipila_contact_info():
@@ -32,7 +33,7 @@ def get_lipila_contact_info():
 
     return context
 
-def get_patrons(user_type: str, user:str):
+def get_patrons(user:str):
     """
     Gets a users patrons
 
@@ -44,12 +45,8 @@ def get_patrons(user_type: str, user:str):
         A patron_object.
     """
     try:
-        if user_type == "creator":
-            creator_object = Patron.objects.filter(creator=user)
-            return creator_object.count()
-        elif user_type == "member":
-            patron_object = Patron.objects.filter(username=user)
-            return patron_object.count()
+        creator_object = LipilaUser.objects.filter(creator=user)
+        return creator_object.count()        
     except Patron.DoesNotExist:
         return 0
     
@@ -73,31 +70,45 @@ def get_user_object(user: str):
         pass  # Continue to next check
     try:
         user_object = CreatorUser.objects.get(username=user)
-        patrons = get_patrons('creator', user_object)
-        return user_object, patrons
+        # patrons = get_patrons(user_object)
+        return user_object
     except CreatorUser.DoesNotExist:
         pass  # Continue to next check
     try:
         user_object = LipilaUser.objects.get(username=user)
-        patrons = get_patrons('member', user_object)
-        return user_object, patrons
+        # patrons = get_patrons(user_object)
+        return user_object
     except LipilaUser.DoesNotExist:
         context['status'] = 404
         return context
 
+
 def check_if_user_is_patron(user, creator):
-    """Checks is a user is already a patron
-    if yes returns False else returns True.
+    """Checks if a user is already a patron of a specific creator.
+
+    Args:
+        user: A User object representing the user to check.
+        creator: A User object representing the creator to check against.
+
+    Returns:
+        True if the user is a patron of the given creator, False otherwise.
     """
-    is_patron = False
+
     try:
-        creator_obj = get_user_object(creator)
-        user_object = Patron.objects.filter(username=user)
-        patron = Patron.objects.filter(creator=creator_obj[0])
-        is_patron = True
+        # Check if the user has a corresponding Patron instance
+        patron = user.patron
+
+    except LipilaUser.DoesNotExist:
+        # Handle the case where the user doesn't exist
+        return False
+
     except Patron.DoesNotExist:
-        is_patron = False
-    return is_patron
+        # Handle the case where the user exists but doesn't have a Patron
+        return False
+
+    else:
+        # If the user has a Patron, check if it's associated with the creator
+        return patron.creators.filter(pk=creator.pk).exists()
 
 
 def apology(request, context=None, user=None):

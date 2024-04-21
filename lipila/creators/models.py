@@ -28,8 +28,6 @@ INVOICE_STATUS_CHOICES = (
 )
 
 
-
-
 class CreatorUser(User):
     phone_number = models.CharField(
         max_length=20, blank=True, null=True)

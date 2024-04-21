@@ -19,7 +19,7 @@ class CreatorUserAdmin(admin.ModelAdmin):
 
 
 class PatronAdmin(admin.ModelAdmin):
-    list_display = ('username', 'subscription', 'active')
+    list_display = ('user', 'subscription', 'active')
 
 class LipilaUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'category',

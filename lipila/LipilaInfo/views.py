@@ -13,7 +13,7 @@ from datetime import datetime
 # Custom Models
 from LipilaInfo.helpers import (
     apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron)
-from LipilaInfo.models import ContactInfo, LipilaUser
+from LipilaInfo.models import ContactInfo, LipilaUser, Patron
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm, JoinForm
 from business.forms.forms import EditBusinessUserForm
 from creators.forms.forms import EditCreatorUserForm
@@ -41,31 +41,54 @@ def creators(request):
         return render(request, 'UI/creators.html', context)
 
 
+
 @login_required
 def join(request, creator):
+    """Handles user subscription to a creator.
+
+    Args:
+        request: The incoming HTTP request object.
+        creator: The username of the creator the user wants to join.
+
+    Returns:
+        A rendered response with the join form and subscription status.
+    """
+
     form = JoinForm()
     context = {}
-    join_form = form
-    creator_objects = get_user_object(creator)
-    is_patron = check_if_user_is_patron(request.user, creator)
+    creator_object = CreatorUser.objects.get(username=creator)  # Assuming username is unique
+    user_obj = get_user_object(request.user)
+
     if request.method == 'POST':
-        join_form = JoinForm(request.POST)
-        if join_form.is_valid():
-            patron_object = get_user_object(request.user)
-            patron = join_form.save(commit=False)
-            patron.username = patron_object
-            patron.creator = creator
-            patron.save()
-            messages.success(
-                request, f"Subscribed to {creator}")
+        form = JoinForm(request.POST)
+        if form.is_valid():
+            patron, created = Patron.objects.get_or_create(user=user_obj)  # Get or create Patron
+            
+            if not created:  # User already a Patron
+                # Check if already subscribed (implement logic based on your model fields)
+                if patron.creators.filter(pk=creator_object.pk).exists():
+                    
+                    messages.info(request, f"You're already subscribed to {creator_object.user}.")
+                else:
+                    # Subscribe to creator
+                    patron.creators.add(creator_object)
+                    
+                    messages.success(request, f"Subscribed to {creator_object.username}")
+            else:
+                patron.save()  # Save additional Patron details if applicable
+                
+                messages.success(request, f"Subscribed to {creator_object.username}")
+
             return redirect('creators')
-        
+    patron_exists = check_if_user_is_patron(user_obj, creator_object)
     context = {
-        'join_form': join_form,
-        'creator': creator_objects[0],
-        'is_patron': is_patron
+        'join_form': form,
+        'creator': creator_object,
+        'is_patron': patron_exists
     }
+
     return render(request, 'disburse/join.html', context)
+
 
 
 def service_details(request):
@@ -157,10 +180,9 @@ def login(request):
                     # Redirect to login with error message
                     return redirect('login')
         else:
-            messages.error(
-                request, "Your username and password didn't match. Please try again.")
-            return redirect(reverse('login'))
-
+            form = AuthenticationForm()
+            messages.error(request, "Your username and password didn't match")
+            return render(request, 'registration/login.html', {'form': form})
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
@@ -190,13 +212,13 @@ def profile(request, user):
     context = {}
     context['user'] = user
     user_object = get_user_object(user)
-    if isinstance(user_object[0], BusinessUser):
+    if isinstance(user_object, BusinessUser):
         context['user'] = user_object
         return render(request, 'business/admin/profile/users-profile.html', context)
-    elif isinstance(user_object[0], CreatorUser):
+    elif isinstance(user_object, CreatorUser):
         context['user'] = user_object
         return render(request, 'creators/admin/profile/users-profile.html', context)
-    elif isinstance(user_object[0], LipilaUser):
+    elif isinstance(user_object, LipilaUser):
         context['user'] = user_object
         return render(request, 'disburse/profile/users-profile.html', context)
     else:
@@ -209,17 +231,17 @@ def profile(request, user):
 class UpdateUserInfoView(View):
     def get(self, request, user, *args, **kwargs):
         user_object = get_user_object(user)
-        if isinstance(user_object[0], BusinessUser):
+        if isinstance(user_object, BusinessUser):
             form = EditBusinessUserForm(instance=user_object)
             return render(request,
                           'business/admin//profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
-        elif isinstance(user_object[0], CreatorUser):
+        elif isinstance(user_object, CreatorUser):
             form = EditCreatorUserForm(instance=user_object)
             return render(request,
                           'creators/admin/profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
-        elif isinstance(user_object[0], LipilaUser):
+        elif isinstance(user_object, LipilaUser):
             form = EditLipilaUserForm(instance=user_object)
             return render(request,
                           'disburse/profile/edit_user_info.html',
@@ -231,7 +253,7 @@ class UpdateUserInfoView(View):
 
     def post(self, request, user, *args, **kwargs):
         user_object = get_user_object(user)
-        if isinstance(user_object[0], BusinessUser):
+        if isinstance(user_object, BusinessUser):
             form = EditBusinessUserForm(
                 request.POST, request.FILES, instance=user_object)
             if form.is_valid():
@@ -239,7 +261,7 @@ class UpdateUserInfoView(View):
                 messages.success(
                     request, "Your profile has been update.")
                 return redirect(reverse('profile', kwargs={'user': user_object}))
-        elif isinstance(user_object[0], CreatorUser):
+        elif isinstance(user_object, CreatorUser):
             form = EditCreatorUserForm(
                 request.POST, request.FILES, instance=user_object)
             if form.is_valid():
@@ -247,7 +269,7 @@ class UpdateUserInfoView(View):
                 messages.success(
                     request, "Your profile has been update.")
                 return redirect(reverse('profile', kwargs={'user': user_object}))
-        elif isinstance(user_object[0], LipilaUser):
+        elif isinstance(user_object, LipilaUser):
             form = EditLipilaUserForm(
                 request.POST, request.FILES, instance=user_object)
             if form.is_valid():
@@ -280,22 +302,22 @@ def dashboard(request, user):
         ('Pay Outs', 100),
         ('Sent Invoices', 5),
     ]
-    user_objects = get_user_object(user)
+    user_object = get_user_object(user)
 
-    if isinstance(user_objects[0], BusinessUser):
-        students = Student.objects.filter(school=user_object[0].id)
+    if isinstance(user_object, BusinessUser):
+        students = Student.objects.filter(school=user_object.id)
         context['students'] = students.count()
         context['user'] = user_object
         return render(request, 'business/admin/index.html', context)
-    elif isinstance(user_objects[0], CreatorUser):
+    elif isinstance(user_object, CreatorUser):
         user_object = CreatorUser.objects.get(username=user)
         context['user'] = user_object
-        context['patrons'] = user_objects[1]
+        # context['patrons'] = user_objects[1]
         return render(request, 'creators/admin/index.html', context)
-    elif isinstance(user_objects[0], LipilaUser):
+    elif isinstance(user_object, LipilaUser):
         user_object = LipilaUser.objects.get(username=user)
         context['user'] = user_object
-        context['patrons'] = user_objects[1]
+        # context['patrons'] = user_objects[1]
         return render(request, 'disburse/index.html', context)
     else:
         context['status'] = 404
@@ -306,9 +328,9 @@ def dashboard(request, user):
 @login_required
 def withdraw(request):
     user_object = get_user_object(request.user)
-    if isinstance(user_object[0], BusinessUser):
+    if isinstance(user_object, BusinessUser):
         return render(request, 'business/admin/actions/withdraw.html')
-    elif isinstance(user_object[0], CreatorUser):
+    elif isinstance(user_object, CreatorUser):
         return render(request, 'creators/admin/actions/withdraw.html')
     else:
         return render(request, 'disburse/actions/withdraw.html')
@@ -317,9 +339,9 @@ def withdraw(request):
 @login_required
 def history(request):
     user_object = get_user_object(request.user)
-    if isinstance(user_object[0], BusinessUser):
+    if isinstance(user_object, BusinessUser):
         return render(request, 'business/admin/log/withdraw.html')
-    elif isinstance(user_object[0], CreatorUser):
+    elif isinstance(user_object, CreatorUser):
         return render(request, 'creators/admin/log/withdraw.html')
     else:
         return render(request, 'disburse/log/withdraw.html')

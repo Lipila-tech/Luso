@@ -48,27 +48,45 @@ class LipilaUser(User):
     category = models.CharField(max_length=9, default='Member')
     profile_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
-    creator = models.ForeignKey(CreatorUser, on_delete=models.SET_NULL, null=True, blank=True)
     REQUIRED_FIELDS = ['phone_number']
 
     @staticmethod
     def get_user_by_id(ids):
         return LipilaUser.objects.filter(id__in=str(ids))
 
-    def __str__(self):
-        return self.username
-    
+    def get_creators(self):
+        """
+        Returns a queryset of CreatorUser instances that the LipilaUser (patron) is following/joined.
+
+        This method leverages the Patron model to efficiently retrieve creators associated with the patron.
+        """
+
+        if hasattr(self, 'patron'):  # Check if the LipilaUser has a Patron instance
+            creator_ids = self.patron.creatoruser_set.values_list(
+                'id', flat=True)
+            return CreatorUser.objects.filter(pk=creator_ids)
+        else:
+            return CreatorUser.objects.none()  # Return an empty queryset if no Patron exists
+
+        def __str__(self):
+            return self.username
+
+
 class Patron(models.Model):
-    username = models.OneToOneField(LipilaUser, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(
+        LipilaUser, on_delete=models.CASCADE, primary_key=True)
+    creators = models.ManyToManyField(CreatorUser)
     subscription = models.CharField(
         max_length=55, null=False, blank=False,
         choices=SUBSCRIPTION_CHOICES, default='one')
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.username}"
-    
+        return f"{self.user}"
+
 # Create your models here.
+
+
 class ContactInfo(models.Model):
     street = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
@@ -81,7 +99,7 @@ class ContactInfo(models.Model):
 
     def __str__(self):
         return f"{self.street} {self.location} {self.phone1}"
-   
+
 
 class Contact(models.Model):
     name = models.CharField(max_length=255)
