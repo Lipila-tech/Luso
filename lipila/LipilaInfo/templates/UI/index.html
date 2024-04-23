@@ -12,7 +12,7 @@
     {% if lipila.hero_image %}
 
     {% if lipila.hero_image.url %}
-    <img src="{{lipila.hero_image.url}}" alt="Profile" class="rounded-circle">
+    <img src="{{lipila.hero_image.url}}" alt="Profile" class="">
     {% endif %}
     {% else%}
     <img src="{% static 'assets/img/guy.jpeg' %}" alt="hero_image" data-aos="fade-in">
@@ -79,7 +79,7 @@
                 </ul>
                 <p>Get paid for your work by your fans. Receive donations, contributions and payments from your fans in
                   one place.</p>
-                <a href="{% url 'creators:signup' %}" class="read-more"><span>Get started</span><i
+                <a href="{% url 'signup' %}" class="read-more"><span>Get started</span><i
                     class="bi bi-arrow-right"></i></a>
               </div>
             </div> <!-- End Icon Box -->
@@ -95,7 +95,7 @@
                 </ul>
                 <p>For independent traders to medium businesses simplify invoicing, payment collection and data storage.
                 </p>
-                <a href="{% url 'business:signup' %}" class="read-more"><span>Get started</span><i
+                <a href="{% url 'signup' %}" class="read-more"><span>Get started</span><i
                     class="bi bi-arrow-right"></i></a>
               </div>
             </div> <!-- End Icon Box -->

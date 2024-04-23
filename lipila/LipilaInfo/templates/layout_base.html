@@ -49,7 +49,7 @@
 
             <a href="{% url 'index' %}" class="logo d-flex align-items-center me-auto me-xl-4">
                 <img src="{% static 'assets/img/logo.png' %}" alt="">
-                <span>Lipila</span>
+                <span></span>
             </a>
 
             <!-- Nav Menu -->
@@ -69,7 +69,6 @@
 
             <div>
                 {% if user.is_authenticated %}
-                <p>User: {{ user.get_username }}</p>
                 <p>
                 <form id="logout-form" method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
