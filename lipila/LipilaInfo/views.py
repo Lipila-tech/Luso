@@ -12,7 +12,8 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from datetime import datetime
 # Custom Models
 from LipilaInfo.helpers import (
-    apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron)
+    apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron,
+    get_lipila_home_page_info, get_testimonials)
 from LipilaInfo.models import ContactInfo, LipilaUser, Patron
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm, JoinForm
 from business.forms.forms import EditBusinessUserForm
@@ -23,15 +24,14 @@ from creators.models import CreatorUser
 
 # Public Views
 def index(request):
+    context = {}
     form = ContactForm()
-    context = get_lipila_contact_info()
+    contact_info = get_lipila_contact_info()
+    lipila_home = get_lipila_home_page_info()
+    testimonial = get_testimonials()
     context['form'] = form
-
-    testimonial = {
-        'user':'Sangwani',
-        'category':'member',
-        'comment':'Great app'
-    }
+    context['contact'] = contact_info['contact']
+    context['lipila'] = lipila_home['lipila']
     context['testimony'] = testimonial
 
     return render(request, 'UI/index.html', context)
@@ -42,8 +42,6 @@ def creators(request):
     creators = CreatorUser.objects.all()
     # user_object = get_user_object(user)
     context['creators'] = creators
-
-
     if request.user.is_authenticated:
         # context['user'] = user_object
         return render(request, 'LipilaInfo/admin/creators.html', context)
@@ -89,8 +87,8 @@ def join(request, creator, user):
 
             return redirect('creators')
     patron_exists = check_if_user_is_patron(user_obj, creator_object)
-    print('user',user_obj)
-    print('get request')
+    
+    
     context = {
         'join_form': form,
         'creator': creator_object,

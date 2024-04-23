@@ -9,23 +9,23 @@
 <div class="col-md-8">
     <div class="breadcrumbs" data-aos="fade-in">
         <div class="container">
-            <h2>{{category}} Signup</h2>
+            <h2>Create Account</h2>
         </div>
         <div>
-            <a href="{% url 'business:signup' %}" class="">Business signup</a>
-            <a href="{% url 'creators:signup' %}" class="">Creators signup</a>
-            <a href="{% url 'signup' %}" class="">Consumer signup</a>
+            <!-- <a href="{% url 'business:signup' %}" class="">Business signup</a> -->
+            <!-- <a href="{% url 'creators:signup' %}" class="">Creators signup</a> -->
+            <!-- <a href="{% url 'signup' %}" class="">Consumer signup</a> -->
         </div>
     </div>
-    <form action="" method="post" class="">
+    <form action="{% url 'signup' %}" method="post" class="">
         {% csrf_token %}
         <form method="post" class="signup-form">
             {% csrf_token %}
             {{form | crispy}}
 
-            <input type="submit" value="Signup" onclick="signup()" class="btn btn-primary">
+            <!-- <input type="submit" value="Signup" onclick="signup()" class="btn btn-primary"> -->
+            <button type="submit" class="btn btn-primary">Create</button>
         </form>
         <p>Already registered: <a href="{% url 'login' %}">login</a></p>
-        <a class="" href="{% url 'index' %}">Go to Home</a>
 </div>
 {% endblock %}

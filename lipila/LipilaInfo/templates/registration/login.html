@@ -28,13 +28,12 @@
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
        {{form|crispy}}
-        <input type="submit" value="login">
+        <input type="submit" value="login" class="btn btn-primary">
         <input type="hidden" name="next" value="{{ next }}">
     </form>
 
     {# Assumes you set up the password_reset view in your URLconf #}
-    <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-    <p><a href="{% url 'signup' %}">Register</a></p>
-    <a class="btn" href="{% url 'index' %}">Back to home</a>
+    <p><a href="{% url 'signup' %}">New here - Register</a></p>
+    <p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
 </div>
 {% endblock %}

@@ -5,35 +5,66 @@ from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_list_or_404
 from business.models import BusinessUser
 from creators.models import CreatorUser
-from LipilaInfo.models import LipilaUser, Patron, ContactInfo
+from LipilaInfo.models import (
+    LipilaUser, Patron, ContactInfo, LipilaHome, LipilaUserEmail, Testimonial)
 from django.contrib.auth.models import User
+from functools import wraps
+from django.test import TestCase
 
 
-def get_lipila_contact_info():
-    context = {}
+def get_lipila_contact_info() -> dict:
+    """ Gets the lipila contact info and
+    returns a dict object.
+    """
+    data = {}
     try:
-        contact_info = ContactInfo.objects.get(id=1)
-        context['street'] = contact_info.street
-        context['location'] = contact_info.location
-        context['phone3'] = contact_info.phone1
-        context['phone2'] = contact_info.phone2
-        context['email1'] = contact_info.email1
-        context['email2'] = contact_info.email2
-        context['days'] = contact_info.days
-        context['hours'] = contact_info.hours
+        contact_info = ContactInfo.objects.latest()
+        data['contact'] = contact_info
     except ContactInfo.DoesNotExist:
-        context['street'] = ''
-        context['location'] = ''
-        context['phone3'] = ''
-        context['phone2'] = ''
-        context['email1'] = ''
-        context['email2'] = ''
-        context['days'] = ''
-        context['hours'] = ''
+        pass
+    return data
 
-    return context
 
-def get_patrons(user:str):
+def get_user_emails():
+    """
+    Get all user messages.
+    """
+    data = {}
+    try:
+        user_messages = LipilaUserEmail.objects.all()
+        data['user_messages'] = user_messages
+    except LipilaUserEmail.DoesNotExist:
+        pass
+    return data
+
+
+def get_lipila_home_page_info() -> dict:
+    """
+    Get the home page info.
+    """
+    data = {}
+    try:
+        lipila_home_info = LipilaHome.objects.latest()
+        data['lipila'] = lipila_home_info
+    except LipilaHome.DoesNotExist:
+        pass
+    return data
+
+
+def get_testimonials() -> dict:
+    """
+    Get testimonials and return a dict object.
+    """
+    data = {}
+    try:
+        results = Testimonial.objects.all()
+        data['testimonials'] = results
+    except Testimonial.DoesNotExist:
+        pass
+    return data
+
+
+def get_patrons(user: str):
     """
     Gets a users patrons
 
@@ -46,10 +77,10 @@ def get_patrons(user:str):
     """
     try:
         creator_object = LipilaUser.objects.filter(creator=user)
-        return creator_object.count()        
+        return creator_object.count()
     except Patron.DoesNotExist:
         return 0
-    
+
 
 def get_user_object(user: str):
     """
@@ -62,7 +93,7 @@ def get_user_object(user: str):
         A user_object instance(BusinessUser or CreatorUser or LipilauSE or)
          otherwise returns 404.
     """
-    context = {}
+    data = {}
     try:
         user_object = BusinessUser.objects.get(username=user)
         return user_object
@@ -79,8 +110,8 @@ def get_user_object(user: str):
         # patrons = get_patrons(user_object)
         return user_object
     except LipilaUser.DoesNotExist:
-        context['status'] = 404
-        return context
+        data['status'] = 404
+        return data
 
 
 def check_if_user_is_patron(user, creator):
@@ -111,13 +142,13 @@ def check_if_user_is_patron(user, creator):
         return patron.creators.filter(pk=creator.pk).exists()
 
 
-def apology(request, context=None, user=None):
+def apology(request, data=None, user=None):
     """
-    Renders a custom error page with the provided context.
+    Renders a custom error page with the provided data.
 
     Args:
         request: The Django request object.
-        context: A dictionary of context variables to pass to the template.
+        data: A dictionary of data variables to pass to the template.
 
     Returns:
         An HttpResponseNotFound object with the rendered 404 template.
@@ -125,38 +156,59 @@ def apology(request, context=None, user=None):
 
     template_name = 'pages-error.html'
 
-    if context is None:
-        context = {}
+    if data is None:
+        data = {}
 
-    if context['status'] == 404:
+    if data['status'] == 404:
         return HttpResponseNotFound(
-            render(request, template_name, context)
+            render(request, template_name, data)
         )
-    elif context['status'] == 400:
+    elif data['status'] == 400:
         return HttpResponseBadRequest(
-            render(request, template_name, context)
+            render(request, template_name, data)
         )
 
 
-def set_context(request, user):
-    context = {}
+def skip_unless(condition, reason):
+    """
+    A custom skip decorator that skips a test unless the given condition is True.
+
+    Args:
+        condition: A callable that returns True if the test should run, False otherwise.
+        reason: A string explaining why the test is being skipped.
+
+    Returns:
+        A decorator function that can be used to decorate test cases.
+    """
+    def decorator(test_func):
+        @wraps(test_func)
+        def wrapper(*args, **kwargs):
+            if not condition():
+                raise TestCase.skipTest(reason)
+            return test_func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def set_data(request, user):
+    data = {}
     try:
         if not user:
             raise ValueError('Username missing')
         else:
             user = BusinessUser.objects.get(username=user)
-            context['status'] = 200
-            context['user'] = user
+            data['status'] = 200
+            data['user'] = user
     except ValueError:
-        context['status'] = 400
-        context['message'] = 'User ID must be of type int'
-        return apology(request, context)
+        data['status'] = 400
+        data['message'] = 'User ID must be of type int'
+        return apology(request, data)
     except TypeError:
-        context['status'] = 400
-        context['message'] = 'Error, User argument missing'
-        return apology(request, context)
+        data['status'] = 400
+        data['message'] = 'Error, User argument missing'
+        return apology(request, data)
     except BusinessUser.DoesNotExist:
-        context['status'] = 404
-        context['message'] = 'User Not Found!'
-        return apology(request, context)
-    return context
+        data['status'] = 404
+        data['message'] = 'User Not Found!'
+        return apology(request, data)
+    return data
