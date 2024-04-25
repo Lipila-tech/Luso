@@ -7,13 +7,6 @@
 
 {% block main %}
 <section class="section dashboard">
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-            {% endfor %}
-    </ul>
-    {% endif %}
     <div class="row">
         <!-- Creators -->
         <div class="col-12">

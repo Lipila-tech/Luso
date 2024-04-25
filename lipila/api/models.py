@@ -61,6 +61,16 @@ class LipilaCollection(models.Model):
     payer = models.CharField(max_length=150)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    def __str__(self):
+        return "{} {} {} {} {} {} {}".format(self.payee,
+                                                self.amount,
+                                                self.payer,
+                                                self.reference_id,
+                                                self.timestamp,
+                                                self.description,
+                                                self.status,
+                                                )
     
     class Meta:
         ordering = ['-timestamp']

@@ -78,7 +78,6 @@ class LipilaCollectionView(viewsets.ModelViewSet):
     
     def create(self, request):
         """Handles POST requests, deserializing date and setting status."""
-        status_code = ''
         try:
             data = request.data
             payer = data['payer']
@@ -142,7 +141,6 @@ class LipilaCollectionView(viewsets.ModelViewSet):
             else:
                 user = User.objects.get(username=payee)
                 payments = LipilaCollection.objects.filter(payee=user.id)
-
             serializer = LipilaCollectionSerializer(payments, many=True)
             return Response(serializer.data, status=200)
 

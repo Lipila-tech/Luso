@@ -29,6 +29,37 @@ a:hover {
   text-decoration: none;
 }
 
+
+/* -------------------------------------------------------------
+# Auth Pages Flex
+----------------------------------------------------------------
+*/
+.column {
+  float: left;
+  width: 100%;
+  padding: 5px;
+}
+
+/* Image container for the second column */
+.image-container {
+  /* Removed position: relative;  */  
+  overflow: hidden;  /* Hides overflowing parts of the image */
+}
+
+.image-container img {
+  width: 100%;  /* Fills the width of the container */
+  height: auto;   /* Maintains aspect ratio */
+  /* Removed position: absolute;  */
+  /* Removed top: 0; left: 0;  */
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 h1,
 h2,
 h3,

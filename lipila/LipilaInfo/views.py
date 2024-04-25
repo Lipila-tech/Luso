@@ -12,7 +12,8 @@ from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from datetime import datetime
 # Custom Models
 from LipilaInfo.helpers import (
-    apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron)
+    apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron,
+    get_lipila_home_page_info, get_testimonials, get_lipila_about_info)
 from LipilaInfo.models import ContactInfo, LipilaUser, Patron
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm, JoinForm
 from business.forms.forms import EditBusinessUserForm
@@ -23,15 +24,16 @@ from creators.models import CreatorUser
 
 # Public Views
 def index(request):
+    context = {}
     form = ContactForm()
-    context = get_lipila_contact_info()
+    contact_info = get_lipila_contact_info()
+    lipila_home = get_lipila_home_page_info()
+    testimonial = get_testimonials()
+    about = get_lipila_about_info()
     context['form'] = form
-
-    testimonial = {
-        'user':'Sangwani',
-        'category':'member',
-        'comment':'Great app'
-    }
+    context['contact'] = contact_info['contact']
+    context['lipila'] = lipila_home['lipila']
+    context['about'] = about['about']
     context['testimony'] = testimonial
 
     return render(request, 'UI/index.html', context)
@@ -42,8 +44,6 @@ def creators(request):
     creators = CreatorUser.objects.all()
     # user_object = get_user_object(user)
     context['creators'] = creators
-
-
     if request.user.is_authenticated:
         # context['user'] = user_object
         return render(request, 'LipilaInfo/admin/creators.html', context)
@@ -89,8 +89,8 @@ def join(request, creator, user):
 
             return redirect('creators')
     patron_exists = check_if_user_is_patron(user_obj, creator_object)
-    print('user',user_obj)
-    print('get request')
+    
+    
     context = {
         'join_form': form,
         'creator': creator_object,
@@ -127,7 +127,13 @@ def send_money(request):
 
 
 def pages_faq(request):
-    return render(request, 'LipilaInfo/admin/pages-faq.html')
+    return render(request, 'LipilaInfo/pages/pages_faq.html')
+
+def pages_terms(request):
+    return render(request, 'LipilaInfo/pages/pages_terms.html')
+
+def pages_privacy(request):
+    return render(request, 'LipilaInfo/pages/pages_privacy.html')
 
 
 class SignupView(View):
@@ -184,11 +190,10 @@ def login(request):
                 try:
                     user_object = LipilaUser.objects.get(username=user)
                     my_login(request, user_object)
-
+                    messages.success(request, "Logged in")
                     return redirect(reverse('dashboard', kwargs={'user': username}))
                 except LipilaUser.DoesNotExist:
                     messages.error(request, "Invalid username or password.")
-                    # Redirect to login with error message
                     return redirect('login')
         else:
             form = AuthenticationForm()

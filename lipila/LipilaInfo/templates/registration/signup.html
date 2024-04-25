@@ -5,27 +5,29 @@
 
 {% block title %} Signup {% endblock %}
 
+{%block content%}
+{% endblock %}
 {% block main %}
-<div class="col-md-8">
-    <div class="breadcrumbs" data-aos="fade-in">
-        <div class="container">
-            <h2>{{category}} Signup</h2>
-        </div>
-        <div>
-            <a href="{% url 'business:signup' %}" class="">Business signup</a>
-            <a href="{% url 'creators:signup' %}" class="">Creators signup</a>
-            <a href="{% url 'signup' %}" class="">Consumer signup</a>
-        </div>
-    </div>
-    <form action="" method="post" class="">
-        {% csrf_token %}
-        <form method="post" class="signup-form">
+<div class="row">
+    <div class="column">
+        
+        <form action="{% url 'signup' %}" method="post" class="">
             {% csrf_token %}
-            {{form | crispy}}
+            <form method="post" class="signup-form">
+                 <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register account</h5>
+                {% csrf_token %}
+                {{form | crispy}}
 
-            <input type="submit" value="Signup" onclick="signup()" class="btn btn-primary">
-        </form>
-        <p>Already registered: <a href="{% url 'login' %}">login</a></p>
-        <a class="" href="{% url 'index' %}">Go to Home</a>
+                <!-- <input type="submit" value="Signup" onclick="signup()" class="btn btn-primary"> -->
+                <button type="submit" class="btn btn-dark btn-lg btn-block">Create</button>
+            </form>
+            <p class="mb-5 pb-lg-2" style="color: #393f81;">Already registered? <a href="{% url 'login' %}"
+                      style="color: #393f81;">Login</a></p>
+    </div>
+    <!-- <div class="column">
+        <div class="image-container">
+            <img src="{% static 'assets/img/guy.jpeg' %}" alt="signup-image">
+        </div>
+    </div> -->
 </div>
 {% endblock %}

@@ -8,13 +8,6 @@
   <div class="card">
     <div class="card-body">
       <h5 class="card-title">Transaction History</h5>
-      {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-          {% endfor %}
-      </ul>
-      {% endif %}
       <div class="search-bar">
         <form class="search-form d-flex align-items-center" method="POST" action="#">
           <input type="text" name="query" placeholder="Search" title="Enter search keyword">
