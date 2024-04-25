@@ -5,9 +5,11 @@
 
 {% block title %} Login {% endblock %}
 
+{% block content%}
+{% endblock %}
 {% block main %}
 <div class="col-md-8">
-   
+
     {% if form.errors %}
     <p>Your username and password didn't match. Please try again.</p>
     {% endif %}
@@ -22,20 +24,20 @@
     {% endif %}
 
     <form method="post" action="{% url 'login' %}">
-         <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
+        <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
         {% csrf_token %}
-       {{form|crispy}}
-       <div class="pt-1 mb-4">
-                    <input type="submit" value="login" class="btn btn-dark btn-lg btn-block">
-        <input type="hidden" name="next" value="{{ next }}">
-                  </div>
-        
+        {{form|crispy}}
+        <div class="pt-1 mb-4">
+            <input type="submit" value="login" class="btn btn-dark btn-lg btn-block">
+            <input type="hidden" name="next" value="{{ next }}">
+        </div>
+
     </form>
 
     {# Assumes you set up the password_reset view in your URLconf #}
-    <a class="small text-muted" href="{% url 'password_reset' %}">Forgot password?</a>
+    <a class="small" href="{% url 'password_reset' %}">Forgot password?</a>
     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'signup' %}"
-                      style="color: #393f81;">Register here</a></p>
-    
+            style="color: #393f81;">Register here</a></p>
+
 </div>
 {% endblock %}

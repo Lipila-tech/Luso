@@ -129,6 +129,14 @@ class LipilaHome(models.Model):
         get_latest_by = 'timestamp'
 
 
+class LipilaAbout(models.Model):
+    title = models.CharField(max_length=200)
+    body = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        get_latest_by = 'timestamp'
+
 class Testimonial(models.Model):
     user = models.ForeignKey(
         LipilaUser, on_delete=models.CASCADE)

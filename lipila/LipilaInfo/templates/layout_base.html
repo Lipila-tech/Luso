@@ -52,12 +52,11 @@
                 <img src="{% static 'assets/img/logo.png' %}" alt="">
                 <span></span>
             </a>
-
             <!-- Nav Menu -->
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="/#hero" class="active">Home</a></li>
-                    <!-- <li><a href="{% url 'creators:index' %}">For Creators</a></li> -->
+                    <!-- <li><a href="{% url 'index' %}">For Creators</a></li> -->
                     <li><a href="{% url 'business:index' %}">For Business</a></li>
                     <li><a href="{% url 'creators' %}">Find Creators</a></li>
                     <li><a href="/#pricing">Pricing</a></li>
@@ -128,9 +127,8 @@
                 <div class="col-lg-2 col-6 footer-links">
                     <h4>Our Services</h4>
                     <ul>
-                        <li><a href="{% url 'creators:index' %}">For Creators</a></li>
+                        <li><a href="{% url 'index' %}">For Creators</a></li>
                         <li><a href="{% url 'business:index' %}">For Business</a></li>
-                        <li><a href="#">For Consumers</a></li>
                     </ul>
                 </div>
 

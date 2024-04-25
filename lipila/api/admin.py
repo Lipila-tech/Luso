@@ -3,7 +3,8 @@ from .models import (BusinessUser, LipilaDisbursement, LipilaCollection)
 from business.models import Product, BNPL, Student
 from creators.models import CreatorUser
 from LipilaInfo.models import (
-    ContactInfo, LipilaUser, LipilaUserEmail, Patron, LipilaHome, Testimonial)
+    ContactInfo, LipilaUser, LipilaUserEmail, Patron,
+    LipilaHome, Testimonial, LipilaAbout)
 
 
 class BusinessUserAdmin(admin.ModelAdmin):
@@ -57,11 +58,16 @@ class ContactInfoAdmin(admin.ModelAdmin):
 
 
 class LipilaUserEmailAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'phone', 'subject', 'message', 'timestamp')
+    list_display = ('name', 'email', 'phone',
+                    'subject', 'message', 'timestamp')
 
 
 class LipilaHomeAdmin(admin.ModelAdmin):
-    list_display =  ('slogan', 'message', 'hero_image', 'timestamp')
+    list_display = ('slogan', 'message', 'hero_image', 'timestamp')
+
+
+class LipilaAboutAdmin(admin.ModelAdmin):
+    list_display = ('title', 'body', 'timestamp')
 
 
 class TestimonialAdmin(admin.ModelAdmin):
@@ -92,6 +98,7 @@ admin.site.register(LipilaUserEmail, LipilaUserEmailAdmin)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Patron, PatronAdmin)
 admin.site.register(LipilaHome, LipilaHomeAdmin)
+admin.site.register(LipilaAbout, LipilaAboutAdmin)
 admin.site.register(Testimonial, TestimonialAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
