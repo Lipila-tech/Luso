@@ -13,7 +13,7 @@ from datetime import datetime
 # Custom Models
 from LipilaInfo.helpers import (
     apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron,
-    get_lipila_home_page_info, get_testimonials)
+    get_lipila_home_page_info, get_testimonials, get_lipila_about_info)
 from LipilaInfo.models import ContactInfo, LipilaUser, Patron
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm, JoinForm
 from business.forms.forms import EditBusinessUserForm
@@ -29,9 +29,11 @@ def index(request):
     contact_info = get_lipila_contact_info()
     lipila_home = get_lipila_home_page_info()
     testimonial = get_testimonials()
+    about = get_lipila_about_info()
     context['form'] = form
     context['contact'] = contact_info['contact']
     context['lipila'] = lipila_home['lipila']
+    context['about'] = about['about']
     context['testimony'] = testimonial
 
     return render(request, 'UI/index.html', context)
@@ -125,7 +127,13 @@ def send_money(request):
 
 
 def pages_faq(request):
-    return render(request, 'LipilaInfo/admin/pages-faq.html')
+    return render(request, 'LipilaInfo/pages/pages_faq.html')
+
+def pages_terms(request):
+    return render(request, 'LipilaInfo/pages/pages_terms.html')
+
+def pages_privacy(request):
+    return render(request, 'LipilaInfo/pages/pages_privacy.html')
 
 
 class SignupView(View):
@@ -182,11 +190,10 @@ def login(request):
                 try:
                     user_object = LipilaUser.objects.get(username=user)
                     my_login(request, user_object)
-
+                    messages.success(request, "Logged in")
                     return redirect(reverse('dashboard', kwargs={'user': username}))
                 except LipilaUser.DoesNotExist:
                     messages.error(request, "Invalid username or password.")
-                    # Redirect to login with error message
                     return redirect('login')
         else:
             form = AuthenticationForm()

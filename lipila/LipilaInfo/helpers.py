@@ -6,7 +6,7 @@ from django.shortcuts import render, get_list_or_404
 from business.models import BusinessUser
 from creators.models import CreatorUser
 from LipilaInfo.models import (
-    LipilaUser, Patron, ContactInfo, LipilaHome, LipilaUserEmail, Testimonial)
+    LipilaUser, Patron, ContactInfo, LipilaHome, LipilaUserEmail, Testimonial, LipilaAbout)
 from django.contrib.auth.models import User
 from functools import wraps
 from django.test import TestCase
@@ -16,7 +16,7 @@ def get_lipila_contact_info() -> dict:
     """ Gets the lipila contact info and
     returns a dict object.
     """
-    data = {}
+    data = {'contact':''}
     try:
         contact_info = ContactInfo.objects.latest()
         data['contact'] = contact_info
@@ -29,7 +29,7 @@ def get_user_emails():
     """
     Get all user messages.
     """
-    data = {}
+    data = {'user_messages':''}
     try:
         user_messages = LipilaUserEmail.objects.all()
         data['user_messages'] = user_messages
@@ -42,7 +42,7 @@ def get_lipila_home_page_info() -> dict:
     """
     Get the home page info.
     """
-    data = {}
+    data = {'lipila':''}
     try:
         lipila_home_info = LipilaHome.objects.latest()
         data['lipila'] = lipila_home_info
@@ -50,12 +50,23 @@ def get_lipila_home_page_info() -> dict:
         pass
     return data
 
+def get_lipila_about_info() -> dict:
+    """
+    Get the about info.
+    """
+    data = {'about':''}
+    try:
+        lipila_about_info = LipilaAbout.objects.latest()
+        data['about'] = lipila_about_info
+    except LipilaAbout.DoesNotExist:
+        pass
+    return data
 
 def get_testimonials() -> dict:
     """
     Get testimonials and return a dict object.
     """
-    data = {}
+    data = {'testimonials':''}
     try:
         results = Testimonial.objects.all()
         data['testimonials'] = results
@@ -154,7 +165,7 @@ def apology(request, data=None, user=None):
         An HttpResponseNotFound object with the rendered 404 template.
     """
 
-    template_name = 'pages-error.html'
+    template_name = 'pages_error.html'
 
     if data is None:
         data = {}

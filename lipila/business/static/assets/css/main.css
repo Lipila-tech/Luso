@@ -17,6 +17,15 @@
   --nav-font: "Lato", sans-serif;
 }
 
+/* Hero image msg */
+#slogan {
+  color:aliceblue;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: x-large;
+  text-decoration: underline;
+  text-decoration-color: #d83535;
+}
+
 /* Global Colors */
 :root {
   --background-color: #ffffff;
