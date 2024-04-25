@@ -57,9 +57,11 @@
       <div class="row align-items-xl-center gy-5">
 
         <div class="col-xl-5 content">
-          <h3>About Us</h3>
+          <h3></h3>
           <h2>{{about.title}}</h2>
           <p>{{about.body}}
+            <a href="{% url 'signup' %}" class="read-more"><span>Find out how?</span><i
+                class="bi bi-arrow-right"></i></a>
           </p>
         </div>
 
@@ -77,9 +79,10 @@
                   <li>Writers</li>
                   <li>Fundraisers</li>
                 </ul>
-                <p>Get paid for your work by your fans. Receive donations, contributions and payments from your fans in
-                  one place.</p>
-                <a href="{% url 'signup' %}" class="read-more"><span>Get started</span><i
+                <p>Get patrons to support your creativity. Receive donations, contributions and payments from your fans
+                  in
+                  one place and grow your work.</p>
+                <a href="{% url 'signup' %}" class="read-more"><span>Learn more</span><i
                     class="bi bi-arrow-right"></i></a>
               </div>
             </div> <!-- End Icon Box -->
@@ -90,12 +93,12 @@
                 <ul>
                   <li>Schools</li>
                   <li>Independent sellers</li>
-                  <li>Loan Providers</li>
-                  <li>Writers</li>
+                  <li>Stores</li>
                 </ul>
-                <p>For independent traders to medium businesses simplify invoicing, payment collection and data storage.
+                <p>From independent traders to small and medium businesses simplify invoicing, payment collection and
+                  data storage.
                 </p>
-                <a href="{% url 'signup' %}" class="read-more"><span>Get started</span><i
+                <a href="{% url 'signup' %}" class="read-more"><span>Learn more</span><i
                     class="bi bi-arrow-right"></i></a>
               </div>
             </div> <!-- End Icon Box -->
@@ -114,67 +117,7 @@
   <!-- </section> -->
 
   <!-- Services Section - Home Page -->
-  <section id="services" class="services">
-
-    <!--  Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Services</h2>
-      <p>Grow your business with Lipila Services</p>
-    </div><!-- End Section Title -->
-
-    <div class="container">
-
-      <div class="row gy-4">
-
-        <div class="col-lg-6 " data-aos="fade-up" data-aos-delay="100">
-          <div class="service-item d-flex">
-            <div class="icon flex-shrink-0"><i class="bi bi-briefcase"></i></div>
-            <div>
-              <h4 class="title"><a href="/service-details" class="stretched-link">Payment Collection</a></h4>
-              <p class="description">Payment collection refers to the process of receiving payment for
-                goods or services rendered.</p>
-            </div>
-          </div>
-        </div>
-        <!-- End Service Item -->
-
-        <div class="col-lg-6 " data-aos="fade-up" data-aos-delay="200">
-          <div class="service-item d-flex">
-            <div class="icon flex-shrink-0"><i class="bi bi-card-checklist"></i></div>
-            <div>
-              <h4 class="title"><a href="/service-details" class="stretched-link">Buy Now Pay later (BNPL)</a>
-              </h4>
-              <p class="description">BNPL is a growing payment option that allows customers to purchase goods or
-                services and split the cost into smaller installments over time. This can be particularly appealing to
-                budget-conscious consumers or those making larger purchases.</p>
-            </div>
-          </div>
-        </div><!-- End Service Item -->
-
-        <div class="col-lg-6 " data-aos="fade-up" data-aos-delay="300">
-          <div class="service-item d-flex">
-            <div class="icon flex-shrink-0"><i class="bi bi-bar-chart"></i></div>
-            <div>
-              <h4 class="title"><a href="/service-details" class="stretched-link">Transfer</a></h4>
-              <p class="description">Transfer money to several recepients at once.</p>
-            </div>
-          </div>
-        </div><!-- End Service Item -->
-
-        <div class="col-lg-6 " data-aos="fade-up" data-aos-delay="400">
-          <div class="service-item d-flex">
-            <div class="icon flex-shrink-0"><i class="bi bi-binoculars"></i></div>
-            <div>
-              <h4 class="title"><a href="/service-details" class="stretched-link">Data Analytics</a></h4>
-              <p class="description">Get analyzed data</p>
-            </div>
-          </div>
-        </div><!-- End Service Item -->
-      </div>
-
-    </div>
-
-  </section><!-- End Services Section -->
+  <!-- End Services Section -->
 
   <!-- Features Section - Home Page -->
   <section id="features" class="features">
@@ -182,32 +125,26 @@
     <!--  Section Title -->
     <div class="container section-title" data-aos="fade-up">
       <h2>Features</h2>
-      <p>These features help your business grow</p>
+      <p>These features help you financially</p>
     </div><!-- End Section Title -->
 
     <div class="container">
-
       <div class="row gy-4 align-items-center features-item">
         <div class="col-lg-5 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
-          <h3>Buy Now Pay Later</h3>
+          <h3>Creator Profile Creation</h3>
           <p>
-            Let your customers pay in installments, and let us pay you the full price upfront.
+            Create your FREE profile, share exclusive content with your patrons. Set your funding tiers
+            for your patrons.
           </p>
-          <a href="#" class="btn btn-get-started">Get Started</a>
+          <a href="{% url 'creators:signup' %}" class="btn btn-get-started">Get Started</a>
         </div>
       </div><!-- Features Item -->
-
       <div class="row gy-4 align-items-stretch justify-content-between features-item ">
         <div class="col-lg-5 d-flex justify-content-center flex-column" data-aos="fade-up">
-          <h3>Collect payments</h3>
-          <p>Easily collect payments from your customers and manage them in a user friendly dashboard.</p>
-          <ul>
-            <li><i class="bi bi-check"></i> <span>Supports MTN and Airtel </span></li>
-            <li><i class="bi bi-check"></i><span> Secure</span></li>
-            <li><i class="bi bi-check"></i> <span>Send Digital Invoices</span>.</li>
-            <li><i class="bi bi-check"></i> <span>Data driven</span>.</li>
-          </ul>
-          <a href="#" class="btn btn-get-started align-self-start">Get Started</a>
+          <h3>Patronage System</h3>
+          <p>Browse through different creators' profiles, explore their content, and choose to pledge financial support
+            through various tiers or one-time contributions.</p>
+          <a href="{% url 'creators' %}" class="btn btn-get-started align-self-start">Get Started</a>
         </div>
       </div><!-- Features Item -->
 
@@ -222,11 +159,13 @@
     <!--  Section Title -->
     <div class="container section-title" data-aos="fade-up">
       <h2>Pricing</h2>
-      <p>Choose the plan that’s right for you
-        and only pay based on what you earn.</p>
-    </div><!-- End Section Title -->
+      <p>Creating a Lipila Creator account is FREE</p>
+      <a href="{% url 'signup' %}" class="read-more"><span>Get Started</span><i
+        class="bi bi-arrow-right"></i></a>
+    </div>
+    <!-- End Section Title -->
 
-    <div class="container" data-aos="fade-in" data-aos-delay="100">
+    <!-- <div class="container" data-aos="fade-in" data-aos-delay="100">
 
       <div class="row g-4">
 
@@ -246,7 +185,7 @@
             </ul>
             <div class="text-center"><a href="#" class="buy-btn">Coming Soon</a></div>
           </div>
-        </div><!-- End Pricing Item -->
+        </div>
 
         <div class="col-lg-4">
           <div class="pricing-item featured">
@@ -266,7 +205,6 @@
             <div class="text-center"><a href="{% url 'login' %}" class="buy-btn">Get Started</a></div>
           </div>
         </div>
-        <!-- End Pricing Item -->
 
         <div class="col-lg-4">
           <div class="pricing-item">
@@ -284,13 +222,14 @@
             </ul>
             <div class="text-center"><a href="#" class="buy-btn">Coming Soon</a></div>
           </div>
-        </div><!-- End Pricing Item -->
+        </div>
 
       </div>
 
-    </div>
+    </div> -->
 
-  </section><!-- End Pricing Section -->
+  </section>
+  <!-- End Pricing Section -->
 
 
   <!-- Contact Section - Home Page -->
