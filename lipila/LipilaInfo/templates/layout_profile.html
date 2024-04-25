@@ -5,15 +5,16 @@
 {% block main %}
 
 
-  <div class="pagetitle">
-    <h1>Profile</h1>
+<div class="pagetitle">
+  <h1>Profile</h1>
+  <div>
     {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
+    {% for message in messages %}
+    <p class="alert alert-{{ message.tag }}">{{message}}</p>
+    {% endfor %}
     {% endif %}
+  </div>
+  <div>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
@@ -85,9 +86,9 @@
       </div>
     </div>
 
-    </div>
-    </div>
-  </section>
+</div>
+</div>
+</section>
 
 
 {% endblock %}

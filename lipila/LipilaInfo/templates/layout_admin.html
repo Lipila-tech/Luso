@@ -336,6 +336,13 @@
                 </ol>
             </nav>
         </div><!-- End Page Title -->
+        <div>
+            {% if messages %}
+            {% for message in messages %}
+            <p class="alert alert-{{ message.tag }}">{{message}}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
         {% block main %}
 
         {% endblock %}

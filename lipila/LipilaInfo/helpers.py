@@ -154,7 +154,7 @@ def apology(request, data=None, user=None):
         An HttpResponseNotFound object with the rendered 404 template.
     """
 
-    template_name = 'pages-error.html'
+    template_name = 'pages_error.html'
 
     if data is None:
         data = {}
