@@ -1,7 +1,7 @@
 from django import forms
 from LipilaInfo.models import LipilaUserEmail, LipilaUser
 from django.contrib.auth.forms import UserChangeForm
-from LipilaInfo.models import Patron
+from creators.models import Patron
 
 
 class ContactForm(forms.ModelForm):
@@ -41,8 +41,8 @@ class EditLipilaUserForm(UserChangeForm):
         }
 
 
-class JoinForm(forms.ModelForm):
-    class Meta:
-        model = Patron
-        fields = ('subscription',)
+# class JoinForm(forms.ModelForm):
+#     class Meta:
+#         model = Patron
+#         fields = ('subscription',)
        

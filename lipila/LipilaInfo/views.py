@@ -14,12 +14,12 @@ from datetime import datetime
 from LipilaInfo.helpers import (
     apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron,
     get_lipila_home_page_info, get_testimonials, get_lipila_about_info)
-from LipilaInfo.models import ContactInfo, LipilaUser, Patron
-from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm, JoinForm
+from LipilaInfo.models import ContactInfo, LipilaUser
+from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
 from business.forms.forms import EditBusinessUserForm
 from creators.forms.forms import EditCreatorUserForm
 from business.models import BusinessUser, Student
-from creators.models import CreatorUser
+from creators.models import CreatorUser, Patron
 
 
 # Public Views
@@ -62,13 +62,13 @@ def join(request, creator, user):
     Returns:
         A rendered response with the join form and subscription status.
     """
-    form = JoinForm()
+    form = 'JoinForm()'
     context = {}
     creator_object = CreatorUser.objects.get(username=creator)
     user_obj = get_user_object(user)
 
     if request.method == 'POST':
-        form = JoinForm(request.POST)
+        form = 'JoinForm(request.POST)'
         if form.is_valid():
             patron, created = Patron.objects.get_or_create(user=user_obj)  # Get or create Patron
             

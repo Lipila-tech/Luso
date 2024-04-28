@@ -5,9 +5,8 @@ from creators.forms.forms import SignupForm
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view, renderer_classes
-from creators.models import CreatorUser
+from creators.models import CreatorUser, Patron
 from business.models import Product
-from LipilaInfo.models import Patron
 
 
 def index(request):

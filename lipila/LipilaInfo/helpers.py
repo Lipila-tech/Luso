@@ -4,9 +4,9 @@ Helper Functions
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_list_or_404
 from business.models import BusinessUser
-from creators.models import CreatorUser
+from creators.models import CreatorUser, Patron
 from LipilaInfo.models import (
-    LipilaUser, Patron, ContactInfo, LipilaHome, LipilaUserEmail, Testimonial, LipilaAbout)
+    LipilaUser, ContactInfo, LipilaHome, LipilaUserEmail, Testimonial, LipilaAbout)
 from django.contrib.auth.models import User
 from functools import wraps
 from django.test import TestCase

@@ -1,11 +1,10 @@
 from django.contrib import admin
 from .models import (BusinessUser, LipilaDisbursement, LipilaCollection)
 from business.models import Product, BNPL, Student
-from creators.models import CreatorUser
 from LipilaInfo.models import (
-    ContactInfo, LipilaUser, LipilaUserEmail, Patron,
+    ContactInfo, LipilaUser, LipilaUserEmail,
     LipilaHome, Testimonial, LipilaAbout)
-
+from creators.models import Tier, Contribution, Patron, CreatorUser
 
 class BusinessUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'bio', 'business_category',
@@ -18,13 +17,18 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class CreatorUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'bio', 'creator_category',
-                    'address', 'company', 'city', 'country', 'first_name', 'profile_image')
+    list_display = ('user', 'bio', 'account_number')
 
 
 class PatronAdmin(admin.ModelAdmin):
-    list_display = ('user', 'subscription', 'active')
+    list_display = ('user', 'account_number')
 
+
+class TierAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price')
+
+class ContributionAdmin(admin.ModelAdmin):
+    list_display = ('creator', 'patron', 'tier', 'amount', 'timestamp')
 
 class LipilaUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'category',
@@ -86,17 +90,19 @@ class BNPLAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
+admin.site.register(Patron, PatronAdmin)
+admin.site.register(CreatorUser, CreatorUserAdmin)
+admin.site.register(Tier, TierAdmin)
+admin.site.register(Contribution, ContributionAdmin)
 admin.site.register(BusinessUser, BusinessUserAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(LipilaCollection, LipilaCOllectionAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)
-admin.site.register(CreatorUser, CreatorUserAdmin)
 admin.site.register(ContactInfo, ContactInfoAdmin)
 admin.site.register(LipilaUser, LipilaUserAdmin)
 admin.site.register(LipilaUserEmail, LipilaUserEmailAdmin)
 admin.site.register(Student, StudentAdmin)
-admin.site.register(Patron, PatronAdmin)
 admin.site.register(LipilaHome, LipilaHomeAdmin)
 admin.site.register(LipilaAbout, LipilaAboutAdmin)
 admin.site.register(Testimonial, TestimonialAdmin)
