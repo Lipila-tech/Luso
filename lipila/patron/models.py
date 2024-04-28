@@ -1,5 +1,4 @@
 from django.db import models
-from LipilaInfo.models import LipilaUser
 from django.contrib.auth.models import AbstractBaseUser, Group, Permission, BaseUserManager
 
 # Options

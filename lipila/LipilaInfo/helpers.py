@@ -6,7 +6,7 @@ from django.shortcuts import render, get_list_or_404
 from business.models import BusinessUser
 from patron.models import CreatorUser, Patron
 from LipilaInfo.models import (
-    LipilaUser, ContactInfo, LipilaHome, LipilaUserEmail, Testimonial, LipilaAbout)
+    ContactInfo, HeroInfo, CustomerMessage, UserTestimonial, AboutInfo)
 from django.contrib.auth.models import User
 from functools import wraps
 from django.test import TestCase
@@ -31,9 +31,9 @@ def get_user_emails():
     """
     data = {'user_messages':''}
     try:
-        user_messages = LipilaUserEmail.objects.all()
+        user_messages = CustomerMessage.objects.all()
         data['user_messages'] = user_messages
-    except LipilaUserEmail.DoesNotExist:
+    except CustomerMessage.DoesNotExist:
         pass
     return data
 
@@ -44,9 +44,9 @@ def get_lipila_home_page_info() -> dict:
     """
     data = {'lipila':''}
     try:
-        lipila_home_info = LipilaHome.objects.latest()
+        lipila_home_info = HeroInfo.objects.latest()
         data['lipila'] = lipila_home_info
-    except LipilaHome.DoesNotExist:
+    except HeroInfo.DoesNotExist:
         pass
     return data
 
@@ -56,9 +56,9 @@ def get_lipila_about_info() -> dict:
     """
     data = {'about':''}
     try:
-        lipila_about_info = LipilaAbout.objects.latest()
+        lipila_about_info = AboutInfo.objects.latest()
         data['about'] = lipila_about_info
-    except LipilaAbout.DoesNotExist:
+    except AboutInfo.DoesNotExist:
         pass
     return data
 
@@ -68,9 +68,9 @@ def get_testimonials() -> dict:
     """
     data = {'testimonials':''}
     try:
-        results = Testimonial.objects.all()
+        results = UserTestimonial.objects.all()
         data['testimonials'] = results
-    except Testimonial.DoesNotExist:
+    except UserTestimonial.DoesNotExist:
         pass
     return data
 
@@ -87,7 +87,7 @@ def get_patrons(user: str):
         A patron_object.
     """
     try:
-        creator_object = LipilaUser.objects.filter(creator=user)
+        creator_object = User.objects.filter(creator=user)
         return creator_object.count()
     except Patron.DoesNotExist:
         return 0
@@ -117,10 +117,10 @@ def get_user_object(user: str):
     except CreatorUser.DoesNotExist:
         pass  # Continue to next check
     try:
-        user_object = LipilaUser.objects.get(username=user)
+        user_object = User.objects.get(username=user)
         # patrons = get_patrons(user_object)
         return user_object
-    except LipilaUser.DoesNotExist:
+    except User.DoesNotExist:
         data['status'] = 404
         return data
 
@@ -140,7 +140,7 @@ def check_if_user_is_patron(user, creator):
         # Check if the user has a corresponding Patron instance
         patron = user.patron
 
-    except LipilaUser.DoesNotExist:
+    except User.DoesNotExist:
         # Handle the case where the user doesn't exist
         return False
 

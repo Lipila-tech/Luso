@@ -7,7 +7,7 @@ class BusinessUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessUser
         fields = ('id', 'username', 'city', 'email', 'password',
-                  'phone_number', 'bio', 'business_category')
+                  'account_number', 'bio', 'business_category')
         write_only_fields = ('password',)
 
     def create(self, validated_data):

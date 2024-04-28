@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.urls import reverse
 from django.shortcuts import render, redirect
@@ -14,8 +15,8 @@ from datetime import datetime
 from LipilaInfo.helpers import (
     apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron,
     get_lipila_home_page_info, get_testimonials, get_lipila_about_info)
-from LipilaInfo.models import ContactInfo, LipilaUser
-from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
+from LipilaInfo.models import ContactInfo
+from LipilaInfo.forms.forms import ContactForm, SignupForm, EditUserForm
 from business.forms.forms import EditBusinessUserForm
 from patron.forms.forms import EditCreatorUserForm
 from business.models import BusinessUser, Student
@@ -116,10 +117,10 @@ def send_money(request):
     if form:
         payee_id = form['payee_id']
         try:
-            data = LipilaUser.objects.get(username=payee_id)
+            data = User.objects.get(username=payee_id)
             context['payee'] = payee_id
             context['location'] = data.city
-        except LipilaUser.DoesNotExist:
+        except User.DoesNotExist:
             context = {'message': "User id not found", }
             return render(request, '404.html', context)
 
@@ -188,11 +189,11 @@ def login(request):
                 except CreatorUser.DoesNotExist:
                     pass  # Continue to next check
                 try:
-                    user_object = LipilaUser.objects.get(username=user)
+                    user_object = User.objects.get(username=user)
                     my_login(request, user_object)
                     messages.success(request, "Logged in")
                     return redirect(reverse('dashboard', kwargs={'user': username}))
-                except LipilaUser.DoesNotExist:
+                except User.DoesNotExist:
                     messages.error(request, "Invalid username or password.")
                     return redirect('login')
         else:
@@ -233,7 +234,7 @@ def profile(request, user):
     elif isinstance(user_object, CreatorUser):
         context['user'] = user_object
         return render(request, 'patron/admin/profile/users-profile.html', context)
-    elif isinstance(user_object, LipilaUser):
+    elif isinstance(user_object, User):
         context['user'] = user_object
         return render(request, 'LipilaInfo/admin/profile/users-profile.html', context)
     else:
@@ -256,8 +257,8 @@ class UpdateUserInfoView(View):
             return render(request,
                           'patron/admin/profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
-        elif isinstance(user_object, LipilaUser):
-            form = EditLipilaUserForm(instance=user_object)
+        elif isinstance(user_object, User):
+            form = EditUserForm(instance=user_object)
             return render(request,
                           'LipilaInfo/admin/profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
@@ -284,8 +285,8 @@ class UpdateUserInfoView(View):
                 messages.success(
                     request, "Your profile has been update.")
                 return redirect(reverse('profile', kwargs={'user': user_object}))
-        elif isinstance(user_object, LipilaUser):
-            form = EditLipilaUserForm(
+        elif isinstance(user_object, User):
+            form = EditUserForm(
                 request.POST, request.FILES, instance=user_object)
             if form.is_valid():
                 form.save()
@@ -329,8 +330,8 @@ def dashboard(request, user):
         context['user'] = user_object
         # context['patrons'] = user_objects[1]
         return render(request, 'patron/admin/index.html', context)
-    elif isinstance(user_object, LipilaUser):
-        user_object = LipilaUser.objects.get(username=user)
+    elif isinstance(user_object, User):
+        user_object = User.objects.get(username=user)
         context['user'] = user_object
         # context['patrons'] = user_objects[1]
         return render(request, 'LipilaInfo/admin/index.html', context)

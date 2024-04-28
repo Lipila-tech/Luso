@@ -33,7 +33,7 @@ class LipilaDisbursement(models.Model):
 
     def get_account_number(self):
         """ returns the username of the student"""
-        return self.payee.phone_number
+        return self.payee.account_number
 
     def __str__(self):
         return "{} {} {} {} {} {} {} {}".format(self.payee,

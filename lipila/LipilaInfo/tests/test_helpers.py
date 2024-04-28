@@ -1,8 +1,8 @@
 from django.test import TestCase
-import unittest
+from django.contrib.auth.models import User
 from django.db import models
 from LipilaInfo.models import (
-    ContactInfo, LipilaHome, LipilaUserEmail, Testimonial, LipilaUser)
+    ContactInfo, HeroInfo, CustomerMessage, UserTestimonial)
 from LipilaInfo.helpers import (
     get_lipila_contact_info,
     get_user_emails,
@@ -32,7 +32,7 @@ class HelperFunctionTests(TestCase):
 
     def test_get_user_emails(self):
         """Test get_user_emails returns all user emails"""
-        LipilaUserEmail.objects.create(
+        CustomerMessage.objects.create(
             name="Test User",
             email="test@user.com",
             subject="Test subject",
@@ -47,25 +47,25 @@ class HelperFunctionTests(TestCase):
 
     def test_get_lipila_home_page_info_success(self):
         """Test get_lipila_home_page_info returns homepage info"""
-        LipilaHome.objects.create(
+        HeroInfo.objects.create(
             message="Test message",
             slogan="Test slogan",
         )  
         context = get_lipila_home_page_info()
         self.assertIn('lipila', context)
-        self.assertIsInstance(context['lipila'], LipilaHome)
+        self.assertIsInstance(context['lipila'], HeroInfo)
         self.assertEqual(context['lipila'].message, 'Test message')
         self.assertEqual(context['lipila'].slogan, 'Test slogan')
 
     def test_get_lipila_home_page_info_no_data(self):
-        """Test get_lipila_home_page_info with no LipilaHome"""        
+        """Test get_lipila_home_page_info with no HeroInfo"""        
         context = get_lipila_home_page_info()
         self.assertEqual(context, {})
 
     def test_get_testimonials(self):
         """Test get_testimonials returns all testimonials"""
-        lipila_user = LipilaUser.objects.create(username="test_user", password="test_password")
-        Testimonial.objects.create(user=lipila_user
+        lipila_user = User.objects.create(username="test_user", password="test_password")
+        UserTestimonial.objects.create(user=lipila_user
                                    ,message="Test testimonial",
         )
         context = get_testimonials()

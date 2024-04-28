@@ -1,12 +1,13 @@
 from django import forms
-from LipilaInfo.models import LipilaUserEmail, LipilaUser
+from LipilaInfo.models import CustomerMessage
 from django.contrib.auth.forms import UserChangeForm
-from patron.models import Patron
+from patron.models import Patron, CreatorUser
+from django.contrib.auth.models import User
 
 
 class ContactForm(forms.ModelForm):
     class Meta:
-        model = LipilaUserEmail
+        model = CustomerMessage
         fields = ('name', 'email', 'phone', 'subject', 'message')
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Your name'}),
@@ -19,21 +20,17 @@ class ContactForm(forms.ModelForm):
 
 class SignupForm(forms.ModelForm):
     class Meta:
-        model = LipilaUser
-        fields = ('username', 'email', 'password')
+        model = User
+        fields = ('email', 'password')
 
 
-class EditLipilaUserForm(UserChangeForm):
+class EditUserForm(UserChangeForm):
     class Meta:
-        model = LipilaUser
+        model = CreatorUser
         fields = [
             'profile_image',
-            'first_name',
-            'last_name',
-            'phone_number',
+            'account_number',
             'city',
-            'address',
-            'company',
             ]
         widgets = {
             # Restrict file types

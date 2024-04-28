@@ -2,12 +2,12 @@ from django.contrib import admin
 from .models import (BusinessUser, LipilaDisbursement, LipilaCollection)
 from business.models import Product, BNPL, Student
 from LipilaInfo.models import (
-    ContactInfo, LipilaUser, LipilaUserEmail,
-    LipilaHome, Testimonial, LipilaAbout)
+    ContactInfo, CustomerMessage,
+    HeroInfo, UserTestimonial, AboutInfo)
 from patron.models import Tier, Contribution, Patron, CreatorUser
 
 class BusinessUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'bio', 'business_category',
+    list_display = ('username', 'email', 'account_number', 'bio', 'business_category',
                     'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 
@@ -29,10 +29,6 @@ class TierAdmin(admin.ModelAdmin):
 
 class ContributionAdmin(admin.ModelAdmin):
     list_display = ('creator', 'patron', 'tier', 'amount', 'timestamp')
-
-class LipilaUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'phone_number', 'category',
-                    'address', 'company', 'city', 'country', 'first_name', 'profile_image')
 
 
 class DisbursementAdmin(admin.ModelAdmin):
@@ -61,20 +57,20 @@ class ContactInfoAdmin(admin.ModelAdmin):
                     'email1', 'email2', 'hours', 'days', 'timestamp')
 
 
-class LipilaUserEmailAdmin(admin.ModelAdmin):
+class CustomerMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'phone',
                     'subject', 'message', 'timestamp')
 
 
-class LipilaHomeAdmin(admin.ModelAdmin):
+class HeroInfoAdmin(admin.ModelAdmin):
     list_display = ('slogan', 'message', 'hero_image', 'timestamp')
 
 
-class LipilaAboutAdmin(admin.ModelAdmin):
+class AboutInfoAdmin(admin.ModelAdmin):
     list_display = ('title', 'body', 'timestamp')
 
 
-class TestimonialAdmin(admin.ModelAdmin):
+class UserTestimonialAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'timestamp')
 
 
@@ -100,12 +96,11 @@ admin.site.register(LipilaCollection, LipilaCOllectionAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)
 admin.site.register(ContactInfo, ContactInfoAdmin)
-admin.site.register(LipilaUser, LipilaUserAdmin)
-admin.site.register(LipilaUserEmail, LipilaUserEmailAdmin)
+admin.site.register(CustomerMessage, CustomerMessageAdmin)
 admin.site.register(Student, StudentAdmin)
-admin.site.register(LipilaHome, LipilaHomeAdmin)
-admin.site.register(LipilaAbout, LipilaAboutAdmin)
-admin.site.register(Testimonial, TestimonialAdmin)
+admin.site.register(HeroInfo, HeroInfoAdmin)
+admin.site.register(AboutInfo, AboutInfoAdmin)
+admin.site.register(UserTestimonial, UserTestimonialAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/'

@@ -7,7 +7,7 @@ from unittest import mock
 # Custom modules
 from business.models import BusinessUser
 from patron.models import CreatorUser
-from LipilaInfo.models import LipilaUser, Patron, ContactInfo, LipilaHome, Testimonial
+from LipilaInfo.models import Patron, ContactInfo, HeroInfo, UserTestimonial
 from LipilaInfo.helpers import get_user_object, check_if_user_is_patron
 from LipilaInfo.forms.forms import ContactForm
 
@@ -21,11 +21,11 @@ class IndexViewTest(TestCase):
             phone1="123-456-7890",
             email1="test@example.com",
         )
-        LipilaHome.objects.create(
+        HeroInfo.objects.create(
             message="Test message",
             slogan="Test slogan",
         )
-        Testimonial.objects.create(user=LipilaUser.objects.create(username="test_user"), message="Test testimonial")
+        UserTestimonial.objects.create(user=User.objects.create(username="test_user"), message="Test testimonial")
 
     def test_index_view_success(self):
         """Test index view renders successfully with context data"""
@@ -48,7 +48,7 @@ class IndexViewTest(TestCase):
 class TestJoinView(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user_object = LipilaUser.objects.create_user(
+        self.user_object = User.objects.create_user(
             'test_user', 'test@example.com', 'password123')
         self.creator_object = CreatorUser.objects.create_user(
             'creator_user', 'creator@example.com', 'password123')
@@ -145,8 +145,8 @@ class TestJoinView(TestCase):
 
 class TestCheckIfUserIsPatron(TestCase):
     def setUp(self):
-        # Create a LipilaUser (or User) for testing
-        self.user_object = LipilaUser.objects.create_user(
+        # Create a User (or User) for testing
+        self.user_object = User.objects.create_user(
             'test_user', 'test@example.com', 'password123')
         self.creator_object = CreatorUser.objects.create_user(
             'test_creator', 'test1@example.com', 'password123')
@@ -173,7 +173,7 @@ class GetUserObjectTest(TestCase):
             username='business_user', password='business_password', is_active=True)
         self.patron_user = CreatorUser.objects.create_user(
             username='patron_user', password='patron_password', is_active=True)
-        self.lipila_user = LipilaUser.objects.create_user(
+        self.lipila_user = User.objects.create_user(
             username='lipila_user', password='lipila_password', is_active=True)
 
     def test_get_business_user_object(self):
@@ -188,9 +188,9 @@ class GetUserObjectTest(TestCase):
         self.assertTrue(type(user_object), CreatorUser)
 
     def test_get_lipila_user_object(self):
-        """Test the successful gettting of a LipilaUser and return Object"""
+        """Test the successful gettting of a User and return Object"""
         user_object = get_user_object(self.lipila_user)
-        self.assertTrue(type(user_object), LipilaUser)
+        self.assertTrue(type(user_object), User)
 
     def test_get_business_user_object_failure(self):
         """Test the failure gettting of a Business User and return Object"""
@@ -206,7 +206,7 @@ class LoginViewTest(TestCase):
             username='business_user', password='business_password', is_active=True)
         self.patron_user = CreatorUser.objects.create_user(
             username='patron_user', password='patron_password', is_active=True)
-        self.lipila_user = LipilaUser.objects.create_user(
+        self.lipila_user = User.objects.create_user(
             username='lipila_user', password='lipila_password', is_active=True)
 
     def test_login_success_business_user(self):
@@ -228,7 +228,7 @@ class LoginViewTest(TestCase):
             'dashboard', kwargs={'user': 'patron_user'}))
 
     def test_login_success_lipila_user(self):
-        """Test successful login for LipilaUser and redirect to lipila dashboard"""
+        """Test successful login for User and redirect to lipila dashboard"""
         login_data = {'username': 'lipila_user', 'password': 'lipila_password'}
         response = self.client.post(reverse('login'), login_data)
         self.assertEqual(response.status_code, 302)  # Check for redirect

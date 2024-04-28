@@ -29,7 +29,7 @@ INVOICE_STATUS_CHOICES = (
  
     
 class BusinessUser(User):
-    phone_number = models.CharField(
+    account_number = models.CharField(
         max_length=20, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     country = models.CharField(max_length=10, default="Zambia")
@@ -125,7 +125,7 @@ class Invoice(models.Model):
     """
     creator = models.ForeignKey(BusinessUser, on_delete=models.CASCADE, related_name='invoice')
     customer_name = models.CharField(max_length=255)
-    customer_phone_number = models.CharField(max_length=20)
+    customer_account_number = models.CharField(max_length=20)
     customer_email = models.EmailField(blank=True)
     reference_number = models.CharField(max_length=50, blank=True)
     due_date = models.DateField(blank=True, null=True)

@@ -21,7 +21,7 @@ class SignupViewTest(TestCase):
     def test_post_valid_form(self):
         data = {
             "username": "testuser",
-            "phone_number": "2244556677",
+            "account_number": "2244556677",
             "password": "test@123",
         }
         response = self.client.post(self.url, data)

@@ -30,7 +30,7 @@ _Signup: POST /signup/_
     "username": "", 
     "email": "",
     "password": "",
-    "phone_number": "",
+    "account_number": "",
     "bio": ""
 }
 

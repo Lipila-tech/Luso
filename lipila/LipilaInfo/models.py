@@ -27,43 +27,7 @@ INVOICE_STATUS_CHOICES = (
     ('paid', 'paid'),
     ('rejected', 'rejected'),
 )
-
-
-class LipilaUser(User):
-    phone_number = models.CharField(
-        max_length=20, blank=True, null=True)
-    country = models.CharField(max_length=10, default="Zambia")
-    address = models.CharField(
-        max_length=255, default="", blank=True, null=True)
-    company = models.CharField(
-        max_length=255, default="", blank=True, null=True)
-    city = models.CharField(
-        max_length=9, choices=CITY_CHOICES, default='Kitwe')
-    category = models.CharField(max_length=9, default='Member')
-    profile_image = models.ImageField(
-        upload_to='img/profiles/', blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    REQUIRED_FIELDS = ['phone_number']
-
-    @staticmethod
-    def get_user_by_id(ids):
-        return LipilaUser.objects.filter(id__in=str(ids))
-
-
-class LipilaUserEmail(models.Model):
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20, default='', null=True, blank=True)
-    subject = models.CharField(max_length=255)
-    message = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.name} {self.email} {self.subject}"
-
-    class Meta:
-        get_latest_by = 'timestamp'
-    
+   
 
 class ContactInfo(models.Model):
     street = models.CharField(max_length=200)
@@ -83,7 +47,7 @@ class ContactInfo(models.Model):
         get_latest_by = 'timestamp'
 
 
-class LipilaHome(models.Model):
+class HeroInfo(models.Model):
     hero_image = models.ImageField(
         upload_to='img/profiles/', blank=True, null=True)
     message = models.TextField()
@@ -97,7 +61,7 @@ class LipilaHome(models.Model):
         get_latest_by = 'timestamp'
 
 
-class LipilaAbout(models.Model):
+class AboutInfo(models.Model):
     title = models.CharField(max_length=200)
     body = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -105,11 +69,26 @@ class LipilaAbout(models.Model):
     class Meta:
         get_latest_by = 'timestamp'
 
-class Testimonial(models.Model):
+class UserTestimonial(models.Model):
     user = models.ForeignKey(
-        LipilaUser, on_delete=models.CASCADE)
+        User, on_delete=models.CASCADE)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        get_latest_by = 'timestamp'
+
+
+class CustomerMessage(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, default='', null=True, blank=True)
+    subject = models.CharField(max_length=255)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} {self.email} {self.subject}"
 
     class Meta:
         get_latest_by = 'timestamp'
