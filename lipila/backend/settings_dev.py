@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     # My apps
     'api',
     'business',
-    'creators',
+    'patron',
     'LipilaInfo',
 
     # Default apps

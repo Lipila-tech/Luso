@@ -1,6 +1,6 @@
 
 from django.core.management.base import BaseCommand
-from creators.models import Tier
+from patron.models import Tier
 
 class Command(BaseCommand):
     help = 'Creates default tiers'

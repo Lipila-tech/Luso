@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
-from creators.models import CreatorUser
+from patron.models import CreatorUser
 
 # class LoginForm(forms.ModelForm):
 #     class Meta:

@@ -4,7 +4,7 @@ from business.models import Product, BNPL, Student
 from LipilaInfo.models import (
     ContactInfo, LipilaUser, LipilaUserEmail,
     LipilaHome, Testimonial, LipilaAbout)
-from creators.models import Tier, Contribution, Patron, CreatorUser
+from patron.models import Tier, Contribution, Patron, CreatorUser
 
 class BusinessUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'phone_number', 'bio', 'business_category',

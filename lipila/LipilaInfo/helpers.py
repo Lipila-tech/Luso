@@ -4,7 +4,7 @@ Helper Functions
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_list_or_404
 from business.models import BusinessUser
-from creators.models import CreatorUser, Patron
+from patron.models import CreatorUser, Patron
 from LipilaInfo.models import (
     LipilaUser, ContactInfo, LipilaHome, LipilaUserEmail, Testimonial, LipilaAbout)
 from django.contrib.auth.models import User
@@ -150,7 +150,7 @@ def check_if_user_is_patron(user, creator):
 
     else:
         # If the user has a Patron, check if it's associated with the creator
-        return patron.creators.filter(pk=creator.pk).exists()
+        return patron.patron.filter(pk=creator.pk).exists()
 
 
 def apology(request, data=None, user=None):

@@ -6,7 +6,7 @@ from django.contrib.messages import get_messages
 from unittest import mock
 # Custom modules
 from business.models import BusinessUser
-from creators.models import CreatorUser
+from patron.models import CreatorUser
 from LipilaInfo.models import LipilaUser, Patron, ContactInfo, LipilaHome, Testimonial
 from LipilaInfo.helpers import get_user_object, check_if_user_is_patron
 from LipilaInfo.forms.forms import ContactForm
@@ -86,7 +86,7 @@ class TestJoinView(TestCase):
     def test_get_logged_in_patron_subscribed(self):
         """Test GET request, logged in as patron and already subscribed"""
         patron = Patron.objects.create(user=self.user_object)
-        patron.creators.add(self.creator_object)
+        patron.patron.add(self.creator_object)
         self.client.login(username='test_user', password='password123')
         response = self.client.get(reverse(
             'join', kwargs={'user': self.user_object, 'creator': self.creator_object}))
@@ -128,16 +128,16 @@ class TestJoinView(TestCase):
 
         # Check for successful form submission and redirection
         self.assertEqual(response.status_code, 302)
-        # Redirect to creators list after successful join
-        self.assertEqual(response.url, reverse('creators'))
-        self.assertTemplateUsed('LipilaInfo/admin/creators.html')
+        # Redirect to patron list after successful join
+        self.assertEqual(response.url, reverse('patron'))
+        self.assertTemplateUsed('LipilaInfo/admin/patron.html')
         # Assert that Patron object is created and saved
         patron = Patron.objects.get(user=self.user_object)
         # Check if Patron has a primary key (saved)
         self.assertTrue(patron.pk is not None)
 
-        # # Assert that the creator is added to the patron's creators
-        # self.assertTrue(patron.creators.filter(pk=self.creator_object.pk).exists())
+        # # Assert that the creator is added to the patron's patron
+        # self.assertTrue(patron.patron.filter(pk=self.creator_object.pk).exists())
 
         # # Verify that check_if_user_is_patron was called with expected arguments
         # mock_check.assert_called_once_with(self.user_object, self.creator_object)
@@ -171,8 +171,8 @@ class GetUserObjectTest(TestCase):
         # Create test users of each type (replace with your data)
         self.business_user = BusinessUser.objects.create_user(
             username='business_user', password='business_password', is_active=True)
-        self.creators_user = CreatorUser.objects.create_user(
-            username='creators_user', password='creators_password', is_active=True)
+        self.patron_user = CreatorUser.objects.create_user(
+            username='patron_user', password='patron_password', is_active=True)
         self.lipila_user = LipilaUser.objects.create_user(
             username='lipila_user', password='lipila_password', is_active=True)
 
@@ -182,9 +182,9 @@ class GetUserObjectTest(TestCase):
         self.assertTrue(type(user_object), BusinessUser)
         self.assertEqual(type(user_object), BusinessUser)
 
-    def test_get_creators_user_object(self):
+    def test_get_patron_user_object(self):
         """Test the successful gettting of a CreatorUser and return Object"""
-        user_object = get_user_object(self.creators_user)
+        user_object = get_user_object(self.patron_user)
         self.assertTrue(type(user_object), CreatorUser)
 
     def test_get_lipila_user_object(self):
@@ -204,8 +204,8 @@ class LoginViewTest(TestCase):
         # Create test users of each type (replace with your data)
         self.business_user = BusinessUser.objects.create_user(
             username='business_user', password='business_password', is_active=True)
-        self.creators_user = CreatorUser.objects.create_user(
-            username='creators_user', password='creators_password', is_active=True)
+        self.patron_user = CreatorUser.objects.create_user(
+            username='patron_user', password='patron_password', is_active=True)
         self.lipila_user = LipilaUser.objects.create_user(
             username='lipila_user', password='lipila_password', is_active=True)
 
@@ -218,14 +218,14 @@ class LoginViewTest(TestCase):
         self.assertRedirects(response, reverse(
             'dashboard', kwargs={'user': 'business_user'}))
 
-    def test_login_success_creators_user(self):
-        """Test successful login for CreatorsUser and redirect to creators dashboard"""
-        login_data = {'username': 'creators_user',
-                      'password': 'creators_password'}
+    def test_login_success_patron_user(self):
+        """Test successful login for PatronUser and redirect to patron dashboard"""
+        login_data = {'username': 'patron_user',
+                      'password': 'patron_password'}
         response = self.client.post(reverse('login'), login_data)
         self.assertEqual(response.status_code, 302)  # Check for redirect
         self.assertRedirects(response, reverse(
-            'dashboard', kwargs={'user': 'creators_user'}))
+            'dashboard', kwargs={'user': 'patron_user'}))
 
     def test_login_success_lipila_user(self):
         """Test successful login for LipilaUser and redirect to lipila dashboard"""

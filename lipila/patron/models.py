@@ -96,7 +96,7 @@ class CreatorUser(models.Model):
     bio = models.TextField(blank=True, null=True)
     account_number = models.CharField(
         max_length=20, blank=True, null=True)
-    # subscribers = models.ManyToManyField(Patron, related_name='subscribed_creators')
+    # subscribers = models.ManyToManyField(Patron, related_name='subscribed_patron')
     city = models.CharField(
         max_length=9, choices=CITY_CHOICES, default='Kitwe')
     profile_image = models.ImageField(

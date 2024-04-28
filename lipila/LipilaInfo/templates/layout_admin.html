@@ -199,8 +199,8 @@
                 </a>
                 <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'creators' %}">
-                            <i class="bi bi-circle"></i><span>Creators</span>
+                        <a href="{% url 'patron' %}">
+                            <i class="bi bi-circle"></i><span>Patron</span>
                         </a>
                     </li>
                     <li>
@@ -231,7 +231,7 @@
                 </a>
                 <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'creators:patrons' user=user %}">
+                        <a href="{% url 'patron:patrons' user=user %}">
                             <i class="bi bi-circle"></i><span>Patrons</span>
                         </a>
                     </li>

@@ -1,26 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views import View
-from creators.forms.forms import SignupForm
+from patron.forms.forms import SignupForm
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view, renderer_classes
-from creators.models import CreatorUser, Patron
+from patron.models import CreatorUser, Patron
 from business.models import Product
 
 
 def index(request):
-    return render(request, 'creators/index.html')
+    return render(request, 'patron/index.html')
 
 def contribute(request, user):
-    return render(request, 'creators/admin/actions/contribute.html')
+    return render(request, 'patron/admin/actions/contribute.html')
 
 
 class SignupView(View):
 
     def get(self, request):
         form = SignupForm()
-        context = {'form': form, 'category': 'Creators'}
+        context = {'form': form, 'category': 'Patron'}
 
         return render(request, 'registration/signup.html', context)
 
@@ -50,10 +50,10 @@ class SignupView(View):
 def list_patrons(request, user):
     context = {}
     user_object = get_object_or_404(CreatorUser, username=request.user)
-    patrons = Patron.objects.filter(creators=user_object.id)
+    patrons = Patron.objects.filter(patron=user_object.id)
     context['patrons'] = patrons
     context['user'] = user_object
-    return render(request, 'creators/admin/log/patrons.html', context)
+    return render(request, 'patron/admin/log/patrons.html', context)
 
 
 @login_required
@@ -63,4 +63,4 @@ def log_products(request, user):
     products = Product.objects.filter(owner=user_object.id)
     context['products'] = products
     context['user'] = user_object
-    return render(request, 'creators/admin/log/products.html', context)
+    return render(request, 'patron/admin/log/products.html', context)

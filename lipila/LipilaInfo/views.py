@@ -17,9 +17,9 @@ from LipilaInfo.helpers import (
 from LipilaInfo.models import ContactInfo, LipilaUser
 from LipilaInfo.forms.forms import ContactForm, SignupForm, EditLipilaUserForm
 from business.forms.forms import EditBusinessUserForm
-from creators.forms.forms import EditCreatorUserForm
+from patron.forms.forms import EditCreatorUserForm
 from business.models import BusinessUser, Student
-from creators.models import CreatorUser, Patron
+from patron.models import CreatorUser, Patron
 
 
 # Public Views
@@ -39,16 +39,16 @@ def index(request):
     return render(request, 'UI/index.html', context)
 
 
-def creators(request):
+def patron(request):
     context = {}
-    creators = CreatorUser.objects.all()
+    patron = CreatorUser.objects.all()
     # user_object = get_user_object(user)
-    context['creators'] = creators
+    context['patron'] = patron
     if request.user.is_authenticated:
         # context['user'] = user_object
-        return render(request, 'LipilaInfo/admin/creators.html', context)
+        return render(request, 'LipilaInfo/admin/patron.html', context)
     else:
-        return render(request, 'UI/creators.html', context)
+        return render(request, 'UI/patron.html', context)
 
 
 @login_required
@@ -74,12 +74,12 @@ def join(request, creator, user):
             
             if not created:  # User already a Patron
                 # Check if already subscribed (implement logic based on your model fields)
-                if patron.creators.filter(pk=creator_object.pk).exists():
+                if patron.patron.filter(pk=creator_object.pk).exists():
                     
                     messages.info(request, f"You're already subscribed to {creator_object.user}.")
                 else:
                     # Subscribe to creator
-                    patron.creators.add(creator_object)
+                    patron.patron.add(creator_object)
                     
                     messages.success(request, f"Subscribed to {creator_object.username}")
             else:
@@ -87,7 +87,7 @@ def join(request, creator, user):
                 
                 messages.success(request, f"Subscribed to {creator_object.username}")
 
-            return redirect('creators')
+            return redirect('patron')
     patron_exists = check_if_user_is_patron(user_obj, creator_object)
     
     
@@ -232,7 +232,7 @@ def profile(request, user):
         return render(request, 'business/admin/profile/users-profile.html', context)
     elif isinstance(user_object, CreatorUser):
         context['user'] = user_object
-        return render(request, 'creators/admin/profile/users-profile.html', context)
+        return render(request, 'patron/admin/profile/users-profile.html', context)
     elif isinstance(user_object, LipilaUser):
         context['user'] = user_object
         return render(request, 'LipilaInfo/admin/profile/users-profile.html', context)
@@ -254,7 +254,7 @@ class UpdateUserInfoView(View):
         elif isinstance(user_object, CreatorUser):
             form = EditCreatorUserForm(instance=user_object)
             return render(request,
-                          'creators/admin/profile/edit_user_info.html',
+                          'patron/admin/profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
         elif isinstance(user_object, LipilaUser):
             form = EditLipilaUserForm(instance=user_object)
@@ -328,7 +328,7 @@ def dashboard(request, user):
         user_object = CreatorUser.objects.get(username=user)
         context['user'] = user_object
         # context['patrons'] = user_objects[1]
-        return render(request, 'creators/admin/index.html', context)
+        return render(request, 'patron/admin/index.html', context)
     elif isinstance(user_object, LipilaUser):
         user_object = LipilaUser.objects.get(username=user)
         context['user'] = user_object
@@ -348,7 +348,7 @@ def withdraw(request, user):
     if isinstance(user_object, BusinessUser):
         return render(request, 'business/admin/actions/withdraw.html', context)
     elif isinstance(user_object, CreatorUser):
-        return render(request, 'creators/admin/actions/withdraw.html', context)
+        return render(request, 'patron/admin/actions/withdraw.html', context)
     else:
         return render(request, 'LipilaInfo/admin/actions/withdraw.html', context)
 
@@ -361,6 +361,6 @@ def history(request, user):
     if isinstance(user_object, BusinessUser):
         return render(request, 'business/admin/log/withdraw.html', context)
     elif isinstance(user_object, CreatorUser):
-        return render(request, 'creators/admin/log/withdraw.html', context)
+        return render(request, 'patron/admin/log/withdraw.html', context)
     else:
         return render(request, 'LipilaInfo/admin/log/withdraw.html', context)
