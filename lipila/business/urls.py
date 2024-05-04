@@ -7,10 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),   
-        
-     # Authenticated User Accounts Urls
-     path('accounts/signup/', views.SignupView.as_view(), name='signup'),
-          
+                  
      # User Logs URLS
      path('transfer-history/', views.log_transfer, name='log_transfer'),
 

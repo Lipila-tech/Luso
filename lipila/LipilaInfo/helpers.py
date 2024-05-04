@@ -38,14 +38,14 @@ def get_user_emails():
     return data
 
 
-def get_lipila_home_page_info() -> dict:
+def get_lipila_index_page_info() -> dict:
     """
-    Get the home page info.
+    Get the index page info.
     """
     data = {'lipila':''}
     try:
-        lipila_home_info = HeroInfo.objects.latest()
-        data['lipila'] = lipila_home_info
+        lipila_index_info = HeroInfo.objects.latest()
+        data['lipila'] = lipila_index_info
     except HeroInfo.DoesNotExist:
         pass
     return data

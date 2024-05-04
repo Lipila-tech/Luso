@@ -1,12 +1,9 @@
 {% extends 'layout_auth.html' %}
 {% load static %}
-{% load custom_filters %}
 {% load crispy_forms_tags %}
 
 {% block title %} Login {% endblock %}
 
-{% block content%}
-{% endblock %}
 {% block main %}
 <div class="col-md-8">
 
@@ -36,7 +33,7 @@
 
     {# Assumes you set up the password_reset view in your URLconf #}
     <a class="small" href="{% url 'password_reset' %}">Forgot password?</a>
-    <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'signup' %}"
+    <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'accounts:signup' %}"
             style="color: #393f81;">Register here</a></p>
 
 </div>

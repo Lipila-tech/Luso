@@ -10,7 +10,7 @@ from ...LipilaInfo.helpers import set_context
 class SignupViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.url = reverse('signup')
+        self.url = reverse('accounts:signup')
 
     def test_get(self):
         response = self.client.get(self.url)

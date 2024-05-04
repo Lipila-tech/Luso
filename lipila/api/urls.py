@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 router.register(r'payments', views.LipilaCollectionView, basename='payments')
-router.register(r'signup', views.SignupViewSet, basename='signup')
+router.register(r'register', views.SignupViewSet, basename='api-signup')
 
 
 urlpatterns = [

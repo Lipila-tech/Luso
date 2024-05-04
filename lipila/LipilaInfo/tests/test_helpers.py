@@ -6,7 +6,7 @@ from LipilaInfo.models import (
 from LipilaInfo.helpers import (
     get_lipila_contact_info,
     get_user_emails,
-    get_lipila_home_page_info,
+    get_lipila_index_page_info,
     get_testimonials,
 )
 
@@ -45,21 +45,21 @@ class HelperFunctionTests(TestCase):
         self.assertEqual(context['user_messages'].count(), 1)
 
 
-    def test_get_lipila_home_page_info_success(self):
-        """Test get_lipila_home_page_info returns homepage info"""
+    def test_get_lipila_index_page_info_success(self):
+        """Test get_lipila_index_page_info returns indexpage info"""
         HeroInfo.objects.create(
             message="Test message",
             slogan="Test slogan",
         )  
-        context = get_lipila_home_page_info()
+        context = get_lipila_index_page_info()
         self.assertIn('lipila', context)
         self.assertIsInstance(context['lipila'], HeroInfo)
         self.assertEqual(context['lipila'].message, 'Test message')
         self.assertEqual(context['lipila'].slogan, 'Test slogan')
 
-    def test_get_lipila_home_page_info_no_data(self):
-        """Test get_lipila_home_page_info with no HeroInfo"""        
-        context = get_lipila_home_page_info()
+    def test_get_lipila_index_page_info_no_data(self):
+        """Test get_lipila_index_page_info with no HeroInfo"""        
+        context = get_lipila_index_page_info()
         self.assertEqual(context, {})
 
     def test_get_testimonials(self):

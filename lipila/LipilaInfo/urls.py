@@ -13,8 +13,6 @@ urlpatterns = [
      path('contact', views.contact, name='contact'),
      
      # Accounts URLS
-     path('accounts/signup/', views.SignupView.as_view(), name='signup'),
-     path('accounts/login/', views.login, name='login'),
      path('accounts/profile/<str:user>', views.profile, name='profile'),
      path('accounts/profile/<str:user>/edit', login_required(views.UpdateUserInfoView.as_view()), name='update_profile'),
      # Authenticated User Accounts Urls
