@@ -3,18 +3,6 @@ from django.contrib.auth.forms import UserChangeForm
 from django import forms
 from accounts.models import CreatorProfile, PatronProfile
 
-# class LoginForm(forms.ModelForm):
-#     class Meta:
-#         model = CreatorProfile
-#         fields = ('username', 'password')
-
-
-class SignupForm(forms.ModelForm):
-    class Meta:
-        model = CreatorProfile
-        # fields = ('creator_category', 'username', 'email', 'password')
-        fields = ('creator_category',)
-
 
 class EditCreatorProfileForm(UserChangeForm):
     class Meta:
