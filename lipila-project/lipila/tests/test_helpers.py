@@ -8,19 +8,31 @@ from lipila.helpers import (
     get_user_emails,
     get_lipila_index_page_info,
     get_testimonials,
+    get_user_object
 )
 
 
 class HelperFunctionTests(TestCase):
+    def test_get_user_object_invalid(self):
+        """Test get_user_object returns None"""
+        user = 'testuser'
+        user_object = get_user_object(user)
+        self.assertEqual(user_object, None)
+
+    def test_get_user_object_valid(self):
+        """Test get_user_object returns a User object"""
+        user = User.objects.create_user('testuser', 'user@email.com', 'testpasss')
+        user_object = get_user_object(user)
+        self.assertTrue(isinstance(user_object, User))
 
     def test_get_lipila_contact_info_success(self):
+        """Test get_lipila_contact_info returns contact info"""
         ContactInfo.objects.create(
             street="Test Street",
             location="Test Location",
             phone1="123-456-7890",
             email1="test@example.com",
         )
-        """Test get_lipila_contact_info returns contact info"""
         context = get_lipila_contact_info()
         self.assertIn('contact', context)
         self.assertIsInstance(context['contact'], ContactInfo)
@@ -28,7 +40,7 @@ class HelperFunctionTests(TestCase):
     def test_get_lipila_contact_info_no_data(self):
         """Test get_lipila_contact_info with no ContactInfo"""
         context = get_lipila_contact_info()
-        self.assertEqual(context, {})
+        self.assertEqual(context, {'contact': ''})
 
     def test_get_user_emails(self):
         """Test get_user_emails returns all user emails"""
@@ -60,7 +72,7 @@ class HelperFunctionTests(TestCase):
     def test_get_lipila_index_page_info_no_data(self):
         """Test get_lipila_index_page_info with no HeroInfo"""        
         context = get_lipila_index_page_info()
-        self.assertEqual(context, {})
+        self.assertEqual(context, {'lipila': ''})
 
     def test_get_testimonials(self):
         """Test get_testimonials returns all testimonials"""

@@ -109,8 +109,7 @@ def get_user_object(user: str):
         user_object = User.objects.get(username=user)
         return user_object
     except User.DoesNotExist:
-        data['status'] = 404
-        return data
+        return None
 
 
 def check_if_user_is_patron(user, creator):
@@ -166,48 +165,3 @@ def apology(request, data=None, user=None):
         return HttpResponseBadRequest(
             render(request, template_name, data)
         )
-
-
-def skip_unless(condition, reason):
-    """
-    A custom skip decorator that skips a test unless the given condition is True.
-
-    Args:
-        condition: A callable that returns True if the test should run, False otherwise.
-        reason: A string explaining why the test is being skipped.
-
-    Returns:
-        A decorator function that can be used to decorate test cases.
-    """
-    def decorator(test_func):
-        @wraps(test_func)
-        def wrapper(*args, **kwargs):
-            if not condition():
-                raise TestCase.skipTest(reason)
-            return test_func(*args, **kwargs)
-        return wrapper
-    return decorator
-
-
-def set_data(request, user):
-    data = {}
-    try:
-        if not user:
-            raise ValueError('Username missing')
-        else:
-            user = BusinessUser.objects.get(username=user)
-            data['status'] = 200
-            data['user'] = user
-    except ValueError:
-        data['status'] = 400
-        data['message'] = 'User ID must be of type int'
-        return apology(request, data)
-    except TypeError:
-        data['status'] = 400
-        data['message'] = 'Error, User argument missing'
-        return apology(request, data)
-    except BusinessUser.DoesNotExist:
-        data['status'] = 404
-        data['message'] = 'User Not Found!'
-        return apology(request, data)
-    return data

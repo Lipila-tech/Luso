@@ -1,18 +1,13 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.urls import reverse
 from django.shortcuts import render, redirect
-from rest_framework.decorators import api_view, renderer_classes
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-from datetime import datetime
 # Custom Models
 from lipila.helpers import (
     apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info)
-from lipila.models import ContactInfo
 from lipila.forms.forms import ContactForm
 from patron.models import CreatorUser, Patron
 
@@ -137,7 +132,7 @@ def contact(request):
             request, "Failed to send message")
         form = ContactForm()
         context['form'] = form
-    return render(request, 'UI/index.html', context)
+    return render(request, 'index.html', context)
 
 @login_required
 def withdraw(request, user):
@@ -150,7 +145,6 @@ def withdraw(request, user):
         return render(request, 'patron/admin/actions/withdraw.html', context)
     else:
         return render(request, 'lipila/admin/actions/withdraw.html', context)
-
 
 @login_required
 def history(request, user):

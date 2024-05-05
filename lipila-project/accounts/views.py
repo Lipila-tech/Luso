@@ -27,7 +27,7 @@ def activate(request, uidb64, token):
         user.profile.signup_confirmation = True
         user.save()
         login(request, user)
-        return redirect('dashboard')
+        return redirect('profile')
     else:
         return render(request, 'registration/activation_invalid.html')
 

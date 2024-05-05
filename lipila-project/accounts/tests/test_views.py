@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
-from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib import messages
 
 # custom models
