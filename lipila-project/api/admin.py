@@ -5,7 +5,6 @@ from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
 from patron.models import Tier, Contribution, PatronUser, CreatorUser
-from accounts.models import Profile
 
 
 class BusinessUserAdmin(admin.ModelAdmin):
@@ -91,7 +90,6 @@ class BNPLAdmin(admin.ModelAdmin):
 admin.site.register(PatronUser, PatronAdmin)
 admin.site.register(CreatorUser, CreatorUserAdmin)
 admin.site.register(Tier, TierAdmin)
-admin.site.register(Profile)
 admin.site.register(Contribution, ContributionAdmin)
 admin.site.register(BusinessUser, BusinessUserAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)

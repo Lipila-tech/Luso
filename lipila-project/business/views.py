@@ -1,21 +1,18 @@
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
-from django.contrib.auth.forms import AuthenticationForm
 
 # My Models
 from api.models import BusinessUser
 from lipila.helpers import apology, get_user_object
 from .forms.forms import (DisburseForm, AddProductForm,
-                          SignupForm, EditBusinessUserForm,
+                          SignupForm,
                           AddStudentForm)
-from datetime import datetime
 from business.models import Product, Student
 from patron.models import CreatorUser
 

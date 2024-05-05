@@ -24,7 +24,6 @@ def activate(request, uidb64, token):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
-        user.profile.signup_confirmation = True
         user.save()
         login(request, user)
         return redirect('profile')
@@ -37,9 +36,6 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()
-            user.profile.first_name = form.cleaned_data.get('first_name')
-            user.profile.last_name = form.cleaned_data.get('last_name')
-            user.profile.email = form.cleaned_data.get('email')
             user.is_active = False
             user.save()
             current_site = get_current_site(request)

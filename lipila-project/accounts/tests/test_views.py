@@ -31,7 +31,6 @@ class ViewTests(TestCase):
 
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
-        self.assertTrue(self.user.profile.signup_confirmation)
 
     def test_activate_invalid_token(self):
         response = self.client.get(reverse('accounts:activate', kwargs={
