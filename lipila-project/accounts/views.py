@@ -53,21 +53,3 @@ def signup_view(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
-
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user:
-            user_object = User.objects.get(username=user)
-            login(request, user_object)
-            messages.success(request, "Logged in")
-            return redirect(reverse('dashboard', kwargs={'user': username}))
-        else:
-            form = AuthenticationForm()
-            return render(request, 'registration/login.html', {'form': form})
-    else:
-        form = AuthenticationForm()
-    return render(request, 'registration/login.html', {'form': form})

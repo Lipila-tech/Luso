@@ -5,13 +5,12 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.contrib import messages
-
 # custom modules
 from accounts.helpers import basic_auth_encode, basic_auth_decode
 from accounts.views import login_view
 
 
-class ViewTests(TestCase):
+class AccountsViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username='testuser', email='test@example.com', password='testpassword')
@@ -66,22 +65,3 @@ class ViewTests(TestCase):
         current_site = get_current_site(response.wsgi_request)
         expected_activation_link = f'http://{current_site.domain}{reverse("accounts:activate", kwargs={"uidb64": basic_auth_encode(new_user.pk), "token": default_token_generator.make_token(new_user)})}'
         self.assertIn(expected_activation_link, mail.outbox[0].body)
-
-
-# class LoginViewTest(TestCase):
-#     def setUp(self):
-#         self.factory = RequestFactory()
-#         self.user = User.objects.create_user(
-#             username='testuser', email='test@example.com', password='testpassword')
-
-#     def test_login_view(self):
-#         url = reverse('login')
-#         request = self.factory.post(
-#             url, {'username': 'testuser', 'password': 'testpassword'})
-#         request.user = self.user
-#         response = login_view(request)
-
-#         # Check if the view redirects
-#         self.assertEqual(response.status_code, 302)
-#         # Ensure redirection to the index page
-#         self.assertRedirects(response, reverse('index'))
