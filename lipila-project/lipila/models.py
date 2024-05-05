@@ -12,7 +12,7 @@ STATUS_CHOICES = (
 USER_CATEGORY_CHOICES = (
     ('tick', 'Entrepreneur'),
     ('creator', 'Creator'),
-    ('patron', 'PatronUser'),
+    ('patron', 'PatronProfile'),
     ('other', 'Other'),
 )
 

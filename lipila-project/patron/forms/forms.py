@@ -1,24 +1,24 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
-from patron.models import CreatorUser, PatronUser
+from accounts.models import CreatorProfile, PatronProfile
 
 # class LoginForm(forms.ModelForm):
 #     class Meta:
-#         model = CreatorUser
+#         model = CreatorProfile
 #         fields = ('username', 'password')
 
 
 class SignupForm(forms.ModelForm):
     class Meta:
-        model = CreatorUser
+        model = CreatorProfile
         # fields = ('creator_category', 'username', 'email', 'password')
         fields = ('creator_category',)
 
 
-class EditCreatorUserForm(UserChangeForm):
+class EditCreatorProfileForm(UserChangeForm):
     class Meta:
-        model = CreatorUser
+        model = CreatorProfile
         fields = [
             'profile_image',
             'account_number',
@@ -36,9 +36,9 @@ class EditCreatorUserForm(UserChangeForm):
         }
 
 
-class EditPatronUserForm(UserChangeForm):
+class EditPatronProfileForm(UserChangeForm):
     class Meta:
-        model = PatronUser
+        model = PatronProfile
         fields = [
             'profile_image',
             'account_number',

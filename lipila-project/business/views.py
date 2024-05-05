@@ -14,7 +14,7 @@ from .forms.forms import (DisburseForm, AddProductForm,
                           SignupForm,
                           AddStudentForm)
 from business.models import Product, Student
-from patron.models import CreatorUser
+from accounts.models import CreatorProfile
 
 
 def index(request):
@@ -102,7 +102,7 @@ class CreateProductView(View):
                 request, "Product Added Successfully.")
             if isinstance(user_object, BusinessUser):
                 return redirect('business:log_products')
-            elif isinstance(user_object, CreatorUser):
+            elif isinstance(user_object, CreatorProfile):
                 return redirect('patron:history', kwags={'user':user_object})
         else:
             messages.error(
@@ -129,7 +129,7 @@ class EditProductView(View):
                 request, "Product Edited Successfully.")
             if isinstance(user_object, BusinessUser):
                 return redirect('business:log_products')
-            elif isinstance(user_object, CreatorUser):
+            elif isinstance(user_object, CreatorProfile):
                 return redirect('patron:history', kwags={'user':user_object})
         else:
             messages.error(
@@ -153,7 +153,7 @@ class DeleteProductView(View):
             request, "Product Deleted Successfully.")
         if isinstance(user_object, BusinessUser):
             return redirect('business:log_products')
-        elif isinstance(user_object, CreatorUser):
+        elif isinstance(user_object, CreatorProfile):
             return redirect('patron:history', kwags={'user':user_object})
 
 

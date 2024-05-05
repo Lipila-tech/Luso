@@ -8,10 +8,10 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view, renderer_classes
 # custom modules
-from patron.models import CreatorUser, PatronUser
+from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
-from patron.forms.forms import EditPatronUserForm, EditCreatorUserForm
+from patron.forms.forms import EditPatronProfileForm, EditCreatorProfileForm
 
 
 def index(request):
@@ -38,7 +38,7 @@ class EditUserProfile(LoginRequiredMixin, View):
     def get(self, request, user, *args, **kwargs):
         user_object = get_user_object(user)
         if isinstance(user_object, User):
-            form = EditCreatorUserForm(instance=user_object)
+            form = EditCreatorProfileForm(instance=user_object)
             return render(request,
                           'patron/admin/profile/edit_user_info.html',
                           {'form': form, 'user': user_object})
@@ -50,7 +50,7 @@ class EditUserProfile(LoginRequiredMixin, View):
     def post(self, request, user, *args, **kwargs):
         user_object = get_user_object(user)
         if isinstance(user_object, User):
-            form = EditCreatorUserForm(
+            form = EditCreatorProfileForm(
                 request.POST, request.FILES, instance=user_object)
             if form.is_valid():
                 form.save()
@@ -93,7 +93,7 @@ def dashboard(request, user):
 
 def patron(request):
     context = {}
-    patron = CreatorUser.objects.all()
+    patron = CreatorProfile.objects.all()
     # user_object = get_user_object(user)
     context['patron'] = patron
     if request.user.is_authenticated:
@@ -119,8 +119,8 @@ def join(request, creator, user):
 @login_required
 def list_patrons(request, user):
     context = {}
-    user_object = get_object_or_404(CreatorUser, username=request.user)
-    patrons = PatronUser.objects.filter(patron=user_object.id)
+    user_object = get_object_or_404(CreatorProfile, username=request.user)
+    patrons = PatronProfile.objects.filter(patron=user_object.id)
     context['patrons'] = patrons
     context['user'] = user_object
     return render(request, 'patron/admin/log/patrons.html', context)
@@ -129,7 +129,7 @@ def list_patrons(request, user):
 @login_required
 def log_products(request, user):
     context = {}
-    user_object = get_object_or_404(CreatorUser, username=request.user)
+    user_object = get_object_or_404(CreatorProfile, username=request.user)
     products = Product.objects.filter(owner=user_object.id)
     context['products'] = products
     context['user'] = user_object

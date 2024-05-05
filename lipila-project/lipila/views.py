@@ -9,7 +9,7 @@ from lipila.helpers import (
     apology, get_lipila_contact_info, get_user_object,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info)
 from lipila.forms.forms import ContactForm
-from patron.models import CreatorUser, PatronUser
+from accounts.models import CreatorProfile, PatronProfile
 
 
 # Public Views
@@ -79,9 +79,9 @@ def withdraw(request, user):
     context = {}
     user_object = get_user_object(request.user)
     context['user'] = user_object
-    if isinstance(user_object, PatronUser):
+    if isinstance(user_object, PatronProfile):
         return render(request, 'business/admin/actions/withdraw.html', context)
-    elif isinstance(user_object, CreatorUser):
+    elif isinstance(user_object, CreatorProfile):
         return render(request, 'patron/admin/actions/withdraw.html', context)
     else:
         return render(request, 'lipila/admin/actions/withdraw.html', context)
@@ -91,9 +91,9 @@ def history(request, user):
     context = {}
     user_object = get_user_object(request.user)
     context['user'] = user_object
-    if isinstance(user_object, PatronUser):
+    if isinstance(user_object, PatronProfile):
         return render(request, 'business/admin/log/withdraw.html', context)
-    elif isinstance(user_object, CreatorUser):
+    elif isinstance(user_object, CreatorProfile):
         return render(request, 'patron/admin/log/withdraw.html', context)
     else:
         return render(request, 'lipila/admin/log/withdraw.html', context)

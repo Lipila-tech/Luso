@@ -4,7 +4,8 @@ from business.models import Product, BNPL, Student
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
-from patron.models import Tier, Contribution, PatronUser, CreatorUser
+from patron.models import Tier, Contribution
+from accounts.models import PatronProfile, CreatorProfile
 
 
 class BusinessUserAdmin(admin.ModelAdmin):
@@ -17,12 +18,12 @@ class StudentAdmin(admin.ModelAdmin):
                     'school', 'address', 'grade')
 
 
-class CreatorUserAdmin(admin.ModelAdmin):
-    list_display = ('user', 'bio', 'account_number')
+# class CreatorProfileAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'bio', 'account_number')
 
 
-class PatronAdmin(admin.ModelAdmin):
-    list_display = ('user', 'account_number')
+# class PatronAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'account_number')
 
 
 class TierAdmin(admin.ModelAdmin):
@@ -87,8 +88,8 @@ class BNPLAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(PatronUser, PatronAdmin)
-admin.site.register(CreatorUser, CreatorUserAdmin)
+# admin.site.register(PatronProfile, PatronAdmin)
+# admin.site.register(CreatorProfile, CreatorProfileAdmin)
 admin.site.register(Tier, TierAdmin)
 admin.site.register(Contribution, ContributionAdmin)
 admin.site.register(BusinessUser, BusinessUserAdmin)

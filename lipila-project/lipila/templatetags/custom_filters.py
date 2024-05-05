@@ -1,6 +1,6 @@
 from django import template
 from django.contrib.auth.models import User
-from patron.models import CreatorUser
+from accounts.models import CreatorProfile
 
 register = template.Library()
 
@@ -49,7 +49,7 @@ def get_transactions(value):
 
 @register.filter
 def get_patron(value):
-    patron = CreatorUser.objects.count()
+    patron = CreatorProfile.objects.count()
     return patron
 
 @register.simple_tag

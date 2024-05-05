@@ -76,44 +76,6 @@ class User(AbstractBaseUser):
         return self.email
 
 
-class PatronUser(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
-    subscribed = models.ManyToManyField(
-        'CreatorUser', related_name='subscribers')
-    account_number = models.CharField(
-        max_length=20, blank=True, null=True)
-    city = models.CharField(
-        max_length=9, choices=CITY_CHOICES, default='Kitwe')
-    profile_image = models.ImageField(
-        upload_to='img/profiles/', blank=True, null=True)
-
-
-class CreatorUser(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
-    bio = models.TextField(blank=True, null=True)
-    account_number = models.CharField(
-        max_length=20, blank=True, null=True)
-    # subscribers = models.ManyToManyField(PatronUser, related_name='subscribed_patron')
-    city = models.CharField(
-        max_length=9, choices=CITY_CHOICES, default='Kitwe')
-    profile_image = models.ImageField(
-        upload_to='img/profiles/', blank=True, null=True)
-    category = models.CharField(max_length=9, default='Creator')
-    creator_category = models.CharField(
-        max_length=30, choices=CREATOR_CATEGORY_CHOICES, default='other')
-    facebook_url = models.CharField(
-        max_length=250, null=True, blank=True, default='')
-    linkedin_url = models.CharField(
-        max_length=250, null=True, blank=True, default='')
-    twitter_url = models.CharField(
-        max_length=250, null=True, blank=True, default='')
-    instagram_url = models.CharField(
-        max_length=250, null=True, blank=True, default='')
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-
 class Tier(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)

@@ -78,7 +78,7 @@ def get_user_object(user: str):
         user: The user object to check.
 
     Returns:
-        A user_object instance(BusinessUser or CreatorUser or LipilauSE or)
+        A user_object instance(BusinessUser or CreatorProfile or LipilauSE or)
          otherwise returns 404.
     """
     data = {}
