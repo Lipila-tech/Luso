@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # Custom Models
 from lipila.helpers import (
-    apology, get_lipila_contact_info, get_user_object, check_if_user_is_patron,
+    apology, get_lipila_contact_info, get_user_object,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info)
 from lipila.forms.forms import ContactForm
 from patron.models import CreatorUser, PatronUser

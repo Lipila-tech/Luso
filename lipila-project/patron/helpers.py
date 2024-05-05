@@ -35,7 +35,7 @@ def get_creators() -> List[CreatorUser]:
     """
     creator_objects = CreatorUser.objects.all()
     if not creator_objects:
-        raise NoPatronsFoundError("No creator objects found.")
+        raise NoCreatorsFoundError("No creator objects found.")
     return creator_objects
 
 def get_patron_or_creator(user:str)-> Union[PatronUser, CreatorUser]:

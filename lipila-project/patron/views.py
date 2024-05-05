@@ -7,10 +7,10 @@ from django.views import View
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view, renderer_classes
-# custom models
+# custom modules
 from patron.models import CreatorUser, PatronUser
 from business.models import Product
-from lipila.helpers import get_user_object, apology, get_patrons, check_if_user_is_patron
+from lipila.helpers import get_user_object, apology
 from patron.forms.forms import EditPatronUserForm, EditCreatorUserForm
 
 
@@ -113,43 +113,7 @@ def join(request, creator, user):
     Returns:
         A rendered response with the join form and subscription status.
     """
-    form = 'JoinForm()'
-    context = {}
-    creator_object = CreatorUser.objects.get(username=creator)
-    user_obj = get_user_object(user)
-
-    if request.method == 'POST':
-        form = 'JoinForm(request.POST)'
-        if form.is_valid():
-            patron, created = PatronUser.objects.get_or_create(user=user_obj)  # Get or create PatronUser
-            
-            if not created:  # User already a PatronUser
-                # Check if already subscribed (implement logic based on your model fields)
-                if patron.patron.filter(pk=creator_object.pk).exists():
-                    
-                    messages.info(request, f"You're already subscribed to {creator_object.user}.")
-                else:
-                    # Subscribe to creator
-                    patron.patron.add(creator_object)
-                    
-                    messages.success(request, f"Subscribed to {creator_object.username}")
-            else:
-                patron.save()  # Save additional PatronUser details if applicable
-                
-                messages.success(request, f"Subscribed to {creator_object.username}")
-
-            return redirect('patron')
-    patron_exists = check_if_user_is_patron(user_obj, creator_object)
-    
-    
-    context = {
-        'join_form': form,
-        'creator': creator_object,
-        'is_patron': patron_exists,
-        'user':user_obj
-    }
-
-    return render(request, 'lipila/admin/join.html', context)
+    pass
 
 
 @login_required

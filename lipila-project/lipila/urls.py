@@ -8,8 +8,6 @@ from patron import views as patron_views
 urlpatterns = [
     # lipila public URLS
     path('', views.index, name='index'),
-    path('patron/all/', views.patron, name='patron'),
-    path('patron/join/<str:user>/<str:creator>/', views.join, name='join'),
     path('contact', views.contact, name='contact'),
 
     # PatronUser defined authenticated user views
@@ -17,6 +15,8 @@ urlpatterns = [
     path('accounts/profile/edit/<str:user>',
          patron_views.EditUserProfile.as_view(), name='update_profile'),
     path('me/<str:user>', patron_views.dashboard, name='dashboard'),
+    path('patron/all/', patron_views.patron, name='patron'),
+    path('patron/join/<str:user>/<str:creator>/', patron_views.join, name='join'),
 
     # lipila difened authenticated user views
     path('withdraw/<str:user>', views.withdraw, name='withdraw'),
