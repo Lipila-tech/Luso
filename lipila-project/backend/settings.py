@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'api',
     'business',
     'patron',
+    'lipila',
+    'accounts',
    
     # Default apps
     'django.contrib.admin',
@@ -181,14 +183,15 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
 STATIC_URL = "static/"
 
-LOGIN_REDIRECT_URL = "dashboard"
-LOGOUT_REDIRECT_URL = "index"
+LOGIN_REDIRECT_URL = "profile"
+LOGOUT_REDIRECT_URL = "login"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env('EMAIL_ID') 
 EMAIL_HOST_PASSWORD = env('EMAIL_PW')
-
 DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
