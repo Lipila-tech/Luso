@@ -7,9 +7,9 @@ from unittest import mock
 # Custom modules
 from business.models import BusinessUser
 from patron.models import CreatorUser
-from LipilaInfo.models import Patron, ContactInfo, HeroInfo, UserTestimonial
-from LipilaInfo.helpers import get_user_object, check_if_user_is_patron
-from LipilaInfo.forms.forms import ContactForm
+from lipila.models import Patron, ContactInfo, HeroInfo, UserTestimonial
+from lipila.helpers import get_user_object, check_if_user_is_patron
+from lipila.forms.forms import ContactForm
 
 
 class IndexViewTest(TestCase):
@@ -68,7 +68,7 @@ class TestJoinView(TestCase):
         # Successful GET request (200)
         self.assertEqual(response.status_code, 200)
         # Check for used template
-        self.assertTemplateUsed(response, 'LipilaInfo/admin/join.html')
+        self.assertTemplateUsed(response, 'lipila/admin/join.html')
 
     def test_get_logged_in_patron_not_subscribed(self):
         """Test GET request, logged in as patron but not subscribed"""
@@ -79,7 +79,7 @@ class TestJoinView(TestCase):
         # Successful GET request (200)
         self.assertEqual(response.status_code, 200)
         # Check for used template
-        self.assertTemplateUsed(response, 'LipilaInfo/admin/join.html')
+        self.assertTemplateUsed(response, 'lipila/admin/join.html')
         # Check if 'is_patron' is False
         self.assertFalse(response.context['is_patron'])
 
@@ -93,7 +93,7 @@ class TestJoinView(TestCase):
         # Successful GET request (200)
         self.assertEqual(response.status_code, 200)
         # Check for used template
-        self.assertTemplateUsed(response, 'LipilaInfo/admin/join.html')
+        self.assertTemplateUsed(response, 'lipila/admin/join.html')
         # Check if 'is_patron' is True
         self.assertTrue(response.context['is_patron'])
 
@@ -111,10 +111,10 @@ class TestJoinView(TestCase):
                                     'user': self.user_object, 'creator': self.creator_object}), {'invalid_field': 'invalid_data'})
         self.assertEqual(response.status_code, 200)  # Render form again (200)
         # Check for used template
-        self.assertTemplateUsed(response, 'LipilaInfo/admin/join.html')
+        self.assertTemplateUsed(response, 'lipila/admin/join.html')
 
     # Mock the check_if_user_is_patron function
-    @mock.patch('LipilaInfo.helpers.check_if_user_is_patron')
+    @mock.patch('lipila.helpers.check_if_user_is_patron')
     def test_post_valid_form_new_patron(self, mock_check):
         """Test POST request with valid form, creating a new Patron"""
 
@@ -130,7 +130,7 @@ class TestJoinView(TestCase):
         self.assertEqual(response.status_code, 302)
         # Redirect to patron list after successful join
         self.assertEqual(response.url, reverse('patron'))
-        self.assertTemplateUsed('LipilaInfo/admin/patron.html')
+        self.assertTemplateUsed('lipila/admin/patron.html')
         # Assert that Patron object is created and saved
         patron = Patron.objects.get(user=self.user_object)
         # Check if Patron has a primary key (saved)

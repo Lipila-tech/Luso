@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # api urls
-    path('', include('LipilaInfo.urls')),
+    path('', include('lipila.urls')),
     path('business/', include(('business.urls', 'business'), namespace='business')),
     path('patron/', include(('patron.urls', 'patron'), namespace='patron')),
     path('api/v1/', include('api.urls')),

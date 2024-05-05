@@ -5,7 +5,7 @@ from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_list_or_404
 from business.models import BusinessUser
 from patron.models import CreatorUser, Patron
-from LipilaInfo.models import (
+from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial, AboutInfo)
 from django.contrib.auth.models import User
 from functools import wraps
@@ -106,19 +106,7 @@ def get_user_object(user: str):
     """
     data = {}
     try:
-        user_object = BusinessUser.objects.get(username=user)
-        return user_object
-    except BusinessUser.DoesNotExist:
-        pass  # Continue to next check
-    try:
-        user_object = CreatorUser.objects.get(username=user)
-        # patrons = get_patrons(user_object)
-        return user_object
-    except CreatorUser.DoesNotExist:
-        pass  # Continue to next check
-    try:
         user_object = User.objects.get(username=user)
-        # patrons = get_patrons(user_object)
         return user_object
     except User.DoesNotExist:
         data['status'] = 404

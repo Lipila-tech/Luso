@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import models
-from LipilaInfo.models import (
+from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial)
-from LipilaInfo.helpers import (
+from lipila.helpers import (
     get_lipila_contact_info,
     get_user_emails,
     get_lipila_index_page_info,

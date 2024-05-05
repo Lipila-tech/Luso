@@ -5,15 +5,16 @@ from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+#  custom models
 from .helpers import basic_auth_encode, basic_auth_decode
 from .forms import SignUpForm
 
 
 def activation_sent_view(request):
     return render(request, 'registration/activation_sent.html')
-
 
 def activate(request, uidb64, token):
     try:
@@ -26,10 +27,9 @@ def activate(request, uidb64, token):
         user.profile.signup_confirmation = True
         user.save()
         login(request, user)
-        return redirect('index')
+        return redirect('dashboard')
     else:
         return render(request, 'registration/activation_invalid.html')
-
 
 def signup_view(request):
     if request.method  == 'POST':
@@ -58,7 +58,6 @@ def signup_view(request):
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
 
-
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request.POST)
@@ -69,7 +68,7 @@ def login_view(request):
             user_object = User.objects.get(username=user)
             login(request, user_object)
             messages.success(request, "Logged in")
-            return redirect(reverse('index'))
+            return redirect(reverse('dashboard', kwargs={'user': username}))
         else:
             form = AuthenticationForm()
             return render(request, 'registration/login.html', {'form': form})

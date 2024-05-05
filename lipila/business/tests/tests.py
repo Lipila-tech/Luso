@@ -4,7 +4,7 @@ from business.forms.forms import SignupForm
 from django.contrib.messages import get_messages
 from django.contrib.auth.models import AnonymousUser  # For anonymous user test
 from api.models import BusinessUser
-from ...LipilaInfo.helpers import set_context
+from ...lipila.helpers import set_context
 
 # TEST SignupView
 class SignupViewTest(TestCase):

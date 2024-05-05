@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'api',
     'business',
     'patron',
-    'LipilaInfo',
+    'lipila',
     'accounts',
 
     # Default apps
@@ -184,7 +184,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = "/static/"
 
-LOGOUT_REDIRECT_URL = "/accounts/login"
+LOGIN_REDIRECT_URL = "profile"
+LOGOUT_REDIRECT_URL = "login"
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (BusinessUser, LipilaDisbursement, LipilaCollection)
 from business.models import Product, BNPL, Student
-from LipilaInfo.models import (
+from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
 from patron.models import Tier, Contribution, Patron, CreatorUser
