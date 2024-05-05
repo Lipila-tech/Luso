@@ -1,15 +1,11 @@
 """
-Helper Functions
+lipila app Helper Functions
 """
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
-from django.shortcuts import render, get_list_or_404
-from business.models import BusinessUser
-from patron.models import CreatorUser, Patron
+from django.shortcuts import render
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial, AboutInfo)
 from django.contrib.auth.models import User
-from functools import wraps
-from django.test import TestCase
 
 
 def get_lipila_contact_info() -> dict:
@@ -74,25 +70,6 @@ def get_testimonials() -> dict:
         pass
     return data
 
-
-def get_patrons(user: str):
-    """
-    Gets a users patrons
-
-    Args:
-        user_type: The user category
-        user: The user object to get patrons for.
-
-    Returns:
-        A patron_object.
-    """
-    try:
-        creator_object = User.objects.filter(creator=user)
-        return creator_object.count()
-    except Patron.DoesNotExist:
-        return 0
-
-
 def get_user_object(user: str):
     """
     Gets a user object from the database.
@@ -110,35 +87,6 @@ def get_user_object(user: str):
         return user_object
     except User.DoesNotExist:
         return None
-
-
-def check_if_user_is_patron(user, creator):
-    """Checks if a user is already a patron of a specific creator.
-
-    Args:
-        user: A User object representing the user to check.
-        creator: A User object representing the creator to check against.
-
-    Returns:
-        True if the user is a patron of the given creator, False otherwise.
-    """
-
-    try:
-        # Check if the user has a corresponding Patron instance
-        patron = user.patron
-
-    except User.DoesNotExist:
-        # Handle the case where the user doesn't exist
-        return False
-
-    except Patron.DoesNotExist:
-        # Handle the case where the user exists but doesn't have a Patron
-        return False
-
-    else:
-        # If the user has a Patron, check if it's associated with the creator
-        return patron.patron.filter(pk=creator.pk).exists()
-
 
 def apology(request, data=None, user=None):
     """

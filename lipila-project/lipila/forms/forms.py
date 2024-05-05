@@ -1,7 +1,7 @@
 from django import forms
 from lipila.models import CustomerMessage
 from django.contrib.auth.forms import UserChangeForm
-from patron.models import Patron, CreatorUser
+from patron.models import PatronUser, CreatorUser
 from django.contrib.auth.models import User
 
 

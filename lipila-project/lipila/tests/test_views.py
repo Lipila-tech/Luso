@@ -6,7 +6,7 @@ from django.contrib.messages import get_messages
 from unittest import mock
 # Custom modules
 from business.models import BusinessUser
-from patron.models import CreatorUser, Patron
+from patron.models import CreatorUser, PatronUser
 from lipila.models import ContactInfo, HeroInfo, UserTestimonial
 from lipila.helpers import get_user_object, check_if_user_is_patron
 from lipila.forms.forms import ContactForm

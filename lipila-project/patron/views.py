@@ -8,9 +8,9 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view, renderer_classes
 # custom models
-from patron.models import CreatorUser, Patron
+from patron.models import CreatorUser, PatronUser
 from business.models import Product
-from lipila.helpers import get_user_object, apology
+from lipila.helpers import get_user_object, apology, get_patrons, check_if_user_is_patron
 from patron.forms.forms import EditPatronUserForm, EditCreatorUserForm
 
 
@@ -90,11 +90,73 @@ def dashboard(request, user):
         return apology(request, context, user=user)       
 
 
+
+def patron(request):
+    context = {}
+    patron = CreatorUser.objects.all()
+    # user_object = get_user_object(user)
+    context['patron'] = patron
+    if request.user.is_authenticated:
+        # context['user'] = user_object
+        return render(request, 'lipila/admin/patron.html', context)
+    else:
+        return render(request, 'UI/patron.html', context)
+
+@login_required
+def join(request, creator, user):
+    """Handles user subscription to a creator.
+
+    Args:
+        request: The incoming HTTP request object.
+        creator: The username of the creator the user wants to join.
+
+    Returns:
+        A rendered response with the join form and subscription status.
+    """
+    form = 'JoinForm()'
+    context = {}
+    creator_object = CreatorUser.objects.get(username=creator)
+    user_obj = get_user_object(user)
+
+    if request.method == 'POST':
+        form = 'JoinForm(request.POST)'
+        if form.is_valid():
+            patron, created = PatronUser.objects.get_or_create(user=user_obj)  # Get or create PatronUser
+            
+            if not created:  # User already a PatronUser
+                # Check if already subscribed (implement logic based on your model fields)
+                if patron.patron.filter(pk=creator_object.pk).exists():
+                    
+                    messages.info(request, f"You're already subscribed to {creator_object.user}.")
+                else:
+                    # Subscribe to creator
+                    patron.patron.add(creator_object)
+                    
+                    messages.success(request, f"Subscribed to {creator_object.username}")
+            else:
+                patron.save()  # Save additional PatronUser details if applicable
+                
+                messages.success(request, f"Subscribed to {creator_object.username}")
+
+            return redirect('patron')
+    patron_exists = check_if_user_is_patron(user_obj, creator_object)
+    
+    
+    context = {
+        'join_form': form,
+        'creator': creator_object,
+        'is_patron': patron_exists,
+        'user':user_obj
+    }
+
+    return render(request, 'lipila/admin/join.html', context)
+
+
 @login_required
 def list_patrons(request, user):
     context = {}
     user_object = get_object_or_404(CreatorUser, username=request.user)
-    patrons = Patron.objects.filter(patron=user_object.id)
+    patrons = PatronUser.objects.filter(patron=user_object.id)
     context['patrons'] = patrons
     context['user'] = user_object
     return render(request, 'patron/admin/log/patrons.html', context)

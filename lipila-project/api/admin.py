@@ -4,7 +4,7 @@ from business.models import Product, BNPL, Student
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
-from patron.models import Tier, Contribution, Patron, CreatorUser
+from patron.models import Tier, Contribution, PatronUser, CreatorUser
 from accounts.models import Profile
 
 
@@ -88,7 +88,7 @@ class BNPLAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(Patron, PatronAdmin)
+admin.site.register(PatronUser, PatronAdmin)
 admin.site.register(CreatorUser, CreatorUserAdmin)
 admin.site.register(Tier, TierAdmin)
 admin.site.register(Profile)

@@ -12,7 +12,7 @@ urlpatterns = [
     path('patron/join/<str:user>/<str:creator>/', views.join, name='join'),
     path('contact', views.contact, name='contact'),
 
-    # Patron defined authenticated user views
+    # PatronUser defined authenticated user views
     path('accounts/profile/', patron_views.profile, name='profile'),
     path('accounts/profile/edit/<str:user>',
          patron_views.EditUserProfile.as_view(), name='update_profile'),

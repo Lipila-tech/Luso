@@ -76,7 +76,7 @@ class User(AbstractBaseUser):
         return self.email
 
 
-class Patron(models.Model):
+class PatronUser(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
     subscribed = models.ManyToManyField(
@@ -95,7 +95,7 @@ class CreatorUser(models.Model):
     bio = models.TextField(blank=True, null=True)
     account_number = models.CharField(
         max_length=20, blank=True, null=True)
-    # subscribers = models.ManyToManyField(Patron, related_name='subscribed_patron')
+    # subscribers = models.ManyToManyField(PatronUser, related_name='subscribed_patron')
     city = models.CharField(
         max_length=9, choices=CITY_CHOICES, default='Kitwe')
     profile_image = models.ImageField(
