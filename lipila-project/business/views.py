@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as my_login
 
 # My Models
-from api.models import BusinessUser
+from .models import BusinessUser
 from lipila.helpers import apology, get_user_object
 from .forms.forms import (DisburseForm, AddProductForm,
                           SignupForm,

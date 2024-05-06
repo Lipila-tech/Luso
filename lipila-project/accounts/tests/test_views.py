@@ -7,7 +7,6 @@ from django.core import mail
 from django.contrib import messages
 # custom modules
 from accounts.helpers import basic_auth_encode, basic_auth_decode
-from accounts.views import login_view
 
 
 class AccountsViewTests(TestCase):
