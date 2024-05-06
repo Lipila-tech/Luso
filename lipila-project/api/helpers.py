@@ -38,8 +38,8 @@ def is_payment_details_valid(*args, **kwargs):
     Checks the validity of payment details, accepting either positional arguments or keyword arguments.
 
     Args:
-        *args (tuple): Positional arguments, expected to be (amount, partyid, reference) in order.
-        **kwargs (dict): Keyword arguments with keys 'amount', 'partyid', and/or 'reference'.
+        *args (tuple): Positional arguments, expected to be (amount, payer, reference) in order.
+        **kwargs (dict): Keyword arguments with keys 'amount', 'payer', and/or 'reference'.
 
     Returns:
         bool: True if all details are valid, False otherwise.
@@ -49,20 +49,20 @@ def is_payment_details_valid(*args, **kwargs):
         ValueError: If amount is less than 10 or party_id is not 10 digits long.
     """
     try:
-        valid_keys = {'amount', 'partyid', 'reference'}
+        valid_keys = {'amount', 'payer', 'reference'}
         # details = {key: value for key, value in (kwargs.items() if kwargs else args)}  # Combine args and kwargs
-        details = {key: value for key, value in zip(['amount', 'partyid', 'reference'], args)}
+        details = {key: value for key, value in zip(['amount', 'payer', 'reference'], args)}
         if len(details) != 3 or not all(key in valid_keys for key in details):
-            raise ValueError("Missing or invalid arguments. Expected 'amount', 'partyid', and 'reference'.")
+            raise ValueError("Missing or invalid arguments. Expected 'amount', 'payer', and 'reference'.")
 
         for key, value in details.items():
             if not isinstance(value, str):
                 raise TypeError(f"Argument '{key}' must be a string.")
 
-        if int(details['amount']) < 10 or len(details['partyid']) != 10:
-            raise ValueError("Amount must be greater than 10 and partyid must be 10 digits long.")
+        if int(details['amount']) < 10 or len(details['payer']) != 10:
+            raise ValueError("Amount must be greater than 10 and payer must be 10 digits long.")
         if ' ' in (details['reference']):
             raise ValueError("Reference should not contain spaces.")
     except AssertionError:
-        raise ValueError("Missing or invalid arguments. Expected 'amount', 'partyid', and 'reference'.")
+        raise ValueError("Missing or invalid arguments. Expected 'amount', 'payer', and 'reference'.")
     return True

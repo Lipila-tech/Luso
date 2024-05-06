@@ -105,16 +105,16 @@ class MTNCollectionsTestCase(TestCase):
         self.assertEqual(payment.data['message'], 'pending')       
 
     def test_request_to_pay_bad_request(self):
-        """Returns 400 bad request status"""
+        """Returns 400 Bad Request status"""
         with self.assertRaises(ValueError) as rtp:
             self.momo1.request_to_pay('6', '0969620939', 'myrefre')
         self.assertEqual(str(
-            rtp.exception), 'Amount must be greater than 10 and partyid must be 10 digits long.')
+            rtp.exception), 'Amount must be greater than 10 and payer must be 10 digits long.')
 
         with self.assertRaises(ValueError) as rtp:
             payment = self.momo1.request_to_pay('2456', '9620939', 'myrefre')
         self.assertEqual(str(
-            rtp.exception), 'Amount must be greater than 10 and partyid must be 10 digits long.')
+            rtp.exception), 'Amount must be greater than 10 and payer must be 10 digits long.')
         # reference should not have spaces
         with self.assertRaises(ValueError) as rtp:
             payment = self.momo1.request_to_pay(
@@ -131,7 +131,7 @@ class MTNCollectionsTestCase(TestCase):
         self.assertEqual(get_payment_status.status_code, 200)
 
     def test_get_payment_status_bad_request(self):
-        """Returns a 400 bad request status"""
+        """Returns a 400 Bad Request status"""
         get_payment_status = self.momo1.get_payment_status(
             '8647749439037hhfkgsdhfkla67e839')
         # assert completed successfully with error

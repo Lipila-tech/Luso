@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (BusinessUser, LipilaDisbursement, LipilaCollection)
+from .models import (LipilaDisbursement, LipilaCollection)
 from business.models import Product, BNPL, Student
 from lipila.models import (
     ContactInfo, CustomerMessage,
@@ -8,22 +8,9 @@ from patron.models import Tier, Contribution
 from accounts.models import PatronProfile, CreatorProfile
 
 
-class BusinessUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'account_number', 'bio', 'business_category',
-                    'address', 'company', 'city', 'country', 'first_name', 'profile_image')
-
-
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'other_name',
                     'school', 'address', 'grade')
-
-
-# class CreatorProfileAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'bio', 'account_number')
-
-
-# class PatronAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'account_number')
 
 
 class TierAdmin(admin.ModelAdmin):
@@ -92,7 +79,6 @@ class BNPLAdmin(admin.ModelAdmin):
 # admin.site.register(CreatorProfile, CreatorProfileAdmin)
 admin.site.register(Tier, TierAdmin)
 admin.site.register(Contribution, ContributionAdmin)
-admin.site.register(BusinessUser, BusinessUserAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(LipilaCollection, LipilaCOllectionAdmin)
 admin.site.register(Product, ProductAdmin)

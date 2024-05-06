@@ -12,8 +12,8 @@ from rest_framework.authtoken.models import Token
 
 # My modules
 from .serializers import LipilaCollectionSerializer
-from .serializers import BusinessUserSerializer
-from .models import (BusinessUser, LipilaCollection)
+from .serializers import UserSerializer
+from .models import (LipilaCollection)
 from api.momo.mtn import Collections
 
 
@@ -21,34 +21,6 @@ from api.momo.mtn import Collections
 env = environ.Env()
 environ.Env.read_env()
 User = get_user_model()
-
-
-class SignupViewSet(viewsets.ModelViewSet):
-    """Register API user"""
-    queryset = BusinessUser.objects.all()
-    serializer_class = BusinessUserSerializer
-
-    def create(self, request, *args, **kwargs):
-        try:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            user = serializer.instance
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({
-                'message': "Created",
-            }, status=201)
-        except Exception as e:
-            return Response({"Error": e}, status=400)
-
-    def perform_create(self, serializer):
-        try:
-            user = serializer.save()
-            # Set password, send verification email, etc. (optional)
-        except Exception as e:
-            return Response({"Error": e}, status=400)
-
-    permission_classes = [AllowAny]  # Allow anyone to register
 
 
 class LoginView(ObtainAuthToken):
@@ -80,24 +52,19 @@ class LipilaCollectionView(viewsets.ModelViewSet):
         """Handles POST requests, deserializing date and setting status."""
         try:
             data = request.data
-            payer = data['payer']
-            payee = data['payee']
-            amount = data['amount']
-            description = data['description']
+            payer = str(data['payer'])
+            payee = str(data['payee'])
+            amount = str(data['amount'])
             serializer = LipilaCollectionSerializer(data=data)
             api_user = Collections()
             api_user.provision_sandbox(api_user.subscription_col_key)
             api_user.create_api_token(
                 api_user.subscription_col_key, 'collection')
+            
             if serializer.is_valid():
-                # Query external API handlers
-                amount = str(amount)
                 reference_id = api_user.x_reference_id
-                payer_account = payer
-
-                # Query request to pay function
                 request_pay = api_user.request_to_pay(
-                    amount=amount, payer_account=payer_account, reference=str(reference_id))
+                    amount=amount, payer=payer, reference_id=str(reference_id))
                 if request_pay.status_code == 202:
                     # save payment
                     payment = serializer.save()
@@ -109,7 +76,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                     for r in transaction:
                         status = api_user.get_payment_status(reference_id)
                         if status.status_code == 200:
-                            payment.description = description
+                            payment.reference_id = reference_id
                             payment.status = 'accepted'
                             payment.save()
                         else:
@@ -125,9 +92,8 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                     # Set status code
                     return Response({'message': 'Bad request from mtn'}, status=status_code)
 
-        except TypeError:
-            return Response({'message': 'Error in submitted data'}, status=400)
-        except KeyError as e:
+        except Exception as e:
+            
             return Response({'message': f'Key Error in submitted data {e}'}, status=400)
         return Response({'message': 'request accepted, wait for client approval'}, status=202)
         

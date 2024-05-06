@@ -1,10 +1,10 @@
 import os
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
-from api.models import LipilaCollection, BusinessUser
+from api.models import LipilaCollection, User
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
+from uuid import UUID
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -12,17 +12,25 @@ class LipilaCollectionViewTest(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create(username='test_user1')
-        self.business_user = BusinessUser.objects.create(username='test_business_user')
         self.user1 = User.objects.create(username='test_user2')
 
     def test_create_payment_success(self):
         url = reverse('payments-list')
-        data = {'payee':self.business_user.id, 'amount': 100, 'payer': '0809123456', 'description': 'example payer'}
+        
+        data = {'payee':self.user.id, 'amount': '100', 'payer': '0809123456', 'reference_id': 'examplepayer'}
+        
         response = self.client.post(url, data, format='json')
+        
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(LipilaCollection.objects.count(), 1)
         self.assertEqual(LipilaCollection.objects.get().status, 'accepted')
-        self.assertEqual(LipilaCollection.objects.get().description, 'example payer')
+        # Attempt to convert the response to a UUID object
+        try:
+            # Attempt to convert the response to a UUID object
+            UUID(LipilaCollection.objects.get().reference_id)
+            self.assertTrue(True)  # Test passes if conversion is successful
+        except ValueError:
+            self.fail("get_uuid4 did not return a valid UUID string.")
 
     def test_create_lipila_fail_validation(self):
         url = reverse('payments-list')

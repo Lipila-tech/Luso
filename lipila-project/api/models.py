@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from business.models import BusinessUser
 
 
 # Global variables
@@ -18,7 +17,7 @@ class LipilaDisbursement(models.Model):
                               related_name='disbursed',
                               on_delete=models.CASCADE,
                               )
-    payee = models.ForeignKey(BusinessUser,
+    payee = models.ForeignKey(User,
                               related_name='paid',
                               on_delete=models.CASCADE,
                               )
