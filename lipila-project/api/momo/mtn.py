@@ -2,7 +2,7 @@
 import requests
 import json
 from rest_framework.response import Response
-from ..helpers import get_uuid4, basic_auth
+from ..helpers import get_uuid4, basic_auth, is_payment_details_valid
 
 import environ
 
@@ -157,56 +157,43 @@ class Collections(MTNBase):
         super().__init__()
         self.subscription_col_key = env("MTN_MOMO_COLLECTIONS_KEY")
 
-    def request_to_pay(self, amount: str, payer_account: str, reference: str):
-        
-        """ Query the Collections API"""
-        if len(payer_account) != 10 or int(amount) < 10:
-            
-            raise ValueError(
-                "PartyId must be 10 digits and Amount value should be greater than 10")
-        if not isinstance(amount, str):
-            
-            raise TypeError("Amount must be string great than 10")
-        if not isinstance(payer_account, str):
-            
-            raise TypeError("PartyId must be string with 10 digits")
-        if not isinstance(reference, str):
-            
-            raise TypeError("ExternalId must be string")
-        
-        try:
-            
-            url = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
-
-            payload = json.dumps({
-                "amount": amount,
-                "currency": 'EUR',
-                "externalId": reference,
-                "payer": {
-                    "partyIdType": "MSISDN",
-                    "partyId": payer_account
-                },
-                "payerMessage": f"send money to {payer_account}",
-                "payeeNote": "Lipila gateway"
-            })
-            headers = {
-                'X-Reference-Id': self.x_reference_id,
-                'Ocp-Apim-Subscription-Key': self.subscription_col_key,
-                'X-Target-Environment': self.x_target_environment,
-                'Authorization': self.api_token,
-                'Content-Type': self.content_type
-            }
-            response = requests.post(url, headers=headers, data=payload)
-            if response.status_code == 202:
-                return response
-            elif response.status_code == 400:
-                raise ValueError("Bad request from mtn api")
-            elif response.status_code == 409:
-                raise ValueError("Conflict user exists")
-            elif response.status_code == 500:
-                raise ValueError("Mtn Server error")
-        except ValueError:
-            return response
+    def request_to_pay(self, amount: str, partyid: str, reference: str):
+        # validate details
+        is_valid = is_payment_details_valid(amount, partyid, reference)
+        if is_valid:
+            """ Query the Collections API"""
+            try:
+                url = "https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay"
+                payload = json.dumps({
+                    "amount": amount,
+                    "currency": 'EUR',
+                    "externalId": reference,
+                    "payer": {
+                        "partyIdType": "MSISDN",
+                        "partyId": partyid
+                    },
+                    "payerMessage": f"send money to {partyid}",
+                    "payeeNote": "Lipila gateway"
+                })
+                headers = {
+                    'X-Reference-Id': self.x_reference_id,
+                    'Ocp-Apim-Subscription-Key': self.subscription_col_key,
+                    'X-Target-Environment': self.x_target_environment,
+                    'Authorization': self.api_token,
+                    'Content-Type': self.content_type
+                }
+                response = requests.post(url, headers=headers, data=payload)
+                if response.status_code == 202:
+                    return Response(status=202, data={'message':'pending'})
+                elif response.status_code == 400:
+                    return Response(status=400, data={'reason':'bad request'})
+                elif response.status_code == 409:
+                    return Response(status=409, data={'reason':'Conflict user exists'})
+                    raise ValueError("Conflict user exists")
+                elif response.status_code == 500:
+                    return Response(status=500, data={'reason':'mtn server error'})
+            except Exception as e:
+                return Response(status=500, data={'reason':'mtn server error'})
 
     def get_payment_status(self, reference_id) -> Response:
         ''' checks status of payment SUCCESS or FAILED
@@ -224,9 +211,9 @@ class Collections(MTNBase):
             if response.status_code == 200:
                 return response
             elif response.status_code == 400:
-                raise ValueError("Bad request")
+                return Response(status=400, data={'reason':'Bad Request'})
             elif response.status_code == 404:
-                raise ValueError("Not found")
+                return Response(status=404, data={'reason':'Not Found'})
             elif response.status_code == 500:
                 raise ValueError("Mtn Server error")
         except ValueError:
@@ -246,7 +233,7 @@ class Disbursement(MTNBase):
         """ deposit funds to multiple users"""
         if len(payee_account) != 10 or int(amount) < 10:
             raise ValueError(
-                "PartyId must be 10 digits and Amount value should be greater than 10")
+                "PartyID must be a string with 10 digits.")
 
         if not isinstance(amount, str):
             raise TypeError("Amount must be string great than 10")
