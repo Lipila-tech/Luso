@@ -225,6 +225,47 @@ section {
   --nav-hover-color: #d83535;
 }
 
+/* -------------------------------------------------------------
+# Scroll down arrow
+---------------------------------------------------------------- */
+.down-arrow {
+  position: absolute;
+  width: 0;
+  height: 52px;
+  border: 3px solid;
+  border-radius: 2px;
+  color: var(--accent-color)
+}
+
+.down-arrow:after {
+  content: " ";
+  position: absolute;
+  top: 40px;
+  left: -9px;
+  width: 16px;
+  height: 16px;
+  border-bottom: 4px solid;
+  border-right: 4px solid;
+  border-radius: 4px;
+  transform: rotateZ(45deg);
+}
+
+@keyframes jumpInfinite {
+  0% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: 20px;
+  }
+  100% {
+    margin-top: 0;
+  }
+}
+
+.down-arrow {
+  animation: jumpInfinite 1.5s infinite;
+}
+
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/

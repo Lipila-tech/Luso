@@ -56,7 +56,8 @@
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="/#hero" class="active">Home</a></li>
-                    <li><a href="{% url 'patron' %}">Creators</a></li>
+                    <li><a href="{% url 'patron:index' %}">Creators</a></li>
+                    <li><a href="{% url 'patron:creators' %}">Find a Creator</a></li>
                     <li><a href="/#features">Features</a></li>
                     <li><a href="/#pricing">Pricing</a></li>
                 </ul>
@@ -73,7 +74,6 @@
                 </form>
                 </p>
                 {% else %}
-                <p><a id="btn-getstarted" class="btn-getstarted" href="#">Find Creators</a></p>
                 <p><a id="btn-getstarted" class="btn-getstarted" href="{% url 'login' %}">Login</a></p>
                 {% endif %}
             </div>

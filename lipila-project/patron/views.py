@@ -17,8 +17,10 @@ from patron.forms.forms import EditPatronProfileForm, EditCreatorProfileForm
 def index(request):
     return render(request, 'patron/index.html')
 
+
 def contribute(request, user):
     return render(request, 'patron/admin/actions/contribute.html')
+
 
 @login_required
 def profile(request):
@@ -62,6 +64,7 @@ class EditUserProfile(LoginRequiredMixin, View):
                 request, "Failed to update profile.")
             return redirect(reverse('profile', kwargs={'user': user}))
 
+
 @login_required
 def dashboard(request, user):
     context = {}
@@ -87,8 +90,7 @@ def dashboard(request, user):
     else:
         context['status'] = 404
         context['message'] = 'User Not Found!'
-        return apology(request, context, user=user)       
-
+        return apology(request, context, user=user)
 
 
 def patron(request):
@@ -101,6 +103,7 @@ def patron(request):
         return render(request, 'lipila/admin/patron.html', context)
     else:
         return render(request, 'UI/patron.html', context)
+
 
 @login_required
 def join(request, creator, user):
@@ -116,14 +119,27 @@ def join(request, creator, user):
     pass
 
 
-@login_required
-def list_patrons(request, user):
+def list_creators(request):
+    data = [
+        {
+        'username': 'SampleUsername',
+        'bio': 'This is a sample creator bio',
+        'created_at': '2024-06-01'
+        },
+        {
+        'username': 'SampleCreator2',
+        'bio': 'This is a sample creator number 2 bio',
+        'created_at': '2024-06-01'
+        },
+        {
+        'username': 'SampleCreator3',
+        'bio': 'This is a sample creator number 3 bio',
+        'created_at': '2024-06-01'
+        }
+    ]
     context = {}
-    user_object = get_object_or_404(CreatorProfile, username=request.user)
-    patrons = PatronProfile.objects.filter(patron=user_object.id)
-    context['patrons'] = patrons
-    context['user'] = user_object
-    return render(request, 'patron/admin/log/patrons.html', context)
+    context['creators'] = data
+    return render(request, 'patron/creators.html', context)
 
 
 @login_required

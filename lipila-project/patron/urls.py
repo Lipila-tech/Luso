@@ -9,7 +9,7 @@ urlpatterns = [
      path('', views.index, name='index'),
      path('<str:user>/contribute', views.contribute, name='contribute'),
 
-     path('patrons/<str:user>', views.list_patrons, name='patrons'),
+     path('creators/', views.list_creators, name='creators'),
 ]
 
 
