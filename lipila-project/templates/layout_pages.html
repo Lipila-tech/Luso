@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>{% block title %}{% endblock %}</title>
+  <title>Lipila {% block title %}{% endblock %}</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -111,24 +111,23 @@
 
   </aside><!-- End Sidebar-->
 
-    <div class="pagetitle">
-     {% block content %}{% endblock %}
-      <nav>
-        <ol class="breadcrumb">
-          {% if user.is_authenticated %}
-          <li class="breadcrumb-item"><a href="{% url 'dashboard' user=user %}">Dashboard</a></li>
-          {% else %}
-          <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
-          {% endif %}
-        </ol>
-      </nav>
-    </div><!-- End Page Title -->
+  <div class="pagetitle">
+    {% block content %}{% endblock %}
+    <nav>
+      <ol class="breadcrumb">
+        {% if user.is_authenticated %}
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' user=user %}">Dashboard</a></li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+        {% endif %}
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
 
-    <section class="section faq">
-      {% block main %} {% endblock%}
-    </section>
+  <main id="main" class="main">
+    {% block main %} {% endblock%}
+  </main>
 
-  
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
@@ -137,9 +136,9 @@
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-about">
           <a href="{% url 'index' %}" class="logo d-flex align-items-center">
-            <span>Lipila</span>
+            <span>Lipila Patron</span>
           </a>
-          <p>Building a Zambia Powered by Tech.</p>
+          <p>Made for Creators by Creators.</p>
           <div class="social-links d-flex mt-4">
             <a href=""><i class="bi bi-twitter"></i></a>
             <a href=""><i class="bi bi-facebook"></i></a>
@@ -161,20 +160,18 @@
         </div>
 
         <div class="col-lg-2 col-6 footer-links">
-          <h4>Our Services</h4>
+          <h4>Creators</h4>
           <ul>
-            <li><a href="{% url 'index' %}">For PatronUser</a></li>
-            <li><a href="{% url 'business:index' %}">For Business</a></li>
+            <li><a href="#">Video Creators</a></li>
+            <li><a href="#">Musicians</a></li>
+            <li><a href="#">Podcasters</a></li>
+            <li><a href="#">Artists</a></li>
           </ul>
         </div>
 
         <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contact Us</h4>
-          <p>3808 Jacaranda Drive</p>
-          <p>Buyantanshi, Kitwe</p>
-          <p>Zambia</p>
-          <p class="mt-4"><strong>Phone:</strong> <span>+260 965604023</span></p>
-          <p><strong>Email:</strong> <span>info.lipila@gmail.com</span></p>
+          <h4>Pricing</h4>
+          <p>FREE!</p>
         </div>
 
       </div>
@@ -184,10 +181,9 @@
       <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila Technologies Ltd</strong> <span>All Rights
           Reserved</span></p>
       <div class="credits">
-        Designed by <a href="#">Lipila</a>
+        Designed by <a href="#">Lipila Technologies Limited</a>
       </div>
     </div>
-
   </footer><!-- End Footer -->
 
   <!-- Scroll Top Button -->

@@ -211,7 +211,7 @@
                 </ul>
             </li>
             {% elif user.category == 'Creator' %}
-            
+
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
@@ -243,7 +243,6 @@
                 </ul>
             </li>
             {% else %}
-            BUSINESS
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i
@@ -350,11 +349,57 @@
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
+
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-5 col-md-12 footer-about">
+                    <a href="{% url 'index' %}" class="logo d-flex align-items-center">
+                        <span>Lipila Patron</span>
+                    </a>
+                    <p>Made for Creators by Creators.</p>
+                    <div class="social-links d-flex mt-4">
+                        <a href=""><i class="bi bi-twitter"></i></a>
+                        <a href=""><i class="bi bi-facebook"></i></a>
+                        <a href=""><i class="bi bi-instagram"></i></a>
+                        <a href=""><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-6 footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/#hero">Home</a></li>
+                        <li><a href="/#about">About us</a></li>
+                        <li><a href="/#services">Services</a></li>
+                        <li><a href="{% url 'terms' %}">Terms of use</a></li>
+                        <li><a href="{% url 'privacy' %}">Privacy policy</a></li>
+                        <li><a href="{% url 'faq' %}">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-6 footer-links">
+                    <h4>Creators</h4>
+                    <ul>
+                        <li><a href="#">Video Creators</a></li>
+                        <li><a href="#">Musicians</a></li>
+                        <li><a href="#">Podcasters</a></li>
+                        <li><a href="#">Artists</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+                    <h4>Pricing</h4>
+                    <p>FREE!</p>
+                </div>
+
+            </div>
+        </div>
+
         <div class="container copyright text-center mt-4">
             <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila Technologies Ltd</strong> <span>All Rights
                     Reserved</span></p>
             <div class="credits">
-                Designed by <a href="#">Lipila</a>
+                Designed by <a href="#">Lipila Technologies Limited</a>
             </div>
         </div>
 

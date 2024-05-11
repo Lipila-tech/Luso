@@ -30,26 +30,6 @@
 
   </section><!-- End Hero Section -->
 
-  <!-- Clients Section - Home Page -->
-  <section id="clients" class="clients">
-
-    <div class="container-fluid" data-aos="fade-up">
-
-      <div class="row gy-4">
-
-        <div class="col-xl-2 col-md-3 col-6 client-logo">
-          <!-- client logo goes here -->
-        </div><!-- End Client Item -->
-
-        <div class="col-xl-2 col-md-3 col-6 client-logo">
-          <!-- client logo goes here -->
-        </div><!-- End Client Item -->
-      </div>
-
-    </div>
-
-  </section><!-- End Clients Section -->
-
   <!-- About Section - Home Page -->
   <section id="about" class="about">
 
@@ -57,12 +37,11 @@
       <div class="row align-items-xl-center gy-5">
 
         <div class="col-xl-5 content">
-          <h3></h3>
-          <h2>{{about.title}}</h2>
-          <p>{{about.body}}
-            <!-- <a href="{% url 'accounts:signup' %}" class="read-more"><span>Find out how?</span><i
-                class="bi bi-arrow-right"></i></a> -->
-          </p>
+          <h3>Lipila Patron</h3>
+          <h2>Earning Made Easy</h2>
+          <p>Get patrons to support your creativity. Receive donations, contributions and payments from your fans
+            in one place and grow your work.</p>
+          <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
         </div>
 
         <div class="col-xl-7">
@@ -70,37 +49,34 @@
 
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
               <div class="icon-box">
-                <h3>Lipila For Patrons</h3>
-                <ul>
-                  <li>Artists</li>
-                  <li>Musicians</li>
-                  <li>Video PatronUser</li>
-                  <li>Podcasters</li>
-                  <li>Writers</li>
-                  <li>Fundraisers</li>
-                </ul>
-                <p>Get patrons to support your creativity. Receive donations, contributions and payments from your fans
-                  in
-                  one place and grow your work.</p>
-                <a href="{% url 'accounts:signup' %}" class="read-more"><span>Learn more</span><i
-                    class="bi bi-arrow-right"></i></a>
+                <i class="bi bi-buildings"></i>
+                <h3>Recurring Revenue</h3>
+                <p>Offer tiered memberships with exclusive content to generate a predictable income stream and build stronger fan relationships.</p>
               </div>
             </div> <!-- End Icon Box -->
-<!-- 
+
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+              <div class="icon-box">
+                <i class="bi bi-clipboard-pulse"></i>
+                <h3>Effortless Support</h3>
+                <p>Make it easy for fans to become patrons with a seamless signup process.</p>
+              </div>
+            </div> <!-- End Icon Box -->
+
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
               <div class="icon-box">
-                <h3>Lipila For Business</h3>
-                <ul>
-                  <li>Schools</li>
-                  <li>Independent sellers</li>
-                  <li>Stores</li>
-                </ul>
-                <p>From independent traders to small and medium businesses simplify invoicing, payment collection and
-                  data storage.
-                </p>
-                <a href="{% url 'accounts:signup' %}" class="read-more"><span>Learn more</span><i
-                    class="bi bi-arrow-right"></i></a>
-              </div> -->
+                <i class="bi bi-command"></i>
+                <h3>Centralized Hub</h3>
+                <p>Receive donations, contributions, and payments from all your supporters in one convenient location.</p>
+              </div>
+            </div> <!-- End Icon Box -->
+
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
+              <div class="icon-box">
+                <i class="bi bi-graph-up-arrow"></i>
+                <h3>Direct Sales Channel</h3>
+                <p>Sell your creations directly through your personalized online shop, keeping more of what you earn.</p>
+              </div>
             </div> <!-- End Icon Box -->
 
           </div>
@@ -111,40 +87,52 @@
 
   </section><!-- End About Section -->
 
-  <!-- Stats Section - Home Page -->
-  <!-- <section id="stats" class="stats"> -->
-
-  <!-- </section> -->
-
-  <!-- Services Section - Home Page -->
-  <!-- End Services Section -->
-
+  
   <!-- Features Section - Home Page -->
   <section id="features" class="features">
 
     <!--  Section Title -->
     <div class="container section-title" data-aos="fade-up">
       <h2>Features</h2>
-      <p>These features help you financially</p>
     </div><!-- End Section Title -->
 
     <div class="container">
+
       <div class="row gy-4 align-items-center features-item">
         <div class="col-lg-5 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
-          <h3>Creator Profile Creation</h3>
+          <h3>Getting Started on Lipila</h3>
           <p>
             Create your FREE profile, share exclusive content with your patrons. Set your funding tiers
             for your patrons.
           </p>
           <a href="{% url 'accounts:signup' %}" class="btn btn-get-started">Get Started</a>
         </div>
+        <div class="col-lg-7 order-1 order-lg-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
+          <div class="image-stack">
+            <img src="{% static 'assets/img/a2.jpeg' %}" alt="" class="stack-front">
+            <img src="{% static 'assets/img/ai1.jpeg' %}" alt="" class="stack-back">
+          </div>
+        </div>
       </div><!-- Features Item -->
+
       <div class="row gy-4 align-items-stretch justify-content-between features-item ">
+        <div class="col-lg-6 d-flex align-items-center features-img-bg" data-aos="zoom-out">
+          <img src="{% static 'assets/img/guy.jpeg' %}" class="img-fluid" alt="">
+        </div>
         <div class="col-lg-5 d-flex justify-content-center flex-column" data-aos="fade-up">
-          <h3>Patronage System</h3>
-          <p>Browse through different patron' profiles, explore their content, and choose to pledge financial support
-            through various tiers or one-time contributions.</p>
-          <a href="{% url 'patron' %}" class="btn btn-get-started align-self-start">Get Started</a>
+          <h3>The Ultimate Fan Destination!</h3>
+          <p>Lipila Patron offers a one-stop shop for your fans:</p>
+          <ul>
+            <li><i class="bi bi-check"></i> <span><strong>Support You Directly:</strong> Make it easy for fans to show
+                their love by donating, contributing and purchasing your digital products directly from your
+                personalized shop. Lipila Patron empowers you to keep a larger share of your earnings.</span></li>
+            <li><i class="bi bi-check"></i> <span><strong>Discover Your Latest Work:</strong> Fans can easily find all
+                your newest creations in one central location, ensuring they never miss a beat.</span></li>
+            <li><i class="bi bi-check"></i><span><strong>Connect Like Never Before:</strong> Foster a vibrant community
+                through group chats. Allow fans to interact with each other and build deeper connections around your
+                work.</span></li>
+          </ul>
+          <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
         </div>
       </div><!-- Features Item -->
 
@@ -159,9 +147,9 @@
     <!--  Section Title -->
     <div class="container section-title" data-aos="fade-up">
       <h2>Pricing</h2>
-      <p>Creating a Lipila PatronUser account is FREE</p>
+      <p>Creating a Lipila Patron profile is FREE</p>
       <a href="{% url 'accounts:signup' %}" class="read-more"><span>Get Started</span><i
-        class="bi bi-arrow-right"></i></a>
+          class="bi bi-arrow-right"></i></a>
     </div>
     <!-- End Section Title -->
 

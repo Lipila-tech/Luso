@@ -56,12 +56,9 @@
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="/#hero" class="active">Home</a></li>
-                    <!-- <li><a href="{% url 'index' %}">For PatronUser</a></li> -->
-                    <li><a href="{% url 'business:index' %}">For Business</a></li>
-                    <li><a href="{% url 'patron' %}">Find PatronUser</a></li>
+                    <li><a href="{% url 'patron' %}">Creators</a></li>
                     <li><a href="/#features">Features</a></li>
-                    <li><a href="/#contact">Contact Us</a></li>
-                    <li><a href="/#about">About</a></li>
+                    <li><a href="/#pricing">Pricing</a></li>
                 </ul>
 
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -76,6 +73,7 @@
                 </form>
                 </p>
                 {% else %}
+                <p><a id="btn-getstarted" class="btn-getstarted" href="#">Find Creators</a></p>
                 <p><a id="btn-getstarted" class="btn-getstarted" href="{% url 'login' %}">Login</a></p>
                 {% endif %}
             </div>
@@ -101,9 +99,9 @@
             <div class="row gy-4">
                 <div class="col-lg-5 col-md-12 footer-about">
                     <a href="{% url 'index' %}" class="logo d-flex align-items-center">
-                        <span>Lipila</span>
+                        <span>Lipila Patron</span>
                     </a>
-                    <p>Building a Zambia Powered by Tech.</p>
+                    <p>Made for Creators by Creators.</p>
                     <div class="social-links d-flex mt-4">
                         <a href=""><i class="bi bi-twitter"></i></a>
                         <a href=""><i class="bi bi-facebook"></i></a>
@@ -125,20 +123,18 @@
                 </div>
 
                 <div class="col-lg-2 col-6 footer-links">
-                    <h4>Our Services</h4>
+                    <h4>Creators</h4>
                     <ul>
-                        <li><a href="{% url 'index' %}">For PatronUser</a></li>
-                        <li><a href="{% url 'business:index' %}">For Business</a></li>
+                        <li><a href="#">Video Creators</a></li>
+                        <li><a href="#">Musicians</a></li>
+                        <li><a href="#">Podcasters</a></li>
+                        <li><a href="#">Artists</a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-                    <h4>Contact Us</h4>
-                    <p>3808 Jacaranda Drive</p>
-                    <p>Buyantanshi, Kitwe</p>
-                    <p>Zambia</p>
-                    <p class="mt-4"><strong>Phone:</strong> <span>+260 965604023</span></p>
-                    <p><strong>Email:</strong> <span>info.lipila@gmail.com</span></p>
+                    <h4>Pricing</h4>
+                    <p>FREE!</p>
                 </div>
 
             </div>
@@ -148,7 +144,7 @@
             <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila Technologies Ltd</strong> <span>All Rights
                     Reserved</span></p>
             <div class="credits">
-                Designed by <a href="#">Lipila</a>
+                Designed by <a href="#">Lipila Technologies Limited</a>
             </div>
         </div>
 
