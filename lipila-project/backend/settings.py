@@ -42,13 +42,14 @@ INSTALLED_APPS = [
     'django_extensions',
     'crispy_forms',
     'crispy_bootstrap4',
+    'django_pagination_bootstrap',
     # My apps
     'api',
     'business',
     'patron',
     'lipila',
     'accounts',
-   
+
     # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django_pagination_bootstrap.middleware.PaginationMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -97,7 +99,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-if env ('BACKEND') == 'postgres':
+if env('BACKEND') == 'postgres':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -115,8 +117,8 @@ elif env('BACKEND') == 'mysql':
             'NAME': env('SQL_NAME'),
             'USER': env('SQL_USER'),
             'PASSWORD':  env('SQL_PASSWORD'),
-            'HOST':env('SQL_HOST'),
-            'PORT':env('SQL_PORT'),
+            'HOST': env('SQL_HOST'),
+            'PORT': env('SQL_PORT'),
         }
     }
 else:
@@ -170,7 +172,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        #'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
@@ -192,6 +194,6 @@ EMAIL_BACKEND = env('EMAIL_BACKEND')
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_ID') 
+EMAIL_HOST_USER = env('EMAIL_ID')
 EMAIL_HOST_PASSWORD = env('EMAIL_PW')
 DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
