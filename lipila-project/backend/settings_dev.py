@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'crispy_forms',
     'crispy_bootstrap4',
+    'django_pagination_bootstrap',
     # My apps
     'api',
     'business',
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django_pagination_bootstrap.middleware.PaginationMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'

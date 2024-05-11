@@ -1,7 +1,7 @@
 {% extends 'layout_base.html' %}
 {% load static %}
-{% load custom_filters %}
-{% block title %}Home{% endblock %}
+{% load pagination_tags %}
+{% block title %} Creators{% endblock %}
 
 {% block main %}
 
@@ -49,6 +49,7 @@
         <div class="container" data-aos="fade-up" data-aos-delay="100">
 
             <div class="row gy-4 posts-list">
+                {% autopaginate creators %}
                 {{creators.username}}
                 {% for creator in creators %}
 
@@ -98,12 +99,14 @@
             </div><!-- End blog posts list -->
 
             <div class="pagination d-flex justify-content-center">
+                {% if paginator.has_next %}
                 <ul>
-                    <li><a href="#">1</a></li>
-                    <li class="active"><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
+                    <li class="active"><a href="?page={{ paginator.next_page_number }}">next</a></li>
+                    <li><a href="?page={{ paginator.paginator.num_pages}}">last</a></li>
                 </ul>
-            </div><!-- End pagination -->
+                {% endif %}
+            </div>
+            <!-- End pagination -->
 
         </div>
 
