@@ -8,7 +8,7 @@
   <meta content="" name="keywords">
   <title>Choose Profile Type</title>
   <link href="{% static 'assets/img/logo.png' %}" rel="icon">
-    <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-0evSXBKlOz+zmr2T7+qmWpIej0zWwmoQhCoqVLxHfhgjQvBPIaOUtWznreUT2ONu" crossorigin="anonymous">
   <style>
@@ -22,22 +22,28 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+    }
 
-      /* Center the card vertically */
-      .card {
-        max-width: 400px;
-        margin: 0 auto;
-        padding: 20px;
-        border-radius: 30px;
-        border: 2px solid black;
-        height: 200px;
-        background-color: springgreen;
-      }
+    .card {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 30px;
+      border: 2px solid black;
+      height: 200px;
+      background-color: springgreen;
     }
   </style>
 </head>
 
 <body>
+  <div class="message">
+    {% if messages %}
+        {% for message in messages %}
+        <p class="alert alert-{{ message.tag }}">{{message}}</p>
+        {% endfor %}
+        {% endif %}
+  </div>
   <div class="card-container">
     <div class="card text-center">
       <div class="card-header">

@@ -31,15 +31,11 @@ def profile(request):
     except CreatorProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
-    # Redirect to profile creation view
-    return redirect('choose_profile_type')
-    if isinstance(user_object, User):
-        context['user'] = user_object
-        return render(request, 'patron/admin/profile/users-profile.html', context)
-    else:
-        context['status'] = 404
-        context['message'] = 'User Not Found!'
-        return apology(request, context, user='auth')
+        # Redirect to profile creation view
+        return redirect('choose_profile_type')
+    context['user'] = get_user_object(request.user)
+    return render(request, 'patron/admin/profile/users-profile.html', context)
+    
 
 @login_required
 def create_creator_profile(request):
