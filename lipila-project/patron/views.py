@@ -24,9 +24,15 @@ def contribute(request, user):
 
 @login_required
 def profile(request):
-    user = request.user
     context = {}
-    user_object = get_user_object(user)
+    try:
+        # Access creator profile using OneToOne relation
+        creator = request.user.creatorprofile
+    except CreatorProfile.DoesNotExist:
+        messages.info(
+            request, 'Please Choose your profile type.')
+    # Redirect to profile creation view
+    return redirect('choose_profile_type')
     if isinstance(user_object, User):
         context['user'] = user_object
         return render(request, 'patron/admin/profile/users-profile.html', context)
@@ -35,34 +41,67 @@ def profile(request):
         context['message'] = 'User Not Found!'
         return apology(request, context, user='auth')
 
+@login_required
+def create_creator_profile(request):
+    user = get_user_object(request.user)
+    context ={'user':user}
+    return render(request, 'patron/admin/profile/create_creator_profile.html', context)
+
+@login_required
+def create_patron_profile(request):
+    user = get_user_object(request.user)
+    context ={'user':user}
+    return render(request, 'patron/admin/profile/create_patron_profile.html', context)
+
+
+@login_required
+def choose_profile_type(request):
+    if request.method == 'POST':
+        profile_type = request.POST.get('profile_type')
+        if profile_type == 'creator':
+            return redirect('create_creator_profile')  # Redirect to creator profile creation view (replace with your URL name)
+        elif profile_type == 'patron':
+            return redirect('create_patron_profile')  # Redirect to patron profile creation view (replace with your URL name)
+        else:
+            messages.error(request, 'Invalid profile type selected.')
+    return render(request, 'patron/admin/profile/choose_profile_type.html')
+
 
 class EditUserProfile(LoginRequiredMixin, View):
     def get(self, request, user, *args, **kwargs):
-        user_object = get_user_object(user)
-        if isinstance(user_object, User):
-            form = EditCreatorProfileForm(instance=user_object)
-            return render(request,
-                          'patron/admin/profile/edit_user_info.html',
-                          {'form': form, 'user': user_object})
-        else:
-            messages.error(
-                request, "Failed to update profile.")
-            return redirect(reverse('profile', kwargs={'user': user}))
-
+        try:
+            # Access creator profile using OneToOne relation
+            creator = request.user.creatorprofile
+        except CreatorProfile.DoesNotExist:
+            messages.info(
+                request, 'Please Choose your profile type.')
+            # Redirect to profile creation view
+            return redirect('choose_profile_type')
+        form = EditCreatorProfileForm(instance=creator)
+        return render(request,
+                        'patron/admin/profile/edit_user_info.html',
+                        {'form': form, 'user': creator})
+     
     def post(self, request, user, *args, **kwargs):
-        user_object = get_user_object(user)
-        if isinstance(user_object, User):
-            form = EditCreatorProfileForm(
-                request.POST, request.FILES, instance=user_object)
-            if form.is_valid():
-                form.save()
-                messages.success(
-                    request, "Your profile has been update.")
-                return redirect(reverse('profile', kwargs={'user': user_object}))
+        try:
+            # Access creator profile using OneToOne relation
+            creator = request.user.creatorprofile
+        except CreatorProfile.DoesNotExist:
+            messages.info(
+                request, 'Please Choose your profile type.')
+            # Redirect to profile creation view
+            return redirect('choose_profile_type')
+        form = EditCreatorProfileForm(
+            request.POST, request.FILES, instance=creator)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Your profile has been updated.")
+            return redirect(reverse('profile'))
         else:
             messages.error(
                 request, "Failed to update profile.")
-            return redirect(reverse('profile', kwargs={'user': user}))
+            return redirect(reverse('profile'))
 
 
 @login_required
@@ -122,19 +161,19 @@ def join(request, creator, user):
 def list_creators(request):
     data = [
         {
-        'username': 'SampleUsername',
-        'bio': 'This is a sample creator bio',
-        'created_at': '2024-06-01'
+            'username': 'SampleUsername',
+            'bio': 'This is a sample creator bio',
+            'created_at': '2024-06-01'
         },
         {
-        'username': 'SampleCreator2',
-        'bio': 'This is a sample creator number 2 bio',
-        'created_at': '2024-06-01'
+            'username': 'SampleCreator2',
+            'bio': 'This is a sample creator number 2 bio',
+            'created_at': '2024-06-01'
         },
         {
-        'username': 'SampleCreator3',
-        'bio': 'This is a sample creator number 3 bio',
-        'created_at': '2024-06-01'
+            'username': 'SampleCreator3',
+            'bio': 'This is a sample creator number 3 bio',
+            'created_at': '2024-06-01'
         }
     ]
     context = {}

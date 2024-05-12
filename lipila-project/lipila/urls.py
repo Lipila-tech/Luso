@@ -12,6 +12,9 @@ urlpatterns = [
 
     # PatronUser defined authenticated user views
     path('accounts/profile/', patron_views.profile, name='profile'),
+    path('accounts/profile/choose', patron_views.choose_profile_type, name='choose_profile_type'),
+    path('accounts/profile/create/creator', patron_views.create_creator_profile, name='create_creator_profile'),
+    path('accounts/profile/create/patron', patron_views.create_patron_profile, name='create_patron_profile'),
     path('accounts/profile/edit/<str:user>',
          patron_views.EditUserProfile.as_view(), name='update_profile'),
     path('me/<str:user>', patron_views.dashboard, name='dashboard'),

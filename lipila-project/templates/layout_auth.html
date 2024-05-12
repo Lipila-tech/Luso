@@ -4,7 +4,7 @@
 <html>
 
 <head>
-    <title>{% block title %}{% endblock %} | Lipla</title>
+    <title>Lipila-{% block title %}{% endblock %}</title>
     <!-- Font Awesome -->
     <meta charset="UTF-8">
     <meta name="description" content="Free Web tutorials">
@@ -36,24 +36,30 @@
                 <img src="{% static 'assets/img/logo.png' %}" alt="">
                 <span></span>
             </a>
-
             <!-- Nav Menu -->
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="/#hero" class="active">Home</a></li>
-                    <!-- <li><a href="{% url 'index' %}">For PatronUser</a></li> -->
-                    <li><a href="{% url 'business:index' %}">For Business</a></li>
-                    <li><a href="{% url 'patron' %}">Find PatronUser</a></li>
+                    <li><a href="{% url 'patron:index' %}">Creators</a></li>
+                    <li><a href="{% url 'patron:creators' %}">Find a Creator</a></li>
+                    <li><a href="/#features">Features</a></li>
                     <li><a href="/#pricing">Pricing</a></li>
-                    <li><a href="/#contact">Contact Us</a></li>
-                    <li><a href="/#about">About</a></li>
                 </ul>
 
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav><!-- End Nav Menu -->
 
             <div>
-                {% block content %}{% endblock %}
+                {% if user.is_authenticated %}
+                <p>
+                <form id="logout-form" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link">Logout</button>
+                </form>
+                </p>
+                {% else %}
+                <p><a id="btn-getstarted" class="btn-getstarted" href="{% url 'login' %}">Login</a></p>
+                {% endif %}
             </div>
 
         </div>
@@ -80,7 +86,7 @@
                                     {% block main %}{% endblock%}
                                     <p class="small">By signing in, I agree to the <a href="{% url 'terms' %}"
                                             class="small">Lipila's Terms of use.</a> and
-                                        <a href="{% url 'privacy' %}" class="small">Privacy policy</a>
+                                        <a href="{% url 'privacy' %}" class="small">Privacy policy.</a>
                                     </p>
 
                                 </div>

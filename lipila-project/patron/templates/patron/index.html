@@ -16,7 +16,6 @@
         {% else%}
         <img src="{% static 'assets/img/fans.jpg' %}" alt="hero_image" data-aos="fade-in">
         {% endif %}
-
         <div class="container">
             <div class="row">
                 <div class="col-lg-10">
@@ -27,153 +26,49 @@
                     <p data-aos="fade-up" data-aos-delay="200" id="slogan">Lipila Patron</p>
                 </div>
             </div>
-            <div class="down-arrow"></div> 
+            <div class="down-arrow"></div>
     </section><!-- End Hero Section -->
-    <section id="portfolio" class="portfolio">
-
-        <!--  Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <h2>Portfolio</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-        </div><!-- End Section Title -->
-
-        <div class="container">
-
-            <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
-
-                <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-                    <li data-filter="*" class="filter-active">All</li>
-                    <li data-filter=".filter-app">App</li>
-                    <li data-filter=".filter-product">Card</li>
-                    <li data-filter=".filter-branding">Web</li>
-                </ul><!-- End Portfolio Filters -->
-
-                <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-                        <img src="{% static 'assets/img/creators/client-1.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>App 1</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-1.png' %}" title="App 1"
-                                data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-                        <img src="{% static 'assets/img/creators/client-2.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>Product 1</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-2.png' %}" title="Product 1"
-                                data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-                        <img src="{% static 'assets/img/creators/client-3.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>Branding 1</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-3.png' %}" title="Branding 1"
-                                data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-                        <img src="{% static 'assets/img/creators/client-4.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>App 2</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-4.png' %}" title="App 2"
-                                data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-                        <img src="{% static 'assets/img/creators/client-5.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>Product 2</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-5.png' %}" title="Product 2"
-                                data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-                        <img src="{% static 'assets/img/creators/client-6.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>Branding 2</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-6.png' %}" title="Branding 2"
-                                data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app">
-                        <img src="{% static 'assets/img/creators/client-6.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>App 3</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-6.png' %}" title="App 3"
-                                data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product">
-                        <img src="{% static 'assets/img/creators/client-3.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>Product 3</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-3.png' %}" title="Product 3"
-                                data-gallery="portfolio-gallery-product" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding">
-                        <img src="{% static 'assets/img/creators/client-1.png' %}" class="img-fluid" alt="">
-                        <div class="portfolio-info">
-                            <h4>Branding 3</h4>
-                            <p>Lorem ipsum, dolor sit</p>
-                            <a href="{% static 'assets/img/creators/client-1.png' %}" title="Branding 2"
-                                data-gallery="portfolio-gallery-branding" class="glightbox preview-link"><i
-                                    class="bi bi-zoom-in"></i></a>
-                            <a href="portfolio-details.html" title="More Details" class="details-link"><i
-                                    class="bi bi-link-45deg"></i></a>
-                        </div>
-                    </div><!-- End Portfolio Item -->
-
-                </div><!-- End Portfolio Container -->
-
+    <!-- Creator portfolios -->
+    <section class="creators">
+        <article class="creator creator-left">
+            <img src="{% static 'assets/img/fans.jpg' %}" alt="Video Creator">
+            <div class="content">
+                <h2>Video Creators</h2>
+                <p>Share your creative vision with the world. Upload your videos, build a following, and monetize your
+                    content through paid subscriptions and direct sales.</p>
             </div>
-
-        </div>
-
-    </section><!-- End Portfolio Section -->
+        </article>
+        <article class="creator creator-right">
+            <div class="content">
+                <h2>Musicians</h2>
+                <p>Reach new audiences and connect with passionate fans. Sell your music, offer exclusive content, and
+                    build
+                    a community around your sound.</p>
+            </div>
+            <img src="{% static 'assets/img/fans.jpg' %}" alt="Musician">
+        </article>
+        <article class="creator creator-left">
+            <img src="{% static 'assets/img/fans.jpg' %}" alt="Podcaster">
+            <div class="content">
+                <h2>Podcasters</h2>
+                <p>Share your voice and expertise. Launch your podcast, connect with listeners, and generate income
+                    through
+                    subscriptions and sponsorships.</p>
+            </div>
+        </article>
+        <article class="creator creator-right">
+            <div class="content">
+                <h2>Artists</h2>
+                <p>Showcase your artwork and connect with art lovers. Sell prints, originals, or offer exclusive content
+                    to your dedicated fans.</p>
+            </div>
+            <img src="{% static 'assets/img/fans.jpg' %}" alt="Artist">
+        </article>
+    </section>
+    <div class="call-to-act">
+        <p>Ready to turn your creativity into recuring income? join the Lipila creator community. Sign up today!</p>
+        <a class="link" href="{% url 'accounts:signup' %}">Sign Up Now</a>
+    </div>
 
 </main>
 {% endblock %}

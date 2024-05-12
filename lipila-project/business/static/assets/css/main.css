@@ -266,6 +266,94 @@ section {
   animation: jumpInfinite 1.5s infinite;
 }
 
+
+
+/*--------------------------------------------------------------
+# Creator portfolios
+--------------------------------------------------------------*/
+.creators h1 {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.creators p {
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.creators {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 40px;
+}
+
+.creator {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.creator img {
+  width: 100%;
+  height: 300px; /* Increased image height */
+  object-fit: cover; /* Ensures image fills container */
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.creator h2 {
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.creator.creator-left img {
+  order: 2;
+}
+
+.creator.creator-right img {
+  order: 1;
+}
+
+.content {
+  padding: 10px;
+}
+
+/* Media Queries for Responsiveness */
+
+@media only screen and (max-width: 768px) {
+  .creator {
+      width: 100%; /* Make creators full width on smaller screens */
+  }
+}
+
+.call-to-act {
+  margin: auto;
+  width: 50%;
+  text-align: center;
+}
+
+
+
+.call-to-act a {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.call-to-act a:hover {
+  background-color: #0069d9;
+}
+
+
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/

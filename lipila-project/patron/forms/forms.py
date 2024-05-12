@@ -4,7 +4,7 @@ from django import forms
 from accounts.models import CreatorProfile, PatronProfile
 
 
-class EditCreatorProfileForm(UserChangeForm):
+class EditCreatorProfileForm(forms.ModelForm):
     class Meta:
         model = CreatorProfile
         fields = [
@@ -21,10 +21,11 @@ class EditCreatorProfileForm(UserChangeForm):
         widgets = {
             # Restrict file types
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
+            'bio': forms.Textarea(attrs={'rows': 5}),
         }
 
 
-class EditPatronProfileForm(UserChangeForm):
+class EditPatronProfileForm(forms.ModelForm):
     class Meta:
         model = PatronProfile
         fields = [
