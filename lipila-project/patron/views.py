@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
-from patron.forms.forms import EditPatronProfileForm, EditCreatorProfileForm
+from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm
 
 
 def index(request):
@@ -30,7 +30,7 @@ def profile(request):
     except CreatorProfile.DoesNotExist:
         pass
     try:
-        patron =  request.user.patronprofile
+        patron = request.user.patronprofile
     except PatronProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
@@ -45,8 +45,8 @@ def profile(request):
 def create_creator_profile(request):
     creator = get_user_object(request.user)
     if request.method == 'POST':
-        form = EditCreatorProfileForm(
-            request.POST, request.FILES, instance=creator)
+        form = CreateCreatorProfileForm(
+            request.POST)
         if form.is_valid():
             creator_profile = form.save(commit=False)  # Don't save yet
             creator_profile.user = creator  # Set the user based on the logged-in user
@@ -60,7 +60,7 @@ def create_creator_profile(request):
             return render(request,
                           'patron/admin/profile/create_creator_profile.html',
                           {'form': form, 'creator': creator})
-    form = EditCreatorProfileForm(instance=creator)
+    form = CreateCreatorProfileForm()
     return render(request,
                   'patron/admin/profile/create_creator_profile.html',
                   {'form': form, 'creator': creator})
@@ -70,8 +70,8 @@ def create_creator_profile(request):
 def create_patron_profile(request):
     patron = request.user
     if request.method == 'POST':
-        form = EditPatronProfileForm(
-            request.POST, request.FILES, instance=patron)
+        form = CreatePatronProfileForm(
+            request.POST)
         if form.is_valid():
             patron_profile = form.save(commit=False)  # Don't save yet
             patron_profile.user = patron  # Set the user based on the logged-in user
@@ -85,7 +85,7 @@ def create_patron_profile(request):
             return render(request,
                           'patron/admin/profile/create_creator_profile.html',
                           {'form': form, 'patron': patron})
-    form = EditPatronProfileForm(instance=patron)
+    form = CreatePatronProfileForm()
     return render(request,
                   'patron/admin/profile/create_patron_profile.html',
                   {'form': form, 'patron': patron})
@@ -116,7 +116,7 @@ class EditUserProfile(LoginRequiredMixin, View):
                 request, 'Please Choose your profile type.')
             # Redirect to profile creation view
             return redirect('choose_profile_type')
-        form = EditCreatorProfileForm(instance=creator)
+        form = CreateCreatorProfileForm(instance=creator)
         return render(request,
                       'patron/admin/profile/edit_user_info.html',
                       {'form': form, 'user': creator})
@@ -130,7 +130,7 @@ class EditUserProfile(LoginRequiredMixin, View):
                 request, 'Please Choose your profile type.')
             # Redirect to profile creation view
             return redirect('choose_profile_type')
-        form = EditCreatorProfileForm(
+        form = CreateCreatorProfileForm(
             request.POST, request.FILES, instance=creator)
         if form.is_valid():
             form.save()

@@ -4,11 +4,10 @@ from django import forms
 from accounts.models import CreatorProfile, PatronProfile
 
 
-class EditCreatorProfileForm(forms.ModelForm):
+class CreateCreatorProfileForm(forms.ModelForm):
     class Meta:
         model = CreatorProfile
         fields = [
-            'profile_image',
             'account_number',
             'bio',
             'city',
@@ -25,11 +24,10 @@ class EditCreatorProfileForm(forms.ModelForm):
         }
 
 
-class EditPatronProfileForm(forms.ModelForm):
+class CreatePatronProfileForm(forms.ModelForm):
     class Meta:
         model = PatronProfile
         fields = [
-            'profile_image',
             'account_number',
             'city',
             ]
