@@ -1,0 +1,32 @@
+body {
+    background-color: black;
+    /* Set a light background for the page */
+  }
+
+  .card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .card {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 30px;
+    border: 2px solid black;
+    height: 200px;
+    background-color: springgreen;
+  }
+  
+/* Message style */
+.message {
+    margin: auto;
+    width: 50%;
+    color: orange;
+    text-align: center;
+    border: 2px solid wheat;
+    border-radius: 35px;
+    background-color: dimgray;
+  }

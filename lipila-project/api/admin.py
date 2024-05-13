@@ -16,6 +16,7 @@ class StudentAdmin(admin.ModelAdmin):
 class TierAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')
 
+
 class ContributionAdmin(admin.ModelAdmin):
     list_display = ('creator', 'patron', 'tier', 'amount', 'timestamp')
 
@@ -74,9 +75,17 @@ class BNPLAdmin(admin.ModelAdmin):
     )
 
 
-# Register your models here.
-# admin.site.register(PatronProfile, PatronAdmin)
-# admin.site.register(CreatorProfile, CreatorProfileAdmin)
+class PatronProfileAdmin(admin.ModelAdmin):
+    list_display = ['profile_image', 'account_number', 'city',]
+
+
+class CreatorProfileAdmin(admin.ModelAdmin):
+    list_display = ['profile_image', 'account_number', 'bio',
+                    'city', 'creator_category', 'facebook_url', 'twitter_url',
+                    'instagram_url', 'linkedin_url',
+                    ]
+
+
 admin.site.register(Tier, TierAdmin)
 admin.site.register(Contribution, ContributionAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
@@ -89,6 +98,8 @@ admin.site.register(Student, StudentAdmin)
 admin.site.register(HeroInfo, HeroInfoAdmin)
 admin.site.register(AboutInfo, AboutInfoAdmin)
 admin.site.register(UserTestimonial, UserTestimonialAdmin)
+admin.site.register(CreatorProfile, CreatorProfileAdmin)
+admin.site.register(PatronProfile, PatronProfileAdmin)
 
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/'

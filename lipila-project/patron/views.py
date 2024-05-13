@@ -28,17 +28,38 @@ def profile(request):
         # Access creator profile using OneToOne relation
         creator = request.user.creatorprofile
     except CreatorProfile.DoesNotExist:
+        pass
+    try:
+        patron =  request.user.patronprofile
+    except PatronProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
-        # Redirect to profile creation view
         return redirect('choose_profile_type')
     context['user'] = get_user_object(request.user)
+    print(patron)
+    print(request.user)
     return render(request, 'patron/admin/profile/users-profile.html', context)
 
 
 @login_required
 def create_creator_profile(request):
     creator = get_user_object(request.user)
+    if request.method == 'POST':
+        form = EditCreatorProfileForm(
+            request.POST, request.FILES, instance=creator)
+        if form.is_valid():
+            creator_profile = form.save(commit=False)  # Don't save yet
+            creator_profile.user = creator  # Set the user based on the logged-in user
+            creator_profile.save()
+            messages.success(
+                request, "Your profile data has been saved.")
+            return redirect(reverse('profile'))
+        else:
+            messages.error(
+                request, "Failed to save profile. data")
+            return render(request,
+                          'patron/admin/profile/create_creator_profile.html',
+                          {'form': form, 'creator': creator})
     form = EditCreatorProfileForm(instance=creator)
     return render(request,
                   'patron/admin/profile/create_creator_profile.html',
@@ -47,7 +68,23 @@ def create_creator_profile(request):
 
 @login_required
 def create_patron_profile(request):
-    patron = get_user_object(request.user)
+    patron = request.user
+    if request.method == 'POST':
+        form = EditPatronProfileForm(
+            request.POST, request.FILES, instance=patron)
+        if form.is_valid():
+            patron_profile = form.save(commit=False)  # Don't save yet
+            patron_profile.user = patron  # Set the user based on the logged-in user
+            patron_profile.save()
+            messages.success(
+                request, "Your profile data has been saved.")
+            return redirect(reverse('profile'))
+        else:
+            messages.error(
+                request, "Failed to save profile. data")
+            return render(request,
+                          'patron/admin/profile/create_creator_profile.html',
+                          {'form': form, 'patron': patron})
     form = EditPatronProfileForm(instance=patron)
     return render(request,
                   'patron/admin/profile/create_patron_profile.html',
