@@ -6,7 +6,6 @@ from django.urls import reverse
 from django.views import View
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from rest_framework.decorators import api_view, renderer_classes
 # custom modules
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
@@ -35,19 +34,24 @@ def profile(request):
         return redirect('choose_profile_type')
     context['user'] = get_user_object(request.user)
     return render(request, 'patron/admin/profile/users-profile.html', context)
-    
+
 
 @login_required
 def create_creator_profile(request):
-    user = get_user_object(request.user)
-    context ={'user':user}
-    return render(request, 'patron/admin/profile/create_creator_profile.html', context)
+    creator = get_user_object(request.user)
+    form = EditCreatorProfileForm(instance=creator)
+    return render(request,
+                  'patron/admin/profile/create_creator_profile.html',
+                  {'form': form, 'creator': creator})
+
 
 @login_required
 def create_patron_profile(request):
-    user = get_user_object(request.user)
-    context ={'user':user}
-    return render(request, 'patron/admin/profile/create_patron_profile.html', context)
+    patron = get_user_object(request.user)
+    form = EditPatronProfileForm(instance=patron)
+    return render(request,
+                  'patron/admin/profile/create_patron_profile.html',
+                  {'form': form, 'patron': patron})
 
 
 @login_required
@@ -55,9 +59,11 @@ def choose_profile_type(request):
     if request.method == 'POST':
         profile_type = request.POST.get('profile_type')
         if profile_type == 'creator':
-            return redirect('create_creator_profile')  # Redirect to creator profile creation view (replace with your URL name)
+            # Redirect to creator profile creation view (replace with your URL name)
+            return redirect('create_creator_profile')
         elif profile_type == 'patron':
-            return redirect('create_patron_profile')  # Redirect to patron profile creation view (replace with your URL name)
+            # Redirect to patron profile creation view (replace with your URL name)
+            return redirect('create_patron_profile')
         else:
             messages.error(request, 'Invalid profile type selected.')
     return render(request, 'patron/admin/profile/choose_profile_type.html')
@@ -75,9 +81,9 @@ class EditUserProfile(LoginRequiredMixin, View):
             return redirect('choose_profile_type')
         form = EditCreatorProfileForm(instance=creator)
         return render(request,
-                        'patron/admin/profile/edit_user_info.html',
-                        {'form': form, 'user': creator})
-     
+                      'patron/admin/profile/edit_user_info.html',
+                      {'form': form, 'user': creator})
+
     def post(self, request, user, *args, **kwargs):
         try:
             # Access creator profile using OneToOne relation
