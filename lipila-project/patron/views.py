@@ -45,9 +45,13 @@ def profile(request):
 def create_creator_profile(request):
     creator = get_user_object(request.user)
     if request.method == 'POST':
+        print('post received')
+        print('creating form')
         form = CreateCreatorProfileForm(
             request.POST)
+        print('form created')
         if form.is_valid():
+            print('form is valid')
             creator_profile = form.save(commit=False)  # Don't save yet
             creator_profile.user = creator  # Set the user based on the logged-in user
             creator_profile.save()
@@ -55,6 +59,8 @@ def create_creator_profile(request):
                 request, "Your profile data has been saved.")
             return redirect(reverse('profile'))
         else:
+            print('invalid form')
+            print(form)
             messages.error(
                 request, "Failed to save profile. data")
             return render(request,
