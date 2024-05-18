@@ -1,0 +1,150 @@
+{% extends 'layout_pages.html' %}
+
+{% block title %} F.A.Q {% endblock %}
+{% block content %} <h1>Frequently Asked Questions</h1> {% endblock %}
+{% block main %}
+<section class="section faq">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card basic">
+                <div class="card-body">
+                    <h5 class="card-title">Getting Started</h5>
+
+                    <div>
+                        <h6>Is it free to create a Lipila Patron account?</h6>
+                        <p>Absolutely! Creating a Lipila Patron account is completely free. We want to make it as easy
+                            as possible for you to start earning from your creative work.</p>
+                    </div>
+                    <div class="pt-2">
+                        <h6>How do my patrons pay me?</h6>
+                        <p>Lipila Patron integrates seamlessly with Zambia's mobile money platforms. Your
+                            patrons can easily pay you using their mobile money accounts for a convenient and
+                            secure transaction.</p>
+                    </div>
+
+                    <div class="pt-2">
+                        <h6>How do fans become patrons?</h6>
+                        <p>Your fans can become patrons by signing up as a patron and simply click join on your profile.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <!-- F.A.Q Group 1 -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Fees & Transactions</h5>
+
+                    <div class="accordion accordion-flush" id="faq-group-1">
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-1" type="button"
+                                    data-bs-toggle="collapse">
+                                    Does Lipila Patron charge any fees?
+                                </button>
+                            </h2>
+                            <div id="faqsOne-1" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                                <div class="accordion-body">
+                                    We do charge a small commission fee on each transaction processed through Lipila
+                                    Patron. This fee helps us maintain and improve the platform to better serve both
+                                    creators and patrons.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-2" type="button"
+                                    data-bs-toggle="collapse">
+                                    What currency is supported by Lipila Patron?
+                                </button>
+                            </h2>
+                            <div id="faqsOne-2" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                                <div class="accordion-body">
+                                    Currently, Lipila Patron supports Zambian Kwacha (ZMW) transactions. We are
+                                    constantly working on expanding our supported currencies in the future.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-3" type="button"
+                                    data-bs-toggle="collapse">
+                                    What payment method is supported by Lipila Patron?
+                                </button>
+                            </h2>
+                            <div id="faqsOne-3" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                                <div class="accordion-body">
+                                    Currently, Lipila Patron suports MTN mobile money. We are
+                                    constantly working on expanding our supported payment gateways in the future.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-4" type="button"
+                                    data-bs-toggle="collapse">
+                                    Who initiates the transaction?
+                                </button>
+                            </h2>
+                            <div id="faqsOne-4" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                                <div class="accordion-body">
+                                    The patron selects to make a payment or contribution to a creator, Lipila Patron
+                                    sends the initiator a message for them to confirm with a pin.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- End F.A.Q Group 1 -->
+
+            <!-- F.A.Q Group 2 -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Managing Your Earnings</h5>
+
+                    <div class="accordion accordion-flush" id="faq-group-2">
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" data-bs-target="#faqsTwo-1" type="button"
+                                    data-bs-toggle="collapse">
+                                    How can I withdraw my earnings from Lipila Patron?
+                                </button>
+                            </h2>
+                            <div id="faqsTwo-1" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
+                                <div class="accordion-body">
+                                    You can easily withdraw your earnings directly to your mobile money account or your
+                                    linked bank account (if available).
+                                    We offer a smooth and secure withdrawal process.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" data-bs-target="#faqsTwo-2" type="button"
+                                    data-bs-toggle="collapse">
+                                    Is there a minimum withdrawal amount?
+                                </button>
+                            </h2>
+                            <div id="faqsTwo-2" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
+                                <div class="accordion-body">
+                                    Yes, there is a minimum withdrawal amount to ensure efficient processing.
+                                    You can find the current minimum withdrawal amount in your Lipila Patron account
+                                    settings.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- End F.A.Q Group 2 -->
+        </div>
+    </div>
+</section>
+{% endblock %}
