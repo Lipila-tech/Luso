@@ -8,19 +8,13 @@ class CreateCreatorProfileForm(forms.ModelForm):
     class Meta:
         model = CreatorProfile
         fields = [
-            'account_number',
+            'patron_title',
             'bio',
-            'city',
             'creator_category',
-            'facebook_url',
-            'twitter_url',
-            'instagram_url',
-            'linkedin_url',
             ]
         widgets = {
             # Restrict file types
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
-            'bio': forms.Textarea(attrs={'rows': 5}),
         }
 
 

@@ -26,18 +26,16 @@ def profile(request):
     context = {}
     try:
         # Access creator profile using OneToOne relation
-        creator = request.user.creatorprofile
+        request.user.creatorprofile
     except CreatorProfile.DoesNotExist:
         pass
     try:
-        patron = request.user.patronprofile
+        request.user.patronprofile
     except PatronProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
         return redirect('choose_profile_type')
     context['user'] = get_user_object(request.user)
-    print(patron)
-    print(request.user)
     return render(request, 'patron/admin/profile/users-profile.html', context)
 
 
@@ -45,13 +43,9 @@ def profile(request):
 def create_creator_profile(request):
     creator = get_user_object(request.user)
     if request.method == 'POST':
-        print('post received')
-        print('creating form')
         form = CreateCreatorProfileForm(
             request.POST)
-        print('form created')
         if form.is_valid():
-            print('form is valid')
             creator_profile = form.save(commit=False)  # Don't save yet
             creator_profile.user = creator  # Set the user based on the logged-in user
             creator_profile.save()
@@ -59,8 +53,6 @@ def create_creator_profile(request):
                 request, "Your profile data has been saved.")
             return redirect(reverse('profile'))
         else:
-            print('invalid form')
-            print(form)
             messages.error(
                 request, "Failed to save profile. data")
             return render(request,
@@ -102,10 +94,8 @@ def choose_profile_type(request):
     if request.method == 'POST':
         profile_type = request.POST.get('profile_type')
         if profile_type == 'creator':
-            # Redirect to creator profile creation view (replace with your URL name)
             return redirect('create_creator_profile')
         elif profile_type == 'patron':
-            # Redirect to patron profile creation view (replace with your URL name)
             return redirect('create_patron_profile')
         else:
             messages.error(request, 'Invalid profile type selected.')

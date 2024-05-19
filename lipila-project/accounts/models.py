@@ -37,10 +37,10 @@ class CreatorProfile(models.Model):
     )
     profile_image = models.ImageField(upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
+    patron_title = models.CharField(max_length=150, unique=True, default='LipilaPatron')
     bio = models.TextField(blank=True)
     city = models.CharField(max_length=50, blank=True)
-    # might to consider using a ForeignKey to a separate Category model
-    creator_category = models.CharField(max_length=50, blank=True)
+    creator_category = models.CharField(max_length=50, choices=CREATOR_CATEGORY_CHOICES, default='other')
     facebook_url = models.URLField(blank=True)
     twitter_url = models.URLField(blank=True)
     instagram_url = models.URLField(blank=True)
