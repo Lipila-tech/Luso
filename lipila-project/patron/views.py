@@ -26,22 +26,23 @@ def profile(request):
     context = {}
     try:
         # Access creator profile using OneToOne relation
-        request.user.creatorprofile
-    except CreatorProfile.DoesNotExist:
+        patron = request.user.patronprofile
+        context['user'] = patron
+        return render(request, 'patron/admin/profile/users-profile.html', context)
+    except PatronProfile.DoesNotExist:
         pass
     try:
-        request.user.patronprofile
-    except PatronProfile.DoesNotExist:
+        creator = request.user.creatorprofile
+        context['user'] = creator
+        return render(request, 'patron/admin/profile/users-profile.html', context)
+    except CreatorProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
-        return redirect('choose_profile_type')
-    context['user'] = get_user_object(request.user)
-    return render(request, 'patron/admin/profile/users-profile.html', context)
-
+        return redirect('choose_profile_type') 
 
 @login_required
 def create_creator_profile(request):
-    creator = get_user_object(request.user)
+    creator = request.user
     if request.method == 'POST':
         form = CreateCreatorProfileForm(
             request.POST)

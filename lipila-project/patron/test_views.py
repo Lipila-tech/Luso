@@ -53,6 +53,8 @@ class PatronViewsTest(TestCase):
         self.assertEqual(PatronProfile.objects.count(), 1)
         patron = PatronProfile.objects.get(user=self.user)
         self.assertEqual(patron.account_number, '77477838')
+        res = self.client.get(reverse('profile'))
+        self.assertEqual(res.status_code, 200)
 
     def test_create_creator_profile(self):
         """
@@ -66,8 +68,11 @@ class PatronViewsTest(TestCase):
         }
         response = self.client.post(reverse('create_creator_profile'), data)
         self.assertEqual(response.status_code, 302)
+        print(response)
         self.assertEqual(response.url, "/accounts/profile/")
         self.assertEqual(CreatorProfile.objects.count(), 1)
         creator = CreatorProfile.objects.get(user=self.user)
         self.assertEqual(creator.patron_title, 'TestPatron')
+        res = self.client.get(reverse('profile'))
+        self.assertEqual(res.status_code, 200)
         

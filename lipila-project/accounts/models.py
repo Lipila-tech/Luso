@@ -27,6 +27,9 @@ class PatronProfile(models.Model):
     profile_image = models.ImageField(upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True)
+    
+    def __str__(self):
+        return f"{self.user.username} {self.city}"
 
 
 class CreatorProfile(models.Model):
@@ -45,3 +48,6 @@ class CreatorProfile(models.Model):
     twitter_url = models.URLField(blank=True)
     instagram_url = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
+
+    def __str__(self):
+        return f"{self.patron_title} {self.creator_category}"

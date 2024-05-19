@@ -76,11 +76,11 @@ class BNPLAdmin(admin.ModelAdmin):
 
 
 class PatronProfileAdmin(admin.ModelAdmin):
-    list_display = ['profile_image', 'account_number', 'city',]
+    list_display = ['user', 'profile_image', 'account_number', 'city',]
 
 
 class CreatorProfileAdmin(admin.ModelAdmin):
-    list_display = ['profile_image', 'account_number', 'bio',
+    list_display = ['user', 'patron_title', 'profile_image', 'account_number', 'bio',
                     'city', 'creator_category', 'facebook_url', 'twitter_url',
                     'instagram_url', 'linkedin_url',
                     ]
