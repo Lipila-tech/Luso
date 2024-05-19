@@ -76,13 +76,13 @@
                             </div>
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div class="card-body p-4 p-lg-5 text-black">
+                                    {% if messages %}
                                     <div class="message">
-                                        {% if messages %}
                                         {% for message in messages %}
                                         <p class="alert alert-{{ message.tag }}">{{message}}</p>
                                         {% endfor %}
-                                        {% endif %}
                                     </div>
+                                    {% endif %}
                                     {% block main %}{% endblock%}
                                     <p class="small">By signing in, I agree to the <a href="{% url 'terms' %}"
                                             class="small">Lipila's Terms of use.</a> and

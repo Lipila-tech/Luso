@@ -81,13 +81,13 @@
         </div>
     </header><!-- End Header -->
     <!-- display any message -->
+    {% if messages %}
     <div class="message">
-        {% if messages %}
         {% for message in messages %}
         <p class="alert alert-{{ message.tag }}">{{message}}</p>
         {% endfor %}
-        {% endif %}
     </div>
+    {% endif %}
     <!-- end message -->
 
     {% block main %}

@@ -7,22 +7,13 @@
 
 <div class="pagetitle">
   <h1>Profile</h1>
+  {% if messages %}
   <div class="message">
-    {% if messages %}
     {% for message in messages %}
     <p class="alert alert-{{ message.tag }}">{{message}}</p>
     {% endfor %}
-    {% endif %}
   </div>
-  <div>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-        <li class="breadcrumb-item">Users</li>
-        <li class="breadcrumb-item active">Profile</li>
-      </ol>
-    </nav>
-  </div><!-- End Page Title -->
+  {% endif %}
 
   <section class="section profile">
     <div class="row">
@@ -35,22 +26,28 @@
             {% if user.profile_image.url %}
 
             <img src="{{ user.profile_image.url }}" alt="Profile" class="rounded-circle">
-            {% else %}
-            <img src="#" alt="Profile" class="rounded-circle">
-            <p>No image {{user.profile_image.url}}</p>
             {% endif %}
-            {% endif %}
-            <h2>{{ user.username }}</h2>
-            <h3>{{user.category | upper}}</h3>
-            <h3>{{user.city | upper}}, {{user.country | upper}}</h3>
-            {% if user.category == 'Member' %}
             {% else %}
+            <img src="{% static 'assets/img/avator.jpeg' %}" alt="default Profile image" class="rounded-circle">
+            {% endif %}
+
+            {% if user.creatorprofile %}
+            <h2>{{ user.creatorprofile.patron_title }}</h2>
+            <h3>{{user.patronprofile.creator_category }}</h3>
             <div class="social-links mt-2">
-              <a href="{{user.twitter_url}}" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
-              <a href="{{user.facebook_url}}" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
-              <a href="{{user.instagram_url}}" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
-              <a href="{{user.linkedin_url}}" class="linkedin" target="_blank"><i class="bi bi-linkedin"></i></a>
+              <a href="{{user.creatorprofile.twitter_url}}" class="twitter" target="_blank"><i
+                  class="bi bi-twitter"></i></a>
+              <a href="{{user.creatorprofile.facebook_url}}" class="facebook" target="_blank"><i
+                  class="bi bi-facebook"></i></a>
+              <a href="{{user.creatorprofile.instagram_url}}" class="instagram" target="_blank"><i
+                  class="bi bi-instagram"></i></a>
+              <a href="{{user.creatorprofile.linkedin_url}}" class="linkedin" target="_blank"><i
+                  class="bi bi-linkedin"></i></a>
             </div>
+            {% else %}
+            <h2>{{ user.username }}</h2>
+            <h3>Member</h3>
+            <h3>{{user.patronprofile.city | upper}}</h3>
             {% endif %}
           </div>
         </div>
