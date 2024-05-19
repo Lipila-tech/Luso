@@ -29,7 +29,7 @@ class PatronProfile(models.Model):
     city = models.CharField(max_length=50, blank=True)
     
     def __str__(self):
-        return f"{self.user.username} {self.city}"
+        return self.user.username
 
 
 class CreatorProfile(models.Model):
@@ -50,4 +50,4 @@ class CreatorProfile(models.Model):
     linkedin_url = models.URLField(blank=True)
 
     def __str__(self):
-        return f"{self.patron_title} {self.creator_category}"
+        return self.user.username

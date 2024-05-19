@@ -33,6 +33,7 @@ def profile(request):
         pass
     try:
         creator = request.user.creatorprofile
+        print('creator', creator)
         context['user'] = creator
         return render(request, 'patron/admin/profile/users-profile.html', context)
     except CreatorProfile.DoesNotExist:
