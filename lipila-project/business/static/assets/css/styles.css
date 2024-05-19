@@ -24,7 +24,7 @@ body {
 .message {
     margin: auto;
     width: 50%;
-    color: orange;
+    /* color: orange; */
     text-align: center;
     border: 2px solid wheat;
     border-radius: 35px;
