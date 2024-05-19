@@ -195,25 +195,9 @@ def join(request, creator, user):
 
 
 def list_creators(request):
-    data = [
-        {
-            'username': 'SampleUsername',
-            'bio': 'This is a sample creator bio',
-            'created_at': '2024-06-01'
-        },
-        {
-            'username': 'SampleCreator2',
-            'bio': 'This is a sample creator number 2 bio',
-            'created_at': '2024-06-01'
-        },
-        {
-            'username': 'SampleCreator3',
-            'bio': 'This is a sample creator number 3 bio',
-            'created_at': '2024-06-01'
-        }
-    ]
+    creators = CreatorProfile.objects.all()
     context = {}
-    context['creators'] = data
+    context['creators'] = creators
     return render(request, 'patron/creators.html', context)
 
 

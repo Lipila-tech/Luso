@@ -50,7 +50,7 @@
 
             <div class="row gy-4 posts-list">
                 {% autopaginate creators %}
-                {{creators.username}}
+                {{creators.patron_title}}
                 {% for creator in creators %}
 
                 <div class="col-xl-4 col-lg-6">
@@ -67,10 +67,10 @@
                             {% endif %}
                         </div>
 
-                        <p class="post-category">{{creator.category}}</p>
+                        <p class="post-category">{{creator.creator_category}}</p>
 
                         <h2 class="title">
-                            <a href="#">{{creator.bio}}</a>
+                            <a href="#">{{creator.patron_title}}</a>
                         </h2>
 
                         <div class="d-flex align-items-center">
@@ -85,9 +85,9 @@
                                 class="img-fluid post-author-img flex-shrink-0">
                             {% endif %}
                             <div class="post-meta">
-                                <p class="post-author">{{creator.username}}</p>
+                                <p class="post-author">{{creator.user}}</p>
                                 <p class="post-date">
-                                    <time datetime="2022-01-01">{{creator.created_at}}</time>
+                                    <time datetime="2022-01-01">{{creator.bio}}</time>
                                 </p>
                             </div>
                         </div>
