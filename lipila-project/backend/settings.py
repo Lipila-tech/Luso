@@ -28,9 +28,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =False
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['lipila.pythonanywhere.com']
+ALLOWED_HOSTS = ['lipila.pythonanywhere.com', 'localhost']
 
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'crispy_forms',
     'crispy_bootstrap4',
-    'django_archive',
     'django_pagination_bootstrap',
     # My apps
     'api',
@@ -100,7 +99,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-if env('BACKEND') == 'postgres':
+if env('DB_BACKEND') == 'postgres':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -111,7 +110,7 @@ if env('BACKEND') == 'postgres':
             'PORT': env('PSQL_PORT'),
         }
     }
-elif env('BACKEND') == 'mysql':
+elif env('DB_BACKEND') == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -189,12 +188,14 @@ STATIC_URL = "static/"
 LOGIN_REDIRECT_URL = "profile"
 LOGOUT_REDIRECT_URL = "login"
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if env ('EMAIL_BACKEND') == 'dev':
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = env('EMAIL_BACKEND')
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_PORT = env('EMAIL_PORT')
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = env('EMAIL_ID') 
+    EMAIL_HOST_PASSWORD = env('EMAIL_PW')
 
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_ID')
-EMAIL_HOST_PASSWORD = env('EMAIL_PW')
-DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
+    DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
