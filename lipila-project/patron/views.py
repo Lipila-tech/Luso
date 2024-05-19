@@ -27,14 +27,13 @@ def profile(request):
     try:
         # Access creator profile using OneToOne relation
         patron = request.user.patronprofile
-        context['user'] = patron
+        context['user'] = get_user_object(patron)
         return render(request, 'patron/admin/profile/users-profile.html', context)
     except PatronProfile.DoesNotExist:
         pass
     try:
         creator = request.user.creatorprofile
-        print('creator', creator)
-        context['user'] = creator
+        context['user'] = get_user_object(creator)
         return render(request, 'patron/admin/profile/users-profile.html', context)
     except CreatorProfile.DoesNotExist:
         messages.info(
