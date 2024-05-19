@@ -32,8 +32,8 @@ class HelperFunctionTests(TestCase):
 
     def test_get_creators_with_creators(self):
         """returns a list of 2 creator objects"""
-        CreatorProfile.objects.create(user=self.user1)
-        CreatorProfile.objects.create(user=self.user2)
+        CreatorProfile.objects.create(user=self.user1, patron_title="patronOne")
+        CreatorProfile.objects.create(user=self.user2, patron_title="patronTwo")
         all_creators = helpers.get_creators()
         self.assertEqual(len(all_creators), 2)
 
