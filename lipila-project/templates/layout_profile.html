@@ -6,7 +6,6 @@
 
 
 <div class="pagetitle">
-  <h1>Profile</h1>
   {% if messages %}
   <div class="message">
     {% for message in messages %}
@@ -55,10 +54,8 @@
       </div>
 
       <div class="col-xl-8">
-
         <div class="card">
           <div class="card-body pt-3">
-            <!-- Bordered Tabs -->
             <ul class="nav nav-tabs nav-tabs-bordered">
 
               <li class="nav-item">
@@ -75,11 +72,8 @@
             </ul>
             {% block content %}
             {% endblock %}
-
           </div>
-
-        </div><!-- End Bordered Tabs -->
-
+        </div>
       </div>
     </div>
 

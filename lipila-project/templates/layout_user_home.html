@@ -1,0 +1,46 @@
+{% extends 'layout_admin.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block header %}
+<div class="d-flex align-items-center justify-content-between">
+    <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
+        <span class="d-none d-lg-block"> Creator Home</span>
+    </a>
+    <i class="bi bi-list toggle-sidebar-btn"></i>
+</div><!-- End Logo -->
+{% endblock %}
+{% block main %}
+
+<div class="pagetitle">
+    {% if messages %}
+    <div class="message">
+        {% for message in messages %}
+        <p class="alert alert-{{ message.tag }}">{{message}}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="section profile">
+        <div class="row">
+            <div class="col-xl-4">
+
+                <div class="card">
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+</div>
+</section>
+
+
+{% endblock %}

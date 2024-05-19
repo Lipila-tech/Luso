@@ -34,19 +34,14 @@
 
     <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
 </head>
 
 <body>
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
-
-        <div class="d-flex align-items-center justify-content-between">
-            <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
-                <img src="{% static 'assets/img/logo.png' %}" alt="">
-                <span class="d-none d-lg-block">administration</span>
-            </a>
-            <i class="bi bi-list toggle-sidebar-btn"></i>
-        </div><!-- End Logo -->
+        {% block header %}
+        {% endblock %}
 
         <div class="search-bar">
             <form class="search-form d-flex align-items-center" method="POST" action="#">
@@ -154,10 +149,16 @@
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="#">
                                 <i class="bi bi-box-arrow-right"></i>
-                                <form id="logout-form" method="post" action="{% url 'logout' %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-link">Logout</button>
-                                </form>
+                                {% if user.is_authenticated %}
+                                <p>
+                                    <form id="logout-form" method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link">Logout</button>
+                                    </form>
+                                </p>
+                                {% else %}
+                                <p><a id="btn-getstarted" class="btn-getstarted" href="{% url 'login' %}">Login</a></p>
+                                {% endif %}
                             </a>
                         </li>
 
@@ -168,6 +169,8 @@
         </nav><!-- End Icons Navigation -->
 
     </header><!-- End Header -->
+
+    {% if user.is_authenticated %}
 
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
@@ -316,15 +319,6 @@
         </ul>
 
     </aside><!-- End Sidebar-->
-    <div class="pagetitle">
-        <h1>Dashboard</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
     <main id="main" class="main">
         <div class="pagetitle">
             <h1>Dashboard</h1>
@@ -342,8 +336,10 @@
             {% endfor %}
         </div>
         {% endif %}
+    </main>
+    {% endif %}
+    <main id="main" class="main">
         {% block main %}
-
         {% endblock %}
     </main>
 

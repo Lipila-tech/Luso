@@ -180,6 +180,22 @@ def patron(request):
         return render(request, 'UI/patron.html', context)
 
 
+def creator_home(request, creator):
+    """
+    renders a creator home page.
+
+    Args:
+        request: The incoming HTTP request object.
+        creator: The username of the creator the user wants to view.
+
+    Returns:
+        A rendered response with the creator details.
+    """
+    creator_id = User.objects.get(username=creator)
+    creator_obj = CreatorProfile.objects.get(user=creator_id)
+    return render(request, 'patron/admin/profile/creator_home.html', {'creator':creator_obj})
+
+
 @login_required
 def join(request, creator, user):
     """Handles user subscription to a creator.
