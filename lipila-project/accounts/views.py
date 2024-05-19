@@ -49,6 +49,8 @@ def signup_view(request):
                 'token': token,
             })
             user.email_user(subject, message)
+            messages.success(
+                request, "Your account has been created successfully")
             return redirect('accounts:activation_sent')
     else:
         form = SignUpForm()
