@@ -4,9 +4,15 @@
 
 {% block header %}
 <div class="d-flex align-items-center justify-content-between">
+    {% if user.is_authenticated %}
     <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
-        <span class="d-none d-lg-block"> Creator Home</span>
+        <span class="d-none d-lg-block"> Home</span>
     </a>
+    {% else %}
+    <a href="{% url 'index' %}" class="logo d-flex align-items-center">
+        <span class="d-none d-lg-block"> Home</span>
+    </a>
+    {% endif %}
     <i class="bi bi-list toggle-sidebar-btn"></i>
 </div><!-- End Logo -->
 {% endblock %}
