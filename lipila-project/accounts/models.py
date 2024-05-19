@@ -26,7 +26,7 @@ class PatronProfile(models.Model):
     )
     profile_image = models.ImageField(upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
-    city = models.CharField(max_length=50, blank=True)  # Increased length for wider range of cities
+    city = models.CharField(max_length=50, blank=True)
 
 
 class CreatorProfile(models.Model):
@@ -37,12 +37,10 @@ class CreatorProfile(models.Model):
     )
     profile_image = models.ImageField(upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
+    patron_title = models.CharField(max_length=150, unique=True, default='LipilaPatron')
     bio = models.TextField(blank=True)
-    city = models.CharField(max_length=50, blank=True)  # Increased length for wider range of cities
-
-    # You might want to consider using a ForeignKey to a separate Category model
-    creator_category = models.CharField(max_length=50, blank=True)
-
+    city = models.CharField(max_length=50, blank=True)
+    creator_category = models.CharField(max_length=50, choices=CREATOR_CATEGORY_CHOICES, default='other')
     facebook_url = models.URLField(blank=True)
     twitter_url = models.URLField(blank=True)
     instagram_url = models.URLField(blank=True)

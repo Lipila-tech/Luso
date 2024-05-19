@@ -1280,3 +1280,14 @@ h6 {
   font-size: 13px;
   color: #012970;
 }
+
+/* Message style */
+.message {
+  margin: auto;
+  width: 50%;
+  color: orange;
+  text-align: center;
+  border: 2px solid wheat;
+  border-radius: 35px;
+  background-color: dimgray;
+}

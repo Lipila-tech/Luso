@@ -4,19 +4,13 @@ from django import forms
 from accounts.models import CreatorProfile, PatronProfile
 
 
-class EditCreatorProfileForm(UserChangeForm):
+class CreateCreatorProfileForm(forms.ModelForm):
     class Meta:
         model = CreatorProfile
         fields = [
-            'profile_image',
-            'account_number',
+            'patron_title',
             'bio',
-            'city',
             'creator_category',
-            'facebook_url',
-            'twitter_url',
-            'instagram_url',
-            'linkedin_url',
             ]
         widgets = {
             # Restrict file types
@@ -24,11 +18,10 @@ class EditCreatorProfileForm(UserChangeForm):
         }
 
 
-class EditPatronProfileForm(UserChangeForm):
+class CreatePatronProfileForm(forms.ModelForm):
     class Meta:
         model = PatronProfile
         fields = [
-            'profile_image',
             'account_number',
             'city',
             ]

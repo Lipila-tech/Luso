@@ -1,7 +1,9 @@
 {% autoescape off %}
 Hi {{ user.username }},
 
-Please click the following link to confirm your registration:
+Welcome to Lipila Patron!
+
+Please click the following link to confirm your Lipila Patron registration:
 
 http://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
 {% endautoescape %}

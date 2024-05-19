@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Lipila{% block title %}{% endblock%}</title>
+    <title>Lipila-{% block title %}{% endblock%}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -335,7 +335,7 @@
                 </ol>
             </nav>
         </div><!-- End Page Title -->
-        <div>
+        <div class="message">
             {% if messages %}
             {% for message in messages %}
             <p class="alert alert-{{ message.tag }}">{{message}}</p>
@@ -372,7 +372,7 @@
                         <li><a href="/#about">About us</a></li>
                         <li><a href="/#services">Services</a></li>
                         <li><a href="{% url 'terms' %}">Terms of use</a></li>
-                        <li><a href="{% url 'privacy' %}">Privacy policy</a></li>
+                        <li><a href="{% url 'privacy' %}">Privacy policy.</a></li>
                         <li><a href="{% url 'faq' %}">FAQ</a></li>
                     </ul>
                 </div>

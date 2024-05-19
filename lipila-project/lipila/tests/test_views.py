@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
-from unittest import mock
 # Custom modules
 from lipila.models import ContactInfo, HeroInfo, UserTestimonial
 from lipila.helpers import get_user_object
