@@ -189,13 +189,14 @@ STATIC_URL = "/static/"
 LOGIN_REDIRECT_URL = "profile"
 LOGOUT_REDIRECT_URL = "login"
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if env ('EMAIL_BACKEND') == 'dev':
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = env('EMAIL_BACKEND')
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_PORT = env('EMAIL_PORT')
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = env('EMAIL_ID') 
+    EMAIL_HOST_PASSWORD = env('EMAIL_PW')
 
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_ID') 
-EMAIL_HOST_PASSWORD = env('EMAIL_PW')
-
-DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
+    DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'

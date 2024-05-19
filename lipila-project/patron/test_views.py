@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
 from django.test import TestCase, Client
 from django.urls import reverse
 from accounts.models import PatronProfile, CreatorProfile
