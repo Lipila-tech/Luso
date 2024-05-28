@@ -42,13 +42,16 @@ a:hover {
 
 /* Image container for the second column */
 .image-container {
-  /* Removed position: relative;  */  
-  overflow: hidden;  /* Hides overflowing parts of the image */
+  /* Removed position: relative;  */
+  overflow: hidden;
+  /* Hides overflowing parts of the image */
 }
 
 .image-container img {
-  width: 100%;  /* Fills the width of the container */
-  height: auto;   /* Maintains aspect ratio */
+  width: 100%;
+  /* Fills the width of the container */
+  height: auto;
+  /* Maintains aspect ratio */
   /* Removed position: absolute;  */
   /* Removed top: 0; left: 0;  */
 }
@@ -87,10 +90,12 @@ h6 {
 #logout-form {
   display: inline;
 }
+
 #logout-form button {
   padding: 0;
   margin: 0;
 }
+
 /*--------------------------------------------------------------
 # Page Title
 --------------------------------------------------------------*/
@@ -216,6 +221,91 @@ h6 {
   0% {
     opacity: 0;
   }
+}
+
+/* Withdraw */
+
+.withdraw-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.withdraw-form h2 {
+  margin-bottom: 20px;
+}
+
+.withdraw-form .form-group {
+  margin-bottom: 15px;
+}
+
+.withdraw-form .form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.withdraw-form .form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.withdraw-form .form-group input[type="submit"] {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.withdraw-form .form-group input[type="submit"]:hover {
+  background-color: #218838;
+}
+
+/* 
+* Patron profiles styling 
+ */
+
+.patrons-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.patrons-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.patron {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.patron:last-child {
+  border-bottom: none;
+}
+
+.patron div {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.total-contributions {
+  text-align: right;
+  color: #28a745;
+  font-weight: bold;
 }
 
 /* Light Backgrounds */
@@ -405,7 +495,7 @@ h6 {
 .logo img {
   max-height: 26px;
   margin-right: 6px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
 }
 
 .logo span {
@@ -1103,7 +1193,7 @@ h6 {
 /*--------------------------------------------------------------
 # T.O.U Page
 --------------------------------------------------------------*/
-.terms h3{
+.terms h3 {
   font-weight: 600;
 }
 
@@ -1225,6 +1315,7 @@ h6 {
 #error {
   background-color: #444444;
 }
+
 .error-404 {
   padding: 30px;
 }
@@ -1292,4 +1383,3 @@ h6 {
   border-radius: 35px;
   background-color: dimgray;
 }
-

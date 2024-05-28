@@ -89,7 +89,7 @@ class CreateProductView(View):
     """Creats a user product"""
     def get(self, request):
         form = AddProductForm()
-        return render(request, 'business/admin/actions/products.html', {'form': form})
+        return render(request, 'patron/admin/actions/products.html', {'form': form})
 
     def post(self, request):
         form = AddProductForm(request.POST, request.FILES)
@@ -117,7 +117,7 @@ class EditProductView(View):
             Product, pk=product_id)  # Fetch product by ID
         # Pre-populate form with product data
         form = AddProductForm(instance=product)
-        return render(request, 'business/admin/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
+        return render(request, 'patron/admin/actions/product_edit.html', {'form': form, 'product': product, 'product_id': product_id})
 
     def post(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
@@ -142,7 +142,7 @@ class DeleteProductView(View):
     def get(self, request, product_id, *args, **kwargs):
         product = get_object_or_404(Product, pk=product_id)
         return render(request,
-                      'business/admin/actions/product_delete.html',
+                      'patron/admin/actions/product_delete.html',
                       {'product': product, 'product_id': product_id})
 
     def post(self, request, product_id, *args, **kwargs):
@@ -178,7 +178,7 @@ def list_student(request):
 
 @login_required
 def invoice(request):
-    return render(request, 'business/admin/actions/invoice.html')
+    return render(request, 'patron/admin/actions/invoice.html')
 
 
 @login_required
@@ -187,14 +187,14 @@ def log_products(request):
     user_object = get_object_or_404(BusinessUser, username=request.user)
     products = Product.objects.filter(owner=user_object.id)
     context['products'] = products
-    return render(request, 'business/admin/log/products.html', context)
+    return render(request, 'patron/admin/log/products.html', context)
 
 
 @login_required
 def transfer(request):
     context = {}
     context['form'] = DisburseForm()
-    return render(request, 'business/admin//actions/transfer.html', context)
+    return render(request, 'patron/admin//actions/transfer.html', context)
 
 
 class SignupView(View):

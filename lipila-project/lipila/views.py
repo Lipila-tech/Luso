@@ -72,28 +72,4 @@ def contact(request):
             request, "Failed to send message")
         form = ContactForm()
         context['form'] = form
-    return render(request, 'index.html', context)
-
-@login_required
-def withdraw(request, user):
-    context = {}
-    user_object = get_user_object(request.user)
-    context['user'] = user_object
-    if isinstance(user_object, PatronProfile):
-        return render(request, 'business/admin/actions/withdraw.html', context)
-    elif isinstance(user_object, CreatorProfile):
-        return render(request, 'patron/admin/actions/withdraw.html', context)
-    else:
-        return render(request, 'lipila/admin/actions/withdraw.html', context)
-
-@login_required
-def history(request, user):
-    context = {}
-    user_object = get_user_object(request.user)
-    context['user'] = user_object
-    if isinstance(user_object, PatronProfile):
-        return render(request, 'business/admin/log/withdraw.html', context)
-    elif isinstance(user_object, CreatorProfile):
-        return render(request, 'patron/admin/log/withdraw.html', context)
-    else:
-        return render(request, 'lipila/admin/log/withdraw.html', context)
+    return render(request, 'index.html', context)   

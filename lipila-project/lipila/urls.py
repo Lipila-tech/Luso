@@ -22,12 +22,12 @@ urlpatterns = [
          patron_views.EditUserProfile.as_view(), name='update_profile'),
     path('me/<str:user>', patron_views.dashboard, name='dashboard'),
     path('patron/home/<str:creator>', patron_views.creator_home, name='creator_home'),
-    path('patron/all/', patron_views.patron, name='patron'),
+    path('patron/all/', patron_views.patron, name='patrons'),
     path('patron/join/<str:user>/<str:creator>/', patron_views.join, name='join'),
+    path('history/<str:user>', patron_views.history, name='history'),
+    path('withdraw/<str:user>', patron_views.withdraw, name='withdraw'),
 
     # lipila difened authenticated user views
-    path('withdraw/<str:user>', views.withdraw, name='withdraw'),
-    path('history/<str:user>', views.history, name='history'),
     path('faq/', views.pages_faq, name='faq'),
     path('terms-of-use/', views.pages_terms, name='terms'),
     path('privacy-policy/', views.pages_privacy, name='privacy'),

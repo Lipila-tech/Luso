@@ -22,6 +22,14 @@ def contribute(request, user):
 
 
 @login_required
+def withdraw(request, user):
+    context = {}
+    user_object = get_user_object(request.user)
+    context['user'] = user_object
+    return render(request, 'patron/admin/actions/withdraw.html', context)
+
+
+@login_required
 def profile(request):
     context = {}
     try:
@@ -175,7 +183,7 @@ def patron(request):
     context['patron'] = patron
     if request.user.is_authenticated:
         # context['user'] = user_object
-        return render(request, 'lipila/admin/patron.html', context)
+        return render(request, 'patron/admin/pages/patrons.html', context)
     else:
         return render(request, 'UI/patron.html', context)
 
@@ -225,3 +233,11 @@ def log_products(request, user):
     context['products'] = products
     context['user'] = user_object
     return render(request, 'patron/admin/log/products.html', context)
+
+
+@login_required
+def history(request, user):
+    context = {}
+    user_object = get_user_object(request.user)
+    context['user'] = user_object
+    return render(request, 'patron/admin/log/history.html', context)
