@@ -182,7 +182,7 @@
                 </a>
             </li><!-- End Dashboard Nav -->
 
-            {% if user.category == 'Member' %}
+            {% if user.patronprofile %}
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
@@ -213,7 +213,7 @@
                     </li>
                 </ul>
             </li>
-            {% elif user.category == 'Creator' %}
+            {% elif user.creatorprofile %}
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
@@ -234,7 +234,7 @@
                 </a>
                 <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'patron:patrons' user=user %}">
+                        <a href="{% url 'patrons' %}">
                             <i class="bi bi-circle"></i><span>Patrons</span>
                         </a>
                     </li>
@@ -253,11 +253,6 @@
                 </a>
                 <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'business:students' %}">
-                            <i class="bi bi-circle"></i><span>Add Student</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="{% url 'business:products'%}">
                             <i class="bi bi-circle"></i><span>Add Products</span>
                         </a>
@@ -275,12 +270,6 @@
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-
-                    <li>
-                        <a href="{% url 'business:list_student' %}">
-                            <i class="bi bi-circle"></i><span>Students</span>
-                        </a>
-                    </li>
                     <li>
                         <a href="{% url 'business:log_products' %}">
                             <i class="bi bi-circle"></i><span>Products</span>

@@ -4,23 +4,13 @@
 {% block title %} New Product {% endblock %}
 {% block main %}
 
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Confirm Product Delete</h5>
-        </div>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Confirm Product Delete</h5>
     </div>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <h2>Delete</h2>
-                <p>{{product.name}}</p>
-                <form action="{% url 'delete_product' product_id %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="product_id" value="{{ product_id }}">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
+</div>
+<div class="container mt-5">
+    <h1>Under Construction</h1>
+</div>
 
 {% endblock %}
