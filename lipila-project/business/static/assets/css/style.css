@@ -263,12 +263,103 @@ h6 {
   background-color: #218838;
 }
 
+
+/*
+* Creator dashboard 
+ */
+
+.cretaor-body {
+  font-family: Arial, sans-serif;
+  background-color: #afa1a1;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.creator-dashboard {
+  max-width: 800px;
+  width: 100%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.creator-dashboard h2 {
+  margin-bottom: 20px;
+}
+
+.creator-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.creator-stat {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  flex: 1 1 30%;
+  min-width: 250px;
+  box-sizing: border-box;
+}
+
+.creator-stat h3 {
+  margin: 0;
+  font-size: 2em;
+  color: #007bff;
+}
+
+.creator-stat p {
+  margin: 10px 0 0;
+  color: #6c757d;
+}
+
+.creator-stat span {
+  font-size: 1.2em;
+  color: #28a745;
+}
+
+.creator-footer {
+  margin-top: 20px;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .creator-stat {
+    flex: 1 1 45%;
+  }
+}
+
+@media (max-width: 480px) {
+  .creator-stat {
+    flex: 1 1 100%;
+  }
+}
+
 /* 
 * Patron profiles styling 
  */
 
+.patrons-body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .patrons-container {
   max-width: 800px;
+  width: 100%;
   margin: 0 auto;
   background-color: #fff;
   padding: 20px;
@@ -283,10 +374,11 @@ h6 {
 
 .patron {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #007bff;
 }
 
 .patron:last-child {
@@ -294,8 +386,9 @@ h6 {
 }
 
 .patron div {
-  flex: 1;
-  padding: 0 10px;
+  flex: 1 1 20%;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 .username {
@@ -306,6 +399,28 @@ h6 {
   text-align: right;
   color: #28a745;
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .patron div {
+    flex: 1 1 45%;
+  }
+
+  .total-contributions {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .patron div {
+    flex: 1 1 100%;
+    text-align: left;
+  }
+
+  .total-contributions {
+    text-align: left;
+    margin-top: 10px;
+  }
 }
 
 /* Light Backgrounds */

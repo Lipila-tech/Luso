@@ -46,7 +46,8 @@ def profile(request):
     except CreatorProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
-        return redirect('choose_profile_type') 
+        return redirect('choose_profile_type')
+
 
 @login_required
 def create_creator_profile(request):
@@ -179,8 +180,10 @@ def dashboard(request, user):
 def patron(request):
     context = {}
     patron = CreatorProfile.objects.all()
-    # user_object = get_user_object(user)
-    context['patron'] = patron
+    patrons = [{'name': 'user1', 'city': 'Kitwe', 'subscription': 'Gold', 'contributions': 1200}, {
+        'name': 'user2', 'city': 'Lusaka', 'subscription': 'Gold', 'contributions': 300},
+        {'name':'user3', 'city':'Ndola', 'subscription':'Silver', 'contributions':300}]
+    context['patrons'] = patrons
     if request.user.is_authenticated:
         # context['user'] = user_object
         return render(request, 'patron/admin/pages/patrons.html', context)
@@ -201,7 +204,7 @@ def creator_home(request, creator):
     """
     creator_id = User.objects.get(username=creator)
     creator_obj = CreatorProfile.objects.get(user=creator_id)
-    return render(request, 'patron/admin/profile/creator_home.html', {'creator':creator_obj})
+    return render(request, 'patron/admin/profile/creator_home.html', {'creator': creator_obj})
 
 
 @login_required

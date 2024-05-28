@@ -3,42 +3,35 @@
 {% load custom_filters %}
 {% block title %}Dashboard{% endblock %}
 
-<body>
-  {% block main %}
-  <section class="section dashboard">
-    <div class="row">
-      <!-- Left side columns -->
-      <div class="col-lg-8">
-        <div class="row">
-          <!-- Sales Card -->
-          <div class="col-xxl-4 col-md-6">
-            <div class="card info-card sales-card">
-              <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                  </li>
-                  <li><a class="dropdown-item" href="#">Today</a></li>
-                  <li><a class="dropdown-item" href="#">This Month</a></li>
-                  <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">Patrons <span>| Today</span></h5>
-                <div class="d-flex align-items-center">
-                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-people"></i>
-                  </div>
-                  <div class="ps-3">
-                    <h6>{{patrons}}</h6>
-                    <span class="text-success small pt-1 fw-bold">{{patrons}}%</span> <span
-                      class="text-muted small pt-2 ps-1">increase</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Sales Card -->
-        </div>
-  </section>
-  {% endblock %}
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+
+<section class="cretaor-body">
+  <div class="creator-dashboard">
+    <div class="creator-stats">
+      <div class="creator-stat">
+        <h3>K<span id="current-balance">5,000</span></h3>
+        <p>Balance</p>
+      </div>
+      <div class="creator-stat">
+        <h3>K<span id="withdrawn-total">2,500</span></h3>
+        <p>Withdrawn</p>
+      </div>
+      <div class="creator-stat">
+        <h3><span id="num-patrons">150</span></h3>
+        <p>Patrons</p>
+      </div>
+      <div class="creator-stat">
+        <h3><span id="num-patrons">3</span></h3>
+        <p>Tiers</p>
+      </div>
+    </div>
+    <div class="creator-footer">
+      Last updated: <span id="last-updated">May 28, 2024</span>
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

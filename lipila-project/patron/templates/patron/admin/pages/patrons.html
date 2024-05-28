@@ -3,33 +3,21 @@
 {% block title %}My Patrons {% endblock %}
 
 {% block main %}
-<div class="patrons-container">
-    <h2>My Patrons</h2>
-    <div class="patron">
-        <div class="username">User123</div>
-        <div class="city">Lusaka</div>
-        <div class="subscription-type">Gold</div>
-        <div class="total-contributions">K1,200</div>
+
+<section class="patrons-body">
+    <div class="patrons-container">
+        <h2>My Patrons</h2>
+
+        {% for patron in patrons %}
+        <div class="patron">
+            <div class="username">{{patron.name}}</div>
+            <div class="city">{{patron.city}}</div>
+            <div class="subscription-type">{{patron.subscription}}</div>
+            <div class="total-contributions">K{{patron.contributions}}</div>
+        </div>
+        {% endfor %}
     </div>
-    <div class="patron">
-        <div class="username">JaneDoe</div>
-        <div class="city">Ndola</div>
-        <div class="subscription-type">Silver</div>
-        <div class="total-contributions">K800</div>
-    </div>
-    <div class="patron">
-        <div class="username">JohnSmith</div>
-        <div class="city">Kitwe</div>
-        <div class="subscription-type">Bronze</div>
-        <div class="total-contributions">K500</div>
-    </div>
-    <div class="patron">
-        <div class="username">ZedPatron</div>
-        <div class="city">Livingstone</div>
-        <div class="subscription-type">Platinum</div>
-        <div class="total-contributions">K2,000</div>
-    </div>
-    <!-- More patron entries can be added here -->
-</div>
+
+</section>
 
 {% endblock %}
