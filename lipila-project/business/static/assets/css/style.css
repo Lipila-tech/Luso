@@ -405,6 +405,7 @@ h6 {
 .logo img {
   max-height: 26px;
   margin-right: 6px;
+  border-radius: 50%;
 }
 
 .logo span {
