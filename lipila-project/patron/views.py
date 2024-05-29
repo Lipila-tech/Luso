@@ -168,10 +168,14 @@ def dashboard(request, user):
     }
     user_object = get_user_object(user)
 
-    if isinstance(user_object, User):
+    if user.creatorprofile:
         user_object = User.objects.get(username=user)
         context['user'] = user_object
         return render(request, 'patron/admin/index.html', context)
+    elif user.patronprofile:
+        user_object = User.objects.get(username=user)
+        context['user'] = user_object
+        return render(request, 'patron/admin/patron_dashboard.html', context)
     else:
         context['status'] = 404
         context['message'] = 'User Not Found!'

@@ -189,129 +189,129 @@
                 </a>
                 <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{% url 'withdraw' user=user %}">
-                            <i class="bi bi-circle"></i><span>Contribute</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Forms Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'patron' %}">
-                            <i class="bi bi-circle"></i><span>PatronUser</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'history' user=user %}">
-                            <i class="bi bi-circle"></i><span>History</span>
-                        </a>
-                    </li>
-                </ul>
+                        {% with target_fragment='#find-creator' %}
+                    <li><a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a></li>
+                    {% endwith %}
             </li>
-            {% elif user.creatorprofile %}
+        </ul>
+        </li><!-- End Forms Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Subscriptions</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Contributions</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        {% elif user.creatorprofile %}
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'withdraw' user=user %}">
-                            <i class="bi bi-circle"></i><span>Withdraw</span>
-                        </a>
-                    </li>
-                </ul>
-                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'patron:tiers' %}">
-                            <i class="bi bi-circle"></i><span>Tiers</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Forms Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'patrons' %}">
-                            <i class="bi bi-circle"></i><span>Patrons</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'history' user=user %}">
-                            <i class="bi bi-circle"></i><span>History</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            {% else %}
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'business:products'%}">
-                            <i class="bi bi-circle"></i><span>Add Products</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'withdraw' user=user %}">
-                            <i class="bi bi-circle"></i><span>Withdraw</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Forms Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'business:log_products' %}">
-                            <i class="bi bi-circle"></i><span>Products</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'history' user=user %}">
-                            <i class="bi bi-circle"></i><span>History</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-            {% endif %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{% url 'withdraw' user=user %}">
+                        <i class="bi bi-circle"></i><span>Withdraw</span>
+                    </a>
+                </li>
+            </ul>
+            <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{% url 'patron:tiers' %}">
+                        <i class="bi bi-circle"></i><span>Tiers</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Forms Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{% url 'patrons' %}">
+                        <i class="bi bi-circle"></i><span>Patrons</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'history' user=user %}">
+                        <i class="bi bi-circle"></i><span>History</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i
+                    class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{% url 'business:products'%}">
+                        <i class="bi bi-circle"></i><span>Add Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'withdraw' user=user %}">
+                        <i class="bi bi-circle"></i><span>Withdraw</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Forms Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{% url 'business:log_products' %}">
+                        <i class="bi bi-circle"></i><span>Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'history' user=user %}">
+                        <i class="bi bi-circle"></i><span>History</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Tables Nav -->
+        {% endif %}
 
-            <li class="nav-heading">Pages</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{% url 'profile' %}">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
+        <li class="nav-heading">Pages</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'profile' %}">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+        </li><!-- End Profile Page Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{% url 'faq' %}">
-                    <i class="bi bi-question-circle"></i>
-                    <span>F.A.Q</span>
-                </a>
-            </li><!-- End F.A.Q Page Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'faq' %}">
+                <i class="bi bi-question-circle"></i>
+                <span>F.A.Q</span>
+            </a>
+        </li><!-- End F.A.Q Page Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{% url 'index' %}">
-                    <i class="bi bi-envelope"></i>
-                    <span>Contact Us</span>
-                </a>
-            </li><!-- End Contact Page Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'index' %}">
+                <i class="bi bi-envelope"></i>
+                <span>Contact Us</span>
+            </a>
+        </li><!-- End Contact Page Nav -->
         </ul>
 
     </aside><!-- End Sidebar-->
