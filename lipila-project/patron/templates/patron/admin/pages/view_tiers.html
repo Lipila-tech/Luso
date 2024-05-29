@@ -1,0 +1,127 @@
+{% extends 'layout_admin.html' %}
+{% load static %}
+{% block title %} Withdraw Funds {% endblock %}
+
+{% block main %}
+<section class="tiers-body">
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .tiers-body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .tiers-container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .tiers-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .tier {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tier div {
+            flex: 1 1 100%;
+            padding: 10px 0;
+            box-sizing: border-box;
+        }
+        .tier h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #007bff;
+        }
+        .tier p {
+            margin: 10px 0 0;
+            color: #6c757d;
+        }
+        .tier .price {
+            font-size: 1.2em;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .tier .edit-button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .tier .edit-button:hover {
+            background-color: #0056b3;
+        }
+        @media (min-width: 768px) {
+            .tier div {
+                flex: 1 1 45%;
+                padding: 10px;
+            }
+            .tier .price,
+            .tier .edit-button {
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tiers-container">
+        <h2>{{user.creatorprofile.patron_title}}'s Tiers</h2>
+        <div class="tier">
+            <div>
+                <h3>One-Time Contribution</h3>
+                <p>Make a one-time contribution to support the creator's work.</p>
+            </div>
+            <div class="price">K200</div>
+            <div class="edit-button-container">
+                <button class="edit-button">Edit</button>
+            </div>
+        </div>
+        <div class="tier">
+            <div>
+                <h3>Fan</h3>
+                <p>Support the creator and get access to exclusive content.</p>
+            </div>
+            <div class="price">K50/month</div>
+            <div class="edit-button-container">
+                <button class="edit-button">Edit</button>
+            </div>
+        </div>
+        <div class="tier">
+            <div>
+                <h3>Superfan</h3>
+                <p>Enjoy additional perks and behind-the-scenes content.</p>
+            </div>
+            <div class="price">K100/month</div>
+            <div class="edit-button-container">
+                <button class="edit-button">Edit</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+</section>
+{% endblock %}

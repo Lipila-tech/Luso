@@ -186,11 +186,17 @@ def patron(request):
         {'name': 'user3', 'city': 'Ndola', 'subscription': 'Silver', 'contributions': 300}]
     context['patrons'] = patrons
     if request.user.is_authenticated:
-        # context['user'] = user_object
         return render(request, 'patron/admin/pages/patrons.html', context)
     else:
         return render(request, 'UI/patron.html', context)
 
+
+def view_tiers(request):
+    """
+    renders a creators tiers.
+    """
+    user = request.user
+    return render(request, 'patron/admin/pages/view_tiers.html', {'user':user})
 
 def creator_home(request, creator):
     """
@@ -244,4 +250,4 @@ def history(request, user):
     context = {}
     user_object = get_user_object(request.user)
     context['user'] = user_object
-    return render(request, 'patron/admin/log/history.html', context)
+    return render(request, 'patron/admin/pages/history.html', context)
