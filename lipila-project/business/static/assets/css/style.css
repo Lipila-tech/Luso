@@ -263,12 +263,87 @@ h6 {
   background-color: #218838;
 }
 
+/* Tiers */
+.tiers-container {
+  max-width: 800px;
+  width: 100%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tiers-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tier {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tier div {
+  flex: 1 1 100%;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+.tier h3 {
+  margin: 0;
+  font-size: 1.5em;
+  color: #007bff;
+}
+
+.tier p {
+  margin: 10px 0 0;
+  color: #6c757d;
+}
+
+.tier .price {
+  font-size: 1.2em;
+  color: #28a745;
+  font-weight: bold;
+}
+
+.tier .edit-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tier .edit-button:hover {
+  background-color: #0056b3;
+}
+
+@media (min-width: 768px) {
+  .tier div {
+    flex: 1 1 45%;
+    padding: 10px;
+  }
+
+  .tier .price,
+  .tier .edit-button {
+    text-align: right;
+  }
+}
 
 /*
 * Creator dashboard 
  */
 
-.cretaor-body {
+.admin-other-body {
   font-family: Arial, sans-serif;
   background-color: #afa1a1;
   margin: 0;
