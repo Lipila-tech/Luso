@@ -11,24 +11,24 @@
   <div class="creator-dashboard">
     <div class="creator-stats">
       <div class="creator-stat">
-        <h3>K<span id="current-balance">5,000</span></h3>
+        <h3>K<span id="current-balance">{{summary.balance | comma_format }}</span></h3>
         <p>Balance</p>
       </div>
       <div class="creator-stat">
-        <h3>K<span id="withdrawn-total">2,500</span></h3>
+        <h3>K<span id="withdrawn-total">{{summary.withdraws | comma_format }}</span></h3>
         <p>Withdrawn</p>
       </div>
       <div class="creator-stat">
-        <h3><span id="num-patrons">150</span></h3>
+        <h3><span id="num-patrons">{{summary.patrons}}</span></h3>
         <p>Patrons</p>
       </div>
       <div class="creator-stat">
-        <h3><span id="num-patrons">3</span></h3>
+        <h3><span id="num-patrons">{{summary.tiers}}</span></h3>
         <p>Tiers</p>
       </div>
     </div>
     <div class="creator-footer">
-      Last updated: <span id="last-updated">May 28, 2024</span>
+      Last updated: <span id="last-updated">{{summary.updated_at}}</span>
     </div>
   </div>
 

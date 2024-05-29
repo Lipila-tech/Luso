@@ -158,13 +158,14 @@ def dashboard(request, user):
     if last_login_time:
         context['last_login'] = last_login_time
 
-    # Recent activities
-    context['activities'] = [
-        ('Last login', last_login_time),
-        ('Receipts', 150),
-        ('Pay Outs', 100),
-        ('Sent Invoices', 5),
-    ]
+    # Creator summary
+    context['summary'] = {
+        'balance': 2500,
+        'withdraws': 45000,
+        'patrons': 100,
+        'tiers': 3,
+        'updated_at': datetime.today
+    }
     user_object = get_user_object(user)
 
     if isinstance(user_object, User):
@@ -182,7 +183,7 @@ def patron(request):
     patron = CreatorProfile.objects.all()
     patrons = [{'name': 'user1', 'city': 'Kitwe', 'subscription': 'Gold', 'contributions': 1200}, {
         'name': 'user2', 'city': 'Lusaka', 'subscription': 'Gold', 'contributions': 300},
-        {'name':'user3', 'city':'Ndola', 'subscription':'Silver', 'contributions':300}]
+        {'name': 'user3', 'city': 'Ndola', 'subscription': 'Silver', 'contributions': 300}]
     context['patrons'] = patrons
     if request.user.is_authenticated:
         # context['user'] = user_object

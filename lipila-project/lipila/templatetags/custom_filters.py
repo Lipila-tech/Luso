@@ -10,7 +10,7 @@ def add_class(value, arg):
 
 @register.filter(name='currency')
 def currency(number):
-    return "ZK "+ str(number)
+    return "K "+ str(number)
 
 @register.filter
 def add_css_class(field, css_class):
