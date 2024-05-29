@@ -13,7 +13,7 @@
             </div>
             <div class="price">K200</div>
             <div class="edit-button-container">
-                <button class="edit-button">Edit</button>
+                <a class="edit-button" href="{% url 'patron:edit_tier' tier='one-time-contribution' %}">Edit</a>
             </div>
         </div>
         <div class="tier">
@@ -23,7 +23,7 @@
             </div>
             <div class="price">K50/month</div>
             <div class="edit-button-container">
-                <button class="edit-button">Edit</button>
+                <a class="edit-button" href="{% url 'patron:edit_tier' tier='fan' %}">Edit</a>
             </div>
         </div>
         <div class="tier">
@@ -33,7 +33,7 @@
             </div>
             <div class="price">K100/month</div>
             <div class="edit-button-container">
-                <button class="edit-button">Edit</button>
+                <a class="edit-button" href="{% url 'patron:edit_tier' tier='superfan' %}">Edit</a>
             </div>
         </div>
     </div>

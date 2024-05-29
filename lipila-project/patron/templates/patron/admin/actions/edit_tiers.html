@@ -1,18 +1,33 @@
 {% extends 'layout_admin.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %} Tiers Eidt {% endblock %}
+{% block title %} Tiers Edit {% endblock %}
 {% block main %}
 
-
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Editing tier</h5>
+<section class="admin-other-body">
+    <div class="edit-tier-container">
+        <h2>Edit "{{tier}}"  Tier</h2>
+        <form>
+            <div class="form-group">
+                <label for="tier-name">New Tier Name</label>
+                <input type="text" id="tier-name" name="tier-name" placeholder="Enter tier name">
+            </div>
+            <div class="form-group">
+                <label for="tier-description">Description</label>
+                <textarea id="tier-description" name="tier-description" placeholder="Enter tier description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="tier-price">Price (K)</label>
+                <input type="number" id="tier-price" name="tier-price" placeholder="Enter tier price K10-K150" min="10" max="150">
+            </div>
+            <div class="form-group checkbox-container">
+                <input type="checkbox" id="tier-visibility" name="tier-visibility">
+                <label for="tier-visibility">Visible to fans</label>
+            </div>
+            <button type="submit" class="submit-button">Save Changes</button>
+        </form>
     </div>
-</div>
-<div class="container mt-5">
-    <h1>Under Construction</h1>
-</div>
+</section>
 
 
 {% endblock %}

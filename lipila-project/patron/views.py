@@ -198,6 +198,17 @@ def view_tiers(request):
     user = request.user
     return render(request, 'patron/admin/pages/view_tiers.html', {'user':user})
 
+def edit_tiers(request, tier):
+    """
+    renders a form to edit a crators tiers.
+
+    Args:
+        request: THe incoming HTTP request object.
+        tiers: The tier the creator user wants to edit.
+    """
+    user = request.user
+    return render(request, 'patron/admin/actions/edit_tiers.html', {'user':user, 'tier':tier})
+
 def creator_home(request, creator):
     """
     renders a creator home page.

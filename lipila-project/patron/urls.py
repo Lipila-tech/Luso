@@ -11,6 +11,7 @@ urlpatterns = [
 
      path('creators/', views.list_creators, name='creators'),
      path('my-tiers', views.view_tiers, name='tiers'),
+     path('my-tiers/edit/<str:tier>', views.edit_tiers, name='edit_tier'),
 ]
 
 
