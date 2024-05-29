@@ -12,6 +12,7 @@ urlpatterns = [
      path('creators/list', views.list_creators, name='creators'),
      path('my-tiers', views.view_tiers, name='tiers'),
      path('my-tiers/edit/<str:tier>', views.edit_tiers, name='edit_tier'),
+     path('join/<str:tier>/<str:creator>/', views.join, name='join_tier'),
 ]
 
 

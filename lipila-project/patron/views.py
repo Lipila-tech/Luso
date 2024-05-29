@@ -225,18 +225,21 @@ def creator_home(request, creator):
     return render(request, 'patron/admin/profile/creator_home.html', {'creator': creator_obj})
 
 
-@login_required
-def join(request, creator, user):
+# @login_required
+def join(request, tier, creator):
     """Handles user subscription to a creator.
-
     Args:
         request: The incoming HTTP request object.
-        creator: The username of the creator the user wants to join.
+        tier: The tier the user wants to join
+        creator: the creator the user wants to support.
 
     Returns:
         A rendered response with the join form and subscription status.
     """
-    pass
+    print('creator')
+    messages.success(
+            request, f'Congratulations! You Joined {tier} susbcription.')
+    return redirect(reverse('creator_home', kwargs={'creator':creator}))
 
 
 def list_creators(request):

@@ -23,7 +23,6 @@ urlpatterns = [
     path('me/<str:user>', patron_views.dashboard, name='dashboard'),
     path('patron/home/<str:creator>', patron_views.creator_home, name='creator_home'),
     path('patron/all/', patron_views.patron, name='patrons'),
-    path('patron/join/<str:user>/<str:creator>/', patron_views.join, name='join'),
     path('history/<str:user>', patron_views.history, name='history'),
     path('withdraw/<str:user>', patron_views.withdraw, name='withdraw'),
 
