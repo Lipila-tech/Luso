@@ -1,0 +1,22 @@
+{% extends 'layout_admin.html' %}
+{% load static%}
+{% load custom_filters %}
+{% block title %}Dashboard{% endblock %}
+
+{% block main %}
+<section class="admin-other-body">
+  <div class="creator-dashboard">
+    <div class="creator-stats">
+      <div class="creator-stat">
+        <h3><span id="current-balance">{{summary.subscriptions }}</span></h3>
+        <p>Subscriptions</p>
+      </div>
+    </div>
+    <div class="creator-footer">
+      Last updated: <span id="last-updated">{{summary.updated_at}}</span>
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

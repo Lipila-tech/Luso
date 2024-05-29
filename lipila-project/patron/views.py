@@ -157,29 +157,34 @@ def dashboard(request, user):
     last_login_time = request.session.get('last_login_time')
     if last_login_time:
         context['last_login'] = last_login_time
-
-    # Creator summary
-    context['summary'] = {
-        'balance': 2500,
-        'withdraws': 45000,
-        'patrons': 100,
-        'tiers': 3,
-        'updated_at': datetime.today
-    }
     user_object = get_user_object(user)
-
-    if user.creatorprofile:
-        user_object = User.objects.get(username=user)
-        context['user'] = user_object
-        return render(request, 'patron/admin/index.html', context)
-    elif user.patronprofile:
-        user_object = User.objects.get(username=user)
-        context['user'] = user_object
-        return render(request, 'patron/admin/patron_dashboard.html', context)
-    else:
-        context['status'] = 404
-        context['message'] = 'User Not Found!'
-        return apology(request, context, user=user)
+    try:
+         # patron summary
+        context['summary'] = {
+            'subscriptions': 30,
+            'updated_at': datetime.today
+        }
+        patron = request.user.patronprofile
+        context['user'] = get_user_object(patron)
+        return render(request, 'patron/admin/index_patron.html', context)
+    except PatronProfile.DoesNotExist:
+        pass
+    try:
+        # Creator summary
+        context['summary'] = {
+            'balance': 2500,
+            'withdraws': 45000,
+            'patrons': 100,
+            'tiers': 3,
+            'updated_at': datetime.today
+        }
+        creator = request.user.creatorprofile
+        context['user'] = get_user_object(creator)
+        return render(request, 'patron/admin/index_creator.html', context)
+    except CreatorProfile.DoesNotExist:
+        messages.info(
+            request, 'Please Choose your profile type.')
+        return redirect('choose_profile_type')
 
 
 def patron(request):
@@ -200,7 +205,8 @@ def view_tiers(request):
     renders a creators tiers.
     """
     user = request.user
-    return render(request, 'patron/admin/pages/view_tiers.html', {'user':user})
+    return render(request, 'patron/admin/pages/view_tiers.html', {'user': user})
+
 
 def edit_tiers(request, tier):
     """
@@ -211,7 +217,8 @@ def edit_tiers(request, tier):
         tiers: The tier the creator user wants to edit.
     """
     user = request.user
-    return render(request, 'patron/admin/actions/edit_tiers.html', {'user':user, 'tier':tier})
+    return render(request, 'patron/admin/actions/edit_tiers.html', {'user': user, 'tier': tier})
+
 
 def creator_home(request, creator):
     """
@@ -242,8 +249,8 @@ def join(request, tier, creator):
     """
     print('creator')
     messages.success(
-            request, f'Congratulations! You Joined {tier} susbcription.')
-    return redirect(reverse('creator_home', kwargs={'creator':creator}))
+        request, f'Congratulations! You Joined {tier} susbcription.')
+    return redirect(reverse('creator_home', kwargs={'creator': creator}))
 
 
 def list_creators(request):
