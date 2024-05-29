@@ -56,8 +56,12 @@
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="/#hero" class="active">Home</a></li>
-                    <li><a href="{% url 'patron:index' %}">Creators</a></li>
-                    <li><a href="{% url 'patron:creators' %}">Find a Creator</a></li>
+                    {% with target_fragment='#creators-info' %}
+                    <li><a href="{% url 'patron:index' %}?fragment={{ target_fragment }}">Creators</a></li>
+                    {% endwith %}
+                    {% with target_fragment='#find-creator' %}
+                    <li><a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a></li>
+                    {% endwith %}
                     <li><a href="/#features">Features</a></li>
                     <li><a href="/#pricing">Pricing</a></li>
                 </ul>

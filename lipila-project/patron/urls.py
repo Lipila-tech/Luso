@@ -9,7 +9,7 @@ urlpatterns = [
      path('', views.index, name='index'),
      path('<str:user>/contribute', views.contribute, name='contribute'),
 
-     path('creators/', views.list_creators, name='creators'),
+     path('creators/list', views.list_creators, name='creators'),
      path('my-tiers', views.view_tiers, name='tiers'),
      path('my-tiers/edit/<str:tier>', views.edit_tiers, name='edit_tier'),
 ]
