@@ -7,13 +7,6 @@
 
 <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
     <div class="card p-4">
-        {% if messages %}
-        <div class="message">
-            {% for message in messages %}
-            <p class="alert alert-{{ message.tag }}">{{message}}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
         <div class=" image d-flex flex-column justify-content-center align-items-center"> <button
                 class="btn btn-secondary">
                 {% if creator.profile_image %}
