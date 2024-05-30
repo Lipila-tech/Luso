@@ -92,11 +92,11 @@
   transform: scale(1.5)
 }
 
-.btn {
+/* .btn {
   height: 35px;
   width: 190px;
   border-radius: 10%
-}
+} */
 
 .name {
   font-size: 22px;
@@ -235,7 +235,6 @@ hr .new1 {
 /* Message style */
 .message {
   margin: auto;
-  width: 50%;
   /* color: orange; */
   text-align: center;
   border: 2px solid wheat;

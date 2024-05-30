@@ -247,7 +247,8 @@ def join(request, tier, creator):
     Returns:
         A rendered response with the join form and subscription status.
     """
-    print('creator')
+    creator_obj = User.objects.get(username=creator)
+    print('creator', creator_obj.creatorprofile.patron_title)
     messages.success(
         request, f'Congratulations! You Joined {tier} susbcription.')
     return redirect(reverse('creator_home', kwargs={'creator': creator}))
