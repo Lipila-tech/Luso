@@ -188,7 +188,7 @@ STATIC_URL = "static/"
 LOGIN_REDIRECT_URL = "profile"
 LOGOUT_REDIRECT_URL = "login"
 
-if env ('EMAIL_BACKEND') == 'dev':
+if env ('ENV') == 'dev':
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
     EMAIL_BACKEND = env('EMAIL_BACKEND')
