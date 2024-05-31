@@ -11,6 +11,7 @@ from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm
+from patron.models import Tier
 
 
 def index(request):
@@ -204,6 +205,21 @@ def view_tiers(request):
     """
     renders a creators tiers.
     """
+    context = {}
+    creator = CreatorProfile.objects.get(user=request.user)
+    try:
+        tiers = Tier.objects.filter(creator=creator)
+    except Tier.DoesNotExist:
+        pass
+    try:
+        Tier.create_default_tiers(creator)
+        messages.info(request, "You can edit your default tiers.")
+        tiers = Tier.objects.filter(creator=creator)
+    except Exception as e:
+        messages.error(request, "Failed to create default tiers")
+        return redirect(reverse('dashboard', kwargs={'user':request.user}))
+
+    context['tiers'] = tiers
     user = request.user
     return render(request, 'patron/admin/pages/view_tiers.html', {'user': user})
 

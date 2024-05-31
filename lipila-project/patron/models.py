@@ -27,22 +27,29 @@ INVOICE_STATUS_CHOICES = (
     ('rejected', 'rejected'),
 )
 
-ONETIME_AMOUNT = 50
-FAN_AMOUNT = 10
-SUPERFAN_AMOUNT = 30
+ONETIME_AMOUNT = 100
+FAN_AMOUNT = 25
+SUPERFAN_AMOUNT = 50
 
 
 class Tier(models.Model):
     name = models.CharField(max_length=100)
+    description = models.TextField(max_length=300)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    creator = models.ForeignKey(
+        CreatorProfile, on_delete=models.CASCADE, related_name='tiers')
+    updated_at = models.DateTimeField(auto_now=True)
 
     @classmethod
-    def create_default_tiers(cls):
+    def create_default_tiers(cls, creator):
         # Create default tiers if they don't exist
         defaults = [
-            {"name": "Onetime", "price": ONETIME_AMOUNT},
-            {"name": "Fan", "price": FAN_AMOUNT},
-            {"name": "Superfan", "price": SUPERFAN_AMOUNT}
+            {"name": "Onetime", "price": ONETIME_AMOUNT,
+                "description": "Make a one-time contribution to support the creator's work.", 'creator': creator},
+            {"name": "Fan", "price": FAN_AMOUNT,
+                "description": "Support the creator and get access to exclusive content.", 'creator': creator},
+            {"name": "Superfan", "price": SUPERFAN_AMOUNT,
+                "description": "Enjoy additional perks and behind-the-scenes content.", 'creator': creator}
         ]
         for tier_data in defaults:
             Tier.objects.get_or_create(
@@ -50,6 +57,11 @@ class Tier(models.Model):
 
     def __str__(self):
         return f"{self.name} -> {self.price}"
+
+
+class TierSubscriptions(models.Model):
+    patron = models.ForeignKey(PatronProfile, on_delete=models.CASCADE)
+    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
 
 
 class Contribution(models.Model):
