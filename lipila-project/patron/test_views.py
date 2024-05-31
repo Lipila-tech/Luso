@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
@@ -6,7 +7,79 @@ from accounts.models import PatronProfile, CreatorProfile
 from patron.models import Tier
 
 
-class PatronViewsTest(TestCase):
+
+class TestPatronViewsMore(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create(
+            username='testuser', password='password')
+        self.client.force_login(self.user)
+        data = {
+            'patron_title': 'TestPatron',
+            'bio': 'test user bio',
+            'creator_category': 'artist',
+        }
+        self.response = self.client.post(reverse('create_creator_profile'), data)
+        self.creator = CreatorProfile.objects.get(user=self.user)
+        # query the view_tiers view
+        self.response1 = self.client.get(reverse('patron:tiers'))
+        # get tiers
+        self.tiers = Tier.objects.filter(creator=self.creator).values()
+
+    def test_creator_profile_created(self):
+        """
+        Test that a creator prile is creadt in the setup.
+        """
+        self.assertEqual(self.response.status_code, 302)
+        self.assertEqual(self.response.url, "/accounts/profile/")
+        self.assertEqual(CreatorProfile.objects.count(), 1)
+
+    def test_default_tier_created(self):
+        """
+        Test that the default tier is created in the setup.
+        """
+        self.assertEqual(self.response1.status_code, 200)
+        self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
+        self.assertIn({"name": "Onetime"}, self.tiers.values('name'))
+        self.assertEqual(self.tiers.count(), 3)
+        self.assertEqual(self.tiers[0]['name'], 'Onetime')
+        self.assertEqual(self.tiers[1]['name'], 'Fan')
+        self.assertEqual(self.tiers[2]['name'], 'Superfan')
+        self.assertEqual(self.tiers[0]['price'], 100)
+        self.assertEqual(self.tiers[1]['price'], 25)
+        self.assertEqual(self.tiers[2]['price'], 50)
+
+    def test_edit_tier_get_request_logged_in(self):
+        tier = self.tiers[0] 
+        url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'patron/admin/actions/edit_tiers.html')
+
+
+    def test_edit_tier_post_request_valid_data(self):
+        tier = self.tiers[0] 
+        url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
+        data = {'name': 'Updated Tier', 'price': 15.00, 'description': 'New description'}
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 302)
+        tier = Tier.objects.get(pk=tier['id'])
+        self.assertEqual(tier.name, data['name'])
+        self.assertEqual(tier.price, data['price'])
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'Tier Edited Successfully.')
+
+    def test_edit_tier_post_request_invalid_data(self):
+        tier = self.tiers[0] 
+        url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
+        data = {'name': '', 'price': 'invalid', 'description': 'New description'}
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 200)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'Failed to edit tier.')
+        
+
+class TestPatronViews(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create(

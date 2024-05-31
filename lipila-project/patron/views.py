@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
-from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm
+from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm
 from patron.models import Tier
 
 
@@ -221,10 +221,10 @@ def view_tiers(request):
 
     context['tiers'] = tiers
     user = request.user
-    return render(request, 'patron/admin/pages/view_tiers.html', {'user': user})
+    return render(request, 'patron/admin/pages/view_tiers.html', {'user': user, 'tiers':tiers})
 
 
-def edit_tiers(request, tier):
+def edit_tiers(request, tier_id):
     """
     renders a form to edit a crators tiers.
 
@@ -232,8 +232,22 @@ def edit_tiers(request, tier):
         request: THe incoming HTTP request object.
         tiers: The tier the creator user wants to edit.
     """
-    user = request.user
-    return render(request, 'patron/admin/actions/edit_tiers.html', {'user': user, 'tier': tier})
+    creator = CreatorProfile.objects.get(user=request.user)
+    if request.method == 'GET':
+        form = EditTiersForm(instance=creator)
+        return render(request, 'patron/admin/actions/edit_tiers.html', {'user': request.user, 'tier': tier_id, 'form':form})
+    else:
+        tier = get_object_or_404(Tier, pk=tier_id)
+        form = EditTiersForm(request.POST, instance=tier)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Tier Edited Successfully.")
+            return redirect(reverse('patron:tiers'))
+        else:
+            messages.error(
+                request, "Failed to edit tier.")
+            return render(request, 'patron/admin/actions/edit_tiers.html', {'user': request.user, 'tier': tier_id, 'form':form})
 
 
 def creator_home(request, creator):
@@ -253,7 +267,7 @@ def creator_home(request, creator):
 
 
 # @login_required
-def join(request, tier, creator):
+def join(request, tier_id):
     """Handles user subscription to a creator.
     Args:
         request: The incoming HTTP request object.
@@ -263,11 +277,11 @@ def join(request, tier, creator):
     Returns:
         A rendered response with the join form and subscription status.
     """
-    creator_obj = User.objects.get(username=creator)
+    creator_obj = User.objects.get(username=tier_id)
     print('creator', creator_obj.creatorprofile.patron_title)
     messages.success(
-        request, f'Congratulations! You Joined {tier} susbcription.')
-    return redirect(reverse('creator_home', kwargs={'creator': creator}))
+        request, f'Congratulations! You Joined {tier_id} susbcription.')
+    return redirect(reverse('creator_home', kwargs={'creator': tier_id}))
 
 
 def list_creators(request):

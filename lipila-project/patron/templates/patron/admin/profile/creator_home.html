@@ -29,7 +29,7 @@
                     <div class="price">K200/month</div>
                     <div class=" d-flex mt-2">
                         <a class="btn btn-dark"
-                            href="{% url 'patron:join_tier' tier='one-time-contribution' creator=creator %}">Join</a>
+                            href="{% url 'patron:join_tier' tier_id=tier_id %}">Join</a>
                     </div>
                 </div>
                 <div class="tier">
@@ -39,7 +39,7 @@
                     </div>
                     <div class="price">K50/month</div>
                     <div class="d-flex mt-2">
-                        <a class="btn btn-dark" href="{% url 'patron:join_tier' tier='fan' creator=creator %}">join</a>
+                        <a class="btn btn-dark" href="{% url 'patron:join_tier' tier_id=tier_id %}">join</a>
                     </div>
                 </div>
                 <div class="tier">
@@ -50,7 +50,7 @@
                     <div class="price">K100/month</div>
                     <div class="d-flex mt-2">
                         <a class="btn btn-dark"
-                            href="{% url 'patron:join_tier' tier='superfan' creator=creator %}">join</a>
+                            href="{% url 'patron:join_tier' tier_id=tier_id %}">join</a>
                     </div>
                 </div>
             </div>
