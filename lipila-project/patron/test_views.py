@@ -84,6 +84,8 @@ class TestPatronViews(TestCase):
         self.client = Client()
         self.user = User.objects.create(
             username='testuser', password='password')
+        self.user2 = User.objects.create(
+            username='testuser2', password='password')
 
     def test_choose_profile_type(self):
         url = "choose_profile_type"
@@ -199,3 +201,83 @@ class TestPatronViews(TestCase):
         response = self.client.get(reverse('patron:tiers'))
         messages = list(get_messages(response.wsgi_request))
         self.assertNotIn("Default tiers created. Please edit them.", messages)
+
+
+    def test_create_default_tiers_different_user_tier_exists(self):
+        """
+        Test the creation of a default creator tiers.
+        """
+        data = {
+            'patron_title': 'TestPatron',
+            'bio': 'test user bio',
+            'creator_category': 'artist',
+        }
+       
+        creator1 = CreatorProfile.objects.create(user=self.user,patron_title='testpatron', bio='test', creator_category='musician')
+        Tier().create_default_tiers(creator1)
+        # login user 2 and create tiers
+        self.client.force_login(self.user2)
+        self.client.post(reverse('create_creator_profile'), data)
+        creator2 = CreatorProfile.objects.get(user=self.user2)
+        response = self.client.get(reverse('patron:tiers'))
+        # get tiers
+        tiers = Tier.objects.filter(creator=creator2).values()
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
+        desc = {
+            "one": "Make a one-time contribution to support the creator's work.",
+            "two": "Support the creator and get access to exclusive content.",
+            "three": "Enjoy additional perks and behind-the-scenes content."
+        }
+        self.assertEqual(tiers[0]['description'], desc['one'])
+        self.assertEqual(tiers[1]['description'], desc['two'])
+        self.assertEqual(tiers[2]['description'], desc['three'])
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            str(messages[1]), "Default tiers created. Please edit them.")
+        
+
+class TestCreateDefaultTiers(TestCase):
+    def setUp(self):
+        self.client = Client()
+        user1 = User.objects.create(
+            username='testuser1', password='password')
+        user2 = User.objects.create(
+            username='testuser2', password='password')
+        self.user3 = User.objects.create(
+            username='testuser3', password='password')
+        creator1 = CreatorProfile.objects.create(user=user1,patron_title='testpatron1', bio='test', creator_category='musician')
+        creator2 = CreatorProfile.objects.create(user=user2,patron_title='testpatron2', bio='test', creator_category='musician')
+        Tier().create_default_tiers(creator1)
+        Tier().create_default_tiers(creator2)
+    
+    def test_create_default_tiers_multiple_users_tiers_exists(self):
+        """
+        Test the creation of a default creator tiers.
+        """
+        data = {
+            'patron_title': 'TestPatron3',
+            'bio': 'test user bio',
+            'creator_category': 'artist',
+        }
+       
+        # login user 2 and create tiers
+        self.client.force_login(self.user3)
+        self.client.post(reverse('create_creator_profile'), data)
+        creator2 = CreatorProfile.objects.get(user=self.user3)
+        response = self.client.get(reverse('patron:tiers'))
+        # get tiers
+        tiers = Tier.objects.filter(creator=creator2).values()
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
+        desc = {
+            "one": "Make a one-time contribution to support the creator's work.",
+            "two": "Support the creator and get access to exclusive content.",
+            "three": "Enjoy additional perks and behind-the-scenes content."
+        }
+        self.assertEqual(tiers[0]['description'], desc['one'])
+        self.assertEqual(tiers[1]['description'], desc['two'])
+        self.assertEqual(tiers[2]['description'], desc['three'])
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            str(messages[1]), "Default tiers created. Please edit them.")

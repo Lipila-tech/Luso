@@ -210,9 +210,7 @@ def view_tiers(request):
 
     # Ensure defaults exist
     if not tiers.exists():
-        Tier.create_default_tiers(creator)
-        print(Tier.objects.all())
-        print(Tier.objects.filter(creator=creator))
+        Tier().create_default_tiers(creator)
         messages.info(request, "Default tiers created. Please edit them.")
     return render(request, 'patron/admin/pages/view_tiers.html', {'user': request.user, 'tiers': tiers})
     

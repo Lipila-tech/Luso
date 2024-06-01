@@ -46,15 +46,23 @@ class Tier(models.Model):
         # Create default tiers if they don't exist
         defaults = [
             {"name": "Onetime", "price": ONETIME_AMOUNT,
-                "description": "Make a one-time contribution to support the creator's work.", 'creator': creator, 'visible_to_fans':True},
+                "desc": "Make a one-time contribution to support the creator's work.",
+                'creator': creator, 'visible': True},
             {"name": "Fan", "price": FAN_AMOUNT,
-                "description": "Support the creator and get access to exclusive content.", 'creator': creator, 'visible_to_fans':True},
+                "desc": "Support the creator and get access to exclusive content.",
+                'creator': creator, 'visible': True},
             {"name": "Superfan", "price": SUPERFAN_AMOUNT,
-                "description": "Enjoy additional perks and behind-the-scenes content.", 'creator': creator, 'visible_to_fans':True}
+                "desc": "Enjoy additional perks and behind-the-scenes content.",
+                'creator': creator, 'visible': True}
         ]
         for tier_data in defaults:
-            Tier.objects.get_or_create(
-                name=tier_data["name"], defaults=tier_data)
+            Tier.objects.create(
+                name=tier_data["name"],
+                description=tier_data["desc"],
+                price=tier_data['price'],
+                creator=tier_data['creator'],
+                visible_to_fans=tier_data['visible']
+                )
 
     def __str__(self):
         return f"{self.name} -> {self.price}"
