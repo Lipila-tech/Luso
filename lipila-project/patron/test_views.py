@@ -194,8 +194,8 @@ class TestPatronViews(TestCase):
         self.assertEqual(tiers[2]['description'], desc['three'])
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
-            str(messages[1]), "You can edit your default tiers.")
+            str(messages[1]), "Default tiers created. Please edit them.")
 
         response = self.client.get(reverse('patron:tiers'))
         messages = list(get_messages(response.wsgi_request))
-        self.assertNotIn("You can edit your default tiers.", messages)
+        self.assertNotIn("Default tiers created. Please edit them.", messages)

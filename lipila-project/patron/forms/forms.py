@@ -38,4 +38,5 @@ class EditTiersForm(forms.ModelForm):
             'name',
             'description',
             'price',
+            'visible_to_fans',
         ]

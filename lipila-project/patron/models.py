@@ -39,17 +39,18 @@ class Tier(models.Model):
     creator = models.ForeignKey(
         CreatorProfile, on_delete=models.CASCADE, related_name='tiers')
     updated_at = models.DateTimeField(auto_now=True)
+    visible_to_fans = models.BooleanField(default=True)
 
     @classmethod
     def create_default_tiers(cls, creator):
         # Create default tiers if they don't exist
         defaults = [
             {"name": "Onetime", "price": ONETIME_AMOUNT,
-                "description": "Make a one-time contribution to support the creator's work.", 'creator': creator},
+                "description": "Make a one-time contribution to support the creator's work.", 'creator': creator, 'visible_to_fans':True},
             {"name": "Fan", "price": FAN_AMOUNT,
-                "description": "Support the creator and get access to exclusive content.", 'creator': creator},
+                "description": "Support the creator and get access to exclusive content.", 'creator': creator, 'visible_to_fans':True},
             {"name": "Superfan", "price": SUPERFAN_AMOUNT,
-                "description": "Enjoy additional perks and behind-the-scenes content.", 'creator': creator}
+                "description": "Enjoy additional perks and behind-the-scenes content.", 'creator': creator, 'visible_to_fans':True}
         ]
         for tier_data in defaults:
             Tier.objects.get_or_create(

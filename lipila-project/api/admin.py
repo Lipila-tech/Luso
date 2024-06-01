@@ -14,7 +14,7 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class TierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price')
+    list_display = ('name', 'creator', 'price', 'description', 'visible_to_fans', 'updated_at')
 
 
 class ContributionAdmin(admin.ModelAdmin):
