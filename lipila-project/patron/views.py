@@ -160,7 +160,7 @@ def dashboard(request, user):
         context['last_login'] = last_login_time
     user_object = get_user_object(user)
     try:
-         # patron summary
+        # patron summary
         context['summary'] = {
             'subscriptions': 30,
             'updated_at': datetime.today
@@ -191,8 +191,11 @@ def dashboard(request, user):
 def patron(request):
     context = {}
     patron = CreatorProfile.objects.all()
-    patrons = [{'name': 'user1', 'city': 'Kitwe', 'subscription': 'Gold', 'contributions': 1200}, {
-        'name': 'user2', 'city': 'Lusaka', 'subscription': 'Gold', 'contributions': 300},
+    patrons = [
+        {'name': 'user1', 'city': 'Kitwe',
+            'subscription': 'Gold', 'contributions': 1200},
+        {
+            'name': 'user2', 'city': 'Lusaka', 'subscription': 'Gold', 'contributions': 300},
         {'name': 'user3', 'city': 'Ndola', 'subscription': 'Silver', 'contributions': 300}]
     context['patrons'] = patrons
     if request.user.is_authenticated:
@@ -212,9 +215,11 @@ def view_tiers(request):
     if not tiers.exists():
         Tier().create_default_tiers(creator)
         messages.info(request, "Default tiers created. Please edit them.")
-    return render(request, 'patron/admin/pages/view_tiers.html', {'user': request.user, 'tiers': tiers})
-    
-    
+    return render(request,
+                  'patron/admin/pages/view_tiers.html',
+                  {'user': request.user, 'tiers': tiers})
+
+
 def edit_tiers(request, tier_id):
     """
     renders a form to edit a crators tiers.
@@ -224,23 +229,22 @@ def edit_tiers(request, tier_id):
         tiers: The tier the creator user wants to edit.
     """
     tier = get_object_or_404(Tier, pk=tier_id)
-    if request.method == 'GET':
-        form = EditTiersForm(instance=tier)
-        return render(request, 'patron/admin/actions/edit_tiers.html', {'user': request.user, 'tier_id': tier_id, 'form':form})
-    else:
-        print('form posted')
+    if request.method == 'POST':
         form = EditTiersForm(request.POST, instance=tier)
         if form.is_valid():
-            print('valid form')
             form.save()
-            messages.success(
-                request, "Tier Edited Successfully.")
+            messages.success(request, "Tier Edited Successfully.")
             return redirect(reverse('patron:tiers'))
         else:
-            print('error occured')
-            messages.error(
-                request, "Failed to edit tier.")
-            return render(request, 'patron/admin/actions/edit_tiers.html', {'user': request.user, 'tier': tier_id, 'form':form})
+            messages.error(request, "Invalid form. Please check your data.")
+        return render(request,
+                      'patron/admin/actions/edit_tiers.html',
+                      {'user': request.user, 'tier': tier_id, 'form': form})
+
+    form = EditTiersForm(instance=tier)
+    return render(request,
+                  'patron/admin/actions/edit_tiers.html',
+                  {'user': request.user, 'tier_id': tier_id, 'form': form})
 
 
 def creator_home(request, creator):

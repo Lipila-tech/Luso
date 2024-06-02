@@ -13,6 +13,11 @@
                 <p>{{tier.description}}</p>
             </div>
             <div class="price">{{tier.price}}</div>
+            {% if tier.visible_to_fans %}
+            <p>Visible to Fans: Yes </p>
+            {% else %}
+            <p>Visible to Fans: No </p>
+            {% endif %}
             <div class="edit-button-container">
                 <a class="edit-button" href="{% url 'patron:edit_tier' tier_id=tier.id %}">Edit</a>
             </div>
