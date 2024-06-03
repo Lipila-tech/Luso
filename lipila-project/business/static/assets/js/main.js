@@ -6,6 +6,26 @@
 * License: https://bootstrapmade.com/license/
 */
 
+const copyButtons = document.querySelectorAll('.copy-btn');
+
+copyButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const url = button.dataset.clipboardText;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        button.textContent = 'Copied!'; // Success message
+      })
+      .catch(err => {
+        console.error('Failed to copy:', err); // Handle errors in development
+        button.textContent = 'Copy failed'; // Error message
+      });
+    setTimeout(() => {
+      button.textContent = 'Copy'; // Reset button text after a short delay
+    }, 2000); // Adjust delay as needed
+  });
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
   "use strict";
 

@@ -241,3 +241,18 @@ hr .new1 {
   border-radius: 35px;
   background-color: dimgray;
 }
+
+.tier-url {
+  display: inline-flex;
+  align-items: center;
+  color: #28a745;
+}
+
+.copy-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 0.8em;
+  color: #007bff;
+}

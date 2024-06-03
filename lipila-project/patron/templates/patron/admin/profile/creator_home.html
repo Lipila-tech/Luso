@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}user profile {% endblock %}
+{% block title %}Home {% endblock %}
 {% block main %}
 
 <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
@@ -20,46 +20,36 @@
                 class="idd">{{creator.creator_category}}</span>
             <div class="text mt-3"> <span>{{creator.bio}} </span> </div>
             <div class="tiers-container">
-                <h2>Tiers</h2>
-                <div class="tier">
-                    <div>
-                        <h3>One-Time Contribution</h3>
-                        <p>Make a one-time contribution to support the creator's work.</p>
+
+                <section class="admin-other-body">
+                    <div class="tiers-container">
+                        <h2>Subscriptions</h2>
+                        {% for tier in tiers %}
+                        {% if tier.visible_to_fans %}
+                        <div class="tier">
+                            <div>
+                                <h3>{{tier.name}}</h3>
+                                <p>{{tier.description}}</p>
+                            </div>
+                            <div class="price">{{tier.price}}</div>
+
+                            {% endif %}
+                            <div class="edit-button-container">
+                                <a class="edit-button" href="{% url 'patron:join_tier' tier_id=tier.id %}">Join</a>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
-                    <div class="price">K200/month</div>
-                    <div class=" d-flex mt-2">
-                        <a class="btn btn-dark"
-                            href="{% url 'patron:join_tier' tier_id=tier_id %}">Join</a>
-                    </div>
-                </div>
-                <div class="tier">
-                    <div>
-                        <h3>Fan</h3>
-                        <p>Support the creator and get access to exclusive content.</p>
-                    </div>
-                    <div class="price">K50/month</div>
-                    <div class="d-flex mt-2">
-                        <a class="btn btn-dark" href="{% url 'patron:join_tier' tier_id=tier_id %}">join</a>
-                    </div>
-                </div>
-                <div class="tier">
-                    <div>
-                        <h3>Superfan</h3>
-                        <p>Enjoy additional perks and behind-the-scenes content.</p>
-                    </div>
-                    <div class="price">K100/month</div>
-                    <div class="d-flex mt-2">
-                        <a class="btn btn-dark"
-                            href="{% url 'patron:join_tier' tier_id=tier_id %}">join</a>
-                    </div>
-                </div>
+                </section>
+
             </div>
-            <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i
-                        class="fa fa-twitter"></i></span> <span><i class="fa fa-facebook-f"></i></span> <span><i
-                        class="fa fa-instagram"></i></span> <span><i class="fa fa-linkedin"></i></span> </div>
-            <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">1069
-                    <span class="follow">Patrons</span></span> </div>
         </div>
+        <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i
+                    class="fa fa-twitter"></i></span> <span><i class="fa fa-facebook-f"></i></span> <span><i
+                    class="fa fa-instagram"></i></span> <span><i class="fa fa-linkedin"></i></span> </div>
+        <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">1069
+                <span class="follow">Patrons</span></span> </div>
     </div>
+</div>
 </div>
 {% endblock %}

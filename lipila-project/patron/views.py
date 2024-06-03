@@ -179,7 +179,9 @@ def dashboard(request, user):
             'tiers': 3,
             'updated_at': datetime.today
         }
+
         creator = request.user.creatorprofile
+        print(creator.get_absolute_url())
         context['user'] = get_user_object(creator)
         return render(request, 'patron/admin/index_creator.html', context)
     except CreatorProfile.DoesNotExist:
@@ -258,9 +260,11 @@ def creator_home(request, creator):
     Returns:
         A rendered response with the creator details.
     """
-    creator_id = User.objects.get(username=creator)
-    creator_obj = CreatorProfile.objects.get(user=creator_id)
-    return render(request, 'patron/admin/profile/creator_home.html', {'creator': creator_obj})
+
+    creator_user = User.objects.get(username=creator)
+    creator_obj = CreatorProfile.objects.get(user=creator_user.id)
+    tiers = Tier.objects.filter(creator=creator_obj).values()
+    return render(request, 'patron/admin/profile/creator_home.html', {'creator': creator_obj, 'tiers':tiers})
 
 
 # @login_required
@@ -274,11 +278,11 @@ def join(request, tier_id):
     Returns:
         A rendered response with the join form and subscription status.
     """
-    creator_obj = User.objects.get(username=tier_id)
-    print('creator', creator_obj.creatorprofile.patron_title)
+    tier = Tier.objects.get(pk=tier_id)
+    creator = tier.creator
     messages.success(
-        request, f'Congratulations! You Joined {tier_id} susbcription.')
-    return redirect(reverse('creator_home', kwargs={'creator': tier_id}))
+        request, f"Welcome! You Joined my {tier.name} patrons.")
+    return redirect(reverse('creator_home', kwargs={"creator":creator}))
 
 
 def list_creators(request):

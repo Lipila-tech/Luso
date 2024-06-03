@@ -68,6 +68,7 @@ class Tier(models.Model):
         return f"{self.name} -> {self.price}"
 
 
+
 class TierSubscriptions(models.Model):
     patron = models.ForeignKey(PatronProfile, on_delete=models.CASCADE)
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE)

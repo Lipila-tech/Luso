@@ -21,7 +21,7 @@ urlpatterns = [
     path('accounts/profile/edit/<str:user>',
          patron_views.EditUserProfile.as_view(), name='update_profile'),
     path('me/<str:user>', patron_views.dashboard, name='dashboard'),
-    path('patron/join/<str:creator>', patron_views.creator_home, name='creator_home'),
+    path('patron/home/<str:creator>', patron_views.creator_home, name='creator_home'),
     path('patron/all/', patron_views.patron, name='patrons'),
     path('history/<str:user>', patron_views.history, name='history'),
     path('withdraw/<str:user>', patron_views.withdraw, name='withdraw'),
