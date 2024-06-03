@@ -72,7 +72,10 @@ class Tier(models.Model):
 
 class TierSubscriptions(models.Model):
     patron = models.ForeignKey(User, on_delete=models.CASCADE)
-    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
+    tier = models.ForeignKey(Tier, on_delete=models.CASCADE, related_name='subscriptions')
+
+    def __str__(self):
+        return f"{self.patron.username} -> {self.tier.name}"
 
 
 class Contribution(models.Model):

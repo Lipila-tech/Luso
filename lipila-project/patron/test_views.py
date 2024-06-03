@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.contrib.auth import logout
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
@@ -57,21 +56,26 @@ class TestPatronViewsMore(TestCase):
     #     messages = list(get_messages(response.wsgi_request))
     #     self.assertEqual(str(messages[0]), 'Invalid form. Please check your data.')
         
-class TestJoinView(TestCase):
+class TestSubscription(TestCase):
     def setUp(self):
         self.client = Client()
+        self.creator_user1 = User.objects.create(
+            username='testcreator1', password='password')
+        self.creator_user2 = User.objects.create(
+            username='testcreator2', password='password')
         self.user1 = User.objects.create(
             username='testuser', password='password')
-        self.user2 = User.objects.create(
-            username='testuser2', password='password')
-        self.creator = CreatorProfile.objects.create(user=self.user1,patron_title='testpatron', bio='test', creator_category='musician')
-        Tier().create_default_tiers(self.creator)
-        self.tiers = Tier.objects.filter(creator=self.creator).values()
-        self.client.force_login(self.user2)
+        creator1_obj = CreatorProfile.objects.create(user=self.creator_user1,patron_title='testpatron1', bio='test', creator_category='musician')
+        creator2_obj = CreatorProfile.objects.create(user=self.creator_user2,patron_title='testpatron2', bio='test', creator_category='musician')
+        Tier().create_default_tiers(creator1_obj) # creator 1 tiers
+        Tier().create_default_tiers(creator2_obj) # creator 2 tiers
+        self.tiers_1 = Tier.objects.filter(creator=creator1_obj).values()
+        self.tiers_2 = Tier.objects.filter(creator=creator2_obj).values()
+        
 
     def test_join_view_valid(self):
-        tier = self.tiers[0] 
-        url = url = reverse('patron:join_tier', kwargs={'tier_id': tier['id']})
+        self.client.force_login(self.user1)
+        url = reverse('patron:join_tier', kwargs={'tier_id': self.tiers_1[0]['id']})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
@@ -79,6 +83,31 @@ class TestJoinView(TestCase):
             str(messages[0]), "Welcome! You Joined my Onetime patrons.")
         self.assertEqual(TierSubscriptions.objects.count(), 1)
 
+    def test_get_creator_patrons(self):
+        self.client.force_login(self.creator_user1)
+        user1 = User.objects.create(
+            username='testuser1', password='password')
+        user2 = User.objects.create(
+            username='testuser2', password='password')
+        user3 = User.objects.create(
+            username='testuser3', password='password')
+        user4 = User.objects.create(
+            username='testuser4', password='password')
+        user5 = User.objects.create(
+            username='testuser5', password='password')
+        tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
+        tier2 = Tier.objects.get(pk=self.tiers_1[2]['id'])
+        tier3 = Tier.objects.get(pk=self.tiers_2[0]['id'])
+        TierSubscriptions.objects.create(patron=user1, tier=tier1)
+        TierSubscriptions.objects.create(patron=user2, tier=tier1)
+        TierSubscriptions.objects.create(patron=user3, tier=tier2)
+        TierSubscriptions.objects.create(patron=user4, tier=tier3)
+        TierSubscriptions.objects.create(patron=user5, tier=tier2)
+        response = self.client.get(reverse('patron:patrons'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('patron/admin/pages/patrons.html')
+        self.assertEqual(TierSubscriptions.objects.count(), 5)
+        
 
 class TestPatronViews(TestCase):
     def setUp(self):

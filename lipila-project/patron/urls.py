@@ -13,6 +13,7 @@ urlpatterns = [
      path('my-tiers', views.view_tiers, name='tiers'),
      path('my-tiers/edit/<int:tier_id>', views.edit_tiers, name='edit_tier'),
      path('join/<int:tier_id>', views.join, name='join_tier'),
+     path('patron/all/', views.patron, name='patrons'),
 ]
 
 

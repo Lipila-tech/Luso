@@ -12,6 +12,7 @@ from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm
 from patron.models import Tier, TierSubscriptions
+from patron.helpers import get_patrons
 
 
 def index(request):
@@ -182,20 +183,13 @@ def dashboard(request, user):
             request, 'Please Choose your profile type.')
         return redirect('choose_profile_type')
 
+@login_required
 def patron(request):
     context = {}
-    patron = CreatorProfile.objects.all()
-    patrons = [
-        {'name': 'user1', 'city': 'Kitwe',
-            'subscription': 'Gold', 'contributions': 1200},
-        {
-            'name': 'user2', 'city': 'Lusaka', 'subscription': 'Gold', 'contributions': 300},
-        {'name': 'user3', 'city': 'Ndola', 'subscription': 'Silver', 'contributions': 300}]
+    patrons = get_patrons(request.user)
     context['patrons'] = patrons
-    if request.user.is_authenticated:
-        return render(request, 'patron/admin/pages/patrons.html', context)
-    else:
-        return render(request, 'UI/patron.html', context)
+    return render(request, 'patron/admin/pages/patrons.html', context)
+    
 
 @login_required
 def view_tiers(request):
