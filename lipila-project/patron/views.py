@@ -11,16 +11,14 @@ from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm
-from patron.models import Tier
+from patron.models import Tier, TierSubscriptions
 
 
 def index(request):
     return render(request, 'patron/index.html')
 
-
 def contribute(request, user):
     return render(request, 'patron/admin/actions/contribute.html')
-
 
 @login_required
 def withdraw(request, user):
@@ -28,7 +26,6 @@ def withdraw(request, user):
     user_object = get_user_object(request.user)
     context['user'] = user_object
     return render(request, 'patron/admin/actions/withdraw.html', context)
-
 
 @login_required
 def profile(request):
@@ -48,7 +45,6 @@ def profile(request):
         messages.info(
             request, 'Please Choose your profile type.')
         return redirect('choose_profile_type')
-
 
 @login_required
 def create_creator_profile(request):
@@ -74,7 +70,6 @@ def create_creator_profile(request):
                   'patron/admin/profile/create_creator_profile.html',
                   {'form': form, 'creator': creator})
 
-
 @login_required
 def create_patron_profile(request):
     patron = request.user
@@ -98,7 +93,6 @@ def create_patron_profile(request):
     return render(request,
                   'patron/admin/profile/create_patron_profile.html',
                   {'form': form, 'patron': patron})
-
 
 @login_required
 def choose_profile_type(request):
@@ -149,7 +143,6 @@ class EditUserProfile(LoginRequiredMixin, View):
                 request, "Failed to update profile.")
             return redirect(reverse('profile'))
 
-
 @login_required
 def dashboard(request, user):
     context = {}
@@ -189,7 +182,6 @@ def dashboard(request, user):
             request, 'Please Choose your profile type.')
         return redirect('choose_profile_type')
 
-
 def patron(request):
     context = {}
     patron = CreatorProfile.objects.all()
@@ -205,7 +197,7 @@ def patron(request):
     else:
         return render(request, 'UI/patron.html', context)
 
-
+@login_required
 def view_tiers(request):
     """
     renders a creators tiers.
@@ -221,7 +213,7 @@ def view_tiers(request):
                   'patron/admin/pages/view_tiers.html',
                   {'user': request.user, 'tiers': tiers})
 
-
+@login_required
 def edit_tiers(request, tier_id):
     """
     renders a form to edit a crators tiers.
@@ -267,7 +259,7 @@ def creator_home(request, creator):
     return render(request, 'patron/admin/profile/creator_home.html', {'creator': creator_obj, 'tiers':tiers})
 
 
-# @login_required
+@login_required
 def join(request, tier_id):
     """Handles user subscription to a creator.
     Args:
@@ -278,11 +270,14 @@ def join(request, tier_id):
     Returns:
         A rendered response with the join form and subscription status.
     """
-    tier = Tier.objects.get(pk=tier_id)
-    creator = tier.creator
-    messages.success(
-        request, f"Welcome! You Joined my {tier.name} patrons.")
-    return redirect(reverse('creator_home', kwargs={"creator":creator}))
+    if request.method == 'POST':
+        tier = Tier.objects.get(pk=tier_id)
+        creator = tier.creator
+        patron = request.user
+        TierSubscriptions.objects.get_or_create(patron=patron, tier=tier)
+        messages.success(
+            request, f"Welcome! You Joined my {tier.name} patrons.")
+        return redirect(reverse('creator_home', kwargs={"creator":creator}))
 
 
 def list_creators(request):

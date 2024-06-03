@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from accounts.models import CreatorProfile, PatronProfile
 # Options
 STATUS_CHOICES = (
@@ -70,7 +71,7 @@ class Tier(models.Model):
 
 
 class TierSubscriptions(models.Model):
-    patron = models.ForeignKey(PatronProfile, on_delete=models.CASCADE)
+    patron = models.ForeignKey(User, on_delete=models.CASCADE)
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
 
 

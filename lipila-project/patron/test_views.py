@@ -4,7 +4,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
 from accounts.models import PatronProfile, CreatorProfile
-from patron.models import Tier
+from patron.models import Tier, TierSubscriptions
 
 
 
@@ -57,6 +57,28 @@ class TestPatronViewsMore(TestCase):
     #     messages = list(get_messages(response.wsgi_request))
     #     self.assertEqual(str(messages[0]), 'Invalid form. Please check your data.')
         
+class TestJoinView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create(
+            username='testuser', password='password')
+        self.user2 = User.objects.create(
+            username='testuser2', password='password')
+        self.creator = CreatorProfile.objects.create(user=self.user1,patron_title='testpatron', bio='test', creator_category='musician')
+        Tier().create_default_tiers(self.creator)
+        self.tiers = Tier.objects.filter(creator=self.creator).values()
+        self.client.force_login(self.user2)
+
+    def test_join_view_valid(self):
+        tier = self.tiers[0] 
+        url = url = reverse('patron:join_tier', kwargs={'tier_id': tier['id']})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            str(messages[0]), "Welcome! You Joined my Onetime patrons.")
+        self.assertEqual(TierSubscriptions.objects.count(), 1)
+
 
 class TestPatronViews(TestCase):
     def setUp(self):
