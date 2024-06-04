@@ -10,8 +10,8 @@
 
         {% for patron in patrons %}
         <div class="patron">
-            <div class="username">{{patron.name}}</div>
-            <div class="city">{{patron.city}}</div>
+            <div class="username">{{patron.patron}}</div>
+            <div class="city">{{patron.tier}}</div>
             <div class="subscription-type">{{patron.subscription}}</div>
             <div class="total-contributions">K{{patron.contributions}}</div>
         </div>

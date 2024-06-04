@@ -26,18 +26,20 @@
                         <h2>Subscriptions</h2>
                         {% for tier in tiers %}
                         {% if tier.visible_to_fans %}
-                        <div class="tier">
-                            <div>
-                                <h3>{{tier.name}}</h3>
-                                <p>{{tier.description}}</p>
+                        <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="tier">
+                                <div>
+                                    <h3>{{tier.name}}</h3>
+                                    <p>{{tier.description}}</p>
+                                </div>
+                                <div class="price">{{tier.price}}</div>
+                                {% endif %}
+                                <div class="edit-button-container">
+                                    <button class="edit-button">Join</button>
+                                </div>
                             </div>
-                            <div class="price">{{tier.price}}</div>
-
-                            {% endif %}
-                            <div class="edit-button-container">
-                                <a class="edit-button" href="{% url 'patron:join_tier' tier_id=tier.id %}">Join</a>
-                            </div>
-                        </div>
+                        </form>
                         {% endfor %}
                     </div>
                 </section>
