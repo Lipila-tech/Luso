@@ -70,7 +70,7 @@
                         <p class="post-category">{{creator.creator_category}}</p>
 
                         <h2 class="title">
-                            <a href="{% url 'creator_home' creator=creator.user %}">{{creator.patron_title}}</a>
+                            <a href="{% url 'patron:creator_home' creator=creator.user %}">{{creator.patron_title}}</a>
                         </h2>
 
                         <div class="d-flex align-items-center">

@@ -28,22 +28,3 @@ def get_creator_subscribers(creator: CreatorProfile)->List:
     patrons = [subscription.patron for subscription in subscriptions]
     return patrons
 
-
-def is_patron_subscribed(patron, tier_id):
-    """
-    Checks if a patron is subscribed to a given tier.
-
-    Args:
-        patron: A User object representing the patron.
-        tier_id: The ID of the Tier to check for subscription.
-
-    Returns:
-        True if the patron is subscribed to the tier, False otherwise.
-    """
-
-    try:
-        subscription = TierSubscriptions.objects.get(
-            patron=patron, tier__pk=tier_id)
-        return True
-    except TierSubscriptions.DoesNotExist:
-        return False

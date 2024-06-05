@@ -18,8 +18,10 @@ from patron.helpers import get_creator_subscribers
 def index(request):
     return render(request, 'patron/index.html')
 
+
 def contribute(request, user):
     return render(request, 'patron/admin/actions/contribute.html')
+
 
 @login_required
 def withdraw(request, user):
@@ -27,6 +29,7 @@ def withdraw(request, user):
     user_object = get_user_object(request.user)
     context['user'] = user_object
     return render(request, 'patron/admin/actions/withdraw.html', context)
+
 
 @login_required
 def profile(request):
@@ -46,6 +49,7 @@ def profile(request):
         messages.info(
             request, 'Please Choose your profile type.')
         return redirect('choose_profile_type')
+
 
 @login_required
 def create_creator_profile(request):
@@ -71,6 +75,7 @@ def create_creator_profile(request):
                   'patron/admin/profile/create_creator_profile.html',
                   {'form': form, 'creator': creator})
 
+
 @login_required
 def create_patron_profile(request):
     patron = request.user
@@ -94,6 +99,7 @@ def create_patron_profile(request):
     return render(request,
                   'patron/admin/profile/create_patron_profile.html',
                   {'form': form, 'patron': patron})
+
 
 @login_required
 def choose_profile_type(request):
@@ -144,6 +150,7 @@ class EditUserProfile(LoginRequiredMixin, View):
                 request, "Failed to update profile.")
             return redirect(reverse('profile'))
 
+
 @login_required
 def dashboard(request, user):
     context = {}
@@ -183,6 +190,7 @@ def dashboard(request, user):
             request, 'Please Choose your profile type.')
         return redirect('choose_profile_type')
 
+
 @login_required
 def patron(request):
     context = {}
@@ -190,7 +198,7 @@ def patron(request):
     patrons = get_creator_subscribers(creator)
     context['patrons'] = patrons
     return render(request, 'patron/admin/pages/patrons.html', context)
-    
+
 
 @login_required
 def view_tiers(request):
@@ -207,6 +215,7 @@ def view_tiers(request):
     return render(request,
                   'patron/admin/pages/view_tiers.html',
                   {'user': request.user, 'tiers': tiers})
+
 
 @login_required
 def edit_tiers(request, tier_id):
@@ -247,11 +256,25 @@ def creator_home(request, creator):
     Returns:
         A rendered response with the creator details.
     """
-
-    creator_user = User.objects.get(username=creator)
-    creator_obj = CreatorProfile.objects.get(user=creator_user.id)
-    tiers = Tier.objects.filter(creator=creator_obj).values()
-    return render(request, 'patron/admin/profile/creator_home.html', {'creator': creator_obj, 'tiers':tiers})
+    if request.user.is_authenticated:
+        patron_user = User.objects.get(username=request.user)
+        creator_user = User.objects.get(username=creator)
+        creator_obj = CreatorProfile.objects.get(user=creator_user.id)
+        tiers = Tier.objects.filter(creator=creator_obj).values()
+        return render(request,
+                      'patron/admin/profile/creator_home.html',
+                      {'creator': creator_obj,
+                       'tiers': tiers,
+                       })
+    else:
+        creator_user = User.objects.get(username=creator)
+        creator_obj = CreatorProfile.objects.get(user=creator_user.id)
+        tiers = Tier.objects.filter(creator=creator_obj).values()
+        return render(request,
+                      'patron/admin/profile/creator_home.html',
+                      {'creator': creator_obj,
+                       'tiers': tiers
+                       })
 
 
 @login_required
@@ -273,7 +296,7 @@ def join(request, tier_id):
         TierSubscriptions.objects.get_or_create(patron=patron, tier=tier)
         messages.success(
             request, f"Welcome! You Joined my {tier.name} patrons.")
-    return redirect(reverse('creator_home', kwargs={"creator":creator}))
+    return redirect(reverse('patron:creator_home', kwargs={"creator": creator}))
 
 
 def list_creators(request):

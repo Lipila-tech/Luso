@@ -5,7 +5,8 @@ from django.urls import reverse
 
 # custom modules
 from patron import helpers
-from accounts.models import CreatorProfile, PatronProfile
+from accounts.models import CreatorProfile
+from patron.templatetags.patron_tags import is_patron_subscribed
 
 
 class TestHelperFunctions(TestCase):
@@ -55,6 +56,9 @@ class TestHelperFunctions(TestCase):
         
 
     def test_check_if_patron_is_subscribed(self):
+        """
+        Test template tag function.
+        """
         self.client.force_login(self.creator_user1)
         user1 = User.objects.create(
             username='testuser1', password='password')
@@ -74,7 +78,7 @@ class TestHelperFunctions(TestCase):
         TierSubscriptions.objects.create(patron=user3, tier=tier2)  # 1
         TierSubscriptions.objects.create(patron=user4, tier=tier3)  # 2
         TierSubscriptions.objects.create(patron=user5, tier=tier2)  # 1
-        is_patrons1 = helpers.is_patron_subscribed(user1, tier1.id)
-        is_patrons2 = helpers.is_patron_subscribed(user3, tier3.id)
+        is_patrons1 = is_patron_subscribed(user1, tier1.id)
+        is_patrons2 = is_patron_subscribed(user3, tier3.id)
         self.assertEqual(is_patrons1, True)
         self.assertEqual(is_patrons2, False)

@@ -1,7 +1,7 @@
 {% extends 'layout_admin.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
+{% load patron_tags %}
 {% block title %}Home {% endblock %}
 {% block main %}
 
@@ -21,6 +21,35 @@
             <div class="text mt-3"> <span>{{creator.bio}} </span> </div>
             <div class="tiers-container">
 
+                {% if user.is_authenticated %}
+
+                <section class="admin-other-body">
+                    <div class="tiers-container">
+                        <h2>Subscriptions</h2>
+                        {% for tier in tiers %}
+                        {% if tier.visible_to_fans %}
+                        <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post" class="tier-form">
+                            {% csrf_token %}
+                            <div class="tier">
+                                <div>
+                                    <h3>{{ tier.name }}</h3>
+                                    <p>{{ tier.description }}</p>
+                                </div>
+                                <div class="price">{{ tier.price }}</div>
+                                <div class="join-status">
+                                    {% if user|is_patron_subscribed:tier.id %}
+                                    <button class="edit-button joined" disabled>Unsubscribe</button>
+                                    {% else %}
+                                    <button class="edit-button">Join</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </form>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </section>
+                {% else %}
                 <section class="admin-other-body">
                     <div class="tiers-container">
                         <h2>Subscriptions</h2>
@@ -43,6 +72,7 @@
                         {% endfor %}
                     </div>
                 </section>
+                {% endif %}
 
             </div>
         </div>

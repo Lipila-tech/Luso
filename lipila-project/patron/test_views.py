@@ -65,12 +65,12 @@ class TestSubscription(TestCase):
             username='testcreator2', password='password')
         self.user1 = User.objects.create(
             username='testuser', password='password')
-        creator1_obj = CreatorProfile.objects.create(user=self.creator_user1,patron_title='testpatron1', bio='test', creator_category='musician')
-        creator2_obj = CreatorProfile.objects.create(user=self.creator_user2,patron_title='testpatron2', bio='test', creator_category='musician')
-        Tier().create_default_tiers(creator1_obj) # creator 1 tiers
-        Tier().create_default_tiers(creator2_obj) # creator 2 tiers
-        self.tiers_1 = Tier.objects.filter(creator=creator1_obj).values()
-        self.tiers_2 = Tier.objects.filter(creator=creator2_obj).values()
+        self.creator1_obj = CreatorProfile.objects.create(user=self.creator_user1,patron_title='testpatron1', bio='test', creator_category='musician')
+        self.creator2_obj = CreatorProfile.objects.create(user=self.creator_user2,patron_title='testpatron2', bio='test', creator_category='musician')
+        Tier().create_default_tiers(self.creator1_obj) # creator 1 tiers
+        Tier().create_default_tiers(self.creator2_obj) # creator 2 tiers
+        self.tiers_1 = Tier.objects.filter(creator=self.creator1_obj).values()
+        self.tiers_2 = Tier.objects.filter(creator=self.creator2_obj).values()
         
 
     def test_join_view_valid(self):
@@ -107,6 +107,17 @@ class TestSubscription(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('patron/admin/pages/patrons.html')
         self.assertEqual(TierSubscriptions.objects.count(), 5)
+
+
+    def test_get_creator_home(self):
+        self.client.force_login(self.user1)
+        url = reverse('patron:creator_home', kwargs={'creator': self.creator1_obj})
+        user1 = User.objects.create(
+            username='testuser5', password='password')
+        tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
+        TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
         
 
 class TestPatronViews(TestCase):
