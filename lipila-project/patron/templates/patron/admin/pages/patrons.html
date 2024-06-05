@@ -7,15 +7,15 @@
 <section class="patrons-body">
     <div class="patrons-container">
         <h2>My Patrons</h2>
-
-        {% for patron in patrons %}
-        <div class="patron">
-            <div class="username">{{patron.patron}}</div>
-            <div class="city">{{patron.tier}}</div>
-            <div class="subscription-type">{{patron.subscription}}</div>
-            <div class="total-contributions">K{{patron.contributions}}</div>
-        </div>
-        {% endfor %}
+        <ol>
+            {% for patron in patrons %}
+            <div class="patron">
+                <li>
+                    <div class="username">{{patron.username}}</div>
+                </li>
+            </div>
+            {% endfor %}
+        </ol>
     </div>
 
 </section>

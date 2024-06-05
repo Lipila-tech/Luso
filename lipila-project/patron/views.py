@@ -12,7 +12,7 @@ from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm
 from patron.models import Tier, TierSubscriptions
-from patron.helpers import get_patrons
+from patron.helpers import get_creator_subscribers
 
 
 def index(request):
@@ -186,7 +186,8 @@ def dashboard(request, user):
 @login_required
 def patron(request):
     context = {}
-    patrons = get_patrons(request.user)
+    creator = get_object_or_404(CreatorProfile, user=request.user)
+    patrons = get_creator_subscribers(creator)
     context['patrons'] = patrons
     return render(request, 'patron/admin/pages/patrons.html', context)
     
@@ -264,14 +265,15 @@ def join(request, tier_id):
     Returns:
         A rendered response with the join form and subscription status.
     """
+    tier = Tier.objects.get(pk=tier_id)
+    creator = tier.creator
+
     if request.method == 'POST':
-        tier = Tier.objects.get(pk=tier_id)
-        creator = tier.creator
         patron = request.user
         TierSubscriptions.objects.get_or_create(patron=patron, tier=tier)
         messages.success(
             request, f"Welcome! You Joined my {tier.name} patrons.")
-        return redirect(reverse('creator_home', kwargs={"creator":creator}))
+    return redirect(reverse('creator_home', kwargs={"creator":creator}))
 
 
 def list_creators(request):
