@@ -1,0 +1,59 @@
+<h1>Users Report</h1>
+
+<h2>All Users</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Is Staff</th>
+      <th>Is Creator</th>
+      <th>Joined At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in all_users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.is_staff }}</td>
+      <td>
+        {% if user.creatorprofile_set.exists %}
+          Yes
+        {% else %}
+          No
+        {% endif %}
+      </td>
+      <td>{{ user.date_joined }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>All Creators</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Display Name</th>
+      <th>Joined At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for creator in all_creators %}
+    <tr>
+      <td>{{ creator.user.username }}</td>
+      <td>{{ creator.user.email }}</td>
+      <td>{{ creator.display_name }}</td>
+      <td>{{ creator.user.date_joined }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Total Contributions</h2>
+<p>
+  **Total:** {{ total_contributions }}
+</p>
+

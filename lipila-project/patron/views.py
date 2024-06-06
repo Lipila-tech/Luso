@@ -150,6 +150,17 @@ class EditUserProfile(LoginRequiredMixin, View):
                 request, "Failed to update profile.")
             return redirect(reverse('profile'))
 
+@login_required
+def staff_users(request):
+    all_users = User.objects.all().order_by('date_joined')
+    all_creators = User.objects.filter(creatorprofile_set__exists=True).order_by('date_joined')
+    # Logic to calculate total contributions (replace with your implementation)
+    total_contributions = 1000  # Replace with actual calculation
+    return render(request, 'staff/users.html', {
+        'all_users': all_users,
+        'all_creators': all_creators,
+        'total_contributions': total_contributions,
+    })
 
 @login_required
 def dashboard(request, user):
