@@ -4,7 +4,7 @@ from business.models import Product, BNPL, Student
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
-from patron.models import Tier, Contribution
+from patron.models import Tier, Payments
 from accounts.models import PatronProfile, CreatorProfile
 
 
@@ -17,8 +17,8 @@ class TierAdmin(admin.ModelAdmin):
     list_display = ('name', 'creator', 'price', 'description', 'visible_to_fans', 'updated_at')
 
 
-class ContributionAdmin(admin.ModelAdmin):
-    list_display = ('creator', 'patron', 'tier', 'amount', 'timestamp')
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('subscription', 'amount', 'timestamp')
 
 
 class DisbursementAdmin(admin.ModelAdmin):
@@ -87,7 +87,7 @@ class CreatorProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tier, TierAdmin)
-admin.site.register(Contribution, ContributionAdmin)
+admin.site.register(Payments, PaymentAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(LipilaCollection, LipilaCOllectionAdmin)
 admin.site.register(Product, ProductAdmin)

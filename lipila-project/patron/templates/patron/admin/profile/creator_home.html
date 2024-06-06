@@ -38,7 +38,8 @@
                                 <div class="price">{{ tier.price }}</div>
                                 <div class="join-status">
                                     {% if user|is_patron_subscribed:tier.id %}
-                                    <button class="edit-button joined" disabled>Unsubscribe</button>
+                                    <button class="edit-button joined" onclick="unsubscribe_patron('{{ tier.id }}')">Unsubscribe</button>
+                                    <a href="{% url 'patron:make_payment' tier_id=tier.id %}" class="edit-button joined">Click to pay</a>
                                     {% else %}
                                     <button class="edit-button">Join</button>
                                     {% endif %}

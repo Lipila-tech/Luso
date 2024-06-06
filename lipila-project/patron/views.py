@@ -11,9 +11,11 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
-from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm
-from patron.models import Tier, TierSubscriptions
-from patron.helpers import get_creator_subscribers, get_creator_url
+from patron.forms.forms import (
+    CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm,
+    DepositForm)
+from patron.models import Tier, TierSubscriptions, Payments
+from patron.helpers import get_creator_subscribers, get_creator_url, get_tier
 
 
 def index(request):
@@ -158,13 +160,45 @@ class EditUserProfile(LoginRequiredMixin, View):
 def staff_users(request, user):
     all_users = User.objects.all().order_by('date_joined')
     all_creators = CreatorProfile.objects.all()
-    total_contributions = 1000
+    total_payments = 1000
     return render(request, 'lipila/staff/users.html', {
         'all_users': len(all_users),
         'all_creators': len(all_creators),
-        'total_contributions': total_contributions,
+        'total_payments': total_payments,
         'updated_at': datetime.today
     })
+
+
+@login_required
+def make_payment(request, tier_id):
+    """
+    Makes a payment to the appropriate patrons based on (tier_sub).
+
+    Args:
+        request: The incoming HTTP request object.
+        tier: The tier to make a payment for.
+
+    Returns:
+        A redirected response to the dashboard.
+    """
+    tier = get_tier(tier_id)
+    if request.method == 'POST':
+        form = DepositForm(request.POST)
+        if form.is_valid():
+            patron = User.objects.get(username=request.user)
+            subscription = TierSubscriptions.objects.get(patron=patron, tier=tier)
+            # Process deposit logic here (e.g., connect to payment gateway, store transaction details)
+            amount = form.cleaned_data['amount']
+            phone_number = form.cleaned_data['phone_number']
+            payment = Payments.objects.create(subscription=subscription, amount=amount)
+            payment.save()
+            messages.success(request, f"Paid ZMW {amount} successfully!")
+            # Redirect to user dashboard after successful deposit
+            return redirect(reverse('dashboard', kwargs={'user':request.user}))
+    else:
+        form = DepositForm()
+    tier = tier.name
+    return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier':tier})
 
 
 @login_required
@@ -316,7 +350,7 @@ def join(request, tier_id):
     Returns:
         A rendered response with the join form and subscription status.
     """
-    tier = Tier.objects.get(pk=tier_id)
+    tier = get_tier(tier_id)
     creator = tier.creator
 
     if request.method == 'POST':
@@ -350,3 +384,18 @@ def history(request, user):
     user_object = get_user_object(request.user)
     context['user'] = user_object
     return render(request, 'patron/admin/pages/history.html', context)
+
+@login_required
+def payments(request):
+    context = {}
+    user = get_user_object(request.user)
+    context['user'] = user
+    tiers = TierSubscriptions.objects.filter(patron=user)
+    print(tiers)
+    for tier in tiers:
+        print(tier.payments)
+    payments = Payments.objects.filter(subscription=tier)
+    print(payments)
+    context['payments'] = payments
+
+    return render(request, 'patron/admin/pages/payments.html', context)

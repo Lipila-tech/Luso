@@ -88,6 +88,7 @@
     <!-- display any message -->
     {% if messages %}
     <div class="message">
+        <span class="close-btn">&times;</span>
         {% for message in messages %}
         <p class="alert alert-{{ message.tag }}">{{message}}</p>
         {% endfor %}

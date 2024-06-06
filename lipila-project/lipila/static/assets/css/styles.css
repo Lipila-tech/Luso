@@ -236,6 +236,22 @@ hr .new1 {
   border: 2px solid wheat;
   border-radius: 35px;
   background-color: dimgray;
+  position: relative;  /* Enable positioning for close button */
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;  /* White color for close icon */
+}
+
+.close-btn:hover {
+  color: #ccc;  /* Light gray hover color */
 }
 
 .tier-url {

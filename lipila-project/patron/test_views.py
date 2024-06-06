@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
 from accounts.models import PatronProfile, CreatorProfile
-from patron.models import Tier, TierSubscriptions
+from patron.models import Tier, TierSubscriptions, Payments
 
 
 class TestPatronViewsMore(TestCase):
@@ -106,7 +106,48 @@ class TestSubscription(TestCase):
         TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        
+
+    def test_post_make_payment_valid(self):
+        user1 = User.objects.create(
+            username='testuser5', password='password')
+        self.client.force_login(user1)
+        tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
+        TierSubscriptions.objects.create(patron=user1, tier=tier1)
+        url = reverse('patron:make_payment', kwargs={'tier_id': tier1.id})
+        data = {
+            'amount': 10,
+            'phone_number':'0996554433',
+        }
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 302)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'Paid ZMW 10 successfully!')
+        self.assertEqual(Payments.objects.count(), 1)
+
+    def test_get_make_payment_valid(self):
+        user1 = User.objects.create(
+            username='testuser5', password='password')
+        self.client.force_login(user1)
+        tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
+        TierSubscriptions.objects.create(patron=user1, tier=tier1)
+        url = reverse('patron:make_payment', kwargs={'tier_id': tier1.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('lipila/actions/deposit.html')
+
+
+    def test_get_payment_history(self):
+        user1 = User.objects.create(
+            username='testuser5', password='password')
+        self.client.force_login(user1)
+        tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
+        TierSubscriptions.objects.create(patron=user1, tier=tier1)
+        url = reverse('patron:payments')
+        self.client.get(reverse('patron:make_payment', kwargs={'tier_id': tier1.id}))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('patron/admin/pages/payments.html')
+
 
 class TestPatronViews(TestCase):
     def setUp(self):
@@ -216,7 +257,7 @@ class TestPatronViews(TestCase):
         self.assertEqual(tiers[1]['price'], 25)
         self.assertEqual(tiers[2]['price'], 50)
         desc = {
-            "one": "Make a one-time contribution to support the creator's work.",
+            "one": "Make a one-time payment to support the creator's work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }
@@ -254,7 +295,7 @@ class TestPatronViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
         desc = {
-            "one": "Make a one-time contribution to support the creator's work.",
+            "one": "Make a one-time payment to support the creator's work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }
@@ -300,7 +341,7 @@ class TestCreateDefaultTiers(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
         desc = {
-            "one": "Make a one-time contribution to support the creator's work.",
+            "one": "Make a one-time payment to support the creator's work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }

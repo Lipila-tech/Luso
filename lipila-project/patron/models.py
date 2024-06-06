@@ -47,7 +47,7 @@ class Tier(models.Model):
         # Create default tiers if they don't exist
         defaults = [
             {"name": "Onetime", "price": ONETIME_AMOUNT,
-                "desc": "Make a one-time contribution to support the creator's work.",
+                "desc": "Make a one-time Contribution to support the creator's work.",
                 'creator': creator, 'visible': True},
             {"name": "Fan", "price": FAN_AMOUNT,
                 "desc": "Support the creator and get access to exclusive content.",
@@ -69,23 +69,18 @@ class Tier(models.Model):
         return f"{self.name} -> {self.price}"
 
 
-
 class TierSubscriptions(models.Model):
     patron = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE, related_name='subscriptions')
 
     def __str__(self):
-        return f"{self.patron.username} -> {self.tier.name}"
+        return f"{self.patron}"
 
 
-class Contribution(models.Model):
-    creator = models.ForeignKey(
-        CreatorProfile, on_delete=models.CASCADE, related_name='contributions_received')
-    patron = models.ForeignKey(
-        PatronProfile, on_delete=models.CASCADE, related_name='contributions_made')
-    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
+class Payments(models.Model):
+    subscription = models.ForeignKey(TierSubscriptions, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Contribution of {self.amount} by {self.patron} to {self.creator} on {self.contribution_date}"
+        return f"{self.subscription}"

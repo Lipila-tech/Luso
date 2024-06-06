@@ -6,6 +6,16 @@
 * License: https://bootstrapmade.com/license/
 */
 
+const closeButtons = document.querySelectorAll('.close-btn');
+
+closeButtons.forEach(closeButton => {
+  closeButton.addEventListener('click', function() {
+    const messageDiv = this.parentElement;  // Get the parent message div
+    messageDiv.style.display = 'none';  // Hide the message div
+  });
+});
+
+
 const copyButtons = document.querySelectorAll('.copy-btn');
 
 copyButtons.forEach(button => {
