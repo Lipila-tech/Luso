@@ -43,18 +43,7 @@ class TestPatronViewsMore(TestCase):
         self.assertEqual(tier.price, data['price'])
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[2]), 'Tier Edited Successfully.')
-
-    # def test_edit_tier_post_request_invalid_data(self):
-    #     tier = self.tiers[0]
-    #     print(tier['id'])
-    #     url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
-    #     data = {'name': 'test', 'price': 'invalid', 'description': 'New description'}
-    #     # with self.assertRaises(ValueError):
-    #     response = self.client.post(url, data=data)
-    #     self.assertEqual(response.status_code, 200)
-    #     messages = list(get_messages(response.wsgi_request))
-    #     self.assertEqual(str(messages[0]), 'Invalid form. Please check your data.')
-        
+                
 class TestSubscription(TestCase):
     def setUp(self):
         self.client = Client()
