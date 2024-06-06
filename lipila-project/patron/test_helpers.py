@@ -27,6 +27,11 @@ class TestHelperFunctions(TestCase):
         self.tiers_1 = Tier.objects.filter(creator=self.creator1_obj).values()
         self.tiers_2 = Tier.objects.filter(creator=self.creator2_obj).values()
 
+    def test_get_creator_url(self):
+        domain = 'localhost:8000'
+        url = helpers.get_creator_url('index', self.creator1_obj.patron_title, domain=domain)
+        self.assertEqual(url, f'{domain}/testpatron1')
+
     def test_get_creator_subscribers(self):
         self.client.force_login(self.creator_user1)
         user1 = User.objects.create(

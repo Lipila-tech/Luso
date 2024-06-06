@@ -241,7 +241,7 @@ hr .new1 {
 .tier-url {
   display: inline-flex;
   align-items: center;
-  color: #28a745;
+  color: #007bff;
 }
 
 .copy-btn {
@@ -250,7 +250,7 @@ hr .new1 {
   cursor: pointer;
   padding: 5px 10px;
   font-size: 0.8em;
-  color: #007bff;
+  color: #00ff2f;
 }
 
 /*--------------------------------------------------------------

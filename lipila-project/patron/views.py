@@ -13,7 +13,7 @@ from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm
 from patron.models import Tier, TierSubscriptions
-from patron.helpers import get_creator_subscribers
+from patron.helpers import get_creator_subscribers, get_creator_url
 
 
 def index(request):
@@ -208,10 +208,10 @@ def dashboard(request, user):
             'tiers': 3,
             'updated_at': datetime.today
         }
-
         creator = request.user.creatorprofile
-        print(creator.get_absolute_url())
+        url = get_creator_url('index', creator, domain='localhost:8000')
         context['user'] = get_user_object(creator)
+        context['url'] = url
         return render(request, 'patron/admin/index_creator.html', context)
     except CreatorProfile.DoesNotExist:
         messages.info(

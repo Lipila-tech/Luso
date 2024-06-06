@@ -10,7 +10,7 @@ urlpatterns = [
      path('<str:user>/contribute', views.contribute, name='contribute'),
 
      path('creators/list', views.list_creators, name='creators'),
-     path('patron/home/<str:creator>', views.creator_home, name='creator_home'),
+     path('home/<str:creator>/', views.creator_home, name='creator_home'),
      path('my-tiers', views.view_tiers, name='tiers'),
      path('my-tiers/edit/<int:tier_id>', views.edit_tiers, name='edit_tier'),
      path('join/<int:tier_id>', views.join, name='join_tier'),

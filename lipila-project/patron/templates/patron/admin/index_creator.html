@@ -25,9 +25,9 @@
       </div>
     </div>
     <div class="creator-footer">
-      <p>url: {{ tier.creator.get_absolute_url }}</p>
-      <span class="tier-url" data-url="{{ tier.creator.get_absolute_url }}">
-        {{ tier.creator.patron_title }}  <button class="copy-btn" data-clipboard-text="{{ tier.creator.get_absolute_url }}">Copy</button>
+      <p class="tier-url">URL: {{ url }}</p>
+      <span class="tier-url" data-url="{{ url }}">
+        {{ tier.creator.patron_title }}  <button class="copy-btn" data-clipboard-text="{{ url }}"><h5>Copy</h5></button>
       </span>
     </div>
     <div class="creator-footer">
