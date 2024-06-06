@@ -6,7 +6,6 @@ from accounts.models import PatronProfile, CreatorProfile
 from patron.models import Tier, TierSubscriptions
 
 
-
 class TestPatronViewsMore(TestCase):
     def setUp(self):
         self.client = Client()
@@ -32,7 +31,7 @@ class TestPatronViewsMore(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'patron/admin/actions/edit_tiers.html')
 
-
+        
     def test_edit_tier_post_request_valid_data(self):
         tier = self.tiers[0] 
         url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})

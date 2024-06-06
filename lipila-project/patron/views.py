@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -34,6 +35,8 @@ def withdraw(request, user):
 @login_required
 def profile(request):
     context = {}
+    if request.user.is_staff:
+        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
     try:
         # Access creator profile using OneToOne relation
         patron = request.user.patronprofile
@@ -150,20 +153,34 @@ class EditUserProfile(LoginRequiredMixin, View):
                 request, "Failed to update profile.")
             return redirect(reverse('profile'))
 
+
 @login_required
-def staff_users(request):
+def staff_users(request, user):
     all_users = User.objects.all().order_by('date_joined')
-    all_creators = User.objects.filter(creatorprofile_set__exists=True).order_by('date_joined')
-    # Logic to calculate total contributions (replace with your implementation)
-    total_contributions = 1000  # Replace with actual calculation
-    return render(request, 'staff/users.html', {
-        'all_users': all_users,
-        'all_creators': all_creators,
+    all_creators = CreatorProfile.objects.all()
+    total_contributions = 1000
+    return render(request, 'lipila/staff/users.html', {
+        'all_users': len(all_users),
+        'all_creators': len(all_creators),
         'total_contributions': total_contributions,
+        'updated_at': datetime.today
     })
+
 
 @login_required
 def dashboard(request, user):
+    """
+    Renders the appropriate dashboard based on user type (patron or creator).
+    Redirects staff users to a dedicated staff dashboard.
+
+    Args:
+        request: The incoming HTTP request object.
+        user: The username of the logged-in user (unused).
+
+    Returns:
+        A rendered response with the dashboard template and context.
+    """
+
     context = {}
     now = datetime.now()
     request.session['last_login_time'] = now.strftime("%H:%M:%S")
@@ -193,7 +210,7 @@ def dashboard(request, user):
         }
 
         creator = request.user.creatorprofile
-        
+        print(creator.get_absolute_url())
         context['user'] = get_user_object(creator)
         return render(request, 'patron/admin/index_creator.html', context)
     except CreatorProfile.DoesNotExist:
