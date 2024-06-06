@@ -30,35 +30,25 @@
 
 
     <!-- Template Main CSS File -->
-    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
-
-    <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
 </head>
 
 <body>
+
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
-        {% block header %}
-        {% endblock %}
 
-        <div class="search-bar">
-            <form class="search-form d-flex align-items-center" method="POST" action="#">
-                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-            </form>
-        </div><!-- End Search Bar -->
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
+                <img src="{% static 'assets/img/logo-color.png' %}" alt="">
+                <span class="d-none d-lg-block"> Home</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+
 
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
-
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown">
 
                     <!-- <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
@@ -99,9 +89,9 @@
 
                         {% if user.profile_image.url %}
                         <img src="{{user.profile_image.url}}" alt="Profile" class="rounded-circle">
-                        {% else%}
-                        <img src="#" alt="Profile" class="rounded-circle">
                         {% endif %}
+                        {% else%}
+                        <img src="{% static 'assets/img/avator.jpeg' %}" alt="profile" class="rounded-circle">
                         {% endif %}
                         <span class="d-none d-md-block dropdown-toggle ps-2">{{user.username}}</span>
                     </a><!-- End Profile Iamge Icon -->
@@ -169,8 +159,6 @@
         </nav><!-- End Icons Navigation -->
 
     </header><!-- End Header -->
-
-    {% if user.is_authenticated %}
 
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
@@ -315,78 +303,28 @@
         </ul>
 
     </aside><!-- End Sidebar-->
+
     <main id="main" class="main">
+
         <div class="pagetitle">
             <h1>Dashboard</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
-        {% if messages %}
-        <div class="message">
-            {% for message in messages %}
-            <p class="alert alert-{{ message.tag }}">{{message}}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </main>
-    {% endif %}
-    <main id="main" class="main">
-        {% block section %}
-        {% endblock %}
-    </main>
+
+        <section class="section dashboard">
+            {% block section %}
+            {% endblock %}
+        </section>
+
+    </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-
-        <div class="container footer-top">
-            <div class="row gy-4">
-                <div class="col-lg-5 col-md-12 footer-about">
-                    <a href="{% url 'index' %}" class="logo d-flex align-items-center">
-                        <span>Lipila Patron</span>
-                    </a>
-                    <p>Made for Creators by Creators.</p>
-                    <div class="social-links d-flex mt-4">
-                        <a href=""><i class="bi bi-twitter"></i></a>
-                        <a href=""><i class="bi bi-facebook"></i></a>
-                        <a href=""><i class="bi bi-instagram"></i></a>
-                        <a href=""><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-6 footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="/#hero">Home</a></li>
-                        <li><a href="/#about">About us</a></li>
-                        <li><a href="/#services">Services</a></li>
-                        <li><a href="{% url 'terms' %}">Terms of use</a></li>
-                        <li><a href="{% url 'privacy' %}">Privacy policy.</a></li>
-                        <li><a href="{% url 'faq' %}">FAQ</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-2 col-6 footer-links">
-                    <h4>Creators</h4>
-                    <ul>
-                        <li><a href="#">Video Creators</a></li>
-                        <li><a href="#">Musicians</a></li>
-                        <li><a href="#">Podcasters</a></li>
-                        <li><a href="#">Artists</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-                    <h4>Pricing</h4>
-                    <p>FREE!</p>
-                </div>
-
-            </div>
-        </div>
-
         <div class="container copyright text-center mt-4">
             <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila Technologies Ltd</strong> <span>All Rights
                     Reserved</span></p>
@@ -394,11 +332,9 @@
                 Designed by <a href="#">Lipila Technologies Limited</a>
             </div>
         </div>
-
     </footer><!-- End Footer -->
 
-    <!-- Scroll Top Button -->
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
 
     <!-- Preloader -->
@@ -424,49 +360,6 @@
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
 
-    <script>
-        function nextStep(location) {
-            if (location === "step1") {
-                document.getElementById('step0').style.display = 'none';
-                document.getElementById('step1').style.display = 'block';
-            } else if (location == "step2") {
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('step2').style.display = 'block';
-            }
-        }
-
-        // Add conditional navigation
-        function prevStep(location) {
-            // Go to setp 1 if user is on step 2
-            if (location === "step1") {
-                document.getElementById('step2').style.display = 'none';
-                document.getElementById('step1').style.display = 'block';
-            } else if (location == "step0") {
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('step0').style.display = 'block';
-            }
-            else {
-                // Otherwise redirect the user to the index page
-                document.getElementById('back-btn').style.display = 'none';
-            }
-
-        }
-
-        function submitPayment() {
-            // Payment submission logic here
-            alert('Submit Payment button clicked');
-        }
-
-        function submitInvoice() {
-            // Payment submission logic here
-            alert('Submit Invoice button clicked');
-        }
-
-        function deleteProduct() {
-            // delete product submission logic here
-            alert('Delete product button');
-        }
-    </script>
 </body>
 
 </html>
