@@ -42,7 +42,7 @@ class TestPatronViewsMore(TestCase):
         self.assertEqual(tier.name, data['name'])
         self.assertEqual(tier.price, data['price'])
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Tier Edited Successfully.')
+        self.assertEqual(str(messages[2]), 'Tier Edited Successfully.')
 
     # def test_edit_tier_post_request_invalid_data(self):
     #     tier = self.tiers[0]
