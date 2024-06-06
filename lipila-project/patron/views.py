@@ -182,7 +182,7 @@ def dashboard(request, user):
         }
 
         creator = request.user.creatorprofile
-        print(creator.get_absolute_url())
+        
         context['user'] = get_user_object(creator)
         return render(request, 'patron/admin/index_creator.html', context)
     except CreatorProfile.DoesNotExist:
