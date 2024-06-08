@@ -385,6 +385,7 @@ def history(request, user):
     context['user'] = user_object
     return render(request, 'patron/admin/pages/history.html', context)
 
+
 @login_required
 def payments(request):
     context = {}
