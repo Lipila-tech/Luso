@@ -329,6 +329,7 @@ def creator_home(request, creator):
         A rendered response with the creator details.
     """
     if request.user.is_authenticated:
+        print('auth user')
         patron_user = User.objects.get(username=request.user)
         creator_user = User.objects.get(username=creator)
         creator_obj = CreatorProfile.objects.get(user=creator_user.id)
@@ -341,6 +342,7 @@ def creator_home(request, creator):
                        'patrons':len(patrons),
                        })
     else:
+        print('creators')
         creator_user = User.objects.get(username=creator)
         creator_obj = CreatorProfile.objects.get(user=creator_user.id)
         tiers = Tier.objects.filter(creator=creator_obj).values()

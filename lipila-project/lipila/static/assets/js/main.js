@@ -7,15 +7,6 @@
 */
 
 
-$(document).ready(function() {
-  $(".unsubscribe-btn").click(function() {
-    var tierId = $(this).data("tierId");
-    // Call your unsubscribe function here (consider AJAX or form submission)
-    unsubscribe_patron(tierId); // Assuming you have this function defined
-  });
-});
-
-
 const closeButtons = document.querySelectorAll('.close-btn');
 
 closeButtons.forEach(closeButton => {

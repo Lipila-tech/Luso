@@ -6,9 +6,13 @@
 <div class="patrons-container">
     <h2>Subscriptions</h2>
     {% for sub in subscriptions %}
+    <p>{{sub.tier.creator}}</p>
     <p>{{sub.tier.name}}</p>
     <p>{{sub.tier.description}}</p>
     <P>{{sub.tier.price}}</P>
+    <h2 class="title">
+        <a href="{% url 'patron:creator_home' creator=sub.tier.creator %}">View</a>
+    </h2>
     {% endfor %}
 </div>
 

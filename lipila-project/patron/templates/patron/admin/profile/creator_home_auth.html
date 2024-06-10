@@ -20,10 +20,9 @@
                 class="idd">{{creator.creator_category}}</span>
             <div class="text mt-3"> <span>{{creator.bio}} </span> </div>
             <div class="tiers-container">
-                {% if user.is_authenticated %}
                 <section class="admin-other-body">
                     <div class="tiers-container">
-                        <h2>Subscriptions</h2>
+                        
                         <div class="tier">
                             <div>
                                 <div>
@@ -73,43 +72,6 @@
                     </div>
             </div>
             </section>
-            {% else %}
-            <section class="admin-other-body">
-                <div class="tiers-container">
-                    <h2>Subscriptions</h2>
-                    <div class="tier">
-                        <div>
-                            <div>
-                                <h3>Buy me a coffee</h3>
-                                <p>Make a one-time contribution to support my work.</p>
-                            </div>
-                            <div class="price">K50</div>
-                            <div class="join-status">
-                                <a href="{% url 'patron:contribute' creator=creator %}"
-                                    class="edit-button joined">Contribute</a>
-                            </div>
-                        </div>
-                        {% for tier in tiers %}
-                        {% if tier.visible_to_fans %}
-                        <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post">
-                            {% csrf_token %}
-                            <div class="tier">
-                                <div>
-                                    <h3>{{tier.name}}</h3>
-                                    <p>{{tier.description}}</p>
-                                </div>
-                                <div class="price">{{tier.price}}</div>
-                                {% endif %}
-                                <div class="edit-button-container">
-                                    <button class="edit-button">Join</button>
-                                </div>
-                            </div>
-                        </form>
-                        {% endfor %}
-                    </div>
-                </div>
-            </section>
-            {% endif %}
         </div>
     </div>
     <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i

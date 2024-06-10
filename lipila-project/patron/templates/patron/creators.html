@@ -6,29 +6,7 @@
 {% block section %}
 
 <main id="main">
-    <!-- Hero Section - Home Page -->
-    <section id="hero" class="hero">
-        {% if lipila.hero_image %}
-
-        {% if lipila.hero_image.url %}
-        <img src="{{lipila.hero_image.url}}" alt="Profile" class="">
-        {% endif %}
-        {% else%}
-        <img src="{% static 'assets/img/fans.jpg' %}" alt="hero_image" data-aos="fade-in">
-        {% endif %}
-
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10">
-                    <h2 data-aos="fade-up" data-aos-delay="100">Lipila Patron allows you to suport your
-                        favorite creators finacially.
-                    </h2>
-                    <p data-aos="fade-up" data-aos-delay="200" id="slogan">Lipila Patron</p>
-                </div>
-
-            </div>
-            <div class="down-arrow"></div>
-    </section><!-- End Hero Section -->
+    
     <!-- Creator Page Title & Breadcrumbs -->
     <div data-aos="fade" class="page-title">
         <div class="heading">
