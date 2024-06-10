@@ -16,6 +16,7 @@ from patron.forms.forms import (
     DepositForm)
 from patron.models import Tier, TierSubscriptions, Payments
 from patron.helpers import get_creator_subscribers, get_creator_url, get_tier
+from django.views.decorators.http import require_POST
 
 
 def index(request):
@@ -186,19 +187,21 @@ def make_payment(request, tier_id):
         form = DepositForm(request.POST)
         if form.is_valid():
             patron = User.objects.get(username=request.user)
-            subscription = TierSubscriptions.objects.get(patron=patron, tier=tier)
+            subscription = TierSubscriptions.objects.get(
+                patron=patron, tier=tier)
             # Process deposit logic here (e.g., connect to payment gateway, store transaction details)
             amount = form.cleaned_data['amount']
             phone_number = form.cleaned_data['phone_number']
-            payment = Payments.objects.create(subscription=subscription, amount=amount)
+            payment = Payments.objects.create(
+                subscription=subscription, amount=amount)
             payment.save()
             messages.success(request, f"Paid ZMW {amount} successfully!")
             # Redirect to user dashboard after successful deposit
-            return redirect(reverse('dashboard', kwargs={'user':request.user}))
+            return redirect(reverse('dashboard', kwargs={'user': request.user}))
     else:
         form = DepositForm()
     tier = tier.name
-    return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier':tier})
+    return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
 
 
 @login_required
@@ -359,6 +362,32 @@ def join(request, tier_id):
         messages.success(
             request, f"Welcome! You Joined my {tier.name} patrons.")
     return redirect(reverse('patron:creator_home', kwargs={"creator": creator}))
+
+
+@require_POST
+@login_required
+def unsubscribe_patron(request, tier_id):
+    """
+    A view to unsubscribe a user from a tier.
+
+    Args:
+        request: The incoming HTTP request object.
+        tier_id: The ID of the Tier to unsubscribe from.
+
+    Returns:
+        A redirect response to the current page after unsubscribing (or None if not subscribed).
+    """
+    tier = get_tier(tier_id)
+    creator = tier.creator
+    try:
+        subscription = TierSubscriptions.objects.get(
+            patron=request.user, tier__pk=tier_id)
+        subscription.delete()
+        messages.success(
+            request, f"Successfully unsubscribed from {subscription.tier.name}")
+        return redirect(reverse('patron:creator_home', kwargs={"creator": creator}))
+    except TierSubscriptions.DoesNotExist:
+        pass  # User not subscribed, do nothing
 
 
 def list_creators(request):
