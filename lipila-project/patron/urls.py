@@ -7,7 +7,7 @@ from business.views import CreateProductView, EditProductView, DeleteProductView
 urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),
-     path('<str:user>/contribute', views.contribute, name='contribute'),
+     path('contribute/<str:creator>', views.contribute, name='contribute'),
 
      path('creators/list', views.list_creators, name='creators'),
      path('payments/pay/<int:tier_id>', views.make_payment, name='make_payment'),

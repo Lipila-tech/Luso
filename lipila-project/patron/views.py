@@ -13,7 +13,7 @@ from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm,
-    DepositForm)
+    DepositForm, ContributeForm)
 from patron.models import Tier, TierSubscriptions, Payments
 from patron.helpers import get_creator_subscribers, get_creator_url, get_tier
 from django.views.decorators.http import require_POST
@@ -21,11 +21,6 @@ from django.views.decorators.http import require_POST
 
 def index(request):
     return render(request, 'patron/index.html')
-
-
-def contribute(request, user):
-    return render(request, 'patron/admin/actions/contribute.html')
-
 
 @login_required
 def withdraw(request, user):
@@ -170,6 +165,12 @@ def staff_users(request, user):
     })
 
 
+def contribute(request, creator):
+    if request.method == 'POST':
+        form = ContributeForm(request.POST)
+    form = ContributeForm()
+    return render(request, 'lipila/actions/contribute.html', {'form':form, 'tier':'One-time contribution'})
+
 @login_required
 def make_payment(request, tier_id):
     """
@@ -198,8 +199,7 @@ def make_payment(request, tier_id):
             messages.success(request, f"Paid ZMW {amount} successfully!")
             # Redirect to user dashboard after successful deposit
             return redirect(reverse('dashboard', kwargs={'user': request.user}))
-    else:
-        form = DepositForm()
+    form = DepositForm()
     tier = tier.name
     return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
 
