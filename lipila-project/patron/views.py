@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.views import View
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 # custom modules
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
@@ -16,10 +17,13 @@ from patron.forms.forms import (
     DepositForm, ContributeForm)
 from patron.models import Tier, TierSubscriptions, Payments
 from patron.helpers import get_creator_subscribers, get_creator_url, get_tier
-from django.views.decorators.http import require_POST
+
 
 
 def index(request):
+    """
+    Renders the Lipila Patron home page.
+    """
     return render(request, 'patron/index.html')
 
 @login_required
@@ -258,6 +262,9 @@ def dashboard(request, user):
 
 @login_required
 def patron(request):
+    """
+    Retrives a users patrons.
+    """
     context = {}
     creator = get_object_or_404(CreatorProfile, user=request.user)
     patrons = get_creator_subscribers(creator)
@@ -268,7 +275,7 @@ def patron(request):
 @login_required
 def view_tiers(request):
     """
-    renders a creators tiers.
+    Retrives a an authenticated Creator User's tiers.
     """
     creator = CreatorProfile.objects.get(user=request.user)
     tiers = Tier.objects.filter(creator=creator).values()
@@ -395,6 +402,9 @@ def unsubscribe_patron(request, tier_id):
 
 
 def list_creators(request):
+    """
+    Retrieves all the User's with a CreatorProfile.
+    """
     creators = CreatorProfile.objects.all()
     context = {}
     context['creators'] = creators
@@ -421,6 +431,9 @@ def history(request, user):
 
 @login_required
 def payments(request):
+    """
+    Retrieves an authenticated User's payment history.
+    """
     context = {}
     user = get_user_object(request.user)
     context['user'] = user
