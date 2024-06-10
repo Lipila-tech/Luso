@@ -335,7 +335,7 @@ def creator_home(request, creator):
         tiers = Tier.objects.filter(creator=creator_obj).values()
         patrons = get_creator_subscribers(creator_obj)
         return render(request,
-                      'patron/admin/profile/creator_home.html',
+                      'patron/admin/profile/creator_home_auth.html',
                       {'creator': creator_obj,
                        'tiers': tiers,
                        'patrons':len(patrons),
@@ -408,17 +408,19 @@ def list_creators(request):
     creators = CreatorProfile.objects.all()
     context = {}
     context['creators'] = creators
+    if request.user.is_authenticated:
+        return render(request, 'patron/admin/pages/creators.html', context)
     return render(request, 'patron/creators.html', context)
 
 
 @login_required
-def log_products(request, user):
-    context = {}
-    user_object = get_object_or_404(CreatorProfile, username=request.user)
-    products = Product.objects.filter(owner=user_object.id)
-    context['products'] = products
-    context['user'] = user_object
-    return render(request, 'patron/admin/log/products.html', context)
+def subscriptions(request):
+    """
+    Retrieves all tiers an authenticated User is subscribed to.
+    """
+    user_object = get_object_or_404(User, username=request.user)
+    subscriptions = TierSubscriptions.objects.filter(patron=user_object)
+    return render(request, 'patron/admin/pages/subscriptions.html', {'subscriptions':subscriptions})
 
 
 @login_required

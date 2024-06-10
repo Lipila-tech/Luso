@@ -1,0 +1,15 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %} Subscriptions {% endblock %}
+
+{% block section %}
+<div class="patrons-container">
+    <h2>Subscriptions</h2>
+    {% for sub in subscriptions %}
+    <p>{{sub.tier.name}}</p>
+    <p>{{sub.tier.description}}</p>
+    <P>{{sub.tier.price}}</P>
+    {% endfor %}
+</div>
+
+{% endblock %}

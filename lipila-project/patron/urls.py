@@ -18,6 +18,7 @@ urlpatterns = [
      path('unsubscribe/<int:tier_id>', views.unsubscribe_patron, name='unsubscribe'),
      path('patron/all/', views.patron, name='patrons'),
      path('payments/history/', views.payments, name='payments'),
+     path('subscriptions/', views.subscriptions, name='subscriptions'),
 ]
 
 
