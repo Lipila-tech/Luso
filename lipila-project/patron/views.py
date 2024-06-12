@@ -231,8 +231,9 @@ def dashboard(request, user):
     user_object = get_user_object(user)
     try:
         # patron summary
+        subscriptions = TierSubscriptions.objects.filter(patron=user_object)
         context['summary'] = {
-            'subscriptions': 30,
+            'subscriptions': len(subscriptions),
             'updated_at': datetime.today
         }
         patron = request.user.patronprofile
@@ -329,7 +330,6 @@ def creator_home(request, creator):
         A rendered response with the creator details.
     """
     if request.user.is_authenticated:
-        print('auth user')
         patron_user = User.objects.get(username=request.user)
         creator_user = User.objects.get(username=creator)
         creator_obj = CreatorProfile.objects.get(user=creator_user.id)
@@ -342,7 +342,6 @@ def creator_home(request, creator):
                        'patrons':len(patrons),
                        })
     else:
-        print('creators')
         creator_user = User.objects.get(username=creator)
         creator_obj = CreatorProfile.objects.get(user=creator_user.id)
         tiers = Tier.objects.filter(creator=creator_obj).values()
