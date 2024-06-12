@@ -169,6 +169,13 @@ class TestSubscription(TestCase):
         self.assertEqual(Contributions.objects.count(), 1)
         conts = Contributions.objects.filter(patron=user1)
 
+    def test_get_contribute(self):
+        self.client.force_login(self.user1)
+        url = reverse('patron:contribute', kwargs={'creator': self.creator1_obj})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('lipila/actions/contribute.html')
+
 
 class TestPatronViews(TestCase):
     def setUp(self):
