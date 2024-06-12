@@ -3,17 +3,24 @@
 {% block title %} Subscriptions {% endblock %}
 
 {% block section %}
+{% if subscriptions %}
+<h2>My Subscriptions</h2>
 <div class="patrons-container">
-    <h2>Subscriptions</h2>
     {% for sub in subscriptions %}
-    <p>{{sub.tier.creator}}</p>
-    <p>{{sub.tier.name}}</p>
-    <p>{{sub.tier.description}}</p>
-    <P>{{sub.tier.price}}</P>
-    <h2 class="title">
+    <p>Creator: {{sub.tier.creator}}</p>
+    <p>Patron name: {{sub.tier.name}}</p>
+    <P>Price: {{sub.tier.price}}</P>
+    <p class="">
         <a href="{% url 'patron:creator_home' creator=sub.tier.creator %}">View</a>
-    </h2>
+    </p>
     {% endfor %}
 </div>
+{% else %}
+<h3>You have no subscriptions.</h3>
+<div class="patrons-container">
+    <a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a>
+</div>
+
+{% endif %}
 
 {% endblock %}
