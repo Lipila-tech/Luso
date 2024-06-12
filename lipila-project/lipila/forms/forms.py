@@ -1,5 +1,6 @@
 from django import forms
 from lipila.models import CustomerMessage
+from patron.models import Contributions
 from django.contrib.auth.forms import UserChangeForm
 from accounts.models import PatronProfile, CreatorProfile
 from django.contrib.auth.models import User
@@ -28,6 +29,7 @@ class DepositForm(forms.Form):
     phone_number = forms.CharField(max_length=20)
 
 
-class ContributeForm(forms.Form):
-    amount = forms.DecimalField(min_value=50, validators=[MinValueValidator(5, message='Minimum deposit amount is ZMW 50')])
-    phone_number = forms.CharField(max_length=20)
+class ContributeForm(forms.ModelForm):
+    class Meta:
+        model = Contributions
+        fields = ('amount', 'phone_number', 'message')

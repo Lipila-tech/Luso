@@ -19,12 +19,12 @@ from patron.models import Tier, TierSubscriptions, Payments, Contributions
 from patron.helpers import get_creator_subscribers, get_creator_url, get_tier
 
 
-
 def index(request):
     """
     Renders the Lipila Patron home page.
     """
     return render(request, 'patron/index.html')
+
 
 @login_required
 def withdraw(request, user):
@@ -168,6 +168,7 @@ def staff_users(request, user):
         'updated_at': datetime.today
     })
 
+
 @login_required
 def dashboard(request, user):
     """
@@ -299,7 +300,7 @@ def creator_home(request, creator):
                       'patron/admin/profile/creator_home_auth.html',
                       {'creator': creator_obj,
                        'tiers': tiers,
-                       'patrons':len(patrons),
+                       'patrons': len(patrons),
                        })
     else:
         creator_user = User.objects.get(username=creator)
@@ -310,7 +311,7 @@ def creator_home(request, creator):
                       'patron/admin/profile/creator_home.html',
                       {'creator': creator_obj,
                        'tiers': tiers,
-                       'patrons':len(patrons),
+                       'patrons': len(patrons),
                        })
 
 
@@ -381,7 +382,7 @@ def subscriptions(request):
     """
     user_object = get_object_or_404(User, username=request.user)
     subscriptions = TierSubscriptions.objects.filter(patron=user_object)
-    return render(request, 'patron/admin/pages/subscriptions.html', {'subscriptions':subscriptions})
+    return render(request, 'patron/admin/pages/subscriptions.html', {'subscriptions': subscriptions})
 
 
 @login_required
@@ -392,6 +393,8 @@ def history(request, user):
     return render(request, 'patron/admin/pages/history.html', context)
 
 # Payment handling views
+
+
 @login_required
 def make_payment(request, tier_id):
     """
@@ -418,29 +421,36 @@ def make_payment(request, tier_id):
                 subscription=subscription, amount=amount)
             payment.save()
             messages.success(request, f"Paid ZMW {amount} successfully!")
-            
+
             return redirect(reverse('dashboard', kwargs={'user': request.user}))
+        messages.error(request, f"Faild to send data")
+        form = DepositForm()
+        tier = tier.name
+        return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
     form = DepositForm()
     tier = tier.name
     return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
 
 
+@login_required
 def contribute(request, creator):
     if request.method == 'POST':
         form = ContributeForm(request.POST)
         if form.is_valid():
             patron = User.objects.get(username=request.user)
-            creator = User.objects.get(username=creator)
-            # Process deposit logic here (e.g., connect to payment gateway, store transaction details)
-            amount = form.cleaned_data['amount']
-            phone_number = form.cleaned_data['phone_number']
-            contribution = Contributions.objects.create(
-                patron=patron, cretaor=creator, amount=amount)
+            creator = User.objects.get(username=creator)            
+            contribution = form.save(commit=False)
+            contribution.creator = creator
+            contribution.patron = patron
             contribution.save()
-            messages.success(request, f"Payment of K{amount} successfull!")
+            messages.success(request, f"Payment of K{contribution.amount} successfull!")
             return redirect(reverse('dashboard', kwargs={'user': request.user}))
+        
+        messages.error(request, f"Faild to send data")
+        form = ContributeForm()
+        return render(request, 'lipila/actions/contribute.html', {'form': form, 'tier': 'One-time contribution'})
     form = ContributeForm()
-    return render(request, 'lipila/actions/contribute.html', {'form':form, 'tier':'One-time contribution'})
+    return render(request, 'lipila/actions/contribute.html', {'form': form, 'tier': 'One-time contribution'})
 
 
 @login_required
@@ -452,12 +462,9 @@ def payments_history(request):
     user = get_user_object(request.user)
     context['user'] = user
     tiers = TierSubscriptions.objects.filter(patron=user)
-    print(tiers)
-    for tier in tiers:
-        print(tier.payments)
-    payments = Payments.objects.filter(subscription=tier)
-    print(payments)
-    context['payments'] = payments
+
+    # payments = Payments.objects.filter(subscription=tier)
+
+    # context['payments'] = payments
 
     return render(request, 'patron/admin/pages/payments.html', context)
-
