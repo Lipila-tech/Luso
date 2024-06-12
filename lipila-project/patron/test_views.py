@@ -42,7 +42,7 @@ class TestPatronViewsMore(TestCase):
         self.assertEqual(tier.name, data['name'])
         self.assertEqual(tier.price, data['price'])
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[2]), 'Tier Edited Successfully.')
+        self.assertEqual(str(messages[0]), 'Tier Edited Successfully.')
                 
 class TestSubscription(TestCase):
     def setUp(self):
@@ -257,7 +257,7 @@ class TestPatronViews(TestCase):
         self.assertEqual(tiers[1]['price'], 25)
         self.assertEqual(tiers[2]['price'], 50)
         desc = {
-            "one": "Make a one-time payment to support the creator's work.",
+            "one": "Make a one-time Contribution to support the creator's work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }
@@ -295,7 +295,7 @@ class TestPatronViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
         desc = {
-            "one": "Make a one-time payment to support the creator's work.",
+            "one": "Make a one-time Contribution to support the creator's work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }
@@ -341,7 +341,7 @@ class TestCreateDefaultTiers(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
         desc = {
-            "one": "Make a one-time payment to support the creator's work.",
+            "one": "Make a one-time Contribution to support the creator's work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }
