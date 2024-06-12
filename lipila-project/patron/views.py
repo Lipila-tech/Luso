@@ -13,9 +13,9 @@ from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import (
-    CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm,
-    DepositForm, ContributeForm)
-from patron.models import Tier, TierSubscriptions, Payments
+    CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm,)
+from lipila.forms.forms import DepositForm, ContributeForm
+from patron.models import Tier, TierSubscriptions, Payments, Contributions
 from patron.helpers import get_creator_subscribers, get_creator_url, get_tier
 
 
@@ -167,46 +167,6 @@ def staff_users(request, user):
         'total_payments': total_payments,
         'updated_at': datetime.today
     })
-
-
-def contribute(request, creator):
-    if request.method == 'POST':
-        form = ContributeForm(request.POST)
-    form = ContributeForm()
-    return render(request, 'lipila/actions/contribute.html', {'form':form, 'tier':'One-time contribution'})
-
-@login_required
-def make_payment(request, tier_id):
-    """
-    Makes a payment to the appropriate patrons based on (tier_sub).
-
-    Args:
-        request: The incoming HTTP request object.
-        tier: The tier to make a payment for.
-
-    Returns:
-        A redirected response to the dashboard.
-    """
-    tier = get_tier(tier_id)
-    if request.method == 'POST':
-        form = DepositForm(request.POST)
-        if form.is_valid():
-            patron = User.objects.get(username=request.user)
-            subscription = TierSubscriptions.objects.get(
-                patron=patron, tier=tier)
-            # Process deposit logic here (e.g., connect to payment gateway, store transaction details)
-            amount = form.cleaned_data['amount']
-            phone_number = form.cleaned_data['phone_number']
-            payment = Payments.objects.create(
-                subscription=subscription, amount=amount)
-            payment.save()
-            messages.success(request, f"Paid ZMW {amount} successfully!")
-            # Redirect to user dashboard after successful deposit
-            return redirect(reverse('dashboard', kwargs={'user': request.user}))
-    form = DepositForm()
-    tier = tier.name
-    return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
-
 
 @login_required
 def dashboard(request, user):
@@ -431,9 +391,60 @@ def history(request, user):
     context['user'] = user_object
     return render(request, 'patron/admin/pages/history.html', context)
 
+# Payment handling views
+@login_required
+def make_payment(request, tier_id):
+    """
+    Makes a payment to the appropriate patrons based on (tier_sub).
+
+    Args:
+        request: The incoming HTTP request object.
+        tier: The tier to make a payment for.
+
+    Returns:
+        A redirected response to the dashboard.
+    """
+    tier = get_tier(tier_id)
+    if request.method == 'POST':
+        form = DepositForm(request.POST)
+        if form.is_valid():
+            patron = User.objects.get(username=request.user)
+            subscription = TierSubscriptions.objects.get(
+                patron=patron, tier=tier)
+            # Process deposit logic here (e.g., connect to payment gateway, store transaction details)
+            amount = form.cleaned_data['amount']
+            phone_number = form.cleaned_data['phone_number']
+            payment = Payments.objects.create(
+                subscription=subscription, amount=amount)
+            payment.save()
+            messages.success(request, f"Paid ZMW {amount} successfully!")
+            
+            return redirect(reverse('dashboard', kwargs={'user': request.user}))
+    form = DepositForm()
+    tier = tier.name
+    return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
+
+
+def contribute(request, creator):
+    if request.method == 'POST':
+        form = ContributeForm(request.POST)
+        if form.is_valid():
+            patron = User.objects.get(username=request.user)
+            creator = User.objects.get(username=creator)
+            # Process deposit logic here (e.g., connect to payment gateway, store transaction details)
+            amount = form.cleaned_data['amount']
+            phone_number = form.cleaned_data['phone_number']
+            contribution = Contributions.objects.create(
+                patron=patron, cretaor=creator, amount=amount)
+            contribution.save()
+            messages.success(request, f"Payment of K{amount} successfull!")
+            return redirect(reverse('dashboard', kwargs={'user': request.user}))
+    form = ContributeForm()
+    return render(request, 'lipila/actions/contribute.html', {'form':form, 'tier':'One-time contribution'})
+
 
 @login_required
-def payments(request):
+def payments_history(request):
     """
     Retrieves an authenticated User's payment history.
     """
@@ -449,3 +460,4 @@ def payments(request):
     context['payments'] = payments
 
     return render(request, 'patron/admin/pages/payments.html', context)
+

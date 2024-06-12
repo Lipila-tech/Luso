@@ -17,7 +17,7 @@ urlpatterns = [
      path('join/<int:tier_id>', views.join, name='join_tier'),
      path('unsubscribe/<int:tier_id>', views.unsubscribe_patron, name='unsubscribe'),
      path('patron/all/', views.patron, name='patrons'),
-     path('payments/history/', views.payments, name='payments'),
+     path('payments/history/', views.payments_history, name='payments'),
      path('subscriptions/', views.subscriptions, name='subscriptions'),
 ]
 
