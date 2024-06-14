@@ -11,7 +11,7 @@
     <p>Patron name: {{sub.tier.name}}</p>
     <P>Price: {{sub.tier.price}}</P>
     <p class="">
-        <a href="{% url 'patron:creator_home' creator=sub.tier.creator %}">View</a>
+        <a href="{% url 'patron:subscription_detail' tier_id=sub.tier.id %}">View</a>
     </p>
     {% endfor %}
 </div>

@@ -1,0 +1,16 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %} Subscription detail {% endblock %}
+
+{% block section %}
+<h2>Subscription Details</h2>
+<div class="patrons-container">
+    <p>Creator: {{subscription.tier.creator}}</p>
+    <p>Patron name: {{subscription.tier.name}}</p>
+    <P>Price: {{subscription.tier.price}}</P>
+    <p class="">
+        <a href="{% url 'patron:make_payment' tier_id=subscription.tier.id %}"
+                                            class="edit-button joined">Click to pay</a>
+    </p>
+</div>
+{% endblock %}

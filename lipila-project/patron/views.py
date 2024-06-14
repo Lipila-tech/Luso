@@ -386,6 +386,15 @@ def subscriptions(request):
 
 
 @login_required
+def subscription_detail(request, tier_id):
+    """
+    Renders a detailed view of a tier
+    """
+    user_object = get_object_or_404(User, username=request.user)
+    subscription = TierSubscriptions.objects.get(pk=tier_id)
+    return render(request, 'patron/admin/pages/subscription_detail.html', {'subscription': subscription})
+
+@login_required
 def history(request, user):
     context = {}
     user_object = get_user_object(request.user)
@@ -428,7 +437,7 @@ def make_payment(request, tier_id):
         tier = tier.name
         return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
     form = DepositForm()
-    tier = tier.name
+    tier = tier
     return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
 
 

@@ -57,6 +57,7 @@
                                         <button class="edit-button">Unsubscribe</button>
                                     </form>
                                     {% else %}
+                                    
                                     <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post"
                                         class="tier-form">
                                         {% csrf_token %}
@@ -64,7 +65,6 @@
                                     </form>
                                     {% endif %}
                                 </div>
-
                             </div>
                         </div>
                         {% endif %}
