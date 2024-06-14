@@ -448,9 +448,9 @@ def contribute(request, creator):
         
         messages.error(request, f"Faild to send data")
         form = ContributeForm()
-        return render(request, 'lipila/actions/contribute.html', {'form': form, 'tier': 'One-time contribution'})
+        return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
     form = ContributeForm()
-    return render(request, 'lipila/actions/contribute.html', {'form': form, 'tier': 'One-time contribution'})
+    return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
 
 
 @login_required
