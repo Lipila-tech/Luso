@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>File Upload and Display</title>
+    </head>
+    <body>
+		<div style="width: 500px; margin: auto;">
+			<fieldset name="Video File Upload and Display">
+				{% if msg %} {% autoescape off %} {{ msg }} {% endautoescape %} {% endif %}
+				<form method="post" action="{% url 'file_manager:video_upload' %}" enctype="multipart/form-data">
+					{% csrf_token %}
+					<dl>
+						<p>
+							<label>Browse and select a video file</label>&nbsp;&nbsp;
+							<input type="file" name="file" autocomplete="off" required>
+						</p>
+					</dl>
+					<p>
+						<input type="submit" value="Upload and Display">
+					</p>
+				</form>
+			</fieldset>
+			
+			{% if filename %}
+				<div style="margin: 10px auto;">
+					<audio autoplay="autoplay" controls="controls" preload="preload">
+						<source src="{{ uploaded_file_url }}" type="video/mp4"></source>
+                    </audio>
+                    <p>{{filename}}</p>
+				</div>
+			{% endif %}
+		</div>	
+    </body>
+</html>
