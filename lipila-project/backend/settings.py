@@ -108,6 +108,7 @@ if env('DB_BACKEND') == 'postgres':
             'PASSWORD': env('PSQL_PASSWORD'),
             'HOST': env('PSQL_HOST'),
             'PORT': env('PSQL_PORT'),
+            'TEST': {'NAME': 'testdatabse'},
         }
     }
 elif env('DB_BACKEND') == 'mysql':
@@ -188,14 +189,14 @@ STATIC_URL = "static/"
 LOGIN_REDIRECT_URL = "profile"
 LOGOUT_REDIRECT_URL = "login"
 
-if env ('ENV') == 'dev':
+if env('ENV') == 'dev':
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
     EMAIL_BACKEND = env('EMAIL_BACKEND')
     EMAIL_HOST = env('EMAIL_HOST')
     EMAIL_PORT = env('EMAIL_PORT')
     EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = env('EMAIL_ID') 
+    EMAIL_HOST_USER = env('EMAIL_ID')
     EMAIL_HOST_PASSWORD = env('EMAIL_PW')
 
     DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
