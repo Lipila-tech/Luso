@@ -1,3 +1,5 @@
+ <link rel="shortcut icon" type="image/x-icon" href="./logo-color.png">
+ 
 # Lipila Patron
 LP is a Zambian-born monetization platform designed by Lipila Technologies Limited to empower creators. It allows them to effortlessly build a thriving community of patrons who provide recurring financial support.
 <img src='./logo-color.png' alt='logo'/>
