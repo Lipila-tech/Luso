@@ -1,6 +1,6 @@
 # Lipila Patron
 LP is a Zambian-born monetization platform designed by Lipila Technologies Limited to empower creators. It allows them to effortlessly build a thriving community of patrons who provide recurring financial support.
-<img src='./logo-color.png' alt='logo'></img>
+<img src='./logo-color.png' alt='logo'/>
 
 ## Features for Creators:
 - **Effortless Subscription Management**: Create tiered subscription plans with exclusive content, early access perks, and community benefits.
