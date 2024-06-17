@@ -4,11 +4,22 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from .models import UploadedFile
 
+
+def play_video_file(request, filename):
+    fs = FileSystemStorage()
+    file_url = fs.url(filename)
+    return render(request, 'file_manager/play_video.html', {'file_url':file_url, 'filename': filename})
+
+def play_audio_file(request, filename):
+    fs = FileSystemStorage()
+    file_url = fs.url(filename)
+    return render(request, 'file_manager/play_audio.html', {'file_url':file_url, 'filename': filename})
+
+
 def list_video_uploads(request):
     all_uploads = UploadedFile.objects.filter(content_type='video/mp4')  # Assuming UploadedFile model exists
     context = {'uploads': all_uploads}
     return render(request, 'file_manager/list_video_uploads.html', context)
-
 
 def list_audio_uploads(request):
     all_uploads = UploadedFile.objects.filter(content_type='audio/mpeg')  # Assuming UploadedFile model exists

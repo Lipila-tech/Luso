@@ -21,7 +21,7 @@
                 <td>{{ upload.filename }}</td>
                 <td>{{ upload.upload_date }}</td>
                 <td>{{ upload.content_type }}</td>
-                <td><a href=""> Open</a></td>
+                <td><a href="{% url 'file_manager:play_video' filename=upload.filename %}"> Open</a></td>
             </tr>
             {% endfor %}
         </tbody>
