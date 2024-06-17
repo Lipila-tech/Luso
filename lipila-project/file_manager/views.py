@@ -4,6 +4,10 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 
+def you_tube_player(request):
+    return render(request, 'file_manager/you_tube_player.html')
+
+
 def video_upload(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
