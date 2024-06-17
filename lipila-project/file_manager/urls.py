@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('', views.video_upload, name='video_upload'),
+    path('video/', views.video_upload, name='video_upload'),
+    path('audio/', views.audio_upload, name='audio_upload'),
 ]
 
 if settings.DEBUG:

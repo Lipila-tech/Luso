@@ -16,3 +16,16 @@ def video_upload(request):
     else:
         form = UploadFileForm()
     return render(request, 'file_manager/video_upload.html', {'form': form})
+
+def audio_upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES['file']
+            fs = FileSystemStorage()
+            filename = fs.save(file.name, file)
+            uploaded_file_url = fs.url(filename)
+            return render(request, "file_manager/audio_upload.html", {'filename': filename, 'uploaded_file_url': uploaded_file_url})
+    else:
+        form = UploadFileForm()
+    return render(request, 'file_manager/audio_upload.html', {'form': form})

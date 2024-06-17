@@ -7,16 +7,16 @@
 		<div style="width: 500px; margin: auto;">
 			<fieldset name="Video File Upload and Display">
 				{% if msg %} {% autoescape off %} {{ msg }} {% endautoescape %} {% endif %}
-				<form method="post" action="{% url 'file_manager:video_upload' %}" enctype="multipart/form-data">
+				<form method="post" action="{% url 'file_manager:audio_upload' %}" enctype="multipart/form-data">
 					{% csrf_token %}
 					<dl>
 						<p>
-							<label>Browse and select a video file</label>&nbsp;&nbsp;
+							<label>Browse and select an audio file</label>&nbsp;&nbsp;
 							<input type="file" name="file" autocomplete="off" required>
 						</p>
 					</dl>
 					<p>
-						<input type="submit" value="Upload and Display">
+						<input type="submit" value="Upload and Listen">
 					</p>
 				</form>
 			</fieldset>
@@ -24,7 +24,9 @@
 			{% if filename %}
 				<div style="margin: 10px auto;">
 					<audio autoplay="autoplay" controls="controls" preload="preload">
-						<source src="{{ uploaded_file_url }}" type="video/mp4"></source>
+						<source src="{{ uploaded_file_url }}" type="audio/ogg"></source>
+						<source src="{{ uploaded_file_url }}" type="audio/mpeg"></source>
+                        Your browser does not support the file format.
                     </audio>
                     <p>{{filename}}</p>
 				</div>
