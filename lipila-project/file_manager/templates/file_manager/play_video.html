@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Playing video</title>
+    </head>
+    <body>
+		<div style="width: 500px; margin: auto;">			
+			{% if filename %}
+				<div style="margin: 10px auto;">
+					<video autoplay="autoplay" controls="controls" preload="preload">
+						<source src="{{ file_url }}" type="video/mp4"></source>
+					</video>
+                    <p>{{filename}}</p>
+				</div>
+			{% endif %}
+		</div>	
+    </body>
+</html>
