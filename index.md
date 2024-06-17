@@ -1,12 +1,19 @@
-## Lipila Technologies Limited
-LTL is a Zambian tech company passionate about helping businesses thrive through technology. We offer custom software development solutions to fit your specific needs.
+# Lipila Patron
+LP is a Zambian-born monetization platform designed by Lipila Technologies Limited to empower creators. It allows them to effortlessly build a thriving community of patrons who provide recurring financial support.
 
-### Our Services:
-**Web Development:** We build user-friendly and powerful websites and web applications to help you reach your audience and achieve your goals online. This includes:
-- Custom websites
-- Intranets
-- Information management systems (e.g., portals)
-- E-commerce platforms
-- And more!
-**Desktop Development:** We create custom desktop software solutions to streamline your internal processes and boost your team's efficiency.
-**Mobile Development:** We develop user-friendly and engaging mobile apps to help you connect with your customers on the go.
+## Features for Creators:
+- **Effortless Subscription Management**: Create tiered subscription plans with exclusive content, early access perks, and community benefits.
+Seamless Payments: Receive secure and timely payouts directly through your preferred payment method.
+- **Engaged Community**: Foster deeper connections with your patrons through interactive features and direct messaging.
+- **Detailed Analytics**: Gain valuable insights into your audience and track your subscription growth.
+- **Flexible Content Sharing**: Share a variety of content formats like videos, podcasts, articles, and more, directly on Lipila Patron.
+- **Monetization Tools**: One-time tips and merchandise sales (details coming soon!).
+
+## Benefits for Patrons:
+- **Direct Support**: Directly contribute to the creators you love and fuel their creative endeavors.
+- **Exclusive Content**: Enjoy exclusive content, early access perks, and a deeper connection with your favorite creators.
+- **Community Building**: Connect with other patrons who share your interests and form a vibrant community.
+
+## Coming Soon:
+- **More Monetization Options**: Explore new ways to support creators, such as merchandise sales.
+- **Enhanced Community Features**: Unlock features that foster deeper engagement between creators and patrons.
