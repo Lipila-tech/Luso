@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'patron',
     'lipila',
     'accounts',
+    'file_manager',
 
     # Default apps
     'django.contrib.admin',
