@@ -1,1 +1,1 @@
-# Lipila Technologies Limited Info Site
+# Lipila Technologies Limited
