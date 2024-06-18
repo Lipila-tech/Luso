@@ -4,8 +4,20 @@ from business.models import Product, BNPL, Student
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
-from patron.models import Tier, Payments
+from patron.models import Tier, Payments, Withdrawal, WithdrawalRequest, Contributions
 from accounts.models import PatronProfile, CreatorProfile
+
+
+class WithdrawalAdmin(admin.ModelAdmin):
+    list_display = ('creator', 'amount', 'account_number', 'withdrawal_date')
+
+
+class WithdrawalRequestAdmin(admin.ModelAdmin):
+    list_display = ('creator', 'amount', 'account_number', 'request_date', 'status', 'processed_date')
+
+
+class ContributionsAdmin(admin.ModelAdmin):
+    list_display = ('creator', 'patron', 'amount', 'status', 'message', 'phone_number', 'timestamp')
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -18,7 +30,7 @@ class TierAdmin(admin.ModelAdmin):
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('subscription', 'amount', 'timestamp')
+    list_display = ('subscription', 'amount', 'status', 'timestamp')
 
 
 class DisbursementAdmin(admin.ModelAdmin):
@@ -88,6 +100,9 @@ class CreatorProfileAdmin(admin.ModelAdmin):
 
 admin.site.register(Tier, TierAdmin)
 admin.site.register(Payments, PaymentAdmin)
+admin.site.register(Contributions, ContributionsAdmin)
+admin.site.register(Withdrawal, WithdrawalAdmin)
+admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(LipilaCollection, LipilaCOllectionAdmin)
 admin.site.register(Product, ProductAdmin)

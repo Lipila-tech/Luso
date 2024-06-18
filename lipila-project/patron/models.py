@@ -81,6 +81,7 @@ class Payments(models.Model):
     subscription = models.ForeignKey(TierSubscriptions, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     def __str__(self):
         return f"{self.subscription}"
@@ -93,6 +94,7 @@ class Contributions(models.Model):
     message = models.TextField()
     phone_number = models.CharField(max_length=10)
     timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     def __str__(self):
         return f"{self.amount}"
