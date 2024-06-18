@@ -18,7 +18,7 @@ from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions
 from patron.helpers import (get_creator_subscribers,
                             get_creator_url, get_tier, calculate_total_payments,
-                            calculate_total_contributions)
+                            calculate_total_contributions, calculate_total_withdrawals)
 
 
 def index(request):
@@ -211,12 +211,12 @@ def dashboard(request, user):
         patrons = get_creator_subscribers(creator)
         total_payments = calculate_total_payments(creator)
         total_contributions = calculate_total_contributions(User.objects.get(username=creator))
-        withdraws = 0
-        balance = total_payments - withdraws
+        withdrawals = calculate_total_withdrawals(creator)
+        balance = total_payments - withdrawals
         context['summary'] = {
             'balance': balance,
             'total_payments': total_payments + total_contributions,
-            'withdraws': 45000,
+            'withdrawals': withdrawals,
             'patrons': len(get_creator_subscribers(creator)),
             'tiers': len(Tier.objects.filter(creator=creator)),
             'updated_at': datetime.today,
