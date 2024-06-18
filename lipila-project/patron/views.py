@@ -49,7 +49,7 @@ def creator_withdrawal(request):
         form = WithdrawalRequestForm()
     total_payments = calculate_total_payments(request.user.creatorprofile)
     pending_requests = WithdrawalRequest.objects.filter(
-        creator=request.user.creatorprofile, status='PENDING')
+        creator=request.user.creatorprofile, status='pending')
     total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
 
     context = {'form': form, 'pending_requests': pending_requests,

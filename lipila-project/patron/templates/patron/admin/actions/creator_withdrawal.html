@@ -14,6 +14,31 @@
             <input class="btn btn-dark" type="submit">
         </form>
         {% endif %}
+        {% if pending_requests %}
+        <h4>Pending Requests</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Request Date</th>
+                    <th>Transaction ID</th>
+                    <th>Account</th>
+                    <th>Payment Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in pending_requests %}
+                <tr>
+                    <td>{{ request.amount }}</td>
+                    <td>{{ request.request_date }}</td>
+                    <td>{{ request.transaction_id|safe }}</td>
+                    <td>{{ request.account_number }}</td>
+                    <td>{{ request.payment_method }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
         {% if approved_payouts %}
         <h2>Approved Payouts</h2>
         <table>

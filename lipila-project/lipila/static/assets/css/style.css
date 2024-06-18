@@ -1159,47 +1159,28 @@ h6 {
   margin-left: 95px;
 }
 
-/* Recent Sales */
-.dashboard .recent-sales {
-  font-size: 14px;
+/* Table */
+.table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-.dashboard .recent-sales .table thead {
-  background: #f6f6fe;
+.table td, .table th {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
-.dashboard .recent-sales .table thead th {
-  border: 0;
-}
+.table tr:nth-child(even){background-color: #f2f2f2;}
 
-.dashboard .recent-sales .dataTable-top {
-  padding: 0 0 10px 0;
-}
+.table tr:hover {background-color: #ddd;}
 
-.dashboard .recent-sales .dataTable-bottom {
-  padding: 10px 0 0 0;
-}
-
-/* Top Selling */
-.dashboard .top-selling {
-  font-size: 14px;
-}
-
-.dashboard .top-selling .table thead {
-  background: #f6f6fe;
-}
-
-.dashboard .top-selling .table thead th {
-  border: 0;
-}
-
-.dashboard .top-selling .table tbody td {
-  vertical-align: middle;
-}
-
-.dashboard .top-selling img {
-  border-radius: 5px;
-  max-width: 60px;
+thead{
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
 }
 
 /*--------------------------------------------------------------
