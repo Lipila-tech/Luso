@@ -38,6 +38,7 @@ def creator_withdrawal(request):
             withdrawal_request = form.save(commit=False)
             # Assuming user is authenticated creator
             withdrawal_request.creator = request.user.creatorprofile
+            withdrawal_request.status = 'pending'
             withdrawal_request.save()
             messages.success(
                 request,
