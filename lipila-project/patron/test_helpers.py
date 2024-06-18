@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from patron.models import Tier, TierSubscriptions, Payments, Contributions
+from patron.models import Tier, TierSubscriptions, Payments, Contributions, Withdrawal
 from django.urls import reverse
 
 # custom modules
@@ -105,7 +105,6 @@ class TestHelperFunctions(TestCase):
         self.assertEqual(total_amounts1, 400)
         self.assertEqual(total_amounts2, 0)
         
-
     def test_calculate_total_contributions(self):
         """
         Test if the function calculates and returns the expected values.
@@ -115,5 +114,15 @@ class TestHelperFunctions(TestCase):
         contri3  = Contributions.objects.create(creator=self.creator_user2, patron=self.user1, amount=100)
         self.assertEqual(helpers.calculate_total_contributions(self.creator_user1), 200)
         self.assertEqual(helpers.calculate_total_contributions(self.creator_user2), 100)
+
+    def test_calculate_total_withdrawals(self):
+        """
+        Test if the function calculates and returns the expected values.
+        """
+        Withdrawal.objects.create(creator=self.creator1_obj, amount=100)
+        Withdrawal.objects.create(creator=self.creator1_obj, amount=100)
+        Withdrawal.objects.create(creator=self.creator2_obj, amount=100)
+        self.assertEqual(helpers.calculate_total_withdrawals(self.creator1_obj), 200)
+        self.assertEqual(helpers.calculate_total_withdrawals(self.creator2_obj), 100)
 
 

@@ -96,3 +96,23 @@ class Contributions(models.Model):
 
     def __str__(self):
         return f"{self.amount}"
+    
+
+class Withdrawal(models.Model):
+    creator = models.ForeignKey(CreatorProfile, on_delete=models.CASCADE, related_name='withdrawals')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    withdrawal_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Withdrawal - {self.creator.user.username} - Amount: {self.amount}"
+
+
+class WithdrawalRequest(models.Model):
+    creator = models.ForeignKey(CreatorProfile, on_delete=models.CASCADE, related_name='withdrawal_requests')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    request_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    processed_date = models.DateTimeField(blank=True, null=True)  # Optional for tracking processing time
+
+    def __str__(self):
+        return f"Withdrawal Request - {self.creator.user.username} - Amount: {self.amount}"
