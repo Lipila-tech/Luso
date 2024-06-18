@@ -101,6 +101,7 @@ class Contributions(models.Model):
 class Withdrawal(models.Model):
     creator = models.ForeignKey(CreatorProfile, on_delete=models.CASCADE, related_name='withdrawals')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    account_number = models.CharField(max_length=30)
     withdrawal_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -110,6 +111,7 @@ class Withdrawal(models.Model):
 class WithdrawalRequest(models.Model):
     creator = models.ForeignKey(CreatorProfile, on_delete=models.CASCADE, related_name='withdrawal_requests')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    account_number = models.CharField(max_length=30)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     processed_date = models.DateTimeField(blank=True, null=True)  # Optional for tracking processing time

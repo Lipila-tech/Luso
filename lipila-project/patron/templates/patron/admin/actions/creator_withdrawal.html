@@ -1,0 +1,41 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %} Withdraw Funds {% endblock %}
+
+{% block section %}
+<div class="withdraw-form">
+    <h3>Balance: {{total_payments}}</h3>
+    {% if total_payments < 1 %} <h2>You have low balance.</h2>
+        {% else %}
+        <h2>Request a Withdrawal</h2>
+        <form method="post" action="{% url 'patron:withdraw' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn btn-dark" type="submit">
+        </form>
+        {% endif %}
+        {% if approved_payouts %}
+        <h2>Approved Payouts</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Payment Date</th>
+                    <th>Transaction ID (optional)</th>
+                    <th>Payment Method (optional)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payout in approved_payouts %}
+                <tr>
+                    <td>{{ payout.amount }}</td>
+                    <td>{{ payout.payment_date }}</td>
+                    <td>{{ payout.transaction_id|safe }}</td> # Escape for security
+                    <td>{{ payout.payment_method }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+</div>
+{% endblock %}

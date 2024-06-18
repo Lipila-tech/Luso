@@ -20,6 +20,7 @@ urlpatterns = [
      path('payments/history/', views.payments_history, name='payments'),
      path('subscriptions/', views.subscriptions, name='subscriptions'),
      path('subscription/<int:tier_id>', views.subscription_detail, name='subscription_detail'),
+     path('withdraw/', views.creator_withdrawal, name='withdraw'),
 ]
 
 

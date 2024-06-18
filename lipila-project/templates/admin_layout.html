@@ -47,16 +47,9 @@
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
 
-
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
                 <li class="nav-item dropdown">
-
-                    <!-- <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-bell"></i>
-                        <span class="badge bg-primary badge-number">{{count|notification_counter:3}}</span>
-                    </a>End Notification Icon -->
-
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                         <li class="dropdown-header">
                             You have {{count|notification_counter:3}} new notifications
@@ -171,7 +164,7 @@
                 </a>
             </li><!-- End Dashboard Nav -->
 
-            {% if user.patronprofile %}
+            {% if not user.creatorprofile %}
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
@@ -202,15 +195,14 @@
                 </li>
             </ul>
         </li>
-        {% elif user.creatorprofile %}
-
+        {% else %}
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{% url 'withdraw' user=user %}">
+                    <a href="{% url 'patron:withdraw' %}">
                         <i class="bi bi-circle"></i><span>Withdraw</span>
                     </a>
                 </li>
@@ -241,43 +233,6 @@
                 </li>
             </ul>
         </li>
-        {% else %}
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-journal-text"></i><span>Forms & Actions </span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{% url 'business:products'%}">
-                        <i class="bi bi-circle"></i><span>Add Products</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'withdraw' user=user %}">
-                        <i class="bi bi-circle"></i><span>Withdraw</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Forms Nav -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{% url 'business:log_products' %}">
-                        <i class="bi bi-circle"></i><span>Products</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'history' user=user %}">
-                        <i class="bi bi-circle"></i><span>History</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Tables Nav -->
         {% endif %}
 
         <li class="nav-heading">Pages</li>

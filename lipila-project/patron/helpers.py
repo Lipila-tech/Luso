@@ -27,7 +27,7 @@ def calculate_total_withdrawals(creator):
     ).aggregate(total_amount=Sum('amount'))
     
     if withdrawals['total_amount'] is not None:
-        return withdrawals['total_amount']
+        return float(withdrawals['total_amount'])
     else:
         return 0.0
 
@@ -48,7 +48,7 @@ def calculate_total_payments(creator):
     ).aggregate(total_amount=Sum('amount'))
     
     if payments['total_amount'] is not None:
-        return payments['total_amount']
+        return float(payments['total_amount'])
     else:
         return 0.0
 
@@ -69,7 +69,7 @@ def calculate_total_contributions(creator):
     ).aggregate(total_amount=Sum('amount'))
     
     if contributions['total_amount'] is not None:
-        return contributions['total_amount']
+        return float(contributions['total_amount'])
     else:
         return 0.0
     

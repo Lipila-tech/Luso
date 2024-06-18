@@ -8,14 +8,15 @@ from django.views import View
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.db.models import Sum
 # custom modules
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
 from lipila.helpers import get_user_object, apology
 from patron.forms.forms import (
-    CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm,)
+    CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
 from lipila.forms.forms import DepositForm, ContributeForm
-from patron.models import Tier, TierSubscriptions, Payments, Contributions
+from patron.models import Tier, TierSubscriptions, Payments, Contributions, Withdrawal, WithdrawalRequest
 from patron.helpers import (get_creator_subscribers,
                             get_creator_url, get_tier, calculate_total_payments,
                             calculate_total_contributions, calculate_total_withdrawals)
@@ -29,11 +30,30 @@ def index(request):
 
 
 @login_required
-def withdraw(request, user):
-    context = {}
-    user_object = get_user_object(request.user)
-    context['user'] = user_object
-    return render(request, 'patron/admin/actions/withdraw.html', context)
+def creator_withdrawal(request):
+    if request.method == 'POST':
+        print('posting')
+        form = WithdrawalRequestForm(request.POST)
+        if form.is_valid():
+            withdrawal_request = form.save(commit=False)
+            # Assuming user is authenticated creator
+            withdrawal_request.creator = request.user.creatorprofile
+            withdrawal_request.save()
+            messages.success(
+                request,
+                'Withdrawal request submitted successfully. We will review your request and process it within 2 business days.')
+            # Redirect to same view after successful request
+            return redirect(reverse('patron:withdraw'))
+    else:
+        form = WithdrawalRequestForm()
+    total_payments = calculate_total_payments(request.user.creatorprofile)
+    pending_requests = WithdrawalRequest.objects.filter(
+        creator=request.user.creatorprofile, status='PENDING')
+    total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
+
+    context = {'form': form, 'pending_requests': pending_requests,
+               'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
+    return render(request, 'patron/admin/actions/creator_withdrawal.html', context)
 
 
 @login_required
@@ -199,7 +219,7 @@ def dashboard(request, user):
             'subscriptions': len(subscriptions),
             'updated_at': datetime.today
         }
-        patron = request.user.patronprofile
+        patron =request.user.patronprofile
         context['user'] = get_user_object(patron)
         return render(request, 'patron/admin/index_patron.html', context)
     except PatronProfile.DoesNotExist:
@@ -210,7 +230,8 @@ def dashboard(request, user):
         tiers = Tier.objects.filter(creator=creator)
         patrons = get_creator_subscribers(creator)
         total_payments = calculate_total_payments(creator)
-        total_contributions = calculate_total_contributions(User.objects.get(username=creator))
+        total_contributions = calculate_total_contributions(
+            User.objects.get(username=creator))
         withdrawals = calculate_total_withdrawals(creator)
         balance = total_payments - withdrawals
         context['summary'] = {

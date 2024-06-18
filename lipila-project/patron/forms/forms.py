@@ -2,8 +2,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
 from accounts.models import CreatorProfile, PatronProfile
-from patron.models import Tier
+from patron.models import Tier, Withdrawal, WithdrawalRequest
 
+
+class WithdrawalRequestForm(forms.ModelForm):
+    class Meta:
+        model = WithdrawalRequest
+        fields = ['amount', 'account_number']
 
 class CreateCreatorProfileForm(forms.ModelForm):
     class Meta:
