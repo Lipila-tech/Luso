@@ -6,10 +6,52 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from typing import Union, List
-from patron.models import Tier, TierSubscriptions
+from patron.models import Tier, TierSubscriptions, Payments, Contributions
 from django.urls import reverse
+from django.db.models import Sum
 
 
+def calculate_total_payments(creator):
+    """
+    This function calculates the total amount of payments received by a creator.
+
+    Args:
+        creator: A CreatorProfile model instance representing the creator.
+
+    Returns:
+        A decimal value representing the total amount of payments.
+    """
+    # Filter payments for subscriptions belonging to the given creator's tiers
+    payments = Payments.objects.filter(
+        subscription__tier__creator=creator
+    ).aggregate(total_amount=Sum('amount'))
+    
+    if payments['total_amount'] is not None:
+        return payments['total_amount']
+    else:
+        return 0.0
+
+
+def calculate_total_contributions(creator):
+    """
+    This functions calculates the total amoutn of contributions received by a creator.
+
+    Args:
+        Creator: A CretaorProfile model instance representing the creator.
+
+    Returns:
+        A decimal value representing the total amount of contributions.
+    """
+    # Filter contributions for subscriptions belonging to the given creator's tiers
+    contributions = Contributions.objects.filter(
+        creator=creator
+    ).aggregate(total_amount=Sum('amount'))
+    
+    if contributions['total_amount'] is not None:
+        return contributions['total_amount']
+    else:
+        return 0.0
+    
 def get_tier(id):
     tier = Tier.objects.get(pk=id)
     return tier

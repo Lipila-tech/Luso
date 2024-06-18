@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from patron.models import Tier, TierSubscriptions
+from patron.models import Tier, TierSubscriptions, Payments, Contributions
 from django.urls import reverse
 
 # custom modules
@@ -18,6 +18,8 @@ class TestHelperFunctions(TestCase):
             username='testcreator2', password='password')
         self.user1 = User.objects.create(
             username='testuser', password='password')
+        self.user2 = User.objects.create(
+            username='patronusertest', password='password')
         self.creator1_obj = CreatorProfile.objects.create(
             user=self.creator_user1, patron_title='testpatron1', bio='test', creator_category='musician')
         self.creator2_obj = CreatorProfile.objects.create(
@@ -87,3 +89,31 @@ class TestHelperFunctions(TestCase):
         is_patrons2 = is_patron_subscribed(user3, tier3.id)
         self.assertEqual(is_patrons1, True)
         self.assertEqual(is_patrons2, False)
+
+    def test_calculate_total_payments(self):
+        """
+        Test if the function returns the expected values.
+        """
+        tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
+        tier2 = Tier.objects.get(pk=self.tiers_1[0]['id'])
+        subscription1  = TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
+        subscription2  = TierSubscriptions.objects.create(patron=self.user2, tier=tier2)
+        Payments.objects.create(subscription=subscription1, amount=200)
+        Payments.objects.create(subscription=subscription2, amount=200)
+        total_amounts1 = helpers.calculate_total_payments(self.creator1_obj)
+        total_amounts2 = helpers.calculate_total_payments(self.creator2_obj)
+        self.assertEqual(total_amounts1, 400)
+        self.assertEqual(total_amounts2, 0)
+        
+
+    def test_calculate_total_contributions(self):
+        """
+        Test if the function calculates and returns the expected values.
+        """
+        contri1  = Contributions.objects.create(creator=self.creator_user1, patron=self.user1, amount=100)
+        contri2  = Contributions.objects.create(creator=self.creator_user1, patron=self.user2, amount=100)
+        contri3  = Contributions.objects.create(creator=self.creator_user2, patron=self.user1, amount=100)
+        self.assertEqual(helpers.calculate_total_contributions(self.creator_user1), 200)
+        self.assertEqual(helpers.calculate_total_contributions(self.creator_user2), 100)
+
+

@@ -6,10 +6,18 @@
 {% block section %}
 <section class="admin-other-body">
   <div class="creator-dashboard">
+
+    <div class="creator-footer">
+      Last Login: <span id="last-updated">{{summary.last_login_time}}</span>
+    </div>
     <div class="creator-stats">
       <div class="creator-stat">
         <h3>K<span id="current-balance">{{summary.balance | comma_format }}</span></h3>
         <p>Balance</p>
+      </div>
+      <div class="creator-stat">
+        <h3>K<span id="current-balance">{{summary.total_payments | comma_format }}</span></h3>
+        <p>Total Payments</p>
       </div>
       <div class="creator-stat">
         <h3>K<span id="withdrawn-total">{{summary.withdraws | comma_format }}</span></h3>
@@ -25,9 +33,11 @@
       </div>
     </div>
     <div class="creator-footer">
-      <p class="tier-url">URL: {{ url }}</p>
+      <p class="tier-url">My Patron URL: {{ url }}</p>
       <span class="tier-url" data-url="{{ url }}">
-        {{ tier.creator.patron_title }}  <button class="copy-btn" data-clipboard-text="{{ url }}"><h5>Copy</h5></button>
+        {{ tier.creator.patron_title }} <button class="copy-btn" data-clipboard-text="{{ url }}">
+          <h5>Copy</h5>
+        </button>
       </span>
     </div>
     <div class="creator-footer">

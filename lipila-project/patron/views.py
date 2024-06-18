@@ -16,7 +16,9 @@ from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm,)
 from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions
-from patron.helpers import get_creator_subscribers, get_creator_url, get_tier
+from patron.helpers import (get_creator_subscribers,
+                            get_creator_url, get_tier, calculate_total_payments,
+                            calculate_total_contributions)
 
 
 def index(request):
@@ -204,12 +206,21 @@ def dashboard(request, user):
         pass
     try:
         # Creator summary
+        creator = CreatorProfile.objects.get(user=request.user)
+        tiers = Tier.objects.filter(creator=creator)
+        patrons = get_creator_subscribers(creator)
+        total_payments = calculate_total_payments(creator)
+        total_contributions = calculate_total_contributions(User.objects.get(username=creator))
+        withdraws = 0
+        balance = total_payments - withdraws
         context['summary'] = {
-            'balance': 2500,
+            'balance': balance,
+            'total_payments': total_payments + total_contributions,
             'withdraws': 45000,
-            'patrons': 100,
-            'tiers': 3,
-            'updated_at': datetime.today
+            'patrons': len(get_creator_subscribers(creator)),
+            'tiers': len(Tier.objects.filter(creator=creator)),
+            'updated_at': datetime.today,
+            'last_login_time': last_login_time
         }
         creator = request.user.creatorprofile
         url = get_creator_url('index', creator, domain='localhost:8000')
@@ -394,14 +405,13 @@ def subscription_detail(request, tier_id):
     subscription = TierSubscriptions.objects.get(pk=tier_id)
     return render(request, 'patron/admin/pages/subscription_detail.html', {'subscription': subscription})
 
+
 @login_required
 def history(request, user):
     context = {}
     user_object = get_user_object(request.user)
     context['user'] = user_object
     return render(request, 'patron/admin/pages/history.html', context)
-
-# Payment handling views
 
 
 @login_required
@@ -447,14 +457,15 @@ def contribute(request, creator):
         form = ContributeForm(request.POST)
         if form.is_valid():
             patron = User.objects.get(username=request.user)
-            creator = User.objects.get(username=creator)            
+            creator = User.objects.get(username=creator)
             contribution = form.save(commit=False)
             contribution.creator = creator
             contribution.patron = patron
             contribution.save()
-            messages.success(request, f"Payment of K{contribution.amount} successfull!")
+            messages.success(
+                request, f"Payment of K{contribution.amount} successfull!")
             return redirect(reverse('dashboard', kwargs={'user': request.user}))
-        
+
         messages.error(request, f"Faild to send data")
         form = ContributeForm()
         return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
