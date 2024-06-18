@@ -1,15 +1,17 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render
 from django.shortcuts import render, redirect
-from django.views import View
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
+from datetime import datetime
 # Custom Models
 from lipila.helpers import (
     apology, get_lipila_contact_info, get_user_object,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info)
 from lipila.forms.forms import ContactForm
-from accounts.models import CreatorProfile, PatronProfile
+from accounts.models import CreatorProfile
+from patron.models import WithdrawalRequest, Payments
+from patron.helpers import calculate_creators_balance
 
 
 # Public Views
@@ -72,4 +74,56 @@ def contact(request):
             request, "Failed to send message")
         form = ContactForm()
         context['form'] = form
-    return render(request, 'index.html', context)   
+    return render(request, 'index.html', context)
+
+@login_required
+def staff_users(request, user):
+    total_users = len(User.objects.all().order_by('date_joined'))
+    total_creators = len(CreatorProfile.objects.all())
+    total_payments = len(Payments.objects.all())
+    context = {
+        'all_users': total_users,
+        'all_creators': total_creators,
+        'total_payments': total_payments,
+        'updated_at': datetime.today
+    }
+    return render(request, 'lipila/staff/home.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
+def approve_withdrawals(request):
+    if request.method == 'POST':
+        withdrawal_request_id = request.POST.get('withdrawal_request_id')
+        action = request.POST.get('action')
+        if withdrawal_request_id and action:
+            try:
+                withdrawal_request = WithdrawalRequest.objects.get(pk=withdrawal_request_id)
+                if action == 'success':
+                    withdrawal_request.status = 'success'
+                    # Process withdrawal (optional, e.g., initiate payout using a payment processor)
+                    # ...
+                    withdrawal_request.save()
+                    messages.success(request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
+                elif action == 'reject':
+                    withdrawal_request.status = 'rejected'
+                    # Optional: store rejection reason in a field (if model has one)
+                    withdrawal_request.reason_for_rejection = request.POST.get('rejection_reason')
+                    withdrawal_request.save()
+                    messages.success(request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")
+                else:
+                    messages.error(request, "Invalid action specified.")
+            except WithdrawalRequest.DoesNotExist:
+                messages.error(request, "Withdrawal request not found.")
+    pending_requests = WithdrawalRequest.objects.filter(status='pending')
+    data = []
+    for obj in pending_requests:
+        item = {}
+        item['creator'] = obj.creator
+        item['amount'] = obj.amount
+        item['request_date'] = obj.request_date
+        item['balance'] = calculate_creators_balance(obj.creator)
+        data.append(item)
+
+    context = {'pending_requests': data}
+    return render(request, 'lipila/staff/approve_withdrawals.html', context)

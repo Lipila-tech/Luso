@@ -6,6 +6,7 @@ STATUS_CHOICES = (
     ('pending', 'pending'),
     ('success', 'success'),
     ('failed', 'failed'),
+    ('rejected', 'rejected'),
 )
 
 CREATOR_CATEGORY_CHOICES = (

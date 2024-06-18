@@ -1,0 +1,47 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %} Pending Withdrawals {% endblock %}
+
+{% block section %}
+<h2>Approve Withdrawal Requests</h2>
+{% if pending_requests %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Creator</th>
+                <th>Amount Requested</th>
+                <th>Account Balance</th>
+                <th>Request Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in pending_requests %}
+            <tr>
+                <td>{{ request.creator.user.username }}</td>
+                <td>{{ request.amount }}</td>
+                <td>{{ request.balance }}</td>
+                <td>{{ request.request_date }}</td>
+                <td>
+                    <form method="POST" style="display: inline-block;">
+                        {% csrf_token %}
+                        <input type="hidden" name="withdrawal_request_id" value="{{ request.pk }}">
+                        <button type="submit" name="action" value="success">Approve</button>
+                    </form>
+                    <form method="POST" style="display: inline-block;">
+                        {% csrf_token %}
+                        <input type="hidden" name="withdrawal_request_id" value="{{ request.pk }}">
+                        <button type="submit" name="action" value="reject">Reject</button>
+                        <input type="text" name="rejection_reason" placeholder="Reason (optional)">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>There are no pending withdrawal requests at this time.</p>
+{% endif %}
+
+{% endblock %}

@@ -16,7 +16,7 @@
         <p>Balance</p>
       </div>
       <div class="creator-stat">
-        <h3>K<span id="current-balance">{{summary.total_payments | comma_format }}</span></h3>
+        <h3>K<span id="total-payments">{{summary.total_payments | comma_format }}</span></h3>
         <p>Total Payments Received</p>
       </div>
       <div class="creator-stat">
@@ -24,11 +24,11 @@
         <p>Withdrawn</p>
       </div>
       <div class="creator-stat">
-        <h3><span id="num-patrons">{{summary.patrons}}</span></h3>
+        <h3><span id="totals">{{summary.patrons}}</span></h3>
         <p>Patrons</p>
       </div>
       <div class="creator-stat">
-        <h3><span id="num-patrons">{{summary.tiers}}</span></h3>
+        <h3><span id="totals">{{summary.tiers}}</span></h3>
         <p>Tiers</p>
       </div>
     </div>

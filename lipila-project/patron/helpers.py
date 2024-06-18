@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from typing import Union, List
-from patron.models import Tier, TierSubscriptions, Payments, Contributions, Withdrawal
+from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
 from django.urls import reverse
 from django.db.models import Sum
 
@@ -22,10 +22,10 @@ def calculate_total_withdrawals(creator):
         A decimal value representing the total amount of withdrawals.
     """
     # Filter withdrawals for subscriptions belonging to the given creator's tiers
-    withdrawals = Withdrawal.objects.filter(
-        creator=creator
+    withdrawals = WithdrawalRequest.objects.filter(
+        creator=creator, status='success'
     ).aggregate(total_amount=Sum('amount'))
-    
+
     if withdrawals['total_amount'] is not None:
         return float(withdrawals['total_amount'])
     else:
@@ -46,7 +46,7 @@ def calculate_total_payments(creator):
     payments = Payments.objects.filter(
         subscription__tier__creator=creator
     ).aggregate(total_amount=Sum('amount'))
-    
+
     if payments['total_amount'] is not None:
         return float(payments['total_amount'])
     else:
@@ -67,12 +67,30 @@ def calculate_total_contributions(creator):
     contributions = Contributions.objects.filter(
         creator=creator
     ).aggregate(total_amount=Sum('amount'))
-    
+
     if contributions['total_amount'] is not None:
         return float(contributions['total_amount'])
     else:
         return 0.0
-    
+
+
+def calculate_creators_balance(creator):
+    """
+    This function calculates the avaialble balance.
+    Args:
+        creator: A CreatorProfile model instance representing the creator.
+
+    Returns:
+        A decimal value representing the total amount of withdrawals.
+    """
+    total_payments = calculate_total_payments(creator)
+    total_contributions = calculate_total_contributions(
+        User.objects.get(username=creator))
+    withdrawals = calculate_total_withdrawals(creator)
+    balance = (total_payments + total_contributions) - withdrawals
+    return balance
+
+
 def get_tier(id):
     tier = Tier.objects.get(pk=id)
     return tier

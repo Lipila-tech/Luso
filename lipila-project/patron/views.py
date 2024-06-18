@@ -8,7 +8,6 @@ from django.views import View
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.db.models import Sum
 # custom modules
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
@@ -19,7 +18,8 @@ from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions, Withdrawal, WithdrawalRequest
 from patron.helpers import (get_creator_subscribers,
                             get_creator_url, get_tier, calculate_total_payments,
-                            calculate_total_contributions, calculate_total_withdrawals)
+                            calculate_total_contributions, calculate_total_withdrawals, 
+                            calculate_creators_balance)
 
 
 def index(request):
@@ -180,19 +180,6 @@ class EditUserProfile(LoginRequiredMixin, View):
 
 
 @login_required
-def staff_users(request, user):
-    all_users = User.objects.all().order_by('date_joined')
-    all_creators = CreatorProfile.objects.all()
-    total_payments = 1000
-    return render(request, 'lipila/staff/users.html', {
-        'all_users': len(all_users),
-        'all_creators': len(all_creators),
-        'total_payments': total_payments,
-        'updated_at': datetime.today
-    })
-
-
-@login_required
 def dashboard(request, user):
     """
     Renders the appropriate dashboard based on user type (patron or creator).
@@ -205,7 +192,8 @@ def dashboard(request, user):
     Returns:
         A rendered response with the dashboard template and context.
     """
-
+    if request.user.is_staff:
+        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
     context = {}
     now = datetime.now()
     request.session['last_login_time'] = now.strftime("%H:%M:%S")
@@ -220,7 +208,7 @@ def dashboard(request, user):
             'subscriptions': len(subscriptions),
             'updated_at': datetime.today
         }
-        patron =request.user.patronprofile
+        patron = request.user.patronprofile
         context['user'] = get_user_object(patron)
         return render(request, 'patron/admin/index_patron.html', context)
     except PatronProfile.DoesNotExist:
@@ -234,7 +222,7 @@ def dashboard(request, user):
         total_contributions = calculate_total_contributions(
             User.objects.get(username=creator))
         withdrawals = calculate_total_withdrawals(creator)
-        balance = total_payments - withdrawals
+        balance = calculate_creators_balance(creator)
         context['summary'] = {
             'balance': balance,
             'total_payments': total_payments + total_contributions,
@@ -432,7 +420,8 @@ def subscription_detail(request, tier_id):
 def history(request):
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
-    total_withdrawn = Withdrawal.objects.filter(creator=request.user.creatorprofile)
+    total_withdrawn = Withdrawal.objects.filter(
+        creator=request.user.creatorprofile)
 
     history = []
     context = {}
