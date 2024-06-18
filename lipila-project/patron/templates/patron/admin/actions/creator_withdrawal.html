@@ -46,16 +46,16 @@
                 <tr>
                     <th>Amount</th>
                     <th>Payment Date</th>
-                    <th>Transaction ID (optional)</th>
-                    <th>Payment Method (optional)</th>
+                    <th>Transaction ID</th>
+                    <th>Payment Method</th>
                 </tr>
             </thead>
             <tbody>
                 {% for payout in approved_payouts %}
                 <tr>
                     <td>{{ payout.amount }}</td>
-                    <td>{{ payout.payment_date }}</td>
-                    <td>{{ payout.transaction_id|safe }}</td> # Escape for security
+                    <td>{{ payout.processed_date }}</td>
+                    <td>{{ payout.account_number }}</td> # Escape for security
                     <td>{{ payout.payment_method }}</td>
                 </tr>
                 {% endfor %}

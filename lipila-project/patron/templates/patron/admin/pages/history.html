@@ -12,6 +12,7 @@
                     <th>Transaction Type</th>
                     <th>Account Number</th>
                     <th>Status</th>
+                    <th>Reason</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,7 @@
                     <td>{{ item.transaction_type }}</td>
                     <td>{{ item.account_number }}</td>
                     <td>{{ item.status |upper }}</td>
+                    <td>{{ item.reason |upper }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

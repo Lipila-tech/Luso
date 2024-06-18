@@ -32,7 +32,6 @@ def index(request):
 @login_required
 def creator_withdrawal(request):
     if request.method == 'POST':
-        print('posting')
         form = WithdrawalRequestForm(request.POST)
         if form.is_valid():
             withdrawal_request = form.save(commit=False)
@@ -51,8 +50,10 @@ def creator_withdrawal(request):
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
     total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
+    approved_payouts = WithdrawalRequest.objects.filter(
+        creator=request.user.creatorprofile, status='success')
 
-    context = {'form': form, 'pending_requests': pending_requests,
+    context = {'form': form, 'pending_requests': pending_requests, 'approved_payouts':approved_payouts,
                'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
     return render(request, 'patron/admin/actions/creator_withdrawal.html', context)
 
@@ -420,8 +421,8 @@ def subscription_detail(request, tier_id):
 def history(request):
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
-    total_withdrawn = Withdrawal.objects.filter(
-        creator=request.user.creatorprofile)
+    total_withdrawn = WithdrawalRequest.objects.filter(
+        creator=request.user.creatorprofile, status='success')
 
     history = []
     context = {}
@@ -433,15 +434,17 @@ def history(request):
             item['transaction_type'] = 'Withdraw Request'
             item['account_number'] = obj.account_number
             item['status'] = obj.status
+            item['reason'] = obj.reason
             history.append(item)
     if total_withdrawn:
         for obj in total_withdrawn:
             item = {}
             item['amount'] = obj.amount
-            item['transaction_date'] = obj.withdrawal_date
+            item['transaction_date'] = obj.processed_date
             item['transaction_type'] = 'Withdraw'
             item['account_number'] = obj.account_number
             item['status'] = obj.status
+            item['reason'] = obj.reason
             history.append(item)
 
     context['history'] = history

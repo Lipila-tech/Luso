@@ -117,7 +117,8 @@ class WithdrawalRequest(models.Model):
     account_number = models.CharField(max_length=30)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    processed_date = models.DateTimeField(blank=True, null=True)  # Optional for tracking processing time
+    processed_date = models.DateTimeField(blank=True, null=True)
+    reason = models.CharField(max_length=100)
 
     def __str__(self):
         return f"Withdrawal Request - {self.creator.user.username} - Amount: {self.amount}"

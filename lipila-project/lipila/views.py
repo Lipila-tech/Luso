@@ -96,19 +96,25 @@ def approve_withdrawals(request):
     if request.method == 'POST':
         withdrawal_request_id = request.POST.get('withdrawal_request_id')
         action = request.POST.get('action')
+        print(withdrawal_request_id)
+        print(action)
+        amount = request.POST.get('withdrawal_amount')
+        creator = request.POST.get('creator')
         if withdrawal_request_id and action:
             try:
                 withdrawal_request = WithdrawalRequest.objects.get(pk=withdrawal_request_id)
-                if action == 'success':
+                if action == 'approve':
                     withdrawal_request.status = 'success'
-                    # Process withdrawal (optional, e.g., initiate payout using a payment processor)
+                    withdrawal_request.processed_date = datetime.today()
+                    # Process withdrawal (initiate payout using a payment processor)
                     # ...
                     withdrawal_request.save()
                     messages.success(request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
                 elif action == 'reject':
+                    print('rejected')
                     withdrawal_request.status = 'rejected'
                     # Optional: store rejection reason in a field (if model has one)
-                    withdrawal_request.reason_for_rejection = request.POST.get('rejection_reason')
+                    withdrawal_request.reason = request.POST.get('rejection_reason')
                     withdrawal_request.save()
                     messages.success(request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")
                 else:

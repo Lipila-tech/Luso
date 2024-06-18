@@ -26,8 +26,9 @@
                 <td>
                     <form method="POST" style="display: inline-block;">
                         {% csrf_token %}
+                        <input type="hidden" name="withdrawal_amount" value="{{ request.amount }}">
                         <input type="hidden" name="withdrawal_request_id" value="{{ request.pk }}">
-                        <button type="submit" name="action" value="success">Approve</button>
+                        <button type="submit" name="action" value="approve">Approve</button>
                     </form>
                     <form method="POST" style="display: inline-block;">
                         {% csrf_token %}
