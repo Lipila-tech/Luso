@@ -22,8 +22,7 @@ urlpatterns = [
          patron_views.EditUserProfile.as_view(), name='update_profile'),
     path('me/<str:user>', patron_views.dashboard, name='dashboard'),
     path('me/staff/<str:user>', patron_views.staff_users, name='staff_dashboard'),
-    path('history/<str:user>', patron_views.history, name='history'),
-    
+        
     # lipila difened authenticated user views
     path('faq/', views.pages_faq, name='faq'),
     path('terms-of-use/', views.pages_terms, name='terms'),

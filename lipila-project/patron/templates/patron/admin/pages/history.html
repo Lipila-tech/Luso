@@ -3,9 +3,27 @@
 {% block title %} History {% endblock %}
 
 {% block section %}
-<div class="patrons-container">
-    <h2>Transaction History</h2>
-    <h3>Under construction</h3>
-</div>
-
+<h4>Transaction History</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Transaction Type</th>
+                    <th>Account Number</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in history %}
+                <tr>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.transaction_date }}</td>
+                    <td>{{ item.transaction_type }}</td>
+                    <td>{{ item.account_number }}</td>
+                    <td>{{ item.status |upper }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 {% endblock %}
