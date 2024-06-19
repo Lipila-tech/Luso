@@ -96,8 +96,6 @@ def approve_withdrawals(request):
     if request.method == 'POST':
         withdrawal_request_id = request.POST.get('withdrawal_request_id')
         action = request.POST.get('action')
-        print(withdrawal_request_id)
-        print(action)
         amount = request.POST.get('withdrawal_amount')
         creator = request.POST.get('creator')
         if withdrawal_request_id and action:

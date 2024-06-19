@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from patron.models import Tier, TierSubscriptions, Payments, Contributions, Withdrawal
+from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
 from django.urls import reverse
 
 # custom modules
@@ -119,10 +119,17 @@ class TestHelperFunctions(TestCase):
         """
         Test if the function calculates and returns the expected values.
         """
-        Withdrawal.objects.create(creator=self.creator1_obj, amount=100)
-        Withdrawal.objects.create(creator=self.creator1_obj, amount=100)
-        Withdrawal.objects.create(creator=self.creator2_obj, amount=100)
-        self.assertEqual(helpers.calculate_total_withdrawals(self.creator1_obj), 200)
-        self.assertEqual(helpers.calculate_total_withdrawals(self.creator2_obj), 100)
+        tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
+        tier2 = Tier.objects.get(pk=self.tiers_1[0]['id'])
+        subscription1  = TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
+        subscription2  = TierSubscriptions.objects.create(patron=self.user2, tier=tier2)
+        Payments.objects.create(subscription=subscription1, amount=200)
+        Payments.objects.create(subscription=subscription2, amount=200)
+        WithdrawalRequest.objects.create(creator=self.creator1_obj, amount=100, status='success')
+        WithdrawalRequest.objects.create(creator=self.creator1_obj, amount=50, status='success')
+        WithdrawalRequest.objects.create(creator=self.creator1_obj, amount=50)
+        WithdrawalRequest.objects.create(creator=self.creator2_obj, amount=100)
+        self.assertEqual(helpers.calculate_total_withdrawals(self.creator1_obj), 150)
+        self.assertEqual(helpers.calculate_total_withdrawals(self.creator2_obj), 0.0)
 
 
