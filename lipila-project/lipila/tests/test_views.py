@@ -1,11 +1,11 @@
 from django.urls import reverse  # To generate URLs
-from patron.models import WithdrawalRequest
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
 # Custom modules
+from patron.models import WithdrawalRequest, ProcessedWithdrawals
 from lipila.models import ContactInfo, HeroInfo, UserTestimonial
 from lipila.helpers import get_user_object
 from lipila.forms.forms import ContactForm
@@ -129,6 +129,13 @@ class ApproveWithdrawalsTest(TestCase):
             pk=self.withdrawal_request.pk)
         self.assertEqual(withdrawal_request.status, 'success')
 
+        # Check if processed withdraw is saved
+        processed_withdrawal = ProcessedWithdrawals.objects.get(pk=1)
+        print(processed_withdrawal)
+        self.assertEqual(processed_withdrawal.approved_by, 'staffuser')
+        self.assertEqual(processed_withdrawal.status, 'success')
+        
+
     def test_reject_withdrawal(self):
         # Staff user can reject a withdrawal request
         self.client.force_login(self.staff_user)
@@ -146,6 +153,10 @@ class ApproveWithdrawalsTest(TestCase):
             pk=self.withdrawal_request.pk)
         self.assertEqual(withdrawal_request.status, 'rejected')
         self.assertEqual(withdrawal_request.reason, 'Insufficient funds')
+        # Check if processed withdraw is saved
+        processed_withdrawal = ProcessedWithdrawals.objects.get(pk=1)
+        self.assertEqual(processed_withdrawal.approved_by, 'staffuser')
+        self.assertEqual(processed_withdrawal.status, 'rejected')
 
     def test_invalid_action(self):
         # Staff user submitting an invalid action should display an error message

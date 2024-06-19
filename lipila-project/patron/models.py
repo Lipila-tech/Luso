@@ -130,7 +130,7 @@ class ProcessedWithdrawals(models.Model):
     rejected_date = models.DateTimeField(auto_now_add=True)
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
-    status = models.CharField(max_length=20)
+    status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"Withdrawal - {self.approved_by.username} - Status: {self.status}"
+        return f"Withdrawal - {self.approved_by} - Status: {self.status}"
