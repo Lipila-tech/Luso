@@ -9,6 +9,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>#</th>
                 <th>Creator</th>
                 <th>Amount Requested</th>
                 <th>Account Balance</th>
@@ -19,6 +20,7 @@
         <tbody>
             {% for request in pending_requests %}
             <tr>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ request.creator.user.username }}</td>
                 <td>{{ request.amount }}</td>
                 <td>{{ request.balance }}</td>

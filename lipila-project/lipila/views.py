@@ -93,7 +93,7 @@ def staff_users(request, user):
         'all_users': total_users,
         'all_creators': total_creators,
         'total_payments': total_payments,
-        'updated_at': datetime.today
+        'updated_at': timezone.now()
     }
     return render(request, 'lipila/staff/home.html', context)
 
@@ -135,11 +135,12 @@ def approve_withdrawals(request):
     data = []
     for obj in pending_requests:
         item = {}
+        item['pk'] = obj.pk
         item['creator'] = obj.creator
         item['amount'] = obj.amount
         item['request_date'] = obj.request_date
         item['balance'] = calculate_creators_balance(obj.creator)
         data.append(item)
-
-    context = {'pending_requests': data}
+    context = {}
+    context['pending_requests'] = data
     return render(request, 'lipila/staff/approve_withdrawals.html', context)
