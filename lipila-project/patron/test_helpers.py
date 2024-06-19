@@ -12,22 +12,28 @@ from patron.templatetags.patron_tags import is_patron_subscribed
 class TestHelperFunctions(TestCase):
     def setUp(self):
         self.client = Client()
+        # Create creator users, their creator profiles and thir tiers
         self.creator_user1 = User.objects.create(
             username='testcreator1', password='password')
-        self.creator_user2 = User.objects.create(
-            username='testcreator2', password='password')
-        self.user1 = User.objects.create(
-            username='testuser', password='password')
-        self.user2 = User.objects.create(
-            username='patronusertest', password='password')
         self.creator1_obj = CreatorProfile.objects.create(
             user=self.creator_user1, patron_title='testpatron1', bio='test', creator_category='musician')
+        
+        self.creator_user2 = User.objects.create(
+            username='testcreator2', password='password')
         self.creator2_obj = CreatorProfile.objects.create(
             user=self.creator_user2, patron_title='testpatron2', bio='test', creator_category='musician')
+        
+        # Create the tiers and filter objects
         Tier().create_default_tiers(self.creator1_obj)  # creator 1 tiers
         Tier().create_default_tiers(self.creator2_obj)  # creator 2 tiers
         self.tiers_1 = Tier.objects.filter(creator=self.creator1_obj).values()
         self.tiers_2 = Tier.objects.filter(creator=self.creator2_obj).values()
+        
+        # Create patron users
+        self.user1 = User.objects.create(
+            username='testuser', password='password')
+        self.user2 = User.objects.create(
+            username='patronusertest', password='password')
 
     def test_get_creator_url(self):
         domain = 'localhost:8000'
