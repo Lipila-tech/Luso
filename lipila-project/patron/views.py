@@ -15,7 +15,7 @@ from lipila.helpers import get_user_object, apology
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
 from lipila.forms.forms import DepositForm, ContributeForm
-from patron.models import Tier, TierSubscriptions, Payments, Contributions, Withdrawal, WithdrawalRequest
+from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
 from patron.helpers import (get_creator_subscribers,
                             get_creator_url, get_tier, calculate_total_payments,
                             calculate_total_contributions, calculate_total_withdrawals, 

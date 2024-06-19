@@ -1,8 +1,6 @@
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserChangeForm
 from django import forms
 from accounts.models import CreatorProfile, PatronProfile
-from patron.models import Tier, Withdrawal, WithdrawalRequest
+from patron.models import Tier, WithdrawalRequest
 
 
 class WithdrawalRequestForm(forms.ModelForm):

@@ -10,7 +10,7 @@ from lipila.helpers import (
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info)
 from lipila.forms.forms import ContactForm
 from accounts.models import CreatorProfile
-from patron.models import WithdrawalRequest, Payments
+from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals
 from patron.helpers import calculate_creators_balance
 
 
@@ -110,21 +110,27 @@ def approve_withdrawals(request):
             try:
                 withdrawal_request = WithdrawalRequest.objects.get(
                     pk=withdrawal_request_id)
+                processed_withdrawal = ProcessedWithdrawals()
                 if action == 'approve':
                     # Process withdrawal (initiate payout using a payment processor)
                     # ...
                     withdrawal_request.status = 'success'
                     withdrawal_request.processed_date = timezone.now()
-                    
                     withdrawal_request.save()
+                    processed_withdrawal.approved_by = request.user
+                    processed_withdrawal.status = 'success'
+                    processed_withdrawal.Withdrawal_request = withdrawal_request
+                    processed_withdrawal.save()
                     messages.success(
                         request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
                 elif action == 'reject':
                     withdrawal_request.status = 'rejected'
-                    # Optional: store rejection reason in a field (if model has one)
-                    withdrawal_request.reason = request.POST.get(
-                        'rejection_reason')
+                    withdrawal_request.processed_date = timezone.now()
                     withdrawal_request.save()
+                    processed_withdrawal.rejected_by = request.user
+                    processed_withdrawal.status = 'rejected'
+                    processed_withdrawal.Withdrawal_request = withdrawal_request
+                    processed_withdrawal.save()
                     messages.success(
                         request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")
                 else:

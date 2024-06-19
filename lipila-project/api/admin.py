@@ -4,20 +4,23 @@ from business.models import Product, BNPL, Student
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
-from patron.models import Tier, Payments, Withdrawal, WithdrawalRequest, Contributions
+from patron.models import Tier, Payments, ProcessedWithdrawals, WithdrawalRequest, Contributions
 from accounts.models import PatronProfile, CreatorProfile
 
 
-class WithdrawalAdmin(admin.ModelAdmin):
-    list_display = ('creator', 'amount', 'account_number', 'withdrawal_date')
+class ProcessedWithdrawalAdmin(admin.ModelAdmin):
+    list_display = ('withdrawal_request', 'approved_by',
+                    'rejected_by', 'approved_date', 'rejected_date', 'status')
 
 
 class WithdrawalRequestAdmin(admin.ModelAdmin):
-    list_display = ('creator', 'amount', 'account_number', 'request_date', 'status', 'processed_date')
+    list_display = ('creator', 'amount', 'account_number',
+                    'request_date', 'status', 'processed_date', 'reason')
 
 
 class ContributionsAdmin(admin.ModelAdmin):
-    list_display = ('creator', 'patron', 'amount', 'status', 'message', 'phone_number', 'timestamp')
+    list_display = ('creator', 'patron', 'amount', 'status',
+                    'message', 'phone_number', 'timestamp')
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -26,7 +29,8 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class TierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'creator', 'price', 'description', 'visible_to_fans', 'updated_at')
+    list_display = ('name', 'creator', 'price', 'description',
+                    'visible_to_fans', 'updated_at')
 
 
 class PaymentAdmin(admin.ModelAdmin):
@@ -101,7 +105,7 @@ class CreatorProfileAdmin(admin.ModelAdmin):
 admin.site.register(Tier, TierAdmin)
 admin.site.register(Payments, PaymentAdmin)
 admin.site.register(Contributions, ContributionsAdmin)
-admin.site.register(Withdrawal, WithdrawalAdmin)
+admin.site.register(ProcessedWithdrawals, ProcessedWithdrawalAdmin)
 admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
 admin.site.register(LipilaCollection, LipilaCOllectionAdmin)

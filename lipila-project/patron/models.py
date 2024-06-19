@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from accounts.models import CreatorProfile, PatronProfile
 # Options
@@ -71,15 +72,18 @@ class Tier(models.Model):
 
 
 class TierSubscriptions(models.Model):
-    patron = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
-    tier = models.ForeignKey(Tier, on_delete=models.CASCADE, related_name='subscriptions')
+    patron = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='subscriptions')
+    tier = models.ForeignKey(
+        Tier, on_delete=models.CASCADE, related_name='subscriptions')
 
     def __str__(self):
         return f"{self.patron}"
 
 
 class Payments(models.Model):
-    subscription = models.ForeignKey(TierSubscriptions, on_delete=models.CASCADE, related_name='payments')
+    subscription = models.ForeignKey(
+        TierSubscriptions, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
@@ -89,8 +93,10 @@ class Payments(models.Model):
 
 
 class Contributions(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contributions_received')
-    patron = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contributions_sent')
+    creator = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='contributions_received')
+    patron = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='contributions_sent')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     message = models.TextField()
     phone_number = models.CharField(max_length=10)
@@ -99,26 +105,32 @@ class Contributions(models.Model):
 
     def __str__(self):
         return f"{self.amount}"
-    
-
-class Withdrawal(models.Model):
-    creator = models.ForeignKey(CreatorProfile, on_delete=models.CASCADE, related_name='withdrawals')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    account_number = models.CharField(max_length=30)
-    withdrawal_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Withdrawal - {self.creator.user.username} - Amount: {self.amount}"
 
 
 class WithdrawalRequest(models.Model):
-    creator = models.ForeignKey(CreatorProfile, on_delete=models.CASCADE, related_name='withdrawal_requests')
+    processed_date = models.DateTimeField(blank=True, null=True)
+    creator = models.ForeignKey(
+        CreatorProfile, on_delete=models.CASCADE, related_name='withdrawal_requests')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     account_number = models.CharField(max_length=30)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
-    processed_date = models.DateTimeField(blank=True, null=True)
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"Withdrawal Request - {self.creator.user.username} - Amount: {self.amount}"
+
+
+class ProcessedWithdrawals(models.Model):
+    approved_by = models.ForeignKey(
+        get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_withdrawals')
+    approved_date = models.DateTimeField(auto_now_add=True)
+    rejected_by = models.ForeignKey(
+        get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
+    rejected_date = models.DateTimeField(auto_now_add=True)
+    withdrawal_request = models.ForeignKey(
+        WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
+    status = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"Withdrawal - {self.approved_by.username} - Status: {self.status}"
