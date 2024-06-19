@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
-from datetime import datetime
+from django.utils import timezone
 # Custom Models
 from lipila.helpers import (
     apology, get_lipila_contact_info, get_user_object,
@@ -30,11 +30,14 @@ def index(request):
 
     return render(request, 'index.html', context)
 
+
 def service_details(request):
     return render(request, 'UI/services-details.html')
 
+
 def portfolio_details(request):
     return render(request, 'UI/portfolio-details.html')
+
 
 def send_money(request):
     context = {}
@@ -51,14 +54,18 @@ def send_money(request):
 
     return render(request, 'UI/send_money.html', context)
 
+
 def pages_faq(request):
     return render(request, 'lipila/pages/pages_faq.html')
+
 
 def pages_terms(request):
     return render(request, 'lipila/pages/pages_terms.html')
 
+
 def pages_privacy(request):
     return render(request, 'lipila/pages/pages_privacy.html')
+
 
 def contact(request):
     context = get_lipila_contact_info()
@@ -75,6 +82,7 @@ def contact(request):
         form = ContactForm()
         context['form'] = form
     return render(request, 'index.html', context)
+
 
 @login_required
 def staff_users(request, user):
@@ -100,21 +108,25 @@ def approve_withdrawals(request):
         creator = request.POST.get('creator')
         if withdrawal_request_id and action:
             try:
-                withdrawal_request = WithdrawalRequest.objects.get(pk=withdrawal_request_id)
+                withdrawal_request = WithdrawalRequest.objects.get(
+                    pk=withdrawal_request_id)
                 if action == 'approve':
-                    withdrawal_request.status = 'success'
-                    withdrawal_request.processed_date = datetime.today()
                     # Process withdrawal (initiate payout using a payment processor)
                     # ...
+                    withdrawal_request.status = 'success'
+                    withdrawal_request.processed_date = timezone.now()
+                    
                     withdrawal_request.save()
-                    messages.success(request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
+                    messages.success(
+                        request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
                 elif action == 'reject':
-                    print('rejected')
                     withdrawal_request.status = 'rejected'
                     # Optional: store rejection reason in a field (if model has one)
-                    withdrawal_request.reason = request.POST.get('rejection_reason')
+                    withdrawal_request.reason = request.POST.get(
+                        'rejection_reason')
                     withdrawal_request.save()
-                    messages.success(request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")
+                    messages.success(
+                        request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")
                 else:
                     messages.error(request, "Invalid action specified.")
             except WithdrawalRequest.DoesNotExist:

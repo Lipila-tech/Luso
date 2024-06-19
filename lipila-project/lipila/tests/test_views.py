@@ -1,3 +1,5 @@
+from django.urls import reverse  # To generate URLs
+from patron.models import WithdrawalRequest
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.test import TestCase, Client
@@ -7,6 +9,7 @@ from django.contrib.messages import get_messages
 from lipila.models import ContactInfo, HeroInfo, UserTestimonial
 from lipila.helpers import get_user_object
 from lipila.forms.forms import ContactForm
+from accounts.models import CreatorProfile
 
 
 class IndexViewTest(TestCase):
@@ -22,7 +25,8 @@ class IndexViewTest(TestCase):
             message="Test message",
             slogan="Test slogan",
         )
-        UserTestimonial.objects.create(user=User.objects.create(username="test_user"), message="Test testimonial")
+        UserTestimonial.objects.create(user=User.objects.create(
+            username="test_user"), message="Test testimonial")
 
     def test_index_view_success(self):
         """Test index view renders successfully with context data"""
@@ -68,3 +72,101 @@ class ContactFormViewTest(TestCase):
         invalid_data = {'message': ''}  # Missing required fields
         response = self.client.post(reverse('contact'), invalid_data)
         self.assertEqual(response.status_code, 200)  # Check form renders again
+
+
+class ApproveWithdrawalsTest(TestCase):
+
+    def setUp(self):
+        # Create a staff user
+        self.staff_user = User.objects.create_user(
+            username='staffuser', password='staffpassword', is_staff=True)
+        self.client = Client()
+
+        # Create a creator user and a withdrawal request
+        self.user1 = User.objects.create_user(
+            username='creatoruser', password='creatorpassword')
+        self.creator_user = CreatorProfile.objects.create(
+            user=self.user1, patron_title='testpatron1', bio='test', creator_category='musician')
+        self.withdrawal_request = WithdrawalRequest.objects.create(
+            creator=self.creator_user,
+            amount=100.00,
+            account_number='0966445333',
+        )
+
+    def test_unauthenticated_access(self):
+        # Unauthenticated user should be redirected to login page
+        response = self.client.get(reverse('approve_withdrawals'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/approve_withdrawals/')
+
+    def test_non_staff_access(self):
+        # Non-staff user should be forbidden
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('approve_withdrawals'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_staff_access_get(self):
+        # Staff user can access the view with a GET request
+        self.client.force_login(self.staff_user)
+        response = self.client.get(reverse('approve_withdrawals'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, 'lipila/staff/approve_withdrawals.html')
+
+    def test_approve_withdrawal(self):
+        # Staff user can approve a withdrawal request
+        self.client.force_login(self.staff_user)
+        data = {
+            'withdrawal_request_id': self.withdrawal_request.pk,
+            'action': 'approve'
+        }
+        response = self.client.post(reverse('approve_withdrawals'), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('approve_withdrawals'))
+
+        # Check if withdrawal request is updated
+        withdrawal_request = WithdrawalRequest.objects.get(
+            pk=self.withdrawal_request.pk)
+        self.assertEqual(withdrawal_request.status, 'success')
+
+    def test_reject_withdrawal(self):
+        # Staff user can reject a withdrawal request
+        self.client.force_login(self.staff_user)
+        data = {
+            'withdrawal_request_id': self.withdrawal_request.pk,
+            'action': 'reject',
+            'reason': 'Insufficient funds'
+        }
+        response = self.client.post(reverse('approve_withdrawals'), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('approve_withdrawals'))
+
+        # Check if withdrawal request is updated
+        withdrawal_request = WithdrawalRequest.objects.get(
+            pk=self.withdrawal_request.pk)
+        self.assertEqual(withdrawal_request.status, 'rejected')
+        self.assertEqual(withdrawal_request.reason, 'Insufficient funds')
+
+    def test_invalid_action(self):
+        # Staff user submitting an invalid action should display an error message
+        self.client.force_login(self.staff_user)
+        data = {
+            'withdrawal_request_id': self.withdrawal_request.pk,
+            'action': 'invalid_action'
+        }
+        response = self.client.post(reverse('approve_withdrawals'), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('approve_withdrawals'))
+        # Check for error message in messages (implementation might vary)
+        # ... (check for message existence and content)
+
+    def test_missing_withdrawal_request(self):
+        # Staff user submitting a POST request with a missing withdrawal request ID should display an error message
+        self.client.force_login(self.staff_user)
+        data = {'action': 'approve'}  # No withdrawal_request_id
+        response = self.client.post(reverse('approve_withdrawals'), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('approve_withdrawals'))
+        # Check for error message in messages (implementation might vary)
+        self.assertContains(response, 'Withdrawal request not found.',
+                            msg_prefix='Error message not found')
