@@ -419,15 +419,15 @@ def subscription_detail(request, tier_id):
 
 @login_required
 def history(request):
-    pending_requests = WithdrawalRequest.objects.filter(
-        creator=request.user.creatorprofile, status='pending')
-    total_withdrawn = WithdrawalRequest.objects.filter(
-        creator=request.user.creatorprofile, status='success')
-
+    """
+    This view retrives all the history of a creator's withdraw requests.
+    """
+    full_history = WithdrawalRequest.objects.filter(
+        creator=request.user.creatorprofile)
     history = []
     context = {}
-    if pending_requests:
-        for obj in pending_requests:
+    if full_history:
+        for obj in full_history:
             item = {}
             item['amount'] = obj.amount
             item['transaction_date'] = obj.request_date
@@ -436,20 +436,9 @@ def history(request):
             item['status'] = obj.status
             item['reason'] = obj.reason
             history.append(item)
-    if total_withdrawn:
-        for obj in total_withdrawn:
-            item = {}
-            item['amount'] = obj.amount
-            item['transaction_date'] = obj.processed_date
-            item['transaction_type'] = 'Withdraw'
-            item['account_number'] = obj.account_number
-            item['status'] = obj.status
-            item['reason'] = obj.reason
-            history.append(item)
-
+    
     context['history'] = history
     return render(request, 'patron/admin/pages/history.html', context)
-
 
 @login_required
 def make_payment(request, tier_id):
