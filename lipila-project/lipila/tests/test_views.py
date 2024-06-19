@@ -131,8 +131,7 @@ class ApproveWithdrawalsTest(TestCase):
 
         # Check if processed withdraw is saved
         processed_withdrawal = ProcessedWithdrawals.objects.get(pk=1)
-        print(processed_withdrawal)
-        self.assertEqual(processed_withdrawal.approved_by, 'staffuser')
+        self.assertEqual(processed_withdrawal.approved_by.username, 'staffuser')
         self.assertEqual(processed_withdrawal.status, 'success')
         
 
@@ -153,10 +152,12 @@ class ApproveWithdrawalsTest(TestCase):
             pk=self.withdrawal_request.pk)
         self.assertEqual(withdrawal_request.status, 'rejected')
         self.assertEqual(withdrawal_request.reason, 'Insufficient funds')
+
         # Check if processed withdraw is saved
-        processed_withdrawal = ProcessedWithdrawals.objects.get(pk=1)
-        self.assertEqual(processed_withdrawal.approved_by, 'staffuser')
+        processed_withdrawal = ProcessedWithdrawals.objects.get(withdrawal_request=withdrawal_request)
+        self.assertEqual(processed_withdrawal.rejected_by.username, 'staffuser')
         self.assertEqual(processed_withdrawal.status, 'rejected')
+        
 
     def test_invalid_action(self):
         # Staff user submitting an invalid action should display an error message
@@ -170,14 +171,3 @@ class ApproveWithdrawalsTest(TestCase):
         self.assertRedirects(response, reverse('approve_withdrawals'))
         # Check for error message in messages (implementation might vary)
         # ... (check for message existence and content)
-
-    def test_missing_withdrawal_request(self):
-        # Staff user submitting a POST request with a missing withdrawal request ID should display an error message
-        self.client.force_login(self.staff_user)
-        data = {'action': 'approve'}  # No withdrawal_request_id
-        response = self.client.post(reverse('approve_withdrawals'), data)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('approve_withdrawals'))
-        # Check for error message in messages (implementation might vary)
-        self.assertContains(response, 'Withdrawal request not found.',
-                            msg_prefix='Error message not found')

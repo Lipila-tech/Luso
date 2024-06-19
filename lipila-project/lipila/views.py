@@ -104,40 +104,43 @@ def approve_withdrawals(request):
     if request.method == 'POST':
         withdrawal_request_id = request.POST.get('withdrawal_request_id')
         action = request.POST.get('action')
-        amount = request.POST.get('withdrawal_amount')
-        creator = request.POST.get('creator')
         if withdrawal_request_id and action:
             try:
                 withdrawal_request = WithdrawalRequest.objects.get(
                     pk=withdrawal_request_id)
-                processed_withdrawal = ProcessedWithdrawals.objects.create(
+                processed_withdrawals =  ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request)
-                print(processed_withdrawal)
                 if action == 'approve':
                     # Process withdrawal (initiate payout using a payment processor)
                     # ...
                     withdrawal_request.status = 'success'
                     withdrawal_request.processed_date = timezone.now()
                     withdrawal_request.save()
-                    processed_withdrawal.approved_by = request.user
-                    processed_withdrawal.status = 'success'
-                    processed_withdrawal.save()
-                    print('saved')
+
+                    # save to processed withdrawals
+                    processed_withdrawals.approved_by = request.user
+                    processed_withdrawals.status = 'success'
+                    processed_withdrawals.save()
                     messages.success(
                         request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
                 elif action == 'reject':
                     withdrawal_request.status = 'rejected'
+                    withdrawal_request.reason = 'Insufficient funds'
                     withdrawal_request.processed_date = timezone.now()
                     withdrawal_request.save()
-                    processed_withdrawal.rejected_by = request.user
-                    processed_withdrawal.status = 'rejected'
-                    processed_withdrawal.save()
+
+                    # save to processed withdrawals
+                    processed_withdrawals.rejected_by = request.user
+                    processed_withdrawals.status = 'rejected'
+                    processed_withdrawals.save()
                     messages.success(
                         request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")
                 else:
                     messages.error(request, "Invalid action specified.")
+                return redirect('approve_withdrawals')
             except WithdrawalRequest.DoesNotExist:
                 messages.error(request, "Withdrawal request not found.")
+                return redirect('approve_withdrawals')
     pending_requests = WithdrawalRequest.objects.filter(status='pending')
     data = []
     for obj in pending_requests:

@@ -123,14 +123,17 @@ class WithdrawalRequest(models.Model):
 
 class ProcessedWithdrawals(models.Model):
     approved_by = models.ForeignKey(
-        get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_withdrawals')
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_withdrawals')
     approved_date = models.DateTimeField(auto_now_add=True)
     rejected_by = models.ForeignKey(
-        get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
     rejected_date = models.DateTimeField(auto_now_add=True)
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
     status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"Withdrawal - {self.approved_by} - Status: {self.status}"
+        if self.approved_by:
+            return f"Withdrawal - {self.approved_by.username} - Status: {self.status}"
+        else:
+            return f"Withdrawal - Not Approved Yet - Status: {self.status}"
