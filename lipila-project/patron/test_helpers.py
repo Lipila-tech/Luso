@@ -133,3 +133,20 @@ class TestHelperFunctions(TestCase):
         self.assertEqual(helpers.calculate_total_withdrawals(self.creator2_obj), 0.0)
 
 
+    def test_calculate_creators_balance(self):
+        """
+        Test if the function calculates and returns the expected values.
+        """
+        tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
+        tier2 = Tier.objects.get(pk=self.tiers_1[0]['id'])
+        subscription1  = TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
+        Payments.objects.create(subscription=subscription1, amount=200)
+        WithdrawalRequest.objects.create(creator=self.creator1_obj, amount=100, status='success')
+        WithdrawalRequest.objects.create(creator=self.creator1_obj, amount=100, status='success')
+        Contributions.objects.create(creator=self.creator_user1, patron=self.user1, amount=100)
+        self.assertEqual(helpers.calculate_creators_balance(self.creator1_obj), 100)
+        WithdrawalRequest.objects.create(creator=self.creator1_obj, amount=50, status='success')
+        self.assertEqual(helpers.calculate_creators_balance(self.creator1_obj), 50)
+
+
+
