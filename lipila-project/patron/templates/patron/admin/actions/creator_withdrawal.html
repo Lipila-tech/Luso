@@ -1,5 +1,6 @@
 {% extends 'admin_layout.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block title %} Withdraw Funds {% endblock %}
 
 {% block section %}
@@ -7,18 +8,22 @@
     <h3>Balance: {{total_payments}}</h3>
     {% if total_payments < 1 %} <h2>You have low balance.</h2>
         {% else %}
-        <h2>Request a Withdrawal</h2>
-        <form method="post" action="{% url 'patron:withdraw' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input class="btn btn-dark" type="submit">
-        </form>
+        <h4>Request a Withdrawal</h4>
+        <div class="withdraw-form">
+            <form method="post" action="{% url 'patron:withdraw' %}">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <input class="btn btn-dark" type="submit">
+            </form>
+        </div>
         {% endif %}
         {% if pending_requests %}
-        <h4>Pending Requests</h4>
+        <br><br>
+        <h5>Pending Requests</h5>
         <table class="table">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Amount</th>
                     <th>Request Date</th>
                     <th>Transaction ID</th>
@@ -29,34 +34,12 @@
             <tbody>
                 {% for request in pending_requests %}
                 <tr>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ request.amount }}</td>
                     <td>{{ request.request_date }}</td>
                     <td>{{ request.transaction_id|safe }}</td>
                     <td>{{ request.account_number }}</td>
                     <td>{{ request.payment_method }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
-        {% if approved_payouts %}
-        <h2>Approved Payouts</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Amount</th>
-                    <th>Payment Date</th>
-                    <th>Transaction ID</th>
-                    <th>Payment Method</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for payout in approved_payouts %}
-                <tr>
-                    <td>{{ payout.amount }}</td>
-                    <td>{{ payout.processed_date }}</td>
-                    <td>{{ payout.account_number }}</td> # Escape for security
-                    <td>{{ payout.payment_method }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
