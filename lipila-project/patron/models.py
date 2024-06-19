@@ -116,9 +116,9 @@ class WithdrawalRequest(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     account_number = models.CharField(max_length=30)
     request_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
     processed_date = models.DateTimeField(blank=True, null=True)
-    reason = models.CharField(max_length=100)
+    reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"Withdrawal Request - {self.creator.user.username} - Amount: {self.amount}"
