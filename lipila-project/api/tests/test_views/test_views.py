@@ -1,6 +1,6 @@
 import os
 from django.contrib.auth.models import User
-from api.models import LipilaCollection, User
+from api.models import LipilaCollection, LipilaDisbursement
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
@@ -13,15 +13,72 @@ class LipilaCollectionViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
+        cls.user = User.objects.create(username='testuser')
+        cls.url = reverse('disburse-list')
+        
+    def test_make_deposit_success(self):
+        
+        data = {'amount': '100', 'payee_account_number': '0966443322',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+
+        response = self.client.post(self.url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(LipilaDisbursement.objects.count(), 1)
+        self.assertEqual(LipilaDisbursement.objects.get().status, 'success')
+        self.assertEqual(LipilaDisbursement.objects.get().api_user.username, 'tetsuser')
+        # Attempt to convert the response to a UUID object
+        try:
+            # Attempt to convert the response to a UUID object
+            UUID(LipilaDisbursement.objects.get().reference_id)
+            self.assertTrue(True)  # Test passes if conversion is successful
+        except ValueError:
+            self.fail("get_uuid4 did not return a valid UUID string.")
+
+    def test_deposit_lipila_fail_validation(self):
+        data = {'amount': '100', 'payee_account_number': 'invalid',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(LipilaDisbursement.objects.count(), 0)
+
+    def test_deposit_no_user_fail_payer(self):
+        User.objects.all().delete
+        data = {'amount': '100', 'payee_account_number': '0966443322',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(LipilaDisbursement.objects.count(), 0)
+
+    def test_get_disbursed_success(self):
+        LipilaDisbursement.objects.create(
+            api_user=self.user, amount=100, status='success')
+        response = self.client.get(self.url, {'api_user': self.user.username})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_get_fail_no_payee(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_fail_payee_not_found(self):
+        response = self.client.get(self.url, {'api_user': 'not_a_user'})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class LipilaCollectionViewTest(APITestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
         cls.user = User.objects.create(username='test_user1')
+        cls.url = reverse('payments-list')
         
     def test_create_payment_success(self):
-        url = reverse('payments-list')
-
         data = {'amount': '100', 'payer_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(LipilaCollection.objects.count(), 1)
@@ -36,33 +93,28 @@ class LipilaCollectionViewTest(APITestCase):
             self.fail("get_uuid4 did not return a valid UUID string.")
 
     def test_create_lipila_fail_validation(self):
-        url = reverse('payments-list')
         data = {'payer': 'lipila', 'amount': 'invalid'}
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(LipilaCollection.objects.count(), 0)
 
     def test_create_nonlipila_fail_payer(self):
-        url = reverse('payments-list')
         data = {'amount': 100, 'payer': '0809123456'}
-        response = self.client.post(url, data)
+        response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(LipilaCollection.objects.count(), 0)
 
-    def test_payment_with_user_instance_success(self):
+    def test_get_payments_success(self):
         LipilaCollection.objects.create(
             api_user=self.user, amount=100, status='success')
-        url = reverse('payments-list')
-        response = self.client.get(url, {'api_user': self.user.username})
+        response = self.client.get(self.url, {'api_user': self.user.username})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
 
-    def test_list_fail_no_payee(self):
-        url = reverse('payments-list')
-        response = self.client.get(url)
+    def test_get_fail_no_payee(self):
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_list_fail_payee_not_found(self):
-        url = reverse('payments-list')
-        response = self.client.get(url, {'api_user': 'not_a_user'})
+    def test_get_fail_payee_not_found(self):
+        response = self.client.get(self.url, {'api_user': 'not_a_user'})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

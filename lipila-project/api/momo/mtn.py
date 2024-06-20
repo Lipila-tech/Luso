@@ -67,7 +67,7 @@ class MTNBase():
         Returns:
             HTTP Response
         """
-        url = f"https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{subscription_key}/apikey"
+        url = f"https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{self.x_reference_id}/apikey"
 
         payload = {}
         headers = {
