@@ -150,7 +150,7 @@ class MTNBase():
 
 class Collections(MTNBase):
     """
-    Handles the collections endpoint requests
+    This class provisions the MTN sandbox collections endpoints.
     """
 
     def __init__(self):
@@ -206,11 +206,17 @@ class Collections(MTNBase):
                 return Response(status=500, data={'reason':'mtn server error'})
 
     def get_payment_status(self, reference_id) -> Response:
-        ''' checks status of payment SUCCESS or FAILED
-        200 SUCCESS/FAIL, 404 not Found, 400 Bad Request
-        '''
-        url = "https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{}".format(
-            reference_id)
+        """
+         Queries the mtn api to get the transaction status.
+        
+        Args:
+            referenceid(str): The id that was used to make the payment.
+
+        Returns:
+            A HTTP response.
+        """
+        
+        url = f"https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{reference_id}"
         headers = {
             'X-Target-Environment': self.x_target_environment,
             'Ocp-Apim-Subscription-Key': self.subscription_col_key,
@@ -232,14 +238,26 @@ class Collections(MTNBase):
 
 class Disbursement(MTNBase):
     """
-    Handles the disbursement endpoint requests
+    This class provisions the MTN sandbox disbursements endpoints.
     """
 
     def __init__(self):
         super().__init__()
         self.subscription_dis_key = env("MTN_MOMO_DISBURSEMENT_KEY")
 
-    def deposit(self, amount: str, payer: str, reference_id: str):
+    def deposit(self, amount: str, payer: str, reference_id: str)->Response:
+        """
+        This method queries the MTN momo deposit endpoint.
+
+        Args:
+            amount(str): The amount to send to the payer.
+            payer(str): The mtn momo registered mobile number.
+            reference_id(str): Unique str formated uuid number to that identitifies the tr
+                        transaction.
+
+        Returns:
+            A HTTP Response.
+        """
         is_valid = is_payment_details_valid(amount, payer, reference_id)
         if is_valid:
             """ deposit funds to multiple users"""
@@ -275,10 +293,17 @@ class Disbursement(MTNBase):
             except Exception as e:
                 return Response(status=500, data={'reason':'mtn server error'})
 
-    def get_transaction_status(self, transaction: str, referenceid: str):
-        ''' checks status of deposit or deposit SUCCESS or FAILED
-        200 SUCCESS/FAIL, 404 nOT Found, 400 Bad Request
-        '''
+    def get_transaction_status(self, transaction: str, referenceid: str)->Response:
+        """
+        Queries the mtn api to get the transaction status.
+        
+        Args:
+            transaction(str): The type of transactions (deposit, transfer, refund)
+            referenceid(str): The id that was used to make the deposit.
+
+        Returns:
+            A HTTP response.
+        """
         url = f"https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/{transaction}/{referenceid}"
         headers = {
             'X-Target-Environment': self.x_target_environment,
@@ -298,10 +323,12 @@ class Disbursement(MTNBase):
         except ValueError:
             return Response(status=response.status_code)
 
-    def get_account_balance(self):
-        ''' check own account balance
-        200 SUCCESS/FAIL, 404 nOT Found, 400 Bad Request
-        '''
+    def get_account_balance(self)->Response:
+        """ 
+        Queries the mtn api for account balance.
+        Returns:
+            HTTP Response.
+        """
         url = f"https://sandbox.momodeveloper.mtn.com/disbursement/v1_0/account/balance"
         headers = {
             'X-Target-Environment': self.x_target_environment,

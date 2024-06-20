@@ -13,7 +13,7 @@ from rest_framework.authtoken.models import Token
 # My modules
 from .serializers import LipilaCollectionSerializer, LipilaDisbursementSerializer
 from .models import LipilaCollection, LipilaDisbursement
-from api.momo.mtn import Collections
+from api.momo.mtn import Collections, Disbursement
 from .helpers import get_api_user
 
 # Define global variables
@@ -62,7 +62,51 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
         """
         Handles POST requests, deserializing data and updating default fields.
         """
-        return Response({'message': 'accepted'}, status=202)
+        try:
+            data = request.data
+            payer = str(data['payee_account_number'])
+            amount = str(data['amount'])
+            serializer = LipilaDisbursementSerializer(data=data)
+            provisioned_mtn_api_user = Disbursement()
+            provisioned_mtn_api_user.provision_sandbox(
+                provisioned_mtn_api_user.subscription_col_key)
+            provisioned_mtn_api_user.create_api_token(
+                provisioned_mtn_api_user.subscription_col_key, 'collection')
+
+            if serializer.is_valid():
+                reference_id = provisioned_mtn_api_user.x_reference_id
+                request_pay = provisioned_mtn_api_user.request_to_pay(
+                    amount=amount, payer=payer, reference_id=str(reference_id))
+
+                if request_pay.status_code == 202:
+                    api_user = User.objects.get(pk=1)
+                    payment = serializer.save()
+                    payment.api_user = api_user
+                    payment.updated_at = timezone.now()
+                    payment.reference_id = reference_id
+                    payment.status = 'accepted'  # Set status based on mapping
+                    payment.save()
+                    transaction = LipilaDisbursement.objects.filter(
+                        reference_id=reference_id)
+                    for r in transaction:
+                        status = provisioned_mtn_api_user.get_payment_status(
+                            reference_id)
+                        if status.status_code == 200:
+                            payment.reference_id = reference_id
+                            payment.status = 'success'
+                            payment.save()
+                        else:
+                            payment.status = 'failed'
+                    payment.save()
+                elif request_pay.status_code == 403:
+                    status_code = request_pay.status_code
+                    return Response({'message': 'Request exceeded'}, status=status_code)
+                elif request_pay.status_code == 400:
+                    status_code = request_pay.status_code
+                    return Response({'message': 'Bad request to payment gateway'}, status=status_code)
+        except Exception as e:
+            return Response({'message': f'Key Error in submitted data {e}'}, status=400)
+        return Response({'message': 'request accepted, wait for client approval'}, status=202)
 
     def list(self, request):
         api_user = request.query_params.get('api_user')

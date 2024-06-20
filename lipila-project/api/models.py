@@ -12,7 +12,7 @@ STATUS_CHOICES = (
 
 
 class LipilaDisbursement(models.Model):
-    """Stores data about transfers to multiple"""
+    """Stores disbursement data"""
     api_user = models.ForeignKey(User,
                               related_name='disbursements',
                               on_delete=models.CASCADE,
@@ -39,7 +39,7 @@ class LipilaDisbursement(models.Model):
 
 class LipilaCollection(models.Model):
     """
-    Stores data about bill collection to registered users.
+    Stores collection data.
     """
     api_user = models.ForeignKey(User, related_name='payments_received',
                               on_delete=models.CASCADE, null=True, blank=True)
