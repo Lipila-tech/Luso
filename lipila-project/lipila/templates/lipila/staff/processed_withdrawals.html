@@ -1,0 +1,42 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %} Processed Withdrawals {% endblock %}
+
+{% block section %}
+<h2>Processed Withdrawals</h2>
+{% if processed_withdrawals %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Creator</th>
+                <th>Amount Requested</th>
+                <th>Status</th>
+                <th>Approved Date</th>
+                <th>Rejected Date</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drawl in processed_withdrawals %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ drawl.creator }}</td>
+                <td>{{ drawl.amount }}</td>
+                <td>{{ drawl.status }}</td>
+                <td>{{ drawl.approved }}</td>
+                <td>{{ drawl.rejected }}</td>
+                <td>{{ drawl.reason }}</td>
+                <td>
+                    <a href="#">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You don't have any Processed withdrawals at this time.</p>
+{% endif %}
+
+{% endblock %}

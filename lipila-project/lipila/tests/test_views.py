@@ -97,7 +97,8 @@ class ApproveWithdrawalsTest(TestCase):
         # Unauthenticated user should be redirected to login page
         response = self.client.get(reverse('approve_withdrawals'))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/?next=/approve_withdrawals/')
+        self.assertRedirects(
+            response, '/accounts/login/?next=/approve_withdrawals/')
 
     def test_non_staff_access(self):
         # Non-staff user should be forbidden
@@ -131,9 +132,9 @@ class ApproveWithdrawalsTest(TestCase):
 
         # Check if processed withdraw is saved
         processed_withdrawal = ProcessedWithdrawals.objects.get(pk=1)
-        self.assertEqual(processed_withdrawal.approved_by.username, 'staffuser')
+        self.assertEqual(
+            processed_withdrawal.approved_by.username, 'staffuser')
         self.assertEqual(processed_withdrawal.status, 'success')
-        
 
     def test_reject_withdrawal(self):
         # Staff user can reject a withdrawal request
@@ -154,10 +155,11 @@ class ApproveWithdrawalsTest(TestCase):
         self.assertEqual(withdrawal_request.reason, 'Insufficient funds')
 
         # Check if processed withdraw is saved
-        processed_withdrawal = ProcessedWithdrawals.objects.get(withdrawal_request=withdrawal_request)
-        self.assertEqual(processed_withdrawal.rejected_by.username, 'staffuser')
+        processed_withdrawal = ProcessedWithdrawals.objects.get(
+            withdrawal_request=withdrawal_request)
+        self.assertEqual(
+            processed_withdrawal.rejected_by.username, 'staffuser')
         self.assertEqual(processed_withdrawal.status, 'rejected')
-        
 
     def test_invalid_action(self):
         # Staff user submitting an invalid action should display an error message
@@ -171,3 +173,17 @@ class ApproveWithdrawalsTest(TestCase):
         self.assertRedirects(response, reverse('approve_withdrawals'))
         # Check for error message in messages (implementation might vary)
         # ... (check for message existence and content)
+
+
+class ProcessedWithdrawalsTest(TestCase):
+    def setUp(self):
+        # Create a staff user
+        self.staff_user = User.objects.create_user(
+            username='staffuser', password='staffpassword', is_staff=True)
+        self.client = Client()
+
+    def test_staff_access_get(self):
+        self.client.force_login(self.staff_user)
+        response = self.client.get(reverse('processed_withdrawals'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('lipila/staff/processed_withdrawals.html')

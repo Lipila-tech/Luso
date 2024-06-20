@@ -118,7 +118,8 @@ class WithdrawalRequest(models.Model):
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return f"Withdrawal Request - {self.creator.user.username} - Amount: {self.amount}"
+        processed = True if self.processed_date else False
+        return f"By - {self.creator.user.username} - Amount: {self.amount} - Processed - {self.processed_date}"
 
 
 class ProcessedWithdrawals(models.Model):

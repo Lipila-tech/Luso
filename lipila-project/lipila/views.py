@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
+from django.db.models import Q
 # Custom Models
 from lipila.helpers import (
     apology, get_lipila_contact_info, get_user_object,
@@ -108,7 +109,7 @@ def approve_withdrawals(request):
             try:
                 withdrawal_request = WithdrawalRequest.objects.get(
                     pk=withdrawal_request_id)
-                processed_withdrawals =  ProcessedWithdrawals.objects.create(
+                processed_withdrawals = ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request)
                 if action == 'approve':
                     # Process withdrawal (initiate payout using a payment processor)
@@ -154,3 +155,23 @@ def approve_withdrawals(request):
     context = {}
     context['pending_requests'] = data
     return render(request, 'lipila/staff/approve_withdrawals.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
+def processed_withdrawals(request):
+    processed_withdrawals = ProcessedWithdrawals.objects.filter(
+        Q(approved_by=request.user) | Q(rejected_by=request.user))
+    data = []
+    for item in processed_withdrawals:
+        items = {}
+        items['creator'] = item.withdrawal_request.creator
+        items['amount'] = item.withdrawal_request.amount
+        items['status'] = item.status
+        items['approved'] = item.approved_date
+        items['rejected'] = item.rejected_date
+        items['reason'] = item.withdrawal_request.reason
+        data.append(items)
+    context = {}
+    context['processed_withdrawals'] = data
+    return render(request, 'lipila/staff/processed_withdrawals.html', context)
