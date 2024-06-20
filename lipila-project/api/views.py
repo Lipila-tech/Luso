@@ -71,7 +71,7 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
             provisioned_mtn_api_user.provision_sandbox(
                 provisioned_mtn_api_user.subscription_dis_key)
             provisioned_mtn_api_user.create_api_token(
-                provisioned_mtn_api_user.subscription_dis_key, 'collection')
+                provisioned_mtn_api_user.subscription_dis_key, 'disbursement')
 
             if serializer.is_valid():
                 reference_id = provisioned_mtn_api_user.x_reference_id

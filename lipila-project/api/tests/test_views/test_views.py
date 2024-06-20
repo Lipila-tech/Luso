@@ -8,7 +8,7 @@ from uuid import UUID
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-class LipilaCollectionViewTest(APITestCase):
+class LipilaDisbursementViewTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -26,7 +26,7 @@ class LipilaCollectionViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(LipilaDisbursement.objects.count(), 1)
         self.assertEqual(LipilaDisbursement.objects.get().status, 'success')
-        self.assertEqual(LipilaDisbursement.objects.get().api_user.username, 'tetsuser')
+        self.assertEqual(LipilaDisbursement.objects.get().api_user.username, 'testuser')
         # Attempt to convert the response to a UUID object
         try:
             # Attempt to convert the response to a UUID object
@@ -43,7 +43,7 @@ class LipilaCollectionViewTest(APITestCase):
         self.assertEqual(LipilaDisbursement.objects.count(), 0)
 
     def test_deposit_no_user_fail_payer(self):
-        User.objects.all().delete
+        User.objects.all().delete()
         data = {'amount': '100', 'payee_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
         response = self.client.post(self.url, data)
