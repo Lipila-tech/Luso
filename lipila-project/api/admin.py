@@ -38,13 +38,13 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class DisbursementAdmin(admin.ModelAdmin):
-    list_display = ('payer', 'payee', 'payee_account', 'payment_amount', 'payment_method',
-                    'description', 'transaction_id', 'payment_date')
+    list_display = ['payee_account_number', 'amount',
+                  'reference_id', 'payment_method', 'description']
 
 
-class LipilaCOllectionAdmin(admin.ModelAdmin):
-    list_display = ('payer', 'payee', 'amount',
-                    'description', 'reference_id', 'timestamp', 'status')
+class LipilaCollectionAdmin(admin.ModelAdmin):
+    list_display = ['payer_account_number', 'amount',
+                  'reference_id', 'payment_method', 'description']
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -108,7 +108,7 @@ admin.site.register(Contributions, ContributionsAdmin)
 admin.site.register(ProcessedWithdrawals, ProcessedWithdrawalAdmin)
 admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
-admin.site.register(LipilaCollection, LipilaCOllectionAdmin)
+admin.site.register(LipilaCollection, LipilaCollectionAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BNPL, BNPLAdmin)
 admin.site.register(ContactInfo, ContactInfoAdmin)

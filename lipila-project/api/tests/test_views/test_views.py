@@ -10,20 +10,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class LipilaCollectionViewTest(APITestCase):
 
-    def setUp(self):
-        self.user = User.objects.create(username='test_user1')
-        self.user1 = User.objects.create(username='test_user2')
-
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.user = User.objects.create(username='test_user1')
+        
     def test_create_payment_success(self):
         url = reverse('payments-list')
-        
-        data = {'payee':self.user.id, 'amount': '100', 'payer': '0809123456', 'reference_id': 'examplepayer'}
-        
+
+        data = {'amount': '100', 'payer_account_number': '0966443322',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+
         response = self.client.post(url, data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertEqual(LipilaCollection.objects.count(), 1)
-        self.assertEqual(LipilaCollection.objects.get().status, 'accepted')
+        self.assertEqual(LipilaCollection.objects.get().status, 'success')
+        self.assertEqual(LipilaCollection.objects.get().api_user.username, 'test_user1')
         # Attempt to convert the response to a UUID object
         try:
             # Attempt to convert the response to a UUID object
@@ -39,7 +42,6 @@ class LipilaCollectionViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(LipilaCollection.objects.count(), 0)
 
-
     def test_create_nonlipila_fail_payer(self):
         url = reverse('payments-list')
         data = {'amount': 100, 'payer': '0809123456'}
@@ -48,9 +50,10 @@ class LipilaCollectionViewTest(APITestCase):
         self.assertEqual(LipilaCollection.objects.count(), 0)
 
     def test_payment_with_user_instance_success(self):
-        LipilaCollection.objects.create(payee=self.user, amount=100, status='success')
+        LipilaCollection.objects.create(
+            api_user=self.user, amount=100, status='success')
         url = reverse('payments-list')
-        response = self.client.get(url, {'payee': self.user.username})
+        response = self.client.get(url, {'api_user': self.user.username})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
 
@@ -61,6 +64,5 @@ class LipilaCollectionViewTest(APITestCase):
 
     def test_list_fail_payee_not_found(self):
         url = reverse('payments-list')
-        response = self.client.get(url, {'payee': 'not_a_user'})
+        response = self.client.get(url, {'api_user': 'not_a_user'})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-

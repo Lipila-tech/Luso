@@ -157,8 +157,19 @@ class Collections(MTNBase):
         super().__init__()
         self.subscription_col_key = env("MTN_MOMO_COLLECTIONS_KEY")
 
-    def request_to_pay(self, amount: str, payer: str, reference_id: str):
-        # validate details
+    def request_to_pay(self, amount: str, payer: str, reference_id: str)->Response:
+        """
+        This method queries the MTN momo request to pay endpoint.
+
+        Args:
+            amount(str): The amount to collect from the payer.
+            payer(str): The mtn momo registered mobile number.
+            reference_id(str): Unique str formated uuid number to that identitifies the tr
+                        transaction.
+
+        Returns:
+            A HTTP Response.
+        """
         is_valid = is_payment_details_valid(amount, payer, reference_id)
         if is_valid:
             """ Query the Collections API"""

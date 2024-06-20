@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import (LipilaCollection, LipilaDisbursement)
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -20,4 +21,12 @@ class UserSerializer(serializers.ModelSerializer):
 class LipilaCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
-        fields = ('payer', 'payee', 'amount', 'reference_id')
+        fields = ['payer_account_number', 'amount',
+                  'payment_method', 'description']
+
+
+class LipilaDisbursementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LipilaDisbursement
+        fields = ['payee_account_number', 'amount',
+                  'payment_method', 'description']

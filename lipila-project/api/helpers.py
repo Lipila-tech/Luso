@@ -3,9 +3,30 @@ Helper Functions
 """
 import requests
 from base64 import b64encode
+from django.contrib.auth.models import User
+from rest_framework.response import Response
 import datetime
 import random
 unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"  # Example: '20231125154054_7548'
+
+
+
+def get_api_user(user:str)-> User:
+    """
+    This function reteives a user registered as a api user.
+
+    Args:
+        user(str): The user of the user to get.
+
+    Returns:
+        A User obeject.
+    """
+    try:
+        user = User.objects.get(username=user)
+        return user
+    except User.DoesNotExist:
+        return Response({"error": "api user not found"}, status=404)
+
 
 def get_uuid4() -> str:
         """

@@ -217,7 +217,7 @@ class MTNDisbursementTestCase(TestCase):
                          202)  # assert successful accepted
 
     def test_get_deposit_status_completed(self):
-        """Test get transer status method"""
+        """Test get transfer status method"""
         get_deposit_status = self.momo1.get_transaction_status(
             'deposit', self.momo1.x_reference_id)  # check the payment status
         # assert completed successfullys
