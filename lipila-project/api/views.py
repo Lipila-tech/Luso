@@ -64,19 +64,19 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
         """
         try:
             data = request.data
-            payer = str(data['payee_account_number'])
+            payee = str(data['payee_account_number'])
             amount = str(data['amount'])
             serializer = LipilaDisbursementSerializer(data=data)
             provisioned_mtn_api_user = Disbursement()
             provisioned_mtn_api_user.provision_sandbox(
-                provisioned_mtn_api_user.subscription_col_key)
+                provisioned_mtn_api_user.subscription_dis_key)
             provisioned_mtn_api_user.create_api_token(
-                provisioned_mtn_api_user.subscription_col_key, 'collection')
+                provisioned_mtn_api_user.subscription_dis_key, 'collection')
 
             if serializer.is_valid():
                 reference_id = provisioned_mtn_api_user.x_reference_id
-                request_pay = provisioned_mtn_api_user.request_to_pay(
-                    amount=amount, payer=payer, reference_id=str(reference_id))
+                request_pay = provisioned_mtn_api_user.deposit(
+                    amount=amount, payer=payee, reference_id=str(reference_id))
 
                 if request_pay.status_code == 202:
                     api_user = User.objects.get(pk=1)
@@ -89,7 +89,7 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                     transaction = LipilaDisbursement.objects.filter(
                         reference_id=reference_id)
                     for r in transaction:
-                        status = provisioned_mtn_api_user.get_payment_status(
+                        status = provisioned_mtn_api_user.get_transaction_status('deposit',
                             reference_id)
                         if status.status_code == 200:
                             payment.reference_id = reference_id

@@ -21,11 +21,16 @@ class MTNBase():
         self.api_key = ''
         self.api_token = 'Bearer '
 
-    def create_api_user(self, subscription_key: str):
+    def create_api_user(self, subscription_key: str) -> Response:
         """
-        Used to create an API user in the sandbox target environment.
-            X-Reference-Id(string) Format - UUID V4.
-            Recource ID for the API user to be created.
+        Used to create an API user in the mtn sandbox.
+
+        Args:
+            subscription_key(str): MTN developer provided key
+            which provides access to the (collections or disbursement) api.
+
+        Returns:
+            HTTP Response
         """
         url = "https://sandbox.momodeveloper.mtn.com/v1_0/apiuser"
 
@@ -51,16 +56,18 @@ class MTNBase():
         except ValueError:
             return Response(status=response.status_code)
 
-    def create_api_key(self, subscription_key: str):
+    def create_api_key(self, subscription_key: str) -> Response:
         """
         Used to create an API key for an API user in the sandbox target environment.
-        X-Reference-Id(string) Format - UUID V4.
-            Recource ID for the API user to be created.
-        Ocp-Apim-Subscription-Key(string)Subscription key which provides access to this API.
-        Found in your momo Profile.
+
+        Args:
+            subscription_key(str): MTN developer provided key
+            which provides access to the (collections or disbursement) api.
+
+        Returns:
+            HTTP Response
         """
-        url = "https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{}/apikey".format(
-            self.x_reference_id)
+        url = f"https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{subscription_key}/apikey"
 
         payload = {}
         headers = {
@@ -95,12 +102,18 @@ class MTNBase():
         except ValueError:
             return Response(status=api_user.status_code)
 
-    def create_api_token(self, subscription_key: str, endpoint: str):
+    def create_api_token(self, subscription_key: str, endpoint: str)->Response:
         """
-        This operation is used to create an access token which can then
+        This operation is used to create an access token to the mtn api which can then
         be used to authorize and authenticate towards the other end-points
         of the API.
-        requires api key
+
+        Args:
+            subscription_key(str): MTN developer provided key
+            which provides access to the (collections or disbursement) api.
+
+        Returns:
+            HTTP Response
         """
         url = f"https://sandbox.momodeveloper.mtn.com/{endpoint}/token/"
 
@@ -128,10 +141,18 @@ class MTNBase():
             accountHolderId: str,
             endpoint: str
     ):
-        ''' checks is a payee account exists
-        200 OK, 409 conflict, 400 Bad Request
-        requires api token
-        '''
+        """
+        Checks if a user account is registered with mtn momo.
+        Args:
+        subscription_key(str): MTN developer provided key
+            which provides access to the (collections or disbursement) api.
+        accountHlderIdType(str): The type of account, can be msisdn or email
+        accountHolderId(str): The mobile number or email address to validate.
+        endpoint(str): The api endpoint either collection or disbursement
+
+        Returns:
+            HTTP Reponse.
+        """
         url = f"https://sandbox.momodeveloper.mtn.com/{endpoint}/v1_0/accountholder/{accountHolderIdType}/{accountHolderId}/active"
         headers = {
             'X-Target-Environment': self.x_target_environment,
@@ -157,7 +178,7 @@ class Collections(MTNBase):
         super().__init__()
         self.subscription_col_key = env("MTN_MOMO_COLLECTIONS_KEY")
 
-    def request_to_pay(self, amount: str, payer: str, reference_id: str)->Response:
+    def request_to_pay(self, amount: str, payer: str, reference_id: str) -> Response:
         """
         This method queries the MTN momo request to pay endpoint.
 
@@ -195,27 +216,27 @@ class Collections(MTNBase):
                 }
                 response = requests.post(url, headers=headers, data=payload)
                 if response.status_code == 202:
-                    return Response(status=202, data={'message':'pending'})
+                    return Response(status=202, data={'message': 'pending'})
                 elif response.status_code == 400:
-                    return Response(status=400, data={'reason':'Bad Request'})
+                    return Response(status=400, data={'reason': 'Bad Request'})
                 elif response.status_code == 409:
-                    return Response(status=409, data={'reason':'Conflict user exists'})
+                    return Response(status=409, data={'reason': 'Conflict user exists'})
                 elif response.status_code == 500:
-                    return Response(status=500, data={'reason':'mtn server error'})
+                    return Response(status=500, data={'reason': 'mtn server error'})
             except Exception as e:
-                return Response(status=500, data={'reason':'mtn server error'})
+                return Response(status=500, data={'reason': 'mtn server error'})
 
     def get_payment_status(self, reference_id) -> Response:
         """
          Queries the mtn api to get the transaction status.
-        
+
         Args:
             referenceid(str): The id that was used to make the payment.
 
         Returns:
             A HTTP response.
         """
-        
+
         url = f"https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{reference_id}"
         headers = {
             'X-Target-Environment': self.x_target_environment,
@@ -227,9 +248,9 @@ class Collections(MTNBase):
             if response.status_code == 200:
                 return response
             elif response.status_code == 400:
-                return Response(status=400, data={'reason':'Bad Request'})
+                return Response(status=400, data={'reason': 'Bad Request'})
             elif response.status_code == 404:
-                return Response(status=404, data={'reason':'Not Found'})
+                return Response(status=404, data={'reason': 'Not Found'})
             elif response.status_code == 500:
                 raise ValueError("Mtn Server error")
         except ValueError:
@@ -245,7 +266,7 @@ class Disbursement(MTNBase):
         super().__init__()
         self.subscription_dis_key = env("MTN_MOMO_DISBURSEMENT_KEY")
 
-    def deposit(self, amount: str, payer: str, reference_id: str)->Response:
+    def deposit(self, amount: str, payer: str, reference_id: str) -> Response:
         """
         This method queries the MTN momo deposit endpoint.
 
@@ -285,18 +306,18 @@ class Disbursement(MTNBase):
                 if response.status_code == 202:
                     return response
                 elif response.status_code == 400:
-                    return Response(status=400, data={'reason':'Bad Request'})
+                    return Response(status=400, data={'reason': 'Bad Request'})
                 elif response.status_code == 409:
-                    return Response(status=409, data={'reason':'Conflict user exists'})
+                    return Response(status=409, data={'reason': 'Conflict user exists'})
                 elif response.status_code == 500:
-                    return Response(status=500, data={'reason':'mtn server error'})
+                    return Response(status=500, data={'reason': 'mtn server error'})
             except Exception as e:
-                return Response(status=500, data={'reason':'mtn server error'})
+                return Response(status=500, data={'reason': 'mtn server error'})
 
-    def get_transaction_status(self, transaction: str, referenceid: str)->Response:
+    def get_transaction_status(self, transaction: str, referenceid: str) -> Response:
         """
         Queries the mtn api to get the transaction status.
-        
+
         Args:
             transaction(str): The type of transactions (deposit, transfer, refund)
             referenceid(str): The id that was used to make the deposit.
@@ -315,15 +336,15 @@ class Disbursement(MTNBase):
             if response.status_code == 200:
                 return response
             elif response.status_code == 400:
-                return Response(status=400, data={'reason':'Bad Request'})
+                return Response(status=400, data={'reason': 'Bad Request'})
             elif response.status_code == 404:
-                return Response(status=404, data={'reason':'Not Found'})
+                return Response(status=404, data={'reason': 'Not Found'})
             elif response.status_code == 500:
                 raise ValueError("Mtn Server error")
         except ValueError:
             return Response(status=response.status_code)
 
-    def get_account_balance(self)->Response:
+    def get_account_balance(self) -> Response:
         """ 
         Queries the mtn api for account balance.
         Returns:
@@ -346,9 +367,9 @@ class Disbursement(MTNBase):
                 """
                 return response
             elif response.status_code == 400:
-                return Response(status=400, data={'reason':'Bad Request'})
+                return Response(status=400, data={'reason': 'Bad Request'})
             elif response.status_code == 404:
-                return Response(status=404, data={'reason':'Not Found'})
+                return Response(status=404, data={'reason': 'Not Found'})
             elif response.status_code == 500:
                 raise ValueError("Mtn Server error")
         except ValueError:
