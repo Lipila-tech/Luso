@@ -543,3 +543,25 @@ def payments_history(request):
     # context['payments'] = payments
 
     return render(request, 'patron/admin/pages/payments.html', context)
+
+
+@login_required
+def subscription_payments_history(request):
+    """
+    Retrieves an authenticated User's payment history.
+    """
+    context = {}
+    user = get_user_object(request.user)
+    context['user'] = user
+    return render(request, 'patron/admin/pages/payments_received.html', context)
+
+
+@login_required
+def contributions_history(request):
+    """
+    Retrieves an authenticated User's payment history.
+    """
+    context = {}
+    user = get_user_object(request.user)
+    context['user'] = user
+    return render(request, 'patron/admin/pages/contributions_received.html', context)

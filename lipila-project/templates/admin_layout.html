@@ -170,6 +170,16 @@
                             <i class="bi bi-circle"></i><span>History</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{% url 'patron:subscriptions_history' %}">
+                            <i class="bi bi-circle"></i><span>Subscriptions Paid</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'patron:contributions_history' %}">
+                            <i class="bi bi-circle"></i><span>Contributions Received</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             {% elif request.user.is_staff %}

@@ -29,7 +29,7 @@
                                     <h3>Buy me a coffee</h3>
                                     <p>Make a one-time contribution to support my work.</p>
                                 </div>
-                                <div class="price">K50</div>
+                                <div class="price">K50/Month</div>
                                 <div class="join-status">
                                     <a href="{% url 'patron:contribute' creator=creator %}"
                                         class="edit-button joined">Contribute</a>
@@ -44,7 +44,7 @@
                                         <h3>{{tier.name}}</h3>
                                         <p>{{tier.description}}</p>
                                     </div>
-                                    <div class="price">{{tier.price}}</div>
+                                    <div class="price">{{tier.price}}/Month</div>
                                     {% endif %}
                                     <div class="edit-button-container">
                                         <button class="edit-button">Join</button>

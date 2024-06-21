@@ -17,11 +17,13 @@ urlpatterns = [
      path('join/<int:tier_id>', views.join, name='join_tier'),
      path('unsubscribe/<int:tier_id>', views.unsubscribe_patron, name='unsubscribe'),
      path('patron/all/', views.patron, name='patrons'),
-     path('payments/history/', views.payments_history, name='payments'),
      path('subscriptions/', views.subscriptions, name='subscriptions'),
      path('subscription/<int:tier_id>', views.subscription_detail, name='subscription_detail'),
      path('withdraw/', views.creator_withdrawal, name='withdraw'),
+     path('payments/history/', views.payments_history, name='payments'),
      path('history/', views.history, name='history'),
+     path('payments/subscriptions/', views.subscription_payments_history, name='subscriptions_history'),
+     path('payments/contributions/', views.contributions_history, name='contributions_history'),
 ]
 
 

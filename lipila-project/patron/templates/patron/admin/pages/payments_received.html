@@ -1,0 +1,31 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %} Subscription Payments {% endblock %}
+
+{% block section %}
+<h4>Subscription Payments</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Patron</th>
+            <th>Message</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in subscriptions %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.amount }}</td>
+            <td>{{ item.transaction_date }}</td>
+            <td>{{ item.patron }}</td>
+            <td>{{ item.message }}</td>
+            <td>{{ item.status |upper }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
