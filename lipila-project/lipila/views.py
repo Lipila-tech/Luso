@@ -1,13 +1,12 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.db.models import Q
 # Custom Models
 from lipila.helpers import (
-    apology, get_lipila_contact_info, get_user_object,
+    apology, get_lipila_contact_info,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
     query_disbursement)
 from lipila.forms.forms import ContactForm

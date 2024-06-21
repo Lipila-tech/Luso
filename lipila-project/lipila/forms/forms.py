@@ -1,8 +1,6 @@
 from django import forms
 from lipila.models import CustomerMessage
 from patron.models import Contributions
-from django.contrib.auth.forms import UserChangeForm
-from accounts.models import PatronProfile, CreatorProfile
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 

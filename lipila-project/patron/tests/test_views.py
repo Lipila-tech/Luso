@@ -13,9 +13,9 @@ class TestPatronViewsMore(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.client = Client()
-        cls.user = User.objects.create(
-            username='testuser', password='password')
-        cls.client.force_login(cls.user)
+        cls.creator_user = User.objects.create(
+            username='creatoruser', password='password')
+        cls.client.force_login(cls.creator_user)
         data = {
             'patron_title': 'TestPatron',
             'bio': 'test user bio',
@@ -23,13 +23,23 @@ class TestPatronViewsMore(TestCase):
         }
         cls.response = cls.client.post(
             reverse('create_creator_profile'), data)
-        cls.creator = CreatorProfile.objects.get(user=cls.user)
-        # query the view_tiers view
+        cls.creator = CreatorProfile.objects.get(user=cls.creator_user)
         cls.response1 = cls.client.get(reverse('patron:tiers'))
-        # get tiers
         cls.tiers = Tier.objects.filter(creator=cls.creator).values()
 
+    @classmethod
+    def tearDownClass(cls):
+        # Delete tiers (if any)
+        for tier in cls.tiers:
+            Tier.objects.get(id=tier['id']).delete()
+        # Delete creator profile
+        cls.creator.delete()
+        # Logout client
+        cls.client.logout()
+
+
     def test_edit_tier_get_request_logged_in(self):
+        self.client.force_login(self.creator_user)
         tier = self.tiers[0]
         url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
         response = self.client.get(url)
@@ -38,6 +48,7 @@ class TestPatronViewsMore(TestCase):
             response, 'patron/admin/actions/edit_tiers.html')
 
     def test_edit_tier_post_request_valid_data(self):
+        self.client.force_login(self.creator_user)
         tier = self.tiers[0]
         url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
         data = {'name': 'Updated Tier', 'price': 15.00,
@@ -56,12 +67,13 @@ class TestSubscription(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.client = Client()
+        staff_user = User.objects.create(username='staffuser')
         cls.creator_user1 = User.objects.create(
             username='testcreator1', password='password')
         cls.creator_user2 = User.objects.create(
             username='testcreator2', password='password')
         cls.user1 = User.objects.create(
-            username='testuser', password='password')
+            username='test_user', password='password')
         cls.creator1_obj = CreatorProfile.objects.create(
             user=cls.creator_user1, patron_title='testpatron1', bio='test', creator_category='musician')
         cls.creator2_obj = CreatorProfile.objects.create(
@@ -70,6 +82,20 @@ class TestSubscription(TestCase):
         Tier().create_default_tiers(cls.creator2_obj)  # creator 2 tiers
         cls.tiers_1 = Tier.objects.filter(creator=cls.creator1_obj).values()
         cls.tiers_2 = Tier.objects.filter(creator=cls.creator2_obj).values()
+
+    @classmethod
+    def tearDownClass(cls):
+        # Delete created objects in reverse order of creation
+        for tier in cls.tiers_1:
+            Tier.objects.get(id=tier['id']).delete()
+        for tier in cls.tiers_2:
+            Tier.objects.get(id=tier['id']).delete()
+        cls.creator2_obj.delete()
+        cls.creator1_obj.delete()
+        cls.user1.delete()
+        cls.creator_user2.delete()
+        cls.creator_user1.delete()
+        cls.client.logout()  # Logout if client was used for authenticated requests
 
     def test_join_view_valid(self):
         self.client.force_login(self.user1)
@@ -87,13 +113,13 @@ class TestSubscription(TestCase):
         user1 = User.objects.create(
             username='testuser1', password='password')
         user2 = User.objects.create(
-            username='testuser2', password='password')
+            username='testuser_2', password='password')
         user3 = User.objects.create(
             username='testuser3', password='password')
         user4 = User.objects.create(
             username='testuser4', password='password')
         user5 = User.objects.create(
-            username='testuser5', password='password')
+            username='testuser_5', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
         tier2 = Tier.objects.get(pk=self.tiers_1[2]['id'])
         tier3 = Tier.objects.get(pk=self.tiers_2[0]['id'])
@@ -112,7 +138,7 @@ class TestSubscription(TestCase):
         url = reverse('patron:creator_home', kwargs={
                       'creator': self.creator1_obj})
         user1 = User.objects.create(
-            username='testuser5', password='password')
+            username='testuser6', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
         response = self.client.get(url)
@@ -127,7 +153,7 @@ class TestSubscription(TestCase):
         mock_post.return_value = mock_response
 
         user1 = User.objects.create(
-            username='testuser5', password='password')
+            username='testuser7', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
@@ -149,7 +175,7 @@ class TestSubscription(TestCase):
         mock_get.return_value = mock_response
 
         user1 = User.objects.create(
-            username='testuser5', password='password')
+            username='testuser8', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
@@ -193,7 +219,7 @@ class TestSubscription(TestCase):
 
     def test_get_payment_history(self):
         user1 = User.objects.create(
-            username='testuser5', password='password')
+            username='testuser9', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
@@ -210,16 +236,22 @@ class TestPatronViews(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.client = Client()
-        cls.user = User.objects.create(
-            username='testuser', password='password')
+        cls.creatoruser1 = User.objects.create(
+            username='testuser_1', password='password')
         cls.user2 = User.objects.create(
             username='testuser2', password='password')
+    
+    @classmethod
+    def tearDownClass(cls):
+        cls.user2.delete()
+        cls.creatoruser1.delete()
+
 
     def test_choose_profile_type(self):
         url = "choose_profile_type"
         creator_data = {'profile_type': 'creator'}
         patron_data = {'profile_type': 'patron'}
-        self.client.force_login(self.user)
+        self.client.force_login(self.creatoruser1)
         response = self.client.post(reverse(url), creator_data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/accounts/profile/create/creator")
@@ -241,7 +273,7 @@ class TestPatronViews(TestCase):
         Test that a user is redirected to choose a profile type
         view, if they don't have one.
         """
-        self.client.force_login(self.user)
+        self.client.force_login(self.creatoruser1)
         response = self.client.get(reverse('profile'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/accounts/profile/choose")
@@ -250,7 +282,7 @@ class TestPatronViews(TestCase):
         """
         Test the creation of a new user.patron_profile
         """
-        self.client.force_login(self.user)
+        self.client.force_login(self.creatoruser1)
         account_number = '77477838'
         city = 'Kitwe'
         data = {'account_number': account_number, 'city': city}
@@ -258,7 +290,7 @@ class TestPatronViews(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/accounts/profile/")
         self.assertEqual(PatronProfile.objects.count(), 1)
-        patron = PatronProfile.objects.get(user=self.user)
+        patron = PatronProfile.objects.get(user=self.creatoruser1)
         self.assertEqual(patron.account_number, '77477838')
         res = self.client.get(reverse('profile'))
         self.assertEqual(res.status_code, 200)
@@ -267,7 +299,7 @@ class TestPatronViews(TestCase):
         """
         Test the creation of a new user.creator_profile
         """
-        self.client.force_login(self.user)
+        self.client.force_login(self.creatoruser1)
         data = {
             'patron_title': 'TestPatron',
             'bio': 'test user bio',
@@ -277,7 +309,7 @@ class TestPatronViews(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/accounts/profile/")
         self.assertEqual(CreatorProfile.objects.count(), 1)
-        creator = CreatorProfile.objects.get(user=self.user)
+        creator = CreatorProfile.objects.get(user=self.creatoruser1)
         self.assertEqual(creator.patron_title, 'TestPatron')
         res = self.client.get(reverse('profile'))
         self.assertEqual(res.status_code, 200)
@@ -289,7 +321,7 @@ class TestPatronViews(TestCase):
         """
         Test the creation of a default creator tiers.
         """
-        self.client.force_login(self.user)
+        self.client.force_login(self.creatoruser1)
         data = {
             'patron_title': 'TestPatron',
             'bio': 'test user bio',
@@ -297,7 +329,7 @@ class TestPatronViews(TestCase):
         }
         # create a creator profile
         self.client.post(reverse('create_creator_profile'), data)
-        creator = CreatorProfile.objects.get(user=self.user)
+        creator = CreatorProfile.objects.get(user=self.creatoruser1)
         # query the view_tiers view
         response = self.client.get(reverse('patron:tiers'))
         # get tiers
@@ -341,7 +373,7 @@ class TestPatronViews(TestCase):
         }
 
         creator1 = CreatorProfile.objects.create(
-            user=self.user, patron_title='testpatron', bio='test', creator_category='musician')
+            user=self.creatoruser1, patron_title='testpatron', bio='test', creator_category='musician')
         Tier().create_default_tiers(creator1)
         # login user 2 and create tiers
         self.client.force_login(self.user2)
@@ -372,18 +404,19 @@ class TestCreateDefaultTiers(TestCase):
         super().setUpTestData()
         cls.client = Client()
         user1 = User.objects.create(
-            username='testuser1', password='password')
+            username='testuser', password='password')
         user2 = User.objects.create(
-            username='testuser2', password='password')
+            username='test_user_2', password='password')
         cls.user3 = User.objects.create(
-            username='testuser3', password='password')
+            username='test_user_3', password='password')
         creator1 = CreatorProfile.objects.create(
-            user=user1, patron_title='testpatron1', bio='test', creator_category='musician')
+            user=user1, patron_title='test_patron', bio='test', creator_category='musician')
         creator2 = CreatorProfile.objects.create(
-            user=user2, patron_title='testpatron2', bio='test', creator_category='musician')
+            user=user2, patron_title='testpatron3', bio='test', creator_category='musician')
         Tier().create_default_tiers(creator1)
         Tier().create_default_tiers(creator2)
 
+    
     def test_create_default_tiers_multiple_users_tiers_exists(self):
         """
         Test the creation of a default creator tiers.

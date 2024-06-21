@@ -1,7 +1,6 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-from accounts.models import CreatorProfile, PatronProfile
+from accounts.models import CreatorProfile
 # Options
 STATUS_CHOICES = (
     ('pending', 'pending'),
