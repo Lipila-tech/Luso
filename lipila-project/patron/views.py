@@ -459,7 +459,7 @@ def make_payment(request, tier_id):
             patron = User.objects.get(username=request.user)
             subscription = TierSubscriptions.objects.get(
                 patron=patron, tier=tier)
-            # Process deposit logic here (e.g., connect to payment gateway, store transaction details)
+            # Process deposit logic here (query lipila api)
             amount = form.cleaned_data['amount']
             phone_number = form.cleaned_data['phone_number']
             payment = Payments.objects.create(
@@ -484,6 +484,7 @@ def contribute(request, creator):
         if form.is_valid():
             patron = User.objects.get(username=request.user)
             creator = User.objects.get(username=creator)
+            # Process deposit logic here (query lipila api)
             contribution = form.save(commit=False)
             contribution.creator = creator
             contribution.patron = patron

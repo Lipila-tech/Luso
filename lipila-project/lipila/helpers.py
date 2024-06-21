@@ -6,13 +6,49 @@ from django.shortcuts import render
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial, AboutInfo)
 from django.contrib.auth.models import User
+from rest_framework.response import Response
+import requests
+from django.urls import reverse
+from api.views import LipilaDisbursementView
+
+
+def query_disbursement(user, method, data={}):
+    """
+    Queries the lipila api disburse endpoint for a specific api user.
+
+    Args:
+        user (str): The username of the api user.
+        method (str): The HTTP method allowed values (GET, POST)
+        data (dict): Data to be sent in the POST request.
+    Returns:
+        rest_framework.response.Response: Response object.
+    """
+    url = "http://localhost:8000/api/v1/disburse/"
+    params = {
+        "api_user": user,
+    }
+    if method == 'GET':
+        response = requests.get(url, params=params)
+        return response
+    elif method == 'POST':
+        response = requests.post(url, data=data, params=params)
+        if response.status_code == 202:
+            return Response({'data': 'request accepted, wait for client approval'}, status=202)
+        elif response.status_code == 403:
+                    status_code = response.status_code
+                    return Response({'data': 'Request exceeded'}, status=status_code)
+        elif response.status_code == 400:
+            status_code = response.status_code
+            return Response({'data': 'Bad request to payment gateway'}, status=status_code)
+    else:
+        return Response({'data': 'Invalid method passed'}, status=400)
 
 
 def get_lipila_contact_info() -> dict:
     """ Gets the lipila contact info and
     returns a dict object.
     """
-    data = {'contact':''}
+    data = {'contact': ''}
     try:
         contact_info = ContactInfo.objects.latest()
         data['contact'] = contact_info
@@ -25,7 +61,7 @@ def get_user_emails():
     """
     Get all user messages.
     """
-    data = {'user_messages':''}
+    data = {'user_messages': ''}
     try:
         user_messages = CustomerMessage.objects.all()
         data['user_messages'] = user_messages
@@ -38,7 +74,7 @@ def get_lipila_index_page_info() -> dict:
     """
     Get the index page info.
     """
-    data = {'lipila':''}
+    data = {'lipila': ''}
     try:
         lipila_index_info = HeroInfo.objects.latest()
         data['lipila'] = lipila_index_info
@@ -46,11 +82,12 @@ def get_lipila_index_page_info() -> dict:
         pass
     return data
 
+
 def get_lipila_about_info() -> dict:
     """
     Get the about info.
     """
-    data = {'about':''}
+    data = {'about': ''}
     try:
         lipila_about_info = AboutInfo.objects.latest()
         data['about'] = lipila_about_info
@@ -58,17 +95,19 @@ def get_lipila_about_info() -> dict:
         pass
     return data
 
+
 def get_testimonials() -> dict:
     """
     Get testimonials and return a dict object.
     """
-    data = {'testimonials':''}
+    data = {'testimonials': ''}
     try:
         results = UserTestimonial.objects.all()
         data['testimonials'] = results
     except UserTestimonial.DoesNotExist:
         pass
     return data
+
 
 def get_user_object(user: str):
     """
@@ -87,6 +126,7 @@ def get_user_object(user: str):
         return user_object
     except User.DoesNotExist:
         return None
+
 
 def apology(request, data=None, user=None):
     """

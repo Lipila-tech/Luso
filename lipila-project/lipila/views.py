@@ -40,22 +40,6 @@ def portfolio_details(request):
     return render(request, 'UI/portfolio-details.html')
 
 
-def send_money(request):
-    context = {}
-    form = request.GET
-    if form:
-        payee_id = form['payee_id']
-        try:
-            data = User.objects.get(username=payee_id)
-            context['payee'] = payee_id
-            context['location'] = data.city
-        except User.DoesNotExist:
-            context = {'message': "User id not found", }
-            return render(request, '404.html', context)
-
-    return render(request, 'UI/send_money.html', context)
-
-
 def pages_faq(request):
     return render(request, 'lipila/pages/pages_faq.html')
 
@@ -112,8 +96,7 @@ def approve_withdrawals(request):
                 processed_withdrawals = ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request)
                 if action == 'approve':
-                    # Process withdrawal (initiate payout using a payment processor)
-                    # ...
+                    # Process withdrawal (initiate payout using lipila api)
                     withdrawal_request.status = 'success'
                     withdrawal_request.processed_date = timezone.now()
                     withdrawal_request.save()
