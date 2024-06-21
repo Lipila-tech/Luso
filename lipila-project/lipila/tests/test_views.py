@@ -1,13 +1,11 @@
-from django.urls import reverse  # To generate URLs
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
+from unittest.mock import Mock, patch
 # Custom modules
 from patron.models import WithdrawalRequest, ProcessedWithdrawals
 from lipila.models import ContactInfo, HeroInfo, UserTestimonial
-from lipila.helpers import get_user_object
 from lipila.forms.forms import ContactForm
 from accounts.models import CreatorProfile
 
@@ -75,20 +73,21 @@ class ContactFormViewTest(TestCase):
 
 
 class ApproveWithdrawalsTest(TestCase):
-
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
         # Create a staff user
-        self.staff_user = User.objects.create_user(
+        cls.staff_user = User.objects.create_user(
             username='staffuser', password='staffpassword', is_staff=True)
-        self.client = Client()
+        cls.client = Client()
 
         # Create a creator user and a withdrawal request
-        self.user1 = User.objects.create_user(
+        cls.user1 = User.objects.create_user(
             username='creatoruser', password='creatorpassword')
-        self.creator_user = CreatorProfile.objects.create(
-            user=self.user1, patron_title='testpatron1', bio='test', creator_category='musician')
-        self.withdrawal_request = WithdrawalRequest.objects.create(
-            creator=self.creator_user,
+        cls.creator_user = CreatorProfile.objects.create(
+            user=cls.user1, patron_title='testpatron1', bio='test', creator_category='musician')
+        cls.withdrawal_request = WithdrawalRequest.objects.create(
+            creator=cls.creator_user,
             amount=100.00,
             account_number='0966445333',
         )
@@ -106,15 +105,26 @@ class ApproveWithdrawalsTest(TestCase):
         response = self.client.get(reverse('approve_withdrawals'))
         self.assertEqual(response.status_code, 302)
 
-    def test_staff_access_get(self):
+    @patch('lipila.views.query_disbursement')
+    def test_staff_access_get(self, mock_get):
         # Staff user can access the view with a GET request
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
         self.client.force_login(self.staff_user)
         response = self.client.get(reverse('approve_withdrawals'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response, 'lipila/staff/approve_withdrawals.html')
 
-    def test_approve_withdrawal(self):
+    @patch('lipila.views.query_disbursement')
+    def test_approve_withdrawal(self, mock_post):
+        mock_response = Mock()
+        mock_response.status_code = 202
+        mock_response.json.return_value = mock_response.json.return_value = {
+            'data': 'request accepted, wait for client approval'}
+        mock_post.return_value = mock_response
         # Staff user can approve a withdrawal request
         self.client.force_login(self.staff_user)
         data = {
@@ -128,13 +138,13 @@ class ApproveWithdrawalsTest(TestCase):
         # Check if withdrawal request is updated
         withdrawal_request = WithdrawalRequest.objects.get(
             pk=self.withdrawal_request.pk)
-        self.assertEqual(withdrawal_request.status, 'success')
+        self.assertEqual(withdrawal_request.status, 'accepted')
 
         # Check if processed withdraw is saved
         processed_withdrawal = ProcessedWithdrawals.objects.get(pk=1)
         self.assertEqual(
             processed_withdrawal.approved_by.username, 'staffuser')
-        self.assertEqual(processed_withdrawal.status, 'success')
+        self.assertEqual(processed_withdrawal.status, 'accepted')
 
     def test_reject_withdrawal(self):
         # Staff user can reject a withdrawal request

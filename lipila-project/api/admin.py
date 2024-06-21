@@ -20,7 +20,7 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
 
 class ContributionsAdmin(admin.ModelAdmin):
     list_display = ('creator', 'patron', 'amount', 'status',
-                    'message', 'phone_number', 'timestamp')
+                    'description', 'account_number', 'payment_method', 'timestamp')
 
 
 class StudentAdmin(admin.ModelAdmin):

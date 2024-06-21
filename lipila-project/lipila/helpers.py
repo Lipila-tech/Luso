@@ -19,7 +19,12 @@ def query_collection(user, method, data={}):
     Args:
         user (str): The username of the api user.
         method (str): The HTTP method allowed values (GET, POST)
-        data (dict): Data to be sent in the POST request.
+        data (dict): data (dict):
+                {
+                    'amount': '', 'payer_account_number': '',
+                    'payment_method': '', 'description': ''
+                    }
+                    
     Returns:
         rest_framework.response.Response: Response object.
     """
@@ -51,7 +56,12 @@ def query_disbursement(user, method, data={}):
     Args:
         user (str): The username of the api user.
         method (str): The HTTP method allowed values (GET, POST)
-        data (dict): Data to be sent in the POST request.
+        data (dict):
+                {
+                    'amount': '', 'payer_account_number': '',
+                    'payment_method': '', 'description': ''
+                    }
+
     Returns:
         rest_framework.response.Response: Response object.
     """

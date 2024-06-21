@@ -8,7 +8,8 @@ from django.db.models import Q
 # Custom Models
 from lipila.helpers import (
     apology, get_lipila_contact_info, get_user_object,
-    get_lipila_index_page_info, get_testimonials, get_lipila_about_info)
+    get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
+    query_disbursement)
 from lipila.forms.forms import ContactForm
 from accounts.models import CreatorProfile
 from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals
@@ -97,16 +98,28 @@ def approve_withdrawals(request):
                     withdrawal_request=withdrawal_request)
                 if action == 'approve':
                     # Process withdrawal (initiate payout using lipila api)
-                    withdrawal_request.status = 'success'
-                    withdrawal_request.processed_date = timezone.now()
-                    withdrawal_request.save()
+                    payload = {
+                        'amount': withdrawal_request.amount,
+                        'payment_method':withdrawal_request.payment_method,
+                        'payee_account_number':withdrawal_request.account_number,
+                        'description': request.POST.get('reason')
+                    }
+                    response = query_disbursement(request.user, 'POST', data=payload)
+                    
+                    if response.status_code == 202:
+                        withdrawal_request.status = 'accepted'
+                        withdrawal_request.processed_date = timezone.now()
+                        withdrawal_request.save()
 
-                    # save to processed withdrawals
-                    processed_withdrawals.approved_by = request.user
-                    processed_withdrawals.status = 'success'
-                    processed_withdrawals.save()
-                    messages.success(
-                        request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
+                        # save to processed withdrawals
+                        processed_withdrawals.approved_by = request.user
+                        processed_withdrawals.status = 'accepted'
+                        processed_withdrawals.save()
+                        messages.success(
+                            request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
+                    else:
+                        messages.error(
+                            request, f"Payment failed")
                 elif action == 'reject':
                     withdrawal_request.status = 'rejected'
                     withdrawal_request.reason = 'Insufficient funds'

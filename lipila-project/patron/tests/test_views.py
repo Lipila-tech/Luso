@@ -2,40 +2,46 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
+from unittest.mock import Mock, patch
+# Custom models
 from accounts.models import PatronProfile, CreatorProfile
 from patron.models import Tier, TierSubscriptions, Payments, Contributions
 
 
 class TestPatronViewsMore(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.client = Client()
+        cls.user = User.objects.create(
             username='testuser', password='password')
-        self.client.force_login(self.user)
+        cls.client.force_login(cls.user)
         data = {
             'patron_title': 'TestPatron',
             'bio': 'test user bio',
             'creator_category': 'artist',
         }
-        self.response = self.client.post(reverse('create_creator_profile'), data)
-        self.creator = CreatorProfile.objects.get(user=self.user)
+        cls.response = cls.client.post(
+            reverse('create_creator_profile'), data)
+        cls.creator = CreatorProfile.objects.get(user=cls.user)
         # query the view_tiers view
-        self.response1 = self.client.get(reverse('patron:tiers'))
+        cls.response1 = cls.client.get(reverse('patron:tiers'))
         # get tiers
-        self.tiers = Tier.objects.filter(creator=self.creator).values()  
+        cls.tiers = Tier.objects.filter(creator=cls.creator).values()
 
     def test_edit_tier_get_request_logged_in(self):
-        tier = self.tiers[0] 
+        tier = self.tiers[0]
         url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'patron/admin/actions/edit_tiers.html')
+        self.assertTemplateUsed(
+            response, 'patron/admin/actions/edit_tiers.html')
 
-        
     def test_edit_tier_post_request_valid_data(self):
-        tier = self.tiers[0] 
+        tier = self.tiers[0]
         url = reverse('patron:edit_tier', kwargs={'tier_id': tier['id']})
-        data = {'name': 'Updated Tier', 'price': 15.00, 'description': 'New description'}
+        data = {'name': 'Updated Tier', 'price': 15.00,
+                'description': 'New description'}
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
         tier = Tier.objects.get(pk=tier['id'])
@@ -43,27 +49,32 @@ class TestPatronViewsMore(TestCase):
         self.assertEqual(tier.price, data['price'])
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Tier Edited Successfully.')
-                
+
+
 class TestSubscription(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.creator_user1 = User.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.client = Client()
+        cls.creator_user1 = User.objects.create(
             username='testcreator1', password='password')
-        self.creator_user2 = User.objects.create(
+        cls.creator_user2 = User.objects.create(
             username='testcreator2', password='password')
-        self.user1 = User.objects.create(
+        cls.user1 = User.objects.create(
             username='testuser', password='password')
-        self.creator1_obj = CreatorProfile.objects.create(user=self.creator_user1,patron_title='testpatron1', bio='test', creator_category='musician')
-        self.creator2_obj = CreatorProfile.objects.create(user=self.creator_user2,patron_title='testpatron2', bio='test', creator_category='musician')
-        Tier().create_default_tiers(self.creator1_obj) # creator 1 tiers
-        Tier().create_default_tiers(self.creator2_obj) # creator 2 tiers
-        self.tiers_1 = Tier.objects.filter(creator=self.creator1_obj).values()
-        self.tiers_2 = Tier.objects.filter(creator=self.creator2_obj).values()
-        
+        cls.creator1_obj = CreatorProfile.objects.create(
+            user=cls.creator_user1, patron_title='testpatron1', bio='test', creator_category='musician')
+        cls.creator2_obj = CreatorProfile.objects.create(
+            user=cls.creator_user2, patron_title='testpatron2', bio='test', creator_category='musician')
+        Tier().create_default_tiers(cls.creator1_obj)  # creator 1 tiers
+        Tier().create_default_tiers(cls.creator2_obj)  # creator 2 tiers
+        cls.tiers_1 = Tier.objects.filter(creator=cls.creator1_obj).values()
+        cls.tiers_2 = Tier.objects.filter(creator=cls.creator2_obj).values()
 
     def test_join_view_valid(self):
         self.client.force_login(self.user1)
-        url = reverse('patron:join_tier', kwargs={'tier_id': self.tiers_1[0]['id']})
+        url = reverse('patron:join_tier', kwargs={
+                      'tier_id': self.tiers_1[0]['id']})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
@@ -96,10 +107,10 @@ class TestSubscription(TestCase):
         self.assertTemplateUsed('patron/admin/pages/patrons.html')
         self.assertEqual(TierSubscriptions.objects.count(), 5)
 
-
     def test_get_creator_home(self):
         self.client.force_login(self.user1)
-        url = reverse('patron:creator_home', kwargs={'creator': self.creator1_obj})
+        url = reverse('patron:creator_home', kwargs={
+                      'creator': self.creator1_obj})
         user1 = User.objects.create(
             username='testuser5', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
@@ -107,39 +118,79 @@ class TestSubscription(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_post_make_payment_valid(self):
+    @patch('patron.views.query_collection')
+    def test_post_make_payment_valid(self, mock_post):
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'data': 'request accepted, wait for client approval'}
+        mock_response.status_code = 202
+        mock_post.return_value = mock_response
+
         user1 = User.objects.create(
             username='testuser5', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
+
         url = reverse('patron:make_payment', kwargs={'tier_id': tier1.id})
-        data = {
-            'amount': 10,
-            'phone_number':'0996554433',
-        }
+        data = {'amount': '100', 'payer_account_number': '0966443322',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Paid ZMW 10 successfully!')
+        self.assertEqual(str(messages[0]), 'Paid ZMW 100 successfully!')
         self.assertEqual(Payments.objects.count(), 1)
 
-    def test_get_make_payment_valid(self):
+    @patch('patron.views.query_collection')
+    def test_get_make_payment_valid(self, mock_get):
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
         user1 = User.objects.create(
             username='testuser5', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
-        data = {
-            'amount': 10,
-            'phone_number':'0996554433',
-        }
+        data = {'amount': '100', 'payer_account_number': '0966443322',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+
         url = reverse('patron:make_payment', kwargs={'tier_id': tier1.id})
         self.client.post(url, data=data)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('lipila/actions/deposit.html')
-               
+
+    @patch('patron.views.query_collection')
+    def test_post_contribute_valid(self, mock_post):
+        mock_response = Mock()
+        mock_response.json.return_value = {
+            'data': 'request accepted, wait for client approval'}
+        mock_response.status_code = 202
+        mock_post.return_value = mock_response
+        user1 = User.objects.create(
+            username='testuser5', password='password')
+        self.client.force_login(user1)
+        url = reverse('patron:contribute', kwargs={
+                      'creator': self.creator1_obj})
+        data = {'amount': '100', 'account_number': '0966443322',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 302)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'Payment of K100 successfull!')
+        self.assertEqual(Contributions.objects.count(), 1)
+        conts = Contributions.objects.filter(patron=user1)
+
+    def test_get_contribute(self):
+        self.client.force_login(self.user1)
+        url = reverse('patron:contribute', kwargs={
+                      'creator': self.creator1_obj})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('lipila/actions/contribute.html')
+
     def test_get_payment_history(self):
         user1 = User.objects.create(
             username='testuser5', password='password')
@@ -147,42 +198,21 @@ class TestSubscription(TestCase):
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
         url = reverse('patron:payments')
-        self.client.get(reverse('patron:make_payment', kwargs={'tier_id': tier1.id}))
+        self.client.get(reverse('patron:make_payment',
+                        kwargs={'tier_id': tier1.id}))
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('patron/admin/pages/payments.html')
 
-    def test_post_contribute_valid(self):
-        user1 = User.objects.create(
-            username='testuser5', password='password')
-        self.client.force_login(user1)
-        url = reverse('patron:contribute', kwargs={'creator': self.creator1_obj})
-        data = {
-            'amount': 10,
-            'phone_number':'0996554433',
-            'message':'Test message'
-        }
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Payment of K10 successfull!')
-        self.assertEqual(Contributions.objects.count(), 1)
-        conts = Contributions.objects.filter(patron=user1)
-
-    def test_get_contribute(self):
-        self.client.force_login(self.user1)
-        url = reverse('patron:contribute', kwargs={'creator': self.creator1_obj})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('lipila/actions/contribute.html')
-
 
 class TestPatronViews(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.client = Client()
+        cls.user = User.objects.create(
             username='testuser', password='password')
-        self.user2 = User.objects.create(
+        cls.user2 = User.objects.create(
             username='testuser2', password='password')
 
     def test_choose_profile_type(self):
@@ -300,7 +330,6 @@ class TestPatronViews(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertNotIn("Default tiers created. Please edit them.", messages)
 
-
     def test_create_default_tiers_different_user_tier_exists(self):
         """
         Test the creation of a default creator tiers.
@@ -310,8 +339,9 @@ class TestPatronViews(TestCase):
             'bio': 'test user bio',
             'creator_category': 'artist',
         }
-       
-        creator1 = CreatorProfile.objects.create(user=self.user,patron_title='testpatron', bio='test', creator_category='musician')
+
+        creator1 = CreatorProfile.objects.create(
+            user=self.user, patron_title='testpatron', bio='test', creator_category='musician')
         Tier().create_default_tiers(creator1)
         # login user 2 and create tiers
         self.client.force_login(self.user2)
@@ -333,22 +363,27 @@ class TestPatronViews(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
             str(messages[1]), "Default tiers created. Please edit them.")
-        
+
 
 class TestCreateDefaultTiers(TestCase):
-    def setUp(self):
-        self.client = Client()
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.client = Client()
         user1 = User.objects.create(
             username='testuser1', password='password')
         user2 = User.objects.create(
             username='testuser2', password='password')
-        self.user3 = User.objects.create(
+        cls.user3 = User.objects.create(
             username='testuser3', password='password')
-        creator1 = CreatorProfile.objects.create(user=user1,patron_title='testpatron1', bio='test', creator_category='musician')
-        creator2 = CreatorProfile.objects.create(user=user2,patron_title='testpatron2', bio='test', creator_category='musician')
+        creator1 = CreatorProfile.objects.create(
+            user=user1, patron_title='testpatron1', bio='test', creator_category='musician')
+        creator2 = CreatorProfile.objects.create(
+            user=user2, patron_title='testpatron2', bio='test', creator_category='musician')
         Tier().create_default_tiers(creator1)
         Tier().create_default_tiers(creator2)
-    
+
     def test_create_default_tiers_multiple_users_tiers_exists(self):
         """
         Test the creation of a default creator tiers.
@@ -358,7 +393,7 @@ class TestCreateDefaultTiers(TestCase):
             'bio': 'test user bio',
             'creator_category': 'artist',
         }
-       
+
         # login user 2 and create tiers
         self.client.force_login(self.user3)
         self.client.post(reverse('create_creator_profile'), data)

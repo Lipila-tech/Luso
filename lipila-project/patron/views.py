@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 # custom modules
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
-from lipila.helpers import get_user_object, apology
+from lipila.helpers import get_user_object, apology, query_collection
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
 from lipila.forms.forms import DepositForm, ContributeForm
@@ -459,16 +459,32 @@ def make_payment(request, tier_id):
             patron = User.objects.get(username=request.user)
             subscription = TierSubscriptions.objects.get(
                 patron=patron, tier=tier)
-            # Process deposit logic here (query lipila api)
+                        
             amount = form.cleaned_data['amount']
-            phone_number = form.cleaned_data['phone_number']
-            payment = Payments.objects.create(
-                subscription=subscription, amount=amount)
-            payment.save()
-            messages.success(request, f"Paid ZMW {amount} successfully!")
+            account_number = form.cleaned_data['payer_account_number']
+            payment_method = form.cleaned_data['payment_method']
+            description = form.cleaned_data['description']
+            # Process deposit logic here (query lipila api)
+            payload = {
+                        'amount': amount,
+                        'payment_method': payment_method,
+                        'payer_account_number': account_number,
+                        'description': description
+                    }
+            api_user = User.objects.get(pk=1)
+            response = query_collection(api_user.username, 'POST', data=payload)
+
+            if response.status_code == 202:
+                payment = Payments.objects.create(
+                    subscription=subscription, amount=amount)
+                payment.save()
+                messages.success(request, f"Paid ZMW {amount} successfully!")
+            else:
+                messages.error(request, 'Payment failed.')
 
             return redirect(reverse('dashboard', kwargs={'user': request.user}))
-        messages.error(request, f"Faild to send data")
+        
+        messages.error(request, f"Invalid data sent")
         form = DepositForm()
         tier = tier.name
         return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
@@ -484,13 +500,25 @@ def contribute(request, creator):
         if form.is_valid():
             patron = User.objects.get(username=request.user)
             creator = User.objects.get(username=creator)
-            # Process deposit logic here (query lipila api)
-            contribution = form.save(commit=False)
-            contribution.creator = creator
-            contribution.patron = patron
-            contribution.save()
-            messages.success(
-                request, f"Payment of K{contribution.amount} successfull!")
+            payload = {
+                        'amount': str(form.cleaned_data.get('amount')),
+                        'payment_method': form.cleaned_data.get('payment_method'),
+                        'payer_account_number': form.cleaned_data.get('account_number'),
+                        'description': form.cleaned_data.get('description')
+                    }
+
+            api_user = User.objects.get(pk=1)
+            response = query_collection(api_user.username, 'POST', data=payload)
+            if response.status_code == 202:
+                contribution = form.save(commit=False)
+                contribution.creator = creator
+                contribution.patron = patron
+                contribution.status = 'accepted'
+                contribution.save()
+                messages.success(
+                    request, f"Payment of K{contribution.amount} successfull!")
+            else:
+                messages.error(request, 'Payment failed.')
             return redirect(reverse('dashboard', kwargs={'user': request.user}))
 
         messages.error(request, f"Faild to send data")

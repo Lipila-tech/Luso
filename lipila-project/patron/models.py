@@ -23,6 +23,10 @@ CITY_CHOICES = (
     ('lusaka', 'Lusaka'),
     ('ndola', 'Ndola'),
 )
+PAYMENT_CHOICES = (
+    ('mtn', 'mtn'),
+    ('airtel', 'airtel'),
+)
 
 INVOICE_STATUS_CHOICES = (
     ('pending', 'pending'),
@@ -98,10 +102,11 @@ class Contributions(models.Model):
     patron = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='contributions_sent')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    message = models.TextField()
-    phone_number = models.CharField(max_length=10)
+    description = models.TextField()
+    account_number = models.CharField(max_length=10)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
     timestamp = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
         return f"{self.amount}"
@@ -115,6 +120,7 @@ class WithdrawalRequest(models.Model):
     account_number = models.CharField(max_length=30)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
@@ -132,6 +138,8 @@ class ProcessedWithdrawals(models.Model):
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
     status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
+    reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         if self.approved_by:

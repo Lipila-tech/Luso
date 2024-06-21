@@ -26,10 +26,12 @@ class SignupForm(forms.ModelForm):
 
 class DepositForm(forms.Form):
     amount = forms.DecimalField(min_value=5, validators=[MinValueValidator(5, message='Minimum deposit amount is ZMW 5')])
-    phone_number = forms.CharField(max_length=20)
+    payer_account_number = forms.CharField(max_length=20)
+    payment_method = forms.CharField(max_length=20)
+    description = forms.CharField(max_length=20)
 
 
 class ContributeForm(forms.ModelForm):
     class Meta:
         model = Contributions
-        fields = ('amount', 'phone_number', 'message')
+        fields = ('amount', 'account_number', 'payment_method', 'description')

@@ -1,6 +1,7 @@
 import os
 from django.contrib.auth.models import User
 from api.models import LipilaCollection, LipilaDisbursement
+from unittest.mock import Mock, patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
@@ -15,9 +16,9 @@ class LipilaDisbursementViewTest(APITestCase):
         super().setUpTestData()
         cls.user = User.objects.create(username='testuser')
         cls.url = reverse('disburse-list')
-        
-    def test_make_deposit_success(self):
-        
+    
+    
+    def test_make_deposit_success(self):        
         data = {'amount': '100', 'payee_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
 
