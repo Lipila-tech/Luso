@@ -12,6 +12,38 @@ from django.urls import reverse
 from api.views import LipilaDisbursementView
 
 
+def query_collection(user, method, data={}):
+    """
+    Queries the lipila api payments endpoint for a specific api user.
+
+    Args:
+        user (str): The username of the api user.
+        method (str): The HTTP method allowed values (GET, POST)
+        data (dict): Data to be sent in the POST request.
+    Returns:
+        rest_framework.response.Response: Response object.
+    """
+    url = "http://localhost:8000/api/v1/payments/"
+    params = {
+        "api_user": user,
+    }
+    if method == 'GET':
+        response = requests.get(url, params=params)
+        return response
+    elif method == 'POST':
+        response = requests.post(url, data=data, params=params)
+        if response.status_code == 202:
+            return Response({'data': 'request accepted, wait for client approval'}, status=202)
+        elif response.status_code == 403:
+            status_code = response.status_code
+            return Response({'data': 'Request exceeded'}, status=status_code)
+        elif response.status_code == 400:
+            status_code = response.status_code
+            return Response({'data': 'Bad request to payment gateway'}, status=status_code)
+    else:
+        return Response({'data': 'Invalid method passed'}, status=400)
+
+
 def query_disbursement(user, method, data={}):
     """
     Queries the lipila api disburse endpoint for a specific api user.
@@ -35,8 +67,8 @@ def query_disbursement(user, method, data={}):
         if response.status_code == 202:
             return Response({'data': 'request accepted, wait for client approval'}, status=202)
         elif response.status_code == 403:
-                    status_code = response.status_code
-                    return Response({'data': 'Request exceeded'}, status=status_code)
+            status_code = response.status_code
+            return Response({'data': 'Request exceeded'}, status=status_code)
         elif response.status_code == 400:
             status_code = response.status_code
             return Response({'data': 'Bad request to payment gateway'}, status=status_code)

@@ -13,9 +13,74 @@ from lipila.helpers import (
     get_lipila_index_page_info,
     get_testimonials,
     get_user_object,
-    query_disbursement
+    query_disbursement,
+    query_collection
 )
 
+
+@patch('lipila.helpers.requests.get')
+class GetPaymentTest(TestCase):
+    def test_get_query_disbursement_valid(self, mock_get):
+        User.objects.create(username='test_user')
+        # Mock the response object to return expected data
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = []
+        mock_get.return_value = mock_response
+
+        # Call the function with a user
+        user = 'test_user'
+        response = query_collection(user, 'GET')
+
+        # Assert that the mocked function was called with the correct URL and params
+        mock_get.assert_called_once_with(
+            "http://localhost:8000/api/v1/payments/",
+            params={'api_user': user}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+    
+    def test_get_query_disbursement_api_user_not_found(self, mock_get):
+        # Mock the response object to return expected data
+        mock_response = Mock()
+        mock_response.status_code = 404
+        mock_response.json.return_value = {'error':'api user not found'}
+        mock_get.return_value = mock_response
+
+        # Call the function with a user
+        user = 'test_user'
+        response = query_collection(user, 'GET')
+
+        # Assert that the mocked function was called with the correct URL and params
+        mock_get.assert_called_once_with(
+            "http://localhost:8000/api/v1/payments/",
+            params={'api_user': user}
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {'error':'api user not found'})
+
+    def test_get_query_disbursement_invalid(self, mock_get):       
+        response = query_collection('test_user', 'update')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {'data':'Invalid method passed'})
+
+
+@patch('lipila.helpers.requests.post')
+class PostPaymentTest(TestCase):
+    def test_post_query_disbursement_valid(self, mock_post):
+        mock_response = Mock()
+        mock_response.json.return_value = {'data': 'request accepted, wait for client approval'}
+        mock_response.status_code = 202
+        mock_post.return_value = mock_response
+
+        User.objects.create(username='test_user')
+
+        data = {'amount': '100', 'payer_account_number': '0966443322',
+                'payment_method': 'mtn', 'description': 'testdescription'}
+        
+        response = query_collection('test_user', 'POST', data=data)
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.data, {'data': 'request accepted, wait for client approval'})
 
 @patch('lipila.helpers.requests.get')
 class GetDisbursementTest(TestCase):
@@ -76,6 +141,7 @@ class PostDisbursementTest(TestCase):
 
         data = {'amount': '100', 'payee_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
+        
         response = query_disbursement('test_user', 'POST', data=data)
         self.assertEqual(response.status_code, 202)
         self.assertEqual(response.data, {'data': 'request accepted, wait for client approval'})
