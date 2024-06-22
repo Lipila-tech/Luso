@@ -1,0 +1,37 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %} Contribution History {% endblock %}
+
+{% block section %}
+<h2>Contribution History</h2>
+{% if contributions %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Subscription</th>
+                <th>Contribution method</th>
+                <th>Account</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contribution in contributions %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ contribution.amount }}</td>
+                <td>{{ contribution.timestamp }}</td>
+                <td>{{ contribution.creator }}</td>
+                <td>{{ contribution.payemnt_method }}</td>
+                <td>{{ contribution.account_number }}</td>
+                <td>{{ contribution.status |upper }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You have not made any contributions yet.</p>
+{% endif %}
+{% endblock %}
