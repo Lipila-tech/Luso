@@ -166,13 +166,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'patron:history' %}">
-                            <i class="bi bi-circle"></i><span>History</span>
+                        <a href="{% url 'patron:withdrawals_history' %}">
+                            <i class="bi bi-circle"></i><span>Withdrawal Statement</span>
                         </a>
                     </li>
                     <li>
                         <a href="{% url 'patron:subscriptions_history' %}">
-                            <i class="bi bi-circle"></i><span>Subscriptions Paid</span>
+                            <i class="bi bi-circle"></i><span>Subscriptions Received</span>
                         </a>
                     </li>
                     <li>
@@ -229,12 +229,17 @@
             <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="{% url 'patron:subscriptions' %}">
-                        <i class="bi bi-circle"></i><span>Subscriptions</span>
+                        <i class="bi bi-circle"></i><span>My Subscriptions</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'patron:payments' %}">
-                        <i class="bi bi-circle"></i><span>Payments</span>
+                    <a href="{% url 'patron:subscriptions_history' %}">
+                        <i class="bi bi-circle"></i><span>My Payments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'patron:contributions_history' %}">
+                        <i class="bi bi-circle"></i><span>My Contributions</span>
                     </a>
                 </li>
             </ul>
