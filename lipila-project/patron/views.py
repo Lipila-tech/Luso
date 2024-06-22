@@ -28,36 +28,6 @@ def index(request):
     """
     return render(request, 'patron/index.html')
 
-
-@login_required
-def creator_withdrawal(request):
-    if request.method == 'POST':
-        form = WithdrawalRequestForm(request.POST)
-        if form.is_valid():
-            withdrawal_request = form.save(commit=False)
-            # Assuming user is authenticated creator
-            withdrawal_request.creator = request.user.creatorprofile
-            withdrawal_request.status = 'pending'
-            withdrawal_request.save()
-            messages.success(
-                request,
-                'Withdrawal request submitted successfully. We will review your request and process it within 2 business days.')
-            # Redirect to same view after successful request
-            return redirect(reverse('patron:withdraw'))
-    else:
-        form = WithdrawalRequestForm()
-    total_payments = calculate_total_payments(request.user.creatorprofile)
-    pending_requests = WithdrawalRequest.objects.filter(
-        creator=request.user.creatorprofile, status='pending')
-    total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
-    approved_payouts = WithdrawalRequest.objects.filter(
-        creator=request.user.creatorprofile, status='success')
-
-    context = {'form': form, 'pending_requests': pending_requests, 'approved_payouts':approved_payouts,
-               'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
-    return render(request, 'patron/admin/actions/creator_withdrawal.html', context)
-
-
 @login_required
 def profile(request):
     context = {}
@@ -417,28 +387,36 @@ def subscription_detail(request, tier_id):
     return render(request, 'patron/admin/pages/subscription_detail.html', {'subscription': subscription})
 
 
+# PAYMENT HANDLING VIEWS
+
 @login_required
-def history(request):
-    """
-    This view retrives all the history of a creator's withdraw requests.
-    """
-    full_history = WithdrawalRequest.objects.filter(
-        creator=request.user.creatorprofile)
-    history = []
-    context = {}
-    if full_history:
-        for obj in full_history:
-            item = {}
-            item['amount'] = obj.amount
-            item['transaction_date'] = obj.request_date
-            item['transaction_type'] = 'Withdraw Request'
-            item['account_number'] = obj.account_number
-            item['status'] = obj.status
-            item['reason'] = obj.reason
-            history.append(item)
-    
-    context['history'] = history
-    return render(request, 'patron/admin/pages/history.html', context)
+def creator_withdrawal(request):
+    if request.method == 'POST':
+        form = WithdrawalRequestForm(request.POST)
+        if form.is_valid():
+            withdrawal_request = form.save(commit=False)
+            # Assuming user is authenticated creator
+            withdrawal_request.creator = request.user.creatorprofile
+            withdrawal_request.status = 'pending'
+            withdrawal_request.save()
+            messages.success(
+                request,
+                'Withdrawal request submitted successfully. We will review your request and process it within 2 business days.')
+            # Redirect to same view after successful request
+            return redirect(reverse('patron:withdraw'))
+    else:
+        form = WithdrawalRequestForm()
+    total_payments = calculate_total_payments(request.user.creatorprofile)
+    pending_requests = WithdrawalRequest.objects.filter(
+        creator=request.user.creatorprofile, status='pending')
+    total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
+    approved_payouts = WithdrawalRequest.objects.filter(
+        creator=request.user.creatorprofile, status='success')
+
+    context = {'form': form, 'pending_requests': pending_requests, 'approved_payouts':approved_payouts,
+               'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
+    return render(request, 'patron/admin/actions/creator_withdrawal.html', context)
+
 
 @login_required
 def make_payment(request, tier_id):
@@ -459,11 +437,15 @@ def make_payment(request, tier_id):
             patron = User.objects.get(username=request.user)
             subscription = TierSubscriptions.objects.get(
                 patron=patron, tier=tier)
-                        
+
+            # Create a payment object
+            payment = Payments.objects.create(subscription=subscription)
+
             amount = form.cleaned_data['amount']
             account_number = form.cleaned_data['payer_account_number']
             payment_method = form.cleaned_data['payment_method']
             description = form.cleaned_data['description']
+                        
             # Process deposit logic here (query lipila api)
             payload = {
                         'amount': amount,
@@ -475,8 +457,11 @@ def make_payment(request, tier_id):
             response = query_collection(api_user.username, 'POST', data=payload)
 
             if response.status_code == 202:
-                payment = Payments.objects.create(
-                    subscription=subscription, amount=amount)
+                payment.status = 'accepted'
+                payment.amount = amount
+                payment.payment_method = payment_method
+                payment.account_number = account_number
+                payment.description = description
                 payment.save()
                 messages.success(request, f"Paid ZMW {amount} successfully!")
             else:
@@ -527,6 +512,31 @@ def contribute(request, creator):
     form = ContributeForm()
     return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
 
+# ACCOUNT HISTORY VIEWS
+
+@login_required
+def withdrawal_history(request):
+    """
+    This view retrives all the history of a creator's withdraw requests.
+    """
+    full_history = WithdrawalRequest.objects.filter(
+        creator=request.user.creatorprofile)
+    history = []
+    context = {}
+    if full_history:
+        for obj in full_history:
+            item = {}
+            item['amount'] = obj.amount
+            item['transaction_date'] = obj.request_date
+            item['transaction_type'] = 'Withdraw Request'
+            item['account_number'] = obj.account_number
+            item['status'] = obj.status
+            item['reason'] = obj.reason
+            history.append(item)
+    
+    context['history'] = history
+    return render(request, 'patron/admin/pages/withdrawal_history.html', context)
+
 
 @login_required
 def payments_history(request):
@@ -534,26 +544,15 @@ def payments_history(request):
     Retrieves an authenticated User's payment history.
     """
     context = {}
-    user = get_user_object(request.user)
-    context['user'] = user
-    tiers = TierSubscriptions.objects.filter(patron=user)
-
-    # payments = Payments.objects.filter(subscription=tier)
-
-    # context['payments'] = payments
-
-    return render(request, 'patron/admin/pages/payments.html', context)
-
-
-@login_required
-def subscription_payments_history(request):
-    """
-    Retrieves an authenticated User's payment history.
-    """
-    context = {}
-    user = get_user_object(request.user)
-    context['user'] = user
-    return render(request, 'patron/admin/pages/payments_received.html', context)
+    try:
+        request.user.creatorprofile
+        # Retrive history for a user with a CreatorProfile
+        return render(request, 'patron/admin/pages/payments_received.html', context)
+    except User.creatorprofile.RelatedObjectDoesNotExist:
+        # Get a patron users history
+        payments = Payments.objects.filter(subscription__patron=request.user)
+        context['payments'] = payments
+        return render(request, 'patron/admin/pages/payments_made.html', context)
 
 
 @login_required
@@ -562,6 +561,13 @@ def contributions_history(request):
     Retrieves an authenticated User's payment history.
     """
     context = {}
-    user = get_user_object(request.user)
-    context['user'] = user
-    return render(request, 'patron/admin/pages/contributions_received.html', context)
+    context = {}
+    try:
+        request.user.creatorprofile
+        # Retrive history for a user with a CreatorProfile
+        return render(request, 'patron/admin/pages/contributions_received.html', context)
+    except User.creatorprofile.RelatedObjectDoesNotExist:
+        # Get a patron users history
+        contributions = Contributions.objects.filter(patron=request.user)
+        context['contributions'] = contributions
+        return render(request, 'patron/admin/pages/contributions_made.html', context)

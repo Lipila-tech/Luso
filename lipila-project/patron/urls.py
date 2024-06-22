@@ -20,10 +20,11 @@ urlpatterns = [
      path('subscriptions/', views.subscriptions, name='subscriptions'),
      path('subscription/<int:tier_id>', views.subscription_detail, name='subscription_detail'),
      path('withdraw/', views.creator_withdrawal, name='withdraw'),
-     path('payments/history/', views.payments_history, name='payments'),
-     path('history/', views.history, name='history'),
-     path('payments/subscriptions/', views.subscription_payments_history, name='subscriptions_history'),
-     path('payments/contributions/', views.contributions_history, name='contributions_history'),
+
+     # Authenticated User's Transaction History endpoints
+     path('history/withdrawals/', views.withdrawal_history, name='withdrawals_history'),
+     path('history/payments/', views.payments_history, name='subscriptions_history'),
+     path('history/contributions/', views.contributions_history, name='contributions_history'),
 ]
 
 

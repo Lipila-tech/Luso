@@ -228,7 +228,7 @@ class TestSubscription(TestCase):
                         kwargs={'tier_id': tier1.id}))
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('patron/admin/pages/payments.html')
+        self.assertTemplateUsed('patron/admin/pages/payments_made.html')
 
 
 class TestPatronViews(TestCase):
