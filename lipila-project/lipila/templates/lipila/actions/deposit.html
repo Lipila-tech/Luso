@@ -7,14 +7,24 @@
 <form method="post">
   {% csrf_token %}
   <div class="form-group">
+    <label for="payment_method">Network</label>
+    {{ form.payment_method }}
+    <span class="text-danger">{{ form.payment_method.errors }}</span>
+  </div>
+  <div class="form-group">
     <label for="amount">Amount (ZMW)</label>
     {{ form.amount }}
     <span class="text-danger">{{ form.amount.errors }}</span>
   </div>
   <div class="form-group">
-    <label for="phone_number">Phone Number</label>
-    {{ form.phone_number }}
-    <span class="text-danger">{{ form.phone_number.errors }}</span>
+    <label for="payer_account_number">Phone Number</label>
+    {{ form.payer_account_number }}
+    <span class="text-danger">{{ form.payer_account_number.errors }}</span>
+  </div>
+  <div class="form-group">
+    <label for="description">Description</label>
+    {{ form.description }}
+    <span class="text-danger">{{ form.description.errors }}</span>
   </div>
   <button type="submit" class="btn btn-primary">Next</button>
 </form>
