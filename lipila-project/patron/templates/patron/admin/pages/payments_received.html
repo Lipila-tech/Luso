@@ -4,6 +4,7 @@
 
 {% block section %}
 <h4>Subscription Payments</h4>
+{% if payments %}
 <table class="table">
     <thead>
         <tr>
@@ -28,4 +29,7 @@
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+    <p>You have not received any payments yet.</p>
+{% endif %}
 {% endblock %}

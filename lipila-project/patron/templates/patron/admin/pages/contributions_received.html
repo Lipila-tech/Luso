@@ -4,6 +4,7 @@
 
 {% block section %}
 <h4> Contributions </h4>
+{% if contributions %}
 <table class="table">
     <thead>
         <tr>
@@ -28,4 +29,7 @@
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+    <p>You have not received any contributions yet.</p>
+{% endif %}
 {% endblock %}
