@@ -17,14 +17,14 @@
         </tr>
     </thead>
     <tbody>
-        {% for item in subscriptions %}
+        {% for payment in payments %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ item.amount }}</td>
-            <td>{{ item.transaction_date }}</td>
-            <td>{{ item.patron }}</td>
-            <td>{{ item.message }}</td>
-            <td>{{ item.status |upper }}</td>
+            <td>{{ payment.amount }}</td>
+            <td>{{ payment.timestamp }}</td>
+            <td>{{ payment.subscription }}</td>
+            <td>{{ payment.description }}</td>
+            <td>{{ payment.status |upper }}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -21,9 +21,9 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ item.amount }}</td>
-            <td>{{ item.transaction_date }}</td>
+            <td>{{ item.timestamp }}</td>
             <td>{{ item.patron }}</td>
-            <td>{{ item.message }}</td>
+            <td>{{ item.description }}</td>
             <td>{{ item.status |upper }}</td>
         </tr>
         {% endfor %}

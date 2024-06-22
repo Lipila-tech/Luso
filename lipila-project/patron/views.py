@@ -545,7 +545,9 @@ def payments_history(request):
     """
     context = {}
     try:
-        request.user.creatorprofile
+        creator = request.user.creatorprofile
+        payments = Payments.objects.filter(subscription__tier__creator=creator)
+        context['payments'] = payments
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/payments_received.html', context)
     except User.creatorprofile.RelatedObjectDoesNotExist:
@@ -563,7 +565,8 @@ def contributions_history(request):
     context = {}
     context = {}
     try:
-        request.user.creatorprofile
+        contributions = Contributions.objects.filter(creator=request.user)
+        context['contributions'] = contributions
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/contributions_received.html', context)
     except User.creatorprofile.RelatedObjectDoesNotExist:
