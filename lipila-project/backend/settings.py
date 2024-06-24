@@ -187,7 +187,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
 STATIC_URL = "static/"
 
-LOGIN_REDIRECT_URL = "profile"
+LOGIN_REDIRECT_URL = "patron:profile"
 LOGOUT_REDIRECT_URL = "login"
 
 if env('ENV') == 'dev':

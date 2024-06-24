@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views import View
-from datetime import datetime
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 # custom modules
@@ -14,6 +14,7 @@ from business.models import Product
 from lipila.helpers import get_user_object, apology, query_collection
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
+from patron.forms.forms import DefaultUserChangeForm
 from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
 from patron.helpers import (get_creator_subscribers,
@@ -30,24 +31,31 @@ def index(request):
 
 @login_required
 def profile(request):
-    context = {}
     if request.user.is_staff:
         return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
-    try:
-        # Access creator profile using OneToOne relation
-        patron = request.user.patronprofile
-        context['user'] = get_user_object(patron)
-        return render(request, 'patron/admin/profile/patron-profile.html', context)
-    except PatronProfile.DoesNotExist:
-        pass
-    try:
-        creator = request.user.creatorprofile
-        context['user'] = get_user_object(creator)
-        return render(request, 'patron/admin/profile/creator-profile.html', context)
-    except CreatorProfile.DoesNotExist:
+    context = {}
+
+    if not request.user.last_login or request.user.last_login.date() != timezone.now().date():
         messages.info(
             request, 'Please Choose your profile type.')
-        return redirect('choose_profile_type')
+        return redirect('patron:choose_profile_type')
+    else:
+        try:
+            creator = request.user.creatorprofile
+            context['user'] = get_user_object(creator)
+            return render(request, 'patron/admin/profile/creator-profile.html', context)
+        except CreatorProfile.DoesNotExist:
+            # Access creator profile using OneToOne relation
+            context['user'] = get_user_object(request.user)
+            return render(request, 'patron/admin/profile/patron-profile.html', context)
+        # try:
+        #     creator = request.user.creatorprofile
+        #     context['user'] = get_user_object(creator)
+        #     return render(request, 'patron/admin/profile/creator-profile.html', context)
+        # except CreatorProfile.DoesNotExist:
+        #     messages.info(
+        #         request, 'Please Choose your profile type.')
+        #     return redirect('patron:choose_profile_type')
 
 
 @login_required
@@ -62,7 +70,7 @@ def create_creator_profile(request):
             creator_profile.save()
             messages.success(
                 request, "Your profile data has been saved.")
-            return redirect(reverse('profile'))
+            return redirect(reverse('patron:profile'))
         else:
             messages.error(
                 request, "Failed to save profile. data")
@@ -87,7 +95,7 @@ def create_patron_profile(request):
             patron_profile.save()
             messages.success(
                 request, "Your profile data has been saved.")
-            return redirect(reverse('profile'))
+            return redirect(reverse('patron:profile'))
         else:
             messages.error(
                 request, "Failed to save profile. data")
@@ -105,112 +113,57 @@ def choose_profile_type(request):
     if request.method == 'POST':
         profile_type = request.POST.get('profile_type')
         if profile_type == 'creator':
-            return redirect('create_creator_profile')
+            return redirect('patron:create_creator_profile')
         elif profile_type == 'patron':
-            return redirect('create_patron_profile')
+            return redirect('patron:create_patron_profile')
         else:
             messages.error(request, 'Invalid profile type selected.')
     return render(request, 'patron/admin/profile/choose_profile_type.html')
 
 
-class EditUserProfile(LoginRequiredMixin, View):
+class EditPatronProfile(LoginRequiredMixin, View):
     def get(self, request, user, *args, **kwargs):
-        try:
-            # Access creator profile using OneToOne relation
-            creator = request.user.creatorprofile
-            form = CreateCreatorProfileForm(instance=creator)
-            return render(request,
-                        'patron/admin/profile/edit_patron_info.html',
-                        {'form': form, 'user': request.user})
-        except CreatorProfile.DoesNotExist:
-            # messages.info(
-            #     request, 'Please Choose your profile type.')
-            # # Redirect to profile creation view
-            # return redirect('choose_profile_type')
-            pass
-        form = CreatePatronProfileForm(instance=request.user)
+        creator = request.user.creatorprofile
+        form = CreateCreatorProfileForm(instance=creator)
         return render(request,
-                    'patron/admin/profile/edit_user_info.html',
+                    'patron/admin/profile/edit_patron_info.html',
                     {'form': form, 'user': request.user})
-
+        
     def post(self, request, user, *args, **kwargs):
-        try:
-            # Access creator profile using OneToOne relation
-            creator = request.user.creatorprofile
-            form = CreateCreatorProfileForm(
-            request.POST, request.FILES, instance=creator)
-            if form.is_valid():
-                form.save()
-                messages.success(
-                    request, "Your profile has been updated.")
-                return redirect(reverse('profile'))
-            else:
-                messages.error(
-                    request, "Failed to update profile.")
-                return redirect(reverse('profile'))
-        except CreatorProfile.DoesNotExist:
-            pass
+        creator = request.user.creatorprofile
         form = CreateCreatorProfileForm(
-            request.POST, request.FILES, instance=request.user)
+        request.POST, request.FILES, instance=creator)
         if form.is_valid():
             form.save()
             messages.success(
                 request, "Your profile has been updated.")
-            return redirect(reverse('profile'))
+            return redirect(reverse('patron:profile'))
         else:
             messages.error(
                 request, "Failed to update profile.")
-            return redirect(reverse('profile'))
-
+            return redirect(reverse('patron:profile'))
+        
 
 class EditPersonalInfo(LoginRequiredMixin, View):
     def get(self, request, user, *args, **kwargs):
-        try:
-            # Access creator profile using OneToOne relation
-            creator = request.user.creatorprofile
-            form = CreateCreatorProfileForm(instance=creator)
-            return render(request,
-                        'patron/admin/profile/edit_patron_info.html',
-                        {'form': form, 'user': request.user})
-        except CreatorProfile.DoesNotExist:
-            # messages.info(
-            #     request, 'Please Choose your profile type.')
-            # # Redirect to profile creation view
-            # return redirect('choose_profile_type')
-            pass
-        form = CreatePatronProfileForm(instance=request.user)
+        form = DefaultUserChangeForm(instance=request.user)
         return render(request,
-                    'patron/admin/profile/edit_user_info.html',
+                    'patron/admin/profile/edit_personal_info.html',
                     {'form': form, 'user': request.user})
-
+        
     def post(self, request, user, *args, **kwargs):
-        try:
-            # Access creator profile using OneToOne relation
-            creator = request.user.creatorprofile
-            form = CreateCreatorProfileForm(
-            request.POST, request.FILES, instance=creator)
-            if form.is_valid():
-                form.save()
-                messages.success(
-                    request, "Your profile has been updated.")
-                return redirect(reverse('profile'))
-            else:
-                messages.error(
-                    request, "Failed to update profile.")
-                return redirect(reverse('profile'))
-        except CreatorProfile.DoesNotExist:
-            pass
-        form = CreateCreatorProfileForm(
-            request.POST, request.FILES, instance=request.user)
+        form = DefaultUserChangeForm(
+        request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(
                 request, "Your profile has been updated.")
-            return redirect(reverse('profile'))
+            return redirect(reverse('patron:profile'))
         else:
             messages.error(
                 request, "Failed to update profile.")
-            return redirect(reverse('profile'))
+            return redirect(reverse('patron:profile'))
+        
 
 @login_required
 def dashboard(request, user):
@@ -228,7 +181,7 @@ def dashboard(request, user):
     if request.user.is_staff:
         return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
     context = {}
-    now = datetime.now()
+    now = timezone.now()
     request.session['last_login_time'] = now.strftime("%H:%M:%S")
     last_login_time = request.session.get('last_login_time')
     if last_login_time:
@@ -239,7 +192,7 @@ def dashboard(request, user):
         subscriptions = TierSubscriptions.objects.filter(patron=user_object)
         context['summary'] = {
             'subscriptions': len(subscriptions),
-            'updated_at': datetime.today
+            'updated_at': timezone.today
         }
         patron = request.user.patronprofile
         context['user'] = get_user_object(patron)
@@ -262,7 +215,7 @@ def dashboard(request, user):
             'withdrawals': withdrawals,
             'patrons': len(get_creator_subscribers(creator)),
             'tiers': len(Tier.objects.filter(creator=creator)),
-            'updated_at': datetime.today,
+            'updated_at': timezone.today,
             'last_login_time': last_login_time
         }
         creator = request.user.creatorprofile
@@ -273,7 +226,7 @@ def dashboard(request, user):
     except CreatorProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
-        return redirect('choose_profile_type')
+        return redirect('patron:choose_profile_type')
 
 
 @login_required

@@ -22,7 +22,7 @@ class TestPatronViewsMore(TestCase):
             'creator_category': 'artist',
         }
         cls.response = cls.client.post(
-            reverse('create_creator_profile'), data)
+            reverse('patron:create_creator_profile'), data)
         cls.creator = CreatorProfile.objects.get(user=cls.creator_user)
         cls.response1 = cls.client.get(reverse('patron:tiers'))
         cls.tiers = Tier.objects.filter(creator=cls.creator).values()
@@ -263,7 +263,7 @@ class TestPatronViews(TestCase):
         """
         Test that an unathenticated user is redirected to the login page.
         """
-        response = self.client.get(reverse('profile'))
+        response = self.client.get(reverse('patron:profile'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url, "/accounts/login/?next=/accounts/profile/")
@@ -274,7 +274,7 @@ class TestPatronViews(TestCase):
         view, if they don't have one.
         """
         self.client.force_login(self.creatoruser1)
-        response = self.client.get(reverse('profile'))
+        response = self.client.get(reverse('patron:profile'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/accounts/profile/choose")
 
@@ -286,13 +286,13 @@ class TestPatronViews(TestCase):
         account_number = '77477838'
         city = 'Kitwe'
         data = {'account_number': account_number, 'city': city}
-        response = self.client.post(reverse('create_patron_profile'), data)
+        response = self.client.post(reverse('patron:create_patron_profile'), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/accounts/profile/")
         self.assertEqual(PatronProfile.objects.count(), 1)
         patron = PatronProfile.objects.get(user=self.creatoruser1)
         self.assertEqual(patron.account_number, '77477838')
-        res = self.client.get(reverse('profile'))
+        res = self.client.get(reverse('patron:profile'))
         self.assertEqual(res.status_code, 200)
 
     def test_create_creator_profile(self):
@@ -305,13 +305,13 @@ class TestPatronViews(TestCase):
             'about': 'test user about',
             'creator_category': 'artist',
         }
-        response = self.client.post(reverse('create_creator_profile'), data)
+        response = self.client.post(reverse('patron:create_creator_profile'), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/accounts/profile/")
         self.assertEqual(CreatorProfile.objects.count(), 1)
         creator = CreatorProfile.objects.get(user=self.creatoruser1)
         self.assertEqual(creator.patron_title, 'TestPatron')
-        res = self.client.get(reverse('profile'))
+        res = self.client.get(reverse('patron:profile'))
         self.assertEqual(res.status_code, 200)
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
@@ -328,7 +328,7 @@ class TestPatronViews(TestCase):
             'creator_category': 'artist',
         }
         # create a creator profile
-        self.client.post(reverse('create_creator_profile'), data)
+        self.client.post(reverse('patron:create_creator_profile'), data)
         creator = CreatorProfile.objects.get(user=self.creatoruser1)
         # query the view_tiers view
         response = self.client.get(reverse('patron:tiers'))
@@ -377,7 +377,7 @@ class TestPatronViews(TestCase):
         Tier().create_default_tiers(creator1)
         # login user 2 and create tiers
         self.client.force_login(self.user2)
-        self.client.post(reverse('create_creator_profile'), data)
+        self.client.post(reverse('patron:create_creator_profile'), data)
         creator2 = CreatorProfile.objects.get(user=self.user2)
         response = self.client.get(reverse('patron:tiers'))
         # get tiers
@@ -429,7 +429,7 @@ class TestCreateDefaultTiers(TestCase):
 
         # login user 2 and create tiers
         self.client.force_login(self.user3)
-        self.client.post(reverse('create_creator_profile'), data)
+        self.client.post(reverse('patron:create_creator_profile'), data)
         creator2 = CreatorProfile.objects.get(user=self.user3)
         response = self.client.get(reverse('patron:tiers'))
         # get tiers

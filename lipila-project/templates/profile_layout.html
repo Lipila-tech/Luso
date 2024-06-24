@@ -52,14 +52,15 @@
             <ul class="nav nav-tabs nav-tabs-bordered">
 
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'profile' %}">Overview</a>
+                <a class="nav-link" href="{% url 'patron:profile' %}">Overview</a>
               </li>
-
+              {% if user.creatorprofile %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'update_profile' user=user %}">Edit Patron Info</a>
+                <a class="nav-link" href="{% url 'patron:update_profile' user=user %}">Edit Patron Info</a>
               </li>
+              {% endif %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'update_personal_info' user=user %}">Edit Personal Info</a>
+                <a class="nav-link" href="{% url 'patron:update_personal_info' user=user %}">Edit Personal Info</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'password_change' %}">Change Password</a>
