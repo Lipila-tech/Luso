@@ -163,6 +163,55 @@ class EditUserProfile(LoginRequiredMixin, View):
             return redirect(reverse('profile'))
 
 
+class EditPersonalInfo(LoginRequiredMixin, View):
+    def get(self, request, user, *args, **kwargs):
+        try:
+            # Access creator profile using OneToOne relation
+            creator = request.user.creatorprofile
+            form = CreateCreatorProfileForm(instance=creator)
+            return render(request,
+                        'patron/admin/profile/edit_patron_info.html',
+                        {'form': form, 'user': request.user})
+        except CreatorProfile.DoesNotExist:
+            # messages.info(
+            #     request, 'Please Choose your profile type.')
+            # # Redirect to profile creation view
+            # return redirect('choose_profile_type')
+            pass
+        form = CreatePatronProfileForm(instance=request.user)
+        return render(request,
+                    'patron/admin/profile/edit_user_info.html',
+                    {'form': form, 'user': request.user})
+
+    def post(self, request, user, *args, **kwargs):
+        try:
+            # Access creator profile using OneToOne relation
+            creator = request.user.creatorprofile
+            form = CreateCreatorProfileForm(
+            request.POST, request.FILES, instance=creator)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, "Your profile has been updated.")
+                return redirect(reverse('profile'))
+            else:
+                messages.error(
+                    request, "Failed to update profile.")
+                return redirect(reverse('profile'))
+        except CreatorProfile.DoesNotExist:
+            pass
+        form = CreateCreatorProfileForm(
+            request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Your profile has been updated.")
+            return redirect(reverse('profile'))
+        else:
+            messages.error(
+                request, "Failed to update profile.")
+            return redirect(reverse('profile'))
+
 @login_required
 def dashboard(request, user):
     """
