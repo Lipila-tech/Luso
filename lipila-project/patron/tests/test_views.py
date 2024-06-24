@@ -18,7 +18,7 @@ class TestPatronViewsMore(TestCase):
         cls.client.force_login(cls.creator_user)
         data = {
             'patron_title': 'TestPatron',
-            'bio': 'test user bio',
+            'about': 'test user about',
             'creator_category': 'artist',
         }
         cls.response = cls.client.post(
@@ -75,9 +75,9 @@ class TestSubscription(TestCase):
         cls.user1 = User.objects.create(
             username='test_user', password='password')
         cls.creator1_obj = CreatorProfile.objects.create(
-            user=cls.creator_user1, patron_title='testpatron1', bio='test', creator_category='musician')
+            user=cls.creator_user1, patron_title='testpatron1', about='test', creator_category='musician')
         cls.creator2_obj = CreatorProfile.objects.create(
-            user=cls.creator_user2, patron_title='testpatron2', bio='test', creator_category='musician')
+            user=cls.creator_user2, patron_title='testpatron2', about='test', creator_category='musician')
         Tier().create_default_tiers(cls.creator1_obj)  # creator 1 tiers
         Tier().create_default_tiers(cls.creator2_obj)  # creator 2 tiers
         cls.tiers_1 = Tier.objects.filter(creator=cls.creator1_obj).values()
@@ -302,7 +302,7 @@ class TestPatronViews(TestCase):
         self.client.force_login(self.creatoruser1)
         data = {
             'patron_title': 'TestPatron',
-            'bio': 'test user bio',
+            'about': 'test user about',
             'creator_category': 'artist',
         }
         response = self.client.post(reverse('create_creator_profile'), data)
@@ -324,7 +324,7 @@ class TestPatronViews(TestCase):
         self.client.force_login(self.creatoruser1)
         data = {
             'patron_title': 'TestPatron',
-            'bio': 'test user bio',
+            'about': 'test user about',
             'creator_category': 'artist',
         }
         # create a creator profile
@@ -368,12 +368,12 @@ class TestPatronViews(TestCase):
         """
         data = {
             'patron_title': 'TestPatron',
-            'bio': 'test user bio',
+            'about': 'test user about',
             'creator_category': 'artist',
         }
 
         creator1 = CreatorProfile.objects.create(
-            user=self.creatoruser1, patron_title='testpatron', bio='test', creator_category='musician')
+            user=self.creatoruser1, patron_title='testpatron', about='test', creator_category='musician')
         Tier().create_default_tiers(creator1)
         # login user 2 and create tiers
         self.client.force_login(self.user2)
@@ -410,9 +410,9 @@ class TestCreateDefaultTiers(TestCase):
         cls.user3 = User.objects.create(
             username='test_user_3', password='password')
         creator1 = CreatorProfile.objects.create(
-            user=user1, patron_title='test_patron', bio='test', creator_category='musician')
+            user=user1, patron_title='test_patron', about='test', creator_category='musician')
         creator2 = CreatorProfile.objects.create(
-            user=user2, patron_title='testpatron3', bio='test', creator_category='musician')
+            user=user2, patron_title='testpatron3', about='test', creator_category='musician')
         Tier().create_default_tiers(creator1)
         Tier().create_default_tiers(creator2)
 
@@ -423,7 +423,7 @@ class TestCreateDefaultTiers(TestCase):
         """
         data = {
             'patron_title': 'TestPatron3',
-            'bio': 'test user bio',
+            'about': 'test user about',
             'creator_category': 'artist',
         }
 

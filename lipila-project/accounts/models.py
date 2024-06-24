@@ -41,13 +41,15 @@ class CreatorProfile(models.Model):
     profile_image = models.ImageField(upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
     patron_title = models.CharField(max_length=150, unique=True)
-    bio = models.TextField(blank=True)
-    city = models.CharField(max_length=50, blank=True)
+    about = models.TextField(blank=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, default='Zambia')
+    address = models.CharField(max_length=300, blank=True, default='Zambia resident')
     creator_category = models.CharField(max_length=50, choices=CREATOR_CATEGORY_CHOICES, default='other')
-    facebook_url = models.URLField(blank=True)
-    twitter_url = models.URLField(blank=True)
-    instagram_url = models.URLField(blank=True)
-    linkedin_url = models.URLField(blank=True)
+    facebook_url = models.URLField(blank=True, null=True)
+    twitter_url = models.URLField(blank=True, null=True)
+    instagram_url = models.URLField(blank=True, null=True)
+    linkedin_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.user.username

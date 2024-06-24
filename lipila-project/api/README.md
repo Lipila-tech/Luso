@@ -31,7 +31,7 @@ _Signup: POST /signup/_
     "email": "",
     "password": "",
     "account_number": "",
-    "bio": ""
+    "about": ""
 }
 
 ### Response

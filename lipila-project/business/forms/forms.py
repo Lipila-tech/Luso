@@ -36,7 +36,7 @@ class EditBusinessUserForm(UserChangeForm):
             'first_name',
             'last_name',
             'account_number',
-            'bio',
+            'about',
             'city',
             'address',
             'company',

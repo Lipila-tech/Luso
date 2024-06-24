@@ -85,7 +85,7 @@ class ApproveWithdrawalsTest(TestCase):
         cls.user1 = User.objects.create_user(
             username='creatoruser', password='creatorpassword')
         cls.creator_user = CreatorProfile.objects.create(
-            user=cls.user1, patron_title='testpatron1', bio='test', creator_category='musician')
+            user=cls.user1, patron_title='testpatron1', about='test', creator_category='musician')
         cls.withdrawal_request = WithdrawalRequest.objects.create(
             creator=cls.creator_user,
             amount=100.00,

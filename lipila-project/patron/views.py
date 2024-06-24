@@ -37,13 +37,13 @@ def profile(request):
         # Access creator profile using OneToOne relation
         patron = request.user.patronprofile
         context['user'] = get_user_object(patron)
-        return render(request, 'patron/admin/profile/users-profile.html', context)
+        return render(request, 'patron/admin/profile/patron-profile.html', context)
     except PatronProfile.DoesNotExist:
         pass
     try:
         creator = request.user.creatorprofile
         context['user'] = get_user_object(creator)
-        return render(request, 'patron/admin/profile/users-profile.html', context)
+        return render(request, 'patron/admin/profile/creator-profile.html', context)
     except CreatorProfile.DoesNotExist:
         messages.info(
             request, 'Please Choose your profile type.')
@@ -120,8 +120,8 @@ class EditUserProfile(LoginRequiredMixin, View):
             creator = request.user.creatorprofile
             form = CreateCreatorProfileForm(instance=creator)
             return render(request,
-                        'patron/admin/profile/edit_user_info.html',
-                        {'form': form, 'user': creator})
+                        'patron/admin/profile/edit_patron_info.html',
+                        {'form': form, 'user': request.user})
         except CreatorProfile.DoesNotExist:
             # messages.info(
             #     request, 'Please Choose your profile type.')

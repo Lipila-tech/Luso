@@ -96,7 +96,7 @@ class PatronProfileAdmin(admin.ModelAdmin):
 
 
 class CreatorProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'patron_title', 'profile_image', 'account_number', 'bio',
+    list_display = ['user', 'patron_title', 'profile_image', 'account_number', 'about',
                     'city', 'creator_category', 'facebook_url', 'twitter_url',
                     'instagram_url', 'linkedin_url',
                     ]

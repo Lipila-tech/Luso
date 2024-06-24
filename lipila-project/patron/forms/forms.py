@@ -13,8 +13,12 @@ class CreateCreatorProfileForm(forms.ModelForm):
         model = CreatorProfile
         fields = [
             'patron_title',
-            'bio',
+            'about',
             'creator_category',
+            'city',
+            'account_number',
+            'facebook_url',
+            'twitter_url',
             ]
         widgets = {
             # Restrict file types

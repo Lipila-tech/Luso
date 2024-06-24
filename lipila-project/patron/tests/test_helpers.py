@@ -16,12 +16,12 @@ class TestHelperFunctions(TestCase):
         self.creator_user1 = User.objects.create(
             username='testcreator1', password='password')
         self.creator1_obj = CreatorProfile.objects.create(
-            user=self.creator_user1, patron_title='testpatron1', bio='test', creator_category='musician')
+            user=self.creator_user1, patron_title='testpatron1', about='test', creator_category='musician')
         
         self.creator_user2 = User.objects.create(
             username='testcreator2', password='password')
         self.creator2_obj = CreatorProfile.objects.create(
-            user=self.creator_user2, patron_title='testpatron2', bio='test', creator_category='musician')
+            user=self.creator_user2, patron_title='testpatron2', about='test', creator_category='musician')
         
         # Create the tiers and filter objects
         Tier().create_default_tiers(self.creator1_obj)  # creator 1 tiers
