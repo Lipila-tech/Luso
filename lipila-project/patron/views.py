@@ -14,7 +14,7 @@ from business.models import Product
 from lipila.helpers import get_user_object, apology, query_collection
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
-from patron.forms.forms import DefaultUserChangeForm
+from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
 from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
 from patron.helpers import (get_creator_subscribers,
@@ -48,15 +48,7 @@ def profile(request):
             # Access creator profile using OneToOne relation
             context['user'] = get_user_object(request.user)
             return render(request, 'patron/admin/profile/patron-profile.html', context)
-        # try:
-        #     creator = request.user.creatorprofile
-        #     context['user'] = get_user_object(creator)
-        #     return render(request, 'patron/admin/profile/creator-profile.html', context)
-        # except CreatorProfile.DoesNotExist:
-        #     messages.info(
-        #         request, 'Please Choose your profile type.')
-        #     return redirect('patron:choose_profile_type')
-
+        
 
 @login_required
 def create_creator_profile(request):
@@ -124,14 +116,14 @@ def choose_profile_type(request):
 class EditPatronProfile(LoginRequiredMixin, View):
     def get(self, request, user, *args, **kwargs):
         creator = request.user.creatorprofile
-        form = CreateCreatorProfileForm(instance=creator)
+        form = EditCreatorProfileForm(instance=creator)
         return render(request,
                     'patron/admin/profile/edit_patron_info.html',
                     {'form': form, 'user': request.user})
         
     def post(self, request, user, *args, **kwargs):
         creator = request.user.creatorprofile
-        form = CreateCreatorProfileForm(
+        form = EditCreatorProfileForm(
         request.POST, request.FILES, instance=creator)
         if form.is_valid():
             form.save()

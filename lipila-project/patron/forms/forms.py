@@ -27,6 +27,18 @@ class CreateCreatorProfileForm(forms.ModelForm):
             'about',
             'creator_category',
             'city',
+        ]
+
+
+class EditCreatorProfileForm(forms.ModelForm):
+    class Meta:
+        model = CreatorProfile
+        fields = [
+            'profile_image',
+            'patron_title',
+            'about',
+            'creator_category',
+            'city',
             'account_number',
             'facebook_url',
             'twitter_url',
@@ -35,7 +47,6 @@ class CreateCreatorProfileForm(forms.ModelForm):
             # Restrict file types
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
-
 
 class CreatePatronProfileForm(forms.ModelForm):
     class Meta:
