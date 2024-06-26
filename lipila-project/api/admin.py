@@ -20,7 +20,8 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
 
 class ContributionsAdmin(admin.ModelAdmin):
     list_display = ('creator', 'patron', 'amount', 'status',
-                    'description', 'payer_account_number', 'payment_method', 'timestamp')
+                    'description', 'payer_account_number',
+                    'payment_method', 'timestamp', 'reference_id')
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -34,7 +35,8 @@ class TierAdmin(admin.ModelAdmin):
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('subscription', 'amount', 'status', 'timestamp')
+    list_display = ('subscription', 'amount', 'status', 'description', 'payer_account_number',
+                     'timestamp', 'reference_id', 'payment_method')
 
 
 class DisbursementAdmin(admin.ModelAdmin):
