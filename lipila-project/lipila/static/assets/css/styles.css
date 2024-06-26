@@ -360,3 +360,23 @@ hr .new1 {
     transform: translate(24px, 0);
   }
 }
+
+/* Payment-form loader */
+#loader {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 10px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  /* border-top-color: #3498db; */
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+  left: 50%;
+  top: 50%
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

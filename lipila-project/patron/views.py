@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from django.http import JsonResponse
 from django.views import View
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -184,7 +185,7 @@ def dashboard(request, user):
         subscriptions = TierSubscriptions.objects.filter(patron=user_object)
         context['summary'] = {
             'subscriptions': len(subscriptions),
-            'updated_at': timezone.today
+            'updated_at': timezone.now
         }
         patron = request.user.patronprofile
         context['user'] = get_user_object(patron)
@@ -207,7 +208,7 @@ def dashboard(request, user):
             'withdrawals': withdrawals,
             'patrons': len(get_creator_subscribers(creator)),
             'tiers': len(Tier.objects.filter(creator=creator)),
-            'updated_at': timezone.today,
+            'updated_at': timezone.now,
             'last_login_time': last_login_time
         }
         creator = request.user.creatorprofile
@@ -439,20 +440,31 @@ def make_payment(request, tier_id):
     """
     tier = get_tier(tier_id)
     if request.method == 'POST':
-        form = DepositForm(request.POST)
-        if form.is_valid():
+        import json
+        from patron.helpers import generate_reference_id
+        raw_data = request.body.decode('utf-8')  # Decode bytes to string
+        data = json.loads(raw_data)  # Parse JSON data
+        amount = data.get('amount')
+        account_number = data.get('payer_account_number')
+        description = data.get('description')
+        payment_method = data.get('payment_method')
+        
+        if amount and account_number:
+            print('valid ser')
+            
             patron = User.objects.get(username=request.user)
             subscription = TierSubscriptions.objects.get(
                 patron=patron, tier=tier)
+            reference_id = generate_reference_id()
 
             # Create a payment object
-            payment = Payments.objects.create(subscription=subscription)
-
-            amount = form.cleaned_data['amount']
-            account_number = form.cleaned_data['payer_account_number']
-            payment_method = form.cleaned_data['payment_method']
-            description = form.cleaned_data['description']
-                        
+            payment = Payments.objects.create(subscription=subscription, reference_id=reference_id)
+            payment.reference_id = reference_id
+            payment.amount = amount
+            payment.payment_method = payment_method
+            payment.account_number = account_number
+            payment.description = description
+                            
             # Process deposit logic here (query lipila api)
             payload = {
                         'amount': amount,
@@ -461,20 +473,22 @@ def make_payment(request, tier_id):
                         'description': description
                     }
             api_user = User.objects.get(pk=1)
+            # process payment
             response = query_collection(api_user.username, 'POST', data=payload)
 
             if response.status_code == 202:
                 payment.status = 'accepted'
-                payment.amount = amount
-                payment.payment_method = payment_method
-                payment.account_number = account_number
-                payment.description = description
                 payment.save()
                 messages.success(request, f"Paid ZMW {amount} successfully!")
+                return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
             else:
                 messages.error(request, 'Payment failed.')
+                form = DepositForm()
+                tier = tier
+                return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
 
-            return redirect(reverse('dashboard', kwargs={'user': request.user}))
+            # return redirect(reverse('dashboard', kwargs={'user': request.user}))
+            # return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
         
         messages.error(request, f"Invalid data sent")
         form = DepositForm()
@@ -518,6 +532,15 @@ def contribute(request, creator):
         return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
     form = ContributeForm()
     return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
+
+def check_payment_status(request):
+    if request.method == 'POST':
+        reference_id = request.POST.get('reference_id')
+        # Check payment status using PaymentService
+        payment= Payments.objects.get(reference_id=reference_id)
+        status = payment.status
+        return JsonResponse({'status': status})
+    return JsonResponse({'status': 'error'})
 
 # ACCOUNT HISTORY VIEWS
 

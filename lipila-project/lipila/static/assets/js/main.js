@@ -6,11 +6,97 @@
 * License: https://bootstrapmade.com/license/
 */
 
+// Payment-form loader
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('payment-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const tierId = document.getElementById('tierId').value;
+    
+    if (confirm(['You will be asked to confirm payment on your mobile.']) == true) {
+      initiatePayment(tierId);
+      
+    }
+  });
+});
+
+async function initiatePayment(tierId) {
+  document.getElementById('loader').style.display = 'block';
+  const paymentMethod = document.getElementById('id_payment_method').value;  // Access value using ID
+  const amount = document.getElementById('id_amount').value;
+  const phoneNumber = document.getElementById('id_payer_account_number').value;
+  const description = document.getElementById('id_description').value;
+  
+  
+  const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;  // Get CSRF token from the form
+
+  try {
+    const response = await fetch(`http://localhost:8000/patron/payments/pay/${tierId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      body: JSON.stringify(
+        { amount: amount, payment_method: paymentMethod, payer_account_number: phoneNumber, description: description })  // Send payment amount in JSON format
+    });
+
+    if (!response.ok) {
+      document.getElementById('loader').style.display = 'none';
+      throw new Error(`Error initiating payment: ${response.statusText}`);
+    }
+
+    const data = await response.json();  // Parse JSON response
+
+    if (data.message === 'Payment initiated successfully') {
+      document.getElementById('loader').style.display = 'none';
+      // Handle successful payment initiation
+      const referenceId = data.reference_id;
+      redirectToPaymentHistory();
+    } else {
+      document.getElementById('loader').style.display = 'none';
+      alert('Error: ' + data.error);  // Handle potential error message from the view
+    }
+  } catch (error) {
+    document.getElementById('loader').style.display = 'none';
+    console.error('Error:', error);
+    alert('An error occurred. Please try again later.');
+  } finally {
+    // Perform any cleanup actions after the request completes (optional)
+  }
+}
+
+function redirectToPaymentHistory() {
+  window.location.href = "http://localhost:8000/patron/history/payments";
+}
+
+
+function checkPaymentStatus(referenceId) {
+  fetch('localhost:8000/payments/status/', {
+    method: 'POST',
+    body: JSON.stringify({ reference_id: referenceId }),  // Send reference ID in JSON
+    headers: { 'Content-Type': 'application/json' }
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'accepted' || data.status === 'success') {
+        // Payment successful! Redirect or display success message
+        alert('Payment successful!');
+        document.getElementById('loader').style.display = 'none';
+      } else if (data.status === 'pending') {
+        // Payment still pending, check again after a delay
+        setTimeout(() => checkPaymentStatus(referenceId), 5000);  // Check every 5 seconds
+      } else {
+        alert('Payment failed');
+      }
+    })
+}
+
 
 const closeButtons = document.querySelectorAll('.close-btn');
 
 closeButtons.forEach(closeButton => {
-  closeButton.addEventListener('click', function() {
+  closeButton.addEventListener('click', function () {
     const messageDiv = this.parentElement;  // Get the parent message div
     messageDiv.style.display = 'none';  // Hide the message div
   });

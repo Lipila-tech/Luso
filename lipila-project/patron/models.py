@@ -89,6 +89,7 @@ class Payments(models.Model):
         TierSubscriptions, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     account_number = models.CharField(max_length=300, null=True, blank=True)
+    reference_id = models.CharField(max_length=16, null=True, blank=True)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200, null=True, blank=True)

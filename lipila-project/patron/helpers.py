@@ -10,6 +10,15 @@ from patron.models import Tier, TierSubscriptions, Payments, Contributions, With
 from django.urls import reverse
 from django.db.models import Sum
 
+import random
+import string
+
+def generate_reference_id():
+  """Generates a random 10-character reference ID with digits and letters."""
+
+  characters = string.ascii_letters + string.digits
+  return ''.join(random.choice(characters) for _ in range(10))
+
 
 def calculate_total_withdrawals(creator):
     """
