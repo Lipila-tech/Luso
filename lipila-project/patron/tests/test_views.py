@@ -200,7 +200,7 @@ class TestSubscription(TestCase):
         self.client.force_login(user1)
         url = reverse('patron:contribute', kwargs={
                       'creator': self.creator1_obj})
-        data = {'amount': '100', 'account_number': '0966443322',
+        data = {'amount': '100', 'payer_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)

@@ -12,15 +12,20 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById('payment-form').addEventListener('submit', function (event) {
     event.preventDefault();
     const tierId = document.getElementById('tierId').value;
+    const requestType = document.getElementById('requestType').value;
     
     if (confirm(['You will be asked to confirm payment on your mobile.']) == true) {
-      initiatePayment(tierId);
+      if (requestType == 'contribute'){
+        initiatePayment(tierId, 'contribute');
+      }else{
+        initiatePayment(tierId, 'pay');
+      }
       
     }
   });
 });
 
-async function initiatePayment(tierId) {
+async function initiatePayment(tierId, requestType) {
   document.getElementById('loader').style.display = 'block';
   const paymentMethod = document.getElementById('id_payment_method').value;  // Access value using ID
   const amount = document.getElementById('id_amount').value;
@@ -31,7 +36,7 @@ async function initiatePayment(tierId) {
   const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;  // Get CSRF token from the form
 
   try {
-    const response = await fetch(`http://localhost:8000/patron/payments/pay/${tierId}`, {
+    const response = await fetch(`http://localhost:8000/patron/payments/${requestType}/${tierId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +57,7 @@ async function initiatePayment(tierId) {
       document.getElementById('loader').style.display = 'none';
       // Handle successful payment initiation
       const referenceId = data.reference_id;
-      redirectToPaymentHistory();
+      redirectToPaymentHistory(requestType);
     } else {
       document.getElementById('loader').style.display = 'none';
       alert('Error: ' + data.error);  // Handle potential error message from the view
@@ -66,8 +71,8 @@ async function initiatePayment(tierId) {
   }
 }
 
-function redirectToPaymentHistory() {
-  window.location.href = "http://localhost:8000/patron/history/payments";
+function redirectToPaymentHistory(endpoint) {
+  window.location.href = `http://localhost:8000/patron/history/${endpoint}`;
 }
 
 

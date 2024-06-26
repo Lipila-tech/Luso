@@ -9,6 +9,8 @@ from django.views import View
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+import json
+from patron.helpers import generate_reference_id
 # custom modules
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
@@ -440,8 +442,6 @@ def make_payment(request, tier_id):
     """
     tier = get_tier(tier_id)
     if request.method == 'POST':
-        import json
-        from patron.helpers import generate_reference_id
         raw_data = request.body.decode('utf-8')  # Decode bytes to string
         data = json.loads(raw_data)  # Parse JSON data
         amount = data.get('amount')
@@ -450,8 +450,6 @@ def make_payment(request, tier_id):
         payment_method = data.get('payment_method')
         
         if amount and account_number:
-            print('valid ser')
-            
             patron = User.objects.get(username=request.user)
             subscription = TierSubscriptions.objects.get(
                 patron=patron, tier=tier)
@@ -486,9 +484,6 @@ def make_payment(request, tier_id):
                 form = DepositForm()
                 tier = tier
                 return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
-
-            # return redirect(reverse('dashboard', kwargs={'user': request.user}))
-            # return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
         
         messages.error(request, f"Invalid data sent")
         form = DepositForm()
@@ -500,38 +495,53 @@ def make_payment(request, tier_id):
 
 
 @login_required
-def contribute(request, creator):
+def contribute(request, tier_id):
+    owner = User.objects.get(pk=tier_id)
     if request.method == 'POST':
-        form = ContributeForm(request.POST)
-        if form.is_valid():
-            patron = User.objects.get(username=request.user)
-            creator = User.objects.get(username=creator)
-            payload = {
-                        'amount': str(form.cleaned_data.get('amount')),
-                        'payment_method': form.cleaned_data.get('payment_method'),
-                        'payer_account_number': form.cleaned_data.get('account_number'),
-                        'description': form.cleaned_data.get('description')
-                    }
+        raw_data = request.body.decode('utf-8')  # Decode bytes to string
+        data = json.loads(raw_data)  # Parse JSON data
+        amount = data.get('amount')
+        account_number = data.get('payer_account_number')
+        description = data.get('description')
+        payment_method = data.get('payment_method')
+        
 
+        if amount and payment_method:
+            patron = User.objects.get(username=request.user)
+            creator = User.objects.get(pk=tier_id)
+            reference_id = generate_reference_id()
+            contribution = Contributions.objects.create(creator=creator, patron=patron, reference_id=reference_id)
+            # create contribution object
+            contribution.amount = amount
+            contribution.payer_account_number = account_number
+            contribution.payment_method = payment_method
+            contribution.description = description
+
+            payload = {
+                        'amount': amount,
+                        'payment_method': payment_method,
+                        'payer_account_number': account_number,
+                        'description': description
+                    }
+            
             api_user = User.objects.get(pk=1)
             response = query_collection(api_user.username, 'POST', data=payload)
             if response.status_code == 202:
-                contribution = form.save(commit=False)
-                contribution.creator = creator
-                contribution.patron = patron
                 contribution.status = 'accepted'
                 contribution.save()
                 messages.success(
                     request, f"Payment of K{contribution.amount} successfull!")
+                return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
             else:
                 messages.error(request, 'Payment failed.')
-            return redirect(reverse('dashboard', kwargs={'user': request.user}))
-
-        messages.error(request, f"Faild to send data")
+                form = ContributeForm()
+                return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner':owner})
+        messages.error(request, f"Invalid data sent")
         form = ContributeForm()
-        return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
+        return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner':owner})
+    
     form = ContributeForm()
-    return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': creator})
+    return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner':owner})
 
 def check_payment_status(request):
     if request.method == 'POST':
@@ -595,11 +605,14 @@ def contributions_history(request):
     context = {}
     context = {}
     try:
-        contributions = Contributions.objects.filter(creator=request.user)
+        creator = request.user.creatorprofile
+        contributions = Contributions.objects.filter(creator=creator)
         context['contributions'] = contributions
         # Retrive history for a user with a CreatorProfile
+        print('creator')
         return render(request, 'patron/admin/pages/contributions_received.html', context)
     except User.creatorprofile.RelatedObjectDoesNotExist:
+        print('patron')
         # Get a patron users history
         contributions = Contributions.objects.filter(patron=request.user)
         context['contributions'] = contributions

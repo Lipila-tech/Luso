@@ -7,10 +7,10 @@ from business.views import CreateProductView, EditProductView, DeleteProductView
 urlpatterns = [
      # Public URLS
      path('', views.index, name='index'),
-     path('contribute/<str:creator>', views.contribute, name='contribute'),
+     path('payments/contribute/<int:tier_id>', views.contribute, name='contribute'),
+     path('payments/pay/<int:tier_id>', views.make_payment, name='make_payment'),
 
      path('creators/list', views.list_creators, name='creators'),
-     path('payments/pay/<int:tier_id>', views.make_payment, name='make_payment'),
      path('payments/status/', views.check_payment_status, name='check_payment_status'),
      path('home/<str:creator>/', views.creator_home, name='creator_home'),
      path('my-tiers', views.view_tiers, name='tiers'),
@@ -35,8 +35,8 @@ urlpatterns = [
 
      # Authenticated User's Transaction History endpoints
      path('history/withdrawals/', views.withdrawal_history, name='withdrawals_history'),
-     path('history/payments/', views.payments_history, name='subscriptions_history'),
-     path('history/contributions/', views.contributions_history, name='contributions_history'),
+     path('history/pay/', views.payments_history, name='subscriptions_history'),
+     path('history/contribute/', views.contributions_history, name='contributions_history'),
 ]
 
 

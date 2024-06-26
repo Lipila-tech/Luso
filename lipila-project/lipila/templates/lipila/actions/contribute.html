@@ -3,9 +3,11 @@
 {% block title %} Contribute {% endblock %}
 
 {% block section %}
-<h2>Buy {{creator}} a coffee.</h2>
+<h2>Buy {{owner}} a coffee.</h2>
 <div id="loader" style="display: none;"></div>
-<form method="post">
+<input  type="hidden" id="tierId" value="{{creator}}">
+<input  type="hidden" id="requestType" value="contribute">
+<form method="post" id="payment-form">
   {% csrf_token %}
   <div class="form-group">
     <label for="{{form.payment_method.auto_id}}">Network</label>
@@ -18,9 +20,9 @@
     <span class="text-danger">{{ form.amount.errors }}</span>
   </div>
   <div class="form-group">
-    <label for="{{ form.account_number.auto_id }}">Phone Number</label>
-    {{ form.account_number }}
-    <span class="text-danger">{{ form.account_number.errors }}</span>
+    <label for="{{ form.payer_account_number.auto_id }}">Phone Number</label>
+    {{ form.payer_account_number }}
+    <span class="text-danger">{{ form.payer_account_number.errors }}</span>
   </div>
   <div class="form-group">
     <label for="{{ form.description.auto_id }}">Description</label>

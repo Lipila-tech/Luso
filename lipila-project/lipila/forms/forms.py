@@ -32,4 +32,4 @@ class DepositForm(forms.Form):
 class ContributeForm(forms.ModelForm):
     class Meta:
         model = Contributions
-        fields = ('amount', 'account_number', 'payment_method', 'description')
+        fields = ('amount', 'payer_account_number', 'payment_method', 'description')
