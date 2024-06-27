@@ -152,7 +152,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
             serializer = LipilaCollectionSerializer(data=data)
             provisioned_mtn_api_user = Collections()
             provisioned_mtn_api_user.provision_sandbox(
-                provisioned_mtn_api_user.subscription_col_key)
+                provisioned_mtn_api_user.subscription_col_key, reference_id)
             provisioned_mtn_api_user.create_api_token(
                 provisioned_mtn_api_user.subscription_col_key, 'collection', reference_id)
 
