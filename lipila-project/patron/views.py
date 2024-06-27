@@ -416,7 +416,7 @@ def creator_withdrawal(request):
             # Redirect to same view after successful request
             return redirect(reverse('patron:withdraw'))
     form = WithdrawalRequestForm()
-    total_payments = calculate_total_payments(request.user.creatorprofile)
+    total_payments = calculate_creators_balance(request.user.creatorprofile)
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
     total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
@@ -607,13 +607,12 @@ def contributions_history(request):
     context = {}
     context = {}
     try:
-        creator = request.user.creatorprofile
+        creator = request.user
         contributions = Contributions.objects.filter(creator=creator)
         context['contributions'] = contributions
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/contributions_received.html', context)
     except User.creatorprofile.RelatedObjectDoesNotExist:
-        print('patron')
         # Get a patron users history
         contributions = Contributions.objects.filter(patron=request.user)
         context['contributions'] = contributions

@@ -53,7 +53,7 @@ def calculate_total_payments(creator):
     """
     # Filter payments for subscriptions belonging to the given creator's tiers
     payments = Payments.objects.filter(
-        subscription__tier__creator=creator
+        subscription__tier__creator=creator, status='success'
     ).aggregate(total_amount=Sum('amount'))
 
     if payments['total_amount'] is not None:
@@ -74,7 +74,7 @@ def calculate_total_contributions(creator):
     """
     # Filter contributions for subscriptions belonging to the given creator's tiers
     contributions = Contributions.objects.filter(
-        creator=creator
+        creator=creator, status='success'
     ).aggregate(total_amount=Sum('amount'))
 
     if contributions['total_amount'] is not None:

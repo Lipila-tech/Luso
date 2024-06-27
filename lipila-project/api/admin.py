@@ -40,12 +40,12 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class DisbursementAdmin(admin.ModelAdmin):
-    list_display = ['payee_account_number', 'amount',
+    list_display = ['payee_account_number', 'processed_date', 'updated_at', 'amount',
                   'reference_id', 'payment_method', 'description']
 
 
 class LipilaCollectionAdmin(admin.ModelAdmin):
-    list_display = ['payer_account_number', 'amount',
+    list_display = ['payer_account_number', 'processed_date', 'updated_at', 'amount',
                   'reference_id', 'payment_method', 'description']
 
 

@@ -191,6 +191,7 @@ class Collections(MTNBase):
             A HTTP Response.
         """
         is_valid = is_payment_details_valid(amount, payer, reference_id)
+        
         if is_valid:
             """ Query the Collections API"""
             try:
@@ -198,7 +199,7 @@ class Collections(MTNBase):
                 payload = json.dumps({
                     "amount": amount,
                     "currency": 'EUR',
-                    "externalId": reference_id,
+                    "externalId": 'lipilaPatron',
                     "payer": {
                         "partyIdType": "MSISDN",
                         "partyId": payer
@@ -217,6 +218,7 @@ class Collections(MTNBase):
                 if response.status_code == 202:
                     return Response(status=202, data={'message': 'pending'})
                 elif response.status_code == 400:
+                    print(response)
                     return Response(status=400, data={'reason': 'Bad Request'})
                 elif response.status_code == 409:
                     return Response(status=409, data={'reason': 'Conflict user exists'})
@@ -265,20 +267,20 @@ class Disbursement(MTNBase):
         super().__init__()
         self.subscription_dis_key = env("MTN_MOMO_DISBURSEMENT_KEY")
 
-    def deposit(self, amount: str, payer: str, reference_id: str) -> Response:
+    def deposit(self, amount: str, payee: str, reference_id: str) -> Response:
         """
         This method queries the MTN momo deposit endpoint.
 
         Args:
             amount(str): The amount to send to the payer.
-            payer(str): The mtn momo registered mobile number.
+            payee(str): The mtn momo registered mobile number.
             reference_id(str): Unique str formated uuid number to that identitifies the tr
                         transaction.
 
         Returns:
             A HTTP Response.
         """
-        is_valid = is_payment_details_valid(amount, payer, reference_id)
+        is_valid = is_payment_details_valid(amount, payee, reference_id)
         if is_valid:
             """ deposit funds to multiple users"""
             try:
@@ -289,9 +291,9 @@ class Disbursement(MTNBase):
                     "externalId": reference_id,
                     "payee": {
                         "partyIdType": "MSISDN",
-                        "partyId": payer
+                        "partyId": payee
                     },
-                    "payerMessage": f"send money to {payer}",
+                    "payerMessage": f"send money to {payee}",
                     "payeeNote": "Lipila gateway"
                 })
                 headers = {

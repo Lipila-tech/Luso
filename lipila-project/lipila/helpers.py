@@ -104,15 +104,18 @@ def check_payment_status(reference_id:str, transaction:str)->str:
     if transaction == 'col':
         try:
             status = LipilaCollection.objects.get(reference_id=reference_id).status
+            
         except LipilaCollection.DoesNotExist:
             status = 'transaction id not found'
     elif transaction == 'dis':
         try:
             status = LipilaDisbursement.objects.get(reference_id=reference_id).status
+            
         except LipilaDisbursement.DoesNotExist:
             status = 'transaction id not found'
     else:
         return None
+    print(status)
     return status
 
 def get_lipila_contact_info() -> dict:
