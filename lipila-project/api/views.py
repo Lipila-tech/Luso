@@ -149,6 +149,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 reference_id = provisioned_mtn_api_user.x_reference_id
                 request_pay = provisioned_mtn_api_user.request_to_pay(
                     amount=amount, payer=payer, reference_id=str(reference_id))
+                print(request_pay)
                 if request_pay.status_code == 202:
                     api_user = User.objects.get(pk=1)
                     payment = serializer.save()
@@ -163,6 +164,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                         status = provisioned_mtn_api_user.get_payment_status(
                             reference_id)
                         if status.status_code == 200:
+                            
                             payment.reference_id = reference_id
                             payment.status = 'success'
                             payment.save()

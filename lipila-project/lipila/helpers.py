@@ -86,6 +86,9 @@ def query_disbursement(user, method, data={}):
         return Response({'data': 'Invalid method passed'}, status=400)
 
 
+def check_payment_status(reference_id):
+    pass
+
 def get_lipila_contact_info() -> dict:
     """ Gets the lipila contact info and
     returns a dict object.

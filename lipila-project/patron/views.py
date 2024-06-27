@@ -22,7 +22,7 @@ from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
 from patron.helpers import (get_creator_subscribers,
                             get_creator_url, get_tier, calculate_total_payments,
-                            calculate_total_contributions, calculate_total_withdrawals, 
+                            calculate_total_contributions, calculate_total_withdrawals,
                             calculate_creators_balance)
 
 
@@ -31,6 +31,7 @@ def index(request):
     Renders the Lipila Patron home page.
     """
     return render(request, 'patron/index.html')
+
 
 @login_required
 def profile(request):
@@ -51,7 +52,7 @@ def profile(request):
             # Access creator profile using OneToOne relation
             context['user'] = get_user_object(request.user)
             return render(request, 'patron/admin/profile/patron-profile.html', context)
-        
+
 
 @login_required
 def create_creator_profile(request):
@@ -121,13 +122,13 @@ class EditPatronProfile(LoginRequiredMixin, View):
         creator = request.user.creatorprofile
         form = EditCreatorProfileForm(instance=creator)
         return render(request,
-                    'patron/admin/profile/edit_patron_info.html',
-                    {'form': form, 'user': request.user})
-        
+                      'patron/admin/profile/edit_patron_info.html',
+                      {'form': form, 'user': request.user})
+
     def post(self, request, user, *args, **kwargs):
         creator = request.user.creatorprofile
         form = EditCreatorProfileForm(
-        request.POST, request.FILES, instance=creator)
+            request.POST, request.FILES, instance=creator)
         if form.is_valid():
             form.save()
             messages.success(
@@ -137,18 +138,18 @@ class EditPatronProfile(LoginRequiredMixin, View):
             messages.error(
                 request, "Failed to update profile.")
             return redirect(reverse('patron:profile'))
-        
+
 
 class EditPersonalInfo(LoginRequiredMixin, View):
     def get(self, request, user, *args, **kwargs):
         form = DefaultUserChangeForm(instance=request.user)
         return render(request,
-                    'patron/admin/profile/edit_personal_info.html',
-                    {'form': form, 'user': request.user})
-        
+                      'patron/admin/profile/edit_personal_info.html',
+                      {'form': form, 'user': request.user})
+
     def post(self, request, user, *args, **kwargs):
         form = DefaultUserChangeForm(
-        request.POST, request.FILES, instance=request.user)
+            request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(
@@ -158,7 +159,7 @@ class EditPersonalInfo(LoginRequiredMixin, View):
             messages.error(
                 request, "Failed to update profile.")
             return redirect(reverse('patron:profile'))
-        
+
 
 @login_required
 def dashboard(request, user):
@@ -414,8 +415,7 @@ def creator_withdrawal(request):
                 'Withdrawal request submitted successfully. We will review your request and process it within 2 business days.')
             # Redirect to same view after successful request
             return redirect(reverse('patron:withdraw'))
-    else:
-        form = WithdrawalRequestForm()
+    form = WithdrawalRequestForm()
     total_payments = calculate_total_payments(request.user.creatorprofile)
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
@@ -423,7 +423,7 @@ def creator_withdrawal(request):
     approved_payouts = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='success')
 
-    context = {'form': form, 'pending_requests': pending_requests, 'approved_payouts':approved_payouts,
+    context = {'form': form, 'pending_requests': pending_requests, 'approved_payouts': approved_payouts,
                'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
     return render(request, 'patron/admin/actions/creator_withdrawal.html', context)
 
@@ -448,7 +448,7 @@ def make_payment(request, tier_id):
         account_number = data.get('payer_account_number')
         description = data.get('description')
         payment_method = data.get('payment_method')
-        
+
         if amount and account_number:
             patron = User.objects.get(username=request.user)
             subscription = TierSubscriptions.objects.get(
@@ -456,23 +456,24 @@ def make_payment(request, tier_id):
             reference_id = generate_reference_id()
 
             # Create a payment object
-            payment = Payments.objects.create(subscription=subscription, reference_id=reference_id)
-            payment.reference_id = reference_id
+            payment = Payments.objects.create(
+                subscription=subscription, reference_id=reference_id)
             payment.amount = amount
             payment.payment_method = payment_method
-            payment.account_number = account_number
+            payment.payer_account_number = account_number
             payment.description = description
-                            
+
             # Process deposit logic here (query lipila api)
             payload = {
-                        'amount': amount,
-                        'payment_method': payment_method,
-                        'payer_account_number': account_number,
-                        'description': description
-                    }
+                'amount': amount,
+                'payment_method': payment_method,
+                'payer_account_number': account_number,
+                'description': description
+            }
             api_user = User.objects.get(pk=1)
             # process payment
-            response = query_collection(api_user.username, 'POST', data=payload)
+            response = query_collection(
+                api_user.username, 'POST', data=payload)
 
             if response.status_code == 202:
                 payment.status = 'accepted'
@@ -480,11 +481,11 @@ def make_payment(request, tier_id):
                 messages.success(request, f"Paid ZMW {amount} successfully!")
                 return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
             else:
-                messages.error(request, 'Payment failed.')
-                form = DepositForm()
-                tier = tier
-                return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
-        
+                payment.status = 'failed'
+                messages.error(
+                    request, 'Payment failed. Please try again later!')
+                return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
+
         messages.error(request, f"Invalid data sent")
         form = DepositForm()
         tier = tier.name
@@ -504,28 +505,27 @@ def contribute(request, tier_id):
         account_number = data.get('payer_account_number')
         description = data.get('description')
         payment_method = data.get('payment_method')
-        
 
         if amount and payment_method:
             patron = User.objects.get(username=request.user)
             creator = User.objects.get(pk=tier_id)
             reference_id = generate_reference_id()
-            contribution = Contributions.objects.create(creator=creator, patron=patron, reference_id=reference_id)
-            # create contribution object
+            contribution = Contributions.objects.create(
+                creator=creator, patron=patron, reference_id=reference_id)
             contribution.amount = amount
             contribution.payer_account_number = account_number
             contribution.payment_method = payment_method
             contribution.description = description
-
             payload = {
-                        'amount': amount,
-                        'payment_method': payment_method,
-                        'payer_account_number': account_number,
-                        'description': description
-                    }
-            
+                'amount': amount,
+                'payment_method': payment_method,
+                'payer_account_number': account_number,
+                'description': description
+            }
+
             api_user = User.objects.get(pk=1)
-            response = query_collection(api_user.username, 'POST', data=payload)
+            response = query_collection(
+                api_user.username, 'POST', data=payload)
             if response.status_code == 202:
                 contribution.status = 'accepted'
                 contribution.save()
@@ -533,26 +533,30 @@ def contribute(request, tier_id):
                     request, f"Payment of K{contribution.amount} successfull!")
                 return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
             else:
-                messages.error(request, 'Payment failed.')
-                form = ContributeForm()
-                return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner':owner})
+                contribution.status = 'failed'
+                contribution.save()
+                messages.error(
+                    request, 'Payment failed. Please try again later!')
+                return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
         messages.error(request, f"Invalid data sent")
         form = ContributeForm()
-        return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner':owner})
-    
+        return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
+
     form = ContributeForm()
-    return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner':owner})
+    return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
+
 
 def check_payment_status(request):
     if request.method == 'POST':
         reference_id = request.POST.get('reference_id')
         # Check payment status using PaymentService
-        payment= Payments.objects.get(reference_id=reference_id)
+        payment = Payments.objects.get(reference_id=reference_id)
         status = payment.status
         return JsonResponse({'status': status})
     return JsonResponse({'status': 'error'})
 
 # ACCOUNT HISTORY VIEWS
+
 
 @login_required
 def withdrawal_history(request):
@@ -573,7 +577,7 @@ def withdrawal_history(request):
             item['status'] = obj.status
             item['reason'] = obj.reason
             history.append(item)
-    
+
     context['history'] = history
     return render(request, 'patron/admin/pages/withdrawal_history.html', context)
 
@@ -609,7 +613,6 @@ def contributions_history(request):
         contributions = Contributions.objects.filter(creator=creator)
         context['contributions'] = contributions
         # Retrive history for a user with a CreatorProfile
-        print('creator')
         return render(request, 'patron/admin/pages/contributions_received.html', context)
     except User.creatorprofile.RelatedObjectDoesNotExist:
         print('patron')

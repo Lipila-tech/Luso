@@ -120,14 +120,16 @@ def approve_withdrawals(request):
                         messages.error(
                             request, f"Payment failed")
                 elif action == 'reject':
+                    rejected_reason = request.POST.get('rejected_reason')
                     withdrawal_request.status = 'rejected'
-                    withdrawal_request.reason = 'Insufficient funds'
+                    withdrawal_request.reason = rejected_reason
                     withdrawal_request.processed_date = timezone.now()
                     withdrawal_request.save()
 
                     # save to processed withdrawals
                     processed_withdrawals.rejected_by = request.user
                     processed_withdrawals.status = 'rejected'
+                    processed_withdrawals.reason = rejected_reason
                     processed_withdrawals.save()
                     messages.success(
                         request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")

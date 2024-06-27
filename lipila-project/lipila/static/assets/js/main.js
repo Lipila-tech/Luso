@@ -60,12 +60,12 @@ async function initiatePayment(tierId, requestType) {
       redirectToPaymentHistory(requestType);
     } else {
       document.getElementById('loader').style.display = 'none';
-      alert('Error: ' + data.error);  // Handle potential error message from the view
+      // alert('Error: ' + data.error);  // Handle potential error message from the view
+      redirectToPayment(requestType,tierId)
     }
   } catch (error) {
     document.getElementById('loader').style.display = 'none';
-    console.error('Error:', error);
-    alert('An error occurred. Please try again later.');
+    redirectToPayment(requestType,tierId)
   } finally {
     // Perform any cleanup actions after the request completes (optional)
   }
@@ -75,6 +75,9 @@ function redirectToPaymentHistory(endpoint) {
   window.location.href = `http://localhost:8000/patron/history/${endpoint}`;
 }
 
+function redirectToPayment(endpoint, tierId){
+  window.location.href = `http://localhost:8000/patron/payments/${endpoint}/${tierId}`
+}
 
 function checkPaymentStatus(referenceId) {
   fetch('localhost:8000/payments/status/', {

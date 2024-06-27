@@ -34,7 +34,7 @@ class LipilaDisbursement(models.Model):
         return self.reference_id
 
     def __str__(self):
-        return f"Paid - {self.payer} Amount - {self.amount} Status - {self.status}"
+        return f"Paid - {self.payee_account_number} Amount - {self.amount} Status - {self.status}"
 
 
 class LipilaCollection(models.Model):
@@ -55,7 +55,7 @@ class LipilaCollection(models.Model):
         max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"Payer {self.payer} Amount - {self.amount} Status {self.status}"
+        return f"Payer {self.payer_account_number} Amount - {self.amount} Status {self.status}"
     
     class Meta:
         ordering = ['-updated_at']

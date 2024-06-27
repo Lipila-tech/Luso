@@ -23,8 +23,8 @@ class SignupForm(forms.ModelForm):
         fields = ('email', 'password')
 
 class DepositForm(forms.Form):
-    amount = forms.DecimalField(min_value=5, validators=[MinValueValidator(50, message='Minimum deposit amount is ZMW 5')])
-    payer_account_number = forms.CharField(max_length=20)
+    amount = forms.DecimalField(min_value=5, validators=[MinValueValidator(50, message='Minimum deposit amount is ZMW 5')], required=True)
+    payer_account_number = forms.CharField(max_length=20, required=True)
     payment_method = forms.ChoiceField(choices=PAYMENT_CHOICES)
     description = forms.CharField(max_length=300)
 
