@@ -34,7 +34,7 @@ class LipilaDisbursementViewTest(APITestCase):
             UUID(LipilaDisbursement.objects.get().reference_id)
             self.assertTrue(True)  # Test passes if conversion is successful
         except ValueError:
-            self.fail("get_uuid4 did not return a valid UUID string.")
+            self.fail("generate_reference_id did not return a valid UUID string.")
 
     def test_deposit_lipila_fail_validation(self):
         data = {'amount': '100', 'payee_account_number': 'invalid',
@@ -91,7 +91,7 @@ class LipilaCollectionViewTest(APITestCase):
             UUID(LipilaCollection.objects.get().reference_id)
             self.assertTrue(True)  # Test passes if conversion is successful
         except ValueError:
-            self.fail("get_uuid4 did not return a valid UUID string.")
+            self.fail("generate_reference_id did not return a valid UUID string.")
 
     def test_create_lipila_fail_validation(self):
         data = {'payer': 'lipila', 'amount': 'invalid'}

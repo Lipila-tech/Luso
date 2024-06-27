@@ -11,7 +11,6 @@ urlpatterns = [
      path('payments/pay/<int:tier_id>', views.make_payment, name='make_payment'),
 
      path('creators/list', views.list_creators, name='creators'),
-     path('payments/status/', views.check_payment_status, name='check_payment_status'),
      path('home/<str:creator>/', views.creator_home, name='creator_home'),
      path('my-tiers', views.view_tiers, name='tiers'),
      path('my-tiers/edit/<int:tier_id>', views.edit_tiers, name='edit_tier'),

@@ -12,13 +12,14 @@ from django.urls import reverse
 from api.models import LipilaCollection, LipilaDisbursement
 
 
-def query_collection(user, method, data={}):
+def query_collection(user, method, reference_id, data={}):
     """
     Queries the lipila api payments endpoint for a specific api user.
 
     Args:
         user (str): The username of the api user.
         method (str): The HTTP method allowed values (GET, POST)
+        reference_id(str): The unique uuid id that will be used to identify the transactions
         data (dict): data (dict):
                 {
                     'amount': '', 'payer_account_number': '',
@@ -31,6 +32,7 @@ def query_collection(user, method, data={}):
     url = "http://localhost:8000/api/v1/payments/"
     params = {
         "api_user": user,
+        "reference_id": reference_id
     }
     if method == 'GET':
         response = requests.get(url, params=params)
@@ -49,13 +51,14 @@ def query_collection(user, method, data={}):
         return Response({'data': 'Invalid method passed'}, status=400)
 
 
-def query_disbursement(user, method, data={}):
+def query_disbursement(user, method, reference_id, data={}):
     """
     Queries the lipila api disburse endpoint for a specific api user.
 
     Args:
         user (str): The username of the api user.
         method (str): The HTTP method allowed values (GET, POST)
+        reference_id(str): The unique uuid id that will be used to identify the transactions
         data (dict):
                 {
                     'amount': '', 'payer_account_number': '',
@@ -68,6 +71,7 @@ def query_disbursement(user, method, data={}):
     url = "http://localhost:8000/api/v1/disburse/"
     params = {
         "api_user": user,
+        "reference_id": reference_id
     }
     if method == 'GET':
         response = requests.get(url, params=params)

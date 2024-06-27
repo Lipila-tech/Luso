@@ -2,7 +2,7 @@
 import requests
 import json
 from rest_framework.response import Response
-from ..helpers import get_uuid4, basic_auth, is_payment_details_valid
+from ..helpers import generate_reference_id, basic_auth, is_payment_details_valid
 
 import environ
 
@@ -17,11 +17,10 @@ class MTNBase():
     def __init__(self):
         self.x_target_environment = env("TARGET_ENV")
         self.content_type = 'application/json'
-        self.x_reference_id = get_uuid4()
         self.api_key = ''
         self.api_token = 'Bearer '
 
-    def create_api_user(self, subscription_key: str) -> Response:
+    def create_api_user(self, subscription_key: str, reference_id) -> Response:
         """
         Used to create an API user in the mtn sandbox.
 
@@ -38,7 +37,7 @@ class MTNBase():
             "providerCallbackHost": "{}".format(env("PROVIDER_CALLBACK_HOST"))
         })
         headers = {
-            'X-Reference-Id': self.x_reference_id,
+            'X-Reference-Id': reference_id,
             'Ocp-Apim-Subscription-Key': subscription_key,
             'Content-Type': self.content_type
         }
@@ -56,7 +55,7 @@ class MTNBase():
         except ValueError:
             return Response(status=response.status_code)
 
-    def create_api_key(self, subscription_key: str) -> Response:
+    def create_api_key(self, subscription_key: str, reference_id) -> Response:
         """
         Used to create an API key for an API user in the sandbox target environment.
 
@@ -67,7 +66,7 @@ class MTNBase():
         Returns:
             HTTP Response
         """
-        url = f"https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{self.x_reference_id}/apikey"
+        url = f"https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{reference_id}/apikey"
 
         payload = {}
         headers = {
@@ -88,12 +87,12 @@ class MTNBase():
         except ValueError:
             return Response(status=response.status_code)
 
-    def provision_sandbox(self, subscription_key: str):
+    def provision_sandbox(self, subscription_key: str, reference_id:str):
         """ creates the api user and api token
         """
         try:
-            api_user = self.create_api_user(subscription_key)
-            api_key = self.create_api_key(subscription_key)
+            api_user = self.create_api_user(subscription_key, reference_id)
+            api_key = self.create_api_key(subscription_key, reference_id)
 
             if api_user.status_code == 201 and api_key.status_code == 201:
                 return api_user
@@ -102,7 +101,7 @@ class MTNBase():
         except ValueError:
             return Response(status=api_user.status_code)
 
-    def create_api_token(self, subscription_key: str, endpoint: str)->Response:
+    def create_api_token(self, subscription_key: str, endpoint: str, reference_id)->Response:
         """
         This operation is used to create an access token to the mtn api which can then
         be used to authorize and authenticate towards the other end-points
@@ -120,7 +119,7 @@ class MTNBase():
         payload = {}
         headers = {
             'Ocp-Apim-Subscription-Key': subscription_key,
-            'Authorization': basic_auth(self.x_reference_id, self.api_key)
+            'Authorization': basic_auth(reference_id, self.api_key)
         }
         try:
             response = requests.post(url, headers=headers, data=payload)
@@ -208,7 +207,7 @@ class Collections(MTNBase):
                     "payeeNote": "Lipila gateway"
                 })
                 headers = {
-                    'X-Reference-Id': self.x_reference_id,
+                    'X-Reference-Id': reference_id,
                     'Ocp-Apim-Subscription-Key': self.subscription_col_key,
                     'X-Target-Environment': self.x_target_environment,
                     'Authorization': self.api_token,
@@ -296,7 +295,7 @@ class Disbursement(MTNBase):
                     "payeeNote": "Lipila gateway"
                 })
                 headers = {
-                    'X-Reference-Id': self.x_reference_id,
+                    'X-Reference-Id': reference_id,
                     'Ocp-Apim-Subscription-Key': self.subscription_dis_key,
                     'X-Target-Environment': self.x_target_environment,
                     'Authorization': self.api_token,

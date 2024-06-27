@@ -57,11 +57,16 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
     """
     serializer_class = LipilaDisbursementSerializer
     queryset = LipilaDisbursement.objects.all()
+    
 
     def create(self, request):
         """
         Handles POST requests, deserializing data and updating default fields.
         """
+        reference_id = request.query_params.get('reference_id')
+
+        if not reference_id:
+            return Response({"error": "reference id is missing"}, status=400)
         try:
             data = request.data
             payee = str(data['payee_account_number'])
@@ -69,9 +74,9 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
             serializer = LipilaDisbursementSerializer(data=data)
             provisioned_mtn_api_user = Disbursement()
             provisioned_mtn_api_user.provision_sandbox(
-                provisioned_mtn_api_user.subscription_dis_key)
+                provisioned_mtn_api_user.subscription_dis_key, reference_id)
             provisioned_mtn_api_user.create_api_token(
-                provisioned_mtn_api_user.subscription_dis_key, 'disbursement')
+                provisioned_mtn_api_user.subscription_dis_key, 'disbursement', reference_id)
 
             if serializer.is_valid():
                 reference_id = provisioned_mtn_api_user.x_reference_id
@@ -135,6 +140,11 @@ class LipilaCollectionView(viewsets.ModelViewSet):
         """
         Handles POST requests, deserializing date and updating default fields.
         """
+        reference_id = request.query_params.get('reference_id')
+
+        if not reference_id:
+            return Response({"error": "reference id is missing"}, status=400)
+        
         try:
             data = request.data
             payer = str(data['payer_account_number'])
@@ -144,10 +154,10 @@ class LipilaCollectionView(viewsets.ModelViewSet):
             provisioned_mtn_api_user.provision_sandbox(
                 provisioned_mtn_api_user.subscription_col_key)
             provisioned_mtn_api_user.create_api_token(
-                provisioned_mtn_api_user.subscription_col_key, 'collection')
+                provisioned_mtn_api_user.subscription_col_key, 'collection', reference_id)
 
             if serializer.is_valid():
-                reference_id = provisioned_mtn_api_user.x_reference_id
+                reference_id = reference_id
                 request_pay = provisioned_mtn_api_user.request_to_pay(
                     amount=amount, payer=payer, reference_id=str(reference_id))
                 # save payment request

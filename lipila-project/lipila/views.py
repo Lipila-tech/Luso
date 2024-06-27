@@ -5,10 +5,11 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.db.models import Q
 # Custom Models
+from api.helpers import generate_reference_id
 from lipila.helpers import (
     apology, get_lipila_contact_info,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
-    query_disbursement)
+    query_disbursement, check_payment_status)
 from lipila.forms.forms import ContactForm
 from accounts.models import CreatorProfile
 from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals
@@ -95,6 +96,7 @@ def approve_withdrawals(request):
                     pk=withdrawal_request_id)
                 processed_withdrawals = ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request)
+                reference_id = generate_reference_id()
                 if action == 'approve':
                     # Process withdrawal (initiate payout using lipila api)
                     payload = {
@@ -103,7 +105,7 @@ def approve_withdrawals(request):
                         'payee_account_number':withdrawal_request.account_number,
                         'description': request.POST.get('reason')
                     }
-                    response = query_disbursement(request.user, 'POST', data=payload)
+                    response = query_disbursement(request.user, 'POST', reference_id, data=payload)
                     
                     if response.status_code == 202:
                         withdrawal_request.status = 'accepted'
@@ -114,6 +116,12 @@ def approve_withdrawals(request):
                         processed_withdrawals.approved_by = request.user
                         processed_withdrawals.status = 'accepted'
                         processed_withdrawals.save()
+                        # consider making an async function
+                        if check_payment_status(reference_id, 'dis') == 'success':
+                            withdrawal_request.status = 'success'
+                            processed_withdrawals.status = 'success'
+                            withdrawal_request.save()
+                            processed_withdrawals.save()
                         messages.success(
                             request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
                     else:

@@ -20,7 +20,7 @@ class LipilaDisbursement(models.Model):
     payee_account_number = models.CharField(max_length=30)
     amount = models.FloatField()
     payment_method = models.CharField(max_length=55)
-    reference_id = models.CharField(max_length=60)
+    reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
     processed_date = models.DateField(auto_now_add=True)
     updated_at = models.DateField(null=True, blank=True)
     description = models.CharField(max_length=255)
@@ -47,7 +47,7 @@ class LipilaCollection(models.Model):
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, blank=False, null=False)
     payment_method = models.CharField(max_length=55)
-    reference_id = models.CharField(max_length=100, blank=False, null=False)
+    reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
     processed_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(null=True, blank=True)
     description = models.TextField(blank=True, null=True)

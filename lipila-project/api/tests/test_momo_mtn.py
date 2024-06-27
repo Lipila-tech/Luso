@@ -3,7 +3,7 @@ Tests the mtn momo API
 """
 from django.test import TestCase, Client
 from api.momo.mtn import Collections, Disbursement
-from api.helpers import get_uuid4
+from api.helpers import generate_reference_id
 
 
 class MTNBaseTestCase(TestCase):
@@ -59,7 +59,7 @@ class MTNCollectionsTestCase(TestCase):
     def setUp(self):
         # Create a first momo collection user instance
         self.momo1 = Collections()
-        self.ref = get_uuid4()
+        self.ref = generate_reference_id()
         self.api_user = self.momo1.create_api_user(
             self.momo1.subscription_col_key)
         self.api_key = self.momo1.create_api_key(
@@ -183,7 +183,7 @@ class MTNDisbursementTestCase(TestCase):
 
     def setUp(self):
         self.momo1 = Disbursement()
-        self.ref = get_uuid4()
+        self.ref = generate_reference_id()
         self.api_user = self.momo1.create_api_user(
             self.momo1.subscription_dis_key)
         self.api_key = self.momo1.create_api_key(

@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 from uuid import UUID
-from api.helpers import get_uuid4, basic_auth, is_payment_details_valid
+from api.helpers import generate_reference_id, basic_auth, is_payment_details_valid
 
 
 class TestHelperFunctions(unittest.TestCase):
@@ -12,7 +12,7 @@ class TestHelperFunctions(unittest.TestCase):
         mock_response.status_code = 200
         mock_get.return_value = mock_response
 
-        uuid = get_uuid4()
+        uuid = generate_reference_id()
 
         self.assertEqual(uuid, "test-uuid")
         mock_get.assert_called_once_with(
@@ -20,15 +20,15 @@ class TestHelperFunctions(unittest.TestCase):
         
     def test_get_uuid4_returns_valid_uuid(self):
         """
-        Tests that get_uuid4 returns a valid UUID string.
+        Tests that generate_reference_id returns a valid UUID string.
         """
-        response_text = get_uuid4()
+        response_text = generate_reference_id()
         try:
             # Attempt to convert the response to a UUID object
             UUID(response_text)
             self.assertTrue(True)  # Test passes if conversion is successful
         except ValueError:
-            self.fail("get_uuid4 did not return a valid UUID string.")
+            self.fail("generate_reference_id did not return a valid UUID string.")
 
     @patch('requests.get')
     def test_get_uuid4_failed_response(self, mock_get):
@@ -37,7 +37,7 @@ class TestHelperFunctions(unittest.TestCase):
         mock_response.status_code = 404
         mock_get.return_value = mock_response
 
-        uuid = get_uuid4()
+        uuid = generate_reference_id()
 
         self.assertEqual(uuid, "none")
         mock_get.assert_called_once_with(

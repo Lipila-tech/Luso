@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import CreatorProfile
+from api.helpers import generate_reference_id
 # Options
 STATUS_CHOICES = (
     ('pending', 'pending'),
@@ -89,7 +90,7 @@ class Payments(models.Model):
         TierSubscriptions, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     payer_account_number = models.CharField(max_length=300, null=True, blank=True)
-    reference_id = models.CharField(max_length=16, null=True, blank=True)
+    reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200, null=True, blank=True)
@@ -107,7 +108,7 @@ class Contributions(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=False)
     description = models.CharField(max_length=200, null=True, blank=True)
     payer_account_number = models.CharField(max_length=300, null=True, blank=False)
-    reference_id = models.CharField(max_length=16, null=True, blank=True)
+    reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -122,6 +123,7 @@ class WithdrawalRequest(models.Model):
         CreatorProfile, on_delete=models.CASCADE, related_name='withdrawal_requests')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     account_number = models.CharField(max_length=30)
+    # reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
@@ -139,6 +141,7 @@ class ProcessedWithdrawals(models.Model):
     rejected_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
     rejected_date = models.DateTimeField(auto_now_add=True)
+    # reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
     status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')

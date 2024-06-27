@@ -10,11 +10,11 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import json
-from patron.helpers import generate_reference_id
 # custom modules
+from api.helpers import generate_reference_id
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
-from lipila.helpers import get_user_object, apology, query_collection
+from lipila.helpers import get_user_object, apology, query_collection, check_payment_status
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
 from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
@@ -473,11 +473,15 @@ def make_payment(request, tier_id):
             api_user = User.objects.get(pk=1)
             # process payment
             response = query_collection(
-                api_user.username, 'POST', data=payload)
+                api_user.username, 'POST', reference_id, data=payload)
 
             if response.status_code == 202:
                 payment.status = 'accepted'
                 payment.save()
+                # consider making an async function
+                if check_payment_status(reference_id, 'col') == 'success':
+                    payment.status = 'success'
+                    payment.save()
                 messages.success(request, f"Paid ZMW {amount} successfully!")
                 return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
             else:
@@ -511,7 +515,7 @@ def contribute(request, tier_id):
             patron = User.objects.get(username=request.user)
             creator = User.objects.get(pk=tier_id)
             reference_id = generate_reference_id()
-            contribution = Contributions.objects.create(
+            contribution =Contributions.objects.create(
                 creator=creator, patron=patron, reference_id=reference_id)
             contribution.amount = amount
             contribution.payer_account_number = account_number
@@ -526,10 +530,14 @@ def contribute(request, tier_id):
 
             api_user = User.objects.get(pk=1)
             response = query_collection(
-                api_user.username, 'POST', data=payload)
+                api_user.username, 'POST',reference_id, data=payload)
             if response.status_code == 202:
                 contribution.status = 'accepted'
                 contribution.save()
+                # consider making an async function
+                if check_payment_status(reference_id, 'col') == 'success':
+                    contribution.status = 'success'
+                    contribution.save()
                 messages.success(
                     request, f"Payment of K{contribution.amount} successfull!")
                 return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
@@ -546,18 +554,7 @@ def contribute(request, tier_id):
     form = ContributeForm()
     return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
 
-
-def check_payment_status(request):
-    if request.method == 'POST':
-        reference_id = request.POST.get('reference_id')
-        # Check payment status using PaymentService
-        payment = Payments.objects.get(reference_id=reference_id)
-        status = payment.status
-        return JsonResponse({'status': status})
-    return JsonResponse({'status': 'error'})
-
 # ACCOUNT HISTORY VIEWS
-
 
 @login_required
 def withdrawal_history(request):

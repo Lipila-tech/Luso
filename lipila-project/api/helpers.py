@@ -28,7 +28,7 @@ def get_api_user(user:str)-> User:
         return Response({"error": "api user not found"}, status=404)
 
 
-def get_uuid4() -> str:
+def generate_reference_id() -> str:
         """
         Method that generates a uuid4(x_reference_id) number
         """
@@ -37,7 +37,7 @@ def get_uuid4() -> str:
         headers = {}
         try:
             response = requests.get(url, headers=headers, data=payload)
-            return response.text
+            return str(response.text)
         except Exception:
             return "none"
         
