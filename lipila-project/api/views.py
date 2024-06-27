@@ -77,31 +77,32 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                 reference_id = provisioned_mtn_api_user.x_reference_id
                 request_pay = provisioned_mtn_api_user.deposit(
                     amount=amount, payer=payee, reference_id=str(reference_id))
+                # save payment object
+                api_user = User.objects.get(pk=1)
+                payment = serializer.save()
+                payment.api_user = api_user
+                payment.updated_at = timezone.now()
+                payment.reference_id = reference_id
 
                 if request_pay.status_code == 202:
-                    api_user = User.objects.get(pk=1)
-                    payment = serializer.save()
-                    payment.api_user = api_user
-                    payment.updated_at = timezone.now()
-                    payment.reference_id = reference_id
                     payment.status = 'accepted'  # Set status based on mapping
                     payment.save()
-                    transaction = LipilaDisbursement.objects.filter(
-                        reference_id=reference_id)
-                    for r in transaction:
-                        status = provisioned_mtn_api_user.get_transaction_status('deposit',
-                            reference_id)
-                        if status.status_code == 200:
-                            payment.reference_id = reference_id
-                            payment.status = 'success'
-                            payment.save()
-                        else:
-                            payment.status = 'failed'
-                    payment.save()
+                    response = provisioned_mtn_api_user.get_transaction_status('deposit',
+                        reference_id)
+                    if response.status_code == 200:
+                        payment.status = 'success'
+                        payment.save()
+                    else:
+                        payment.status = 'failed'
+                        payment.save()
                 elif request_pay.status_code == 403:
+                    payment.status = 'failed'
+                    payment.save()
                     status_code = request_pay.status_code
                     return Response({'message': 'Request exceeded'}, status=status_code)
                 elif request_pay.status_code == 400:
+                    payment.status = 'failed'
+                    payment.save()
                     status_code = request_pay.status_code
                     return Response({'message': 'Bad request to payment gateway'}, status=status_code)
         except Exception as e:
@@ -149,32 +150,32 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 reference_id = provisioned_mtn_api_user.x_reference_id
                 request_pay = provisioned_mtn_api_user.request_to_pay(
                     amount=amount, payer=payer, reference_id=str(reference_id))
-                print(request_pay)
+                # save payment request
+                api_user = User.objects.get(pk=1)
+                payment = serializer.save()
+                payment.api_user = api_user
+                payment.updated_at = timezone.now()
+                payment.reference_id = reference_id
                 if request_pay.status_code == 202:
-                    api_user = User.objects.get(pk=1)
-                    payment = serializer.save()
-                    payment.api_user = api_user
-                    payment.updated_at = timezone.now()
-                    payment.reference_id = reference_id
                     payment.status = 'accepted'  # Set status based on mapping
                     payment.save()
-                    transaction = LipilaCollection.objects.filter(
-                        reference_id=reference_id)
-                    for r in transaction:
-                        status = provisioned_mtn_api_user.get_payment_status(
-                            reference_id)
-                        if status.status_code == 200:
-                            
-                            payment.reference_id = reference_id
-                            payment.status = 'success'
-                            payment.save()
-                        else:
-                            payment.status = 'failed'
-                    payment.save()
+                    # consider makingan an async function call
+                    response = provisioned_mtn_api_user.get_payment_status(
+                        reference_id)
+                    if response.status_code == 200:
+                        payment.status = 'success'
+                        payment.save()
+                    else:
+                        payment.status = 'failed'
+                        payment.save()
                 elif request_pay.status_code == 403:
+                    payment.status = 'failed'
+                    payment.save()
                     status_code = request_pay.status_code
                     return Response({'message': 'Request exceeded'}, status=status_code)
                 elif request_pay.status_code == 400:
+                    payment.status = 'failed'
+                    payment.save()
                     status_code = request_pay.status_code
                     return Response({'message': 'Bad request to payment gateway'}, status=status_code)
         except Exception as e:
