@@ -5,6 +5,7 @@ from django.urls import reverse
 from unittest.mock import patch
 from unittest.mock import Mock
 # custom modules
+from api.models import LipilaCollection, LipilaDisbursement
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial)
 from lipila.helpers import (
@@ -14,9 +15,38 @@ from lipila.helpers import (
     get_testimonials,
     get_user_object,
     query_disbursement,
-    query_collection
+    query_collection,
+    check_payment_status,
 )
+from patron.helpers import generate_reference_id
 
+class TestCheckPaymentStatus(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username='admin')
+        self.ref1 =  generate_reference_id()
+        self.ref2 =  generate_reference_id()
+        self.ref3 =  generate_reference_id()
+        self.payment1 = LipilaCollection.objects.create(
+            api_user=self.user, amount=100, status='pending', reference_id=self.ref1)
+        
+        self.payment2 = LipilaDisbursement.objects.create(
+            api_user=self.user, amount=101, status='success', reference_id=self.ref2)
+        
+    def test_collection_valid(self):
+        status = check_payment_status(self.ref1, 'col')
+        self.assertEqual(status, 'pending')
+
+    def test_disbursement_valid(self):
+        status = check_payment_status(self.ref2, 'dis')
+        self.assertEqual(status, 'success')
+
+    def test_collection_not_found(self):
+        status = check_payment_status(self.ref3, 'col')
+        self.assertEqual(status, 'transaction id not found')
+    
+    def test_collection_invalid_argument_option(self):
+        status = check_payment_status(self.ref1, 'payment')
+        self.assertEqual(status, None)
 
 @patch('lipila.helpers.requests.get')
 class GetPaymentTest(TestCase):

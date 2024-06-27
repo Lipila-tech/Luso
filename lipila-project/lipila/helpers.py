@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 import requests
 from django.urls import reverse
-from api.views import LipilaDisbursementView
+from api.models import LipilaCollection, LipilaDisbursement
 
 
 def query_collection(user, method, data={}):
@@ -86,8 +86,30 @@ def query_disbursement(user, method, data={}):
         return Response({'data': 'Invalid method passed'}, status=400)
 
 
-def check_payment_status(reference_id):
-    pass
+def check_payment_status(reference_id:str, transaction:str)->str:
+    """
+    This function checks the status of the transaction in the api models.
+
+    Args:
+        reference_id(str): The uuid that identifies the transaction.
+        transaction(str): The type of transaction to check. options are (col, dis)
+
+    Returns: status (str) options [success, failed, pending]
+    """
+    status = ''
+    if transaction == 'col':
+        try:
+            status = LipilaCollection.objects.get(reference_id=reference_id).status
+        except LipilaCollection.DoesNotExist:
+            status = 'transaction id not found'
+    elif transaction == 'dis':
+        try:
+            status = LipilaDisbursement.objects.get(reference_id=reference_id).status
+        except LipilaDisbursement.DoesNotExist:
+            status = 'transaction id not found'
+    else:
+        return None
+    return status
 
 def get_lipila_contact_info() -> dict:
     """ Gets the lipila contact info and
