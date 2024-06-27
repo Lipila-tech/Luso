@@ -482,6 +482,7 @@ def make_payment(request, tier_id):
                 return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
             else:
                 payment.status = 'failed'
+                payment.save()
                 messages.error(
                     request, 'Payment failed. Please try again later!')
                 return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
