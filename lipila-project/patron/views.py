@@ -607,7 +607,7 @@ def contributions_history(request):
     context = {}
     context = {}
     try:
-        creator = request.user
+        creator = request.user.creatorprofile
         contributions = Contributions.objects.filter(creator=creator)
         context['contributions'] = contributions
         # Retrive history for a user with a CreatorProfile
