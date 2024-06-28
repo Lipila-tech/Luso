@@ -80,7 +80,7 @@ def is_payment_details_valid(*args, **kwargs):
             if not isinstance(value, str):
                 raise TypeError(f"Argument '{key}' must be a string.")
 
-        if float(details['amount']) < 10.0 or len(details['payee']) < 9:
+        if float(details['amount']) < 10.0 or len(details['payer']) < 9:
             raise ValueError("Amount must be greater than 10 and payer must be 10 digits long.")
         if ' ' in (details['reference']):
             raise ValueError("Reference should not contain spaces.")
