@@ -5,6 +5,7 @@ from django.urls import reverse
 from unittest.mock import patch
 from unittest.mock import Mock
 # custom modules
+from api.utils import generate_reference_id
 from api.models import LipilaCollection, LipilaDisbursement
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial)
@@ -50,7 +51,7 @@ class TestCheckPaymentStatus(TestCase):
 
 @patch('lipila.utils.requests.get')
 class GetPaymentTest(TestCase):
-    def test_get_query_disbursement_valid(self, mock_get):
+    def test_get_query_collection_valid(self, mock_get):
         User.objects.create(username='test_user')
         # Mock the response object to return expected data
         mock_response = Mock()
@@ -60,17 +61,18 @@ class GetPaymentTest(TestCase):
 
         # Call the function with a user
         user = 'test_user'
-        response = query_collection(user, 'GET')
+        ref_id = generate_reference_id()
+        response = query_collection(user, 'GET', ref_id)
 
         # Assert that the mocked function was called with the correct URL and params
         mock_get.assert_called_once_with(
             "http://localhost:8000/api/v1/payments/",
-            params={'api_user': user}
+            params={'api_user': user, 'reference_id': ref_id}
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
     
-    def test_get_query_disbursement_api_user_not_found(self, mock_get):
+    def test_get_query_collection_api_user_not_found(self, mock_get):
         # Mock the response object to return expected data
         mock_response = Mock()
         mock_response.status_code = 404
@@ -79,36 +81,39 @@ class GetPaymentTest(TestCase):
 
         # Call the function with a user
         user = 'test_user'
-        response = query_collection(user, 'GET')
+        ref_id = generate_reference_id()
+        response = query_collection(user, 'GET', ref_id)
 
         # Assert that the mocked function was called with the correct URL and params
         mock_get.assert_called_once_with(
             "http://localhost:8000/api/v1/payments/",
-            params={'api_user': user}
+            params={'api_user': user, 'reference_id': ref_id}
         )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {'error':'api user not found'})
 
-    def test_get_query_disbursement_invalid(self, mock_get):       
-        response = query_collection('test_user', 'update')
+    def test_get_query_collection_invalid(self, mock_get):
+        ref_id = generate_reference_id()
+        response = query_collection('test_user', 'update', ref_id)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {'data':'Invalid method passed'})
 
 
 @patch('lipila.utils.requests.post')
 class PostPaymentTest(TestCase):
-    def test_post_query_disbursement_valid(self, mock_post):
+    def test_post_query_collection_valid(self, mock_post):
         mock_response = Mock()
         mock_response.json.return_value = {'data': 'request accepted, wait for client approval'}
         mock_response.status_code = 202
         mock_post.return_value = mock_response
 
         User.objects.create(username='test_user')
+        ref_id = generate_reference_id()
 
         data = {'amount': '100', 'payer_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
         
-        response = query_collection('test_user', 'POST', data=data)
+        response = query_collection('test_user', 'POST', ref_id, data=data)
         self.assertEqual(response.status_code, 202)
         self.assertEqual(response.data, {'data': 'request accepted, wait for client approval'})
 
@@ -124,12 +129,13 @@ class GetDisbursementTest(TestCase):
 
         # Call the function with a user
         user = 'test_user'
-        response = query_disbursement(user, 'GET')
+        ref_id = generate_reference_id()
+        response = query_disbursement(user, 'GET', ref_id)
 
         # Assert that the mocked function was called with the correct URL and params
         mock_get.assert_called_once_with(
             "http://localhost:8000/api/v1/disburse/",
-            params={'api_user': user}
+            params={'api_user': user, 'reference_id': ref_id}
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
@@ -143,18 +149,20 @@ class GetDisbursementTest(TestCase):
 
         # Call the function with a user
         user = 'test_user'
-        response = query_disbursement(user, 'GET')
+        ref_id = generate_reference_id()
+        response = query_disbursement(user, 'GET', ref_id)
 
         # Assert that the mocked function was called with the correct URL and params
         mock_get.assert_called_once_with(
             "http://localhost:8000/api/v1/disburse/",
-            params={'api_user': user}
+            params={'api_user': user, 'reference_id': ref_id}
         )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {'error':'api user not found'})
 
-    def test_get_query_disbursement_invalid(self, mock_get):       
-        response = query_disbursement('test_user', 'update')
+    def test_get_query_disbursement_invalid(self, mock_get):     
+        ref_id = generate_reference_id()  
+        response = query_disbursement('test_user', 'update', ref_id)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {'data':'Invalid method passed'})
 
@@ -168,11 +176,12 @@ class PostDisbursementTest(TestCase):
         mock_post.return_value = mock_response
 
         User.objects.create(username='test_user')
+        ref_id = generate_reference_id()
 
         data = {'amount': '100', 'payee_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
         
-        response = query_disbursement('test_user', 'POST', data=data)
+        response = query_disbursement('test_user', 'POST', ref_id, data=data)
         self.assertEqual(response.status_code, 202)
         self.assertEqual(response.data, {'data': 'request accepted, wait for client approval'})
         

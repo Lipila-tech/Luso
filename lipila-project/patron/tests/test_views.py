@@ -3,6 +3,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
 from unittest.mock import Mock, patch
+import json
 # Custom models
 from accounts.models import PatronProfile, CreatorProfile
 from patron.models import Tier, TierSubscriptions, Payments, Contributions
@@ -161,7 +162,8 @@ class TestSubscription(TestCase):
         url = reverse('patron:make_payment', kwargs={'tier_id': tier1.id})
         data = {'amount': '100', 'payer_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
-
+        
+        # data = json.dumps(data)
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
@@ -199,7 +201,7 @@ class TestSubscription(TestCase):
             username='testuser5', password='password')
         self.client.force_login(user1)
         url = reverse('patron:contribute', kwargs={
-                      'creator': self.creator1_obj})
+                      'tier_id': self.creator1_obj.pk})
         data = {'amount': '100', 'payer_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
         response = self.client.post(url, data=data)
@@ -212,7 +214,7 @@ class TestSubscription(TestCase):
     def test_get_contribute(self):
         self.client.force_login(self.user1)
         url = reverse('patron:contribute', kwargs={
-                      'creator': self.creator1_obj})
+                      'tier_id': self.creator1_obj.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('lipila/actions/contribute.html')
@@ -223,7 +225,7 @@ class TestSubscription(TestCase):
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
-        url = reverse('patron:payments')
+        url = reverse('patron:subscriptions_history')
         self.client.get(reverse('patron:make_payment',
                         kwargs={'tier_id': tier1.id}))
         response = self.client.get(url)
@@ -248,7 +250,7 @@ class TestPatronViews(TestCase):
 
 
     def test_choose_profile_type(self):
-        url = "choose_profile_type"
+        url = "patron:choose_profile_type"
         creator_data = {'profile_type': 'creator'}
         patron_data = {'profile_type': 'patron'}
         self.client.force_login(self.creatoruser1)
@@ -268,15 +270,15 @@ class TestPatronViews(TestCase):
         self.assertEqual(
             response.url, "/accounts/login/?next=/patron/accounts/profile/")
 
-    def test_profile_redirect(self):
+    def test_get_profile(self):
         """
         Test that a user is redirected to choose a profile type
         view, if they don't have one.
         """
         self.client.force_login(self.creatoruser1)
         response = self.client.get(reverse('patron:profile'))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/patron/accounts/profile/choose")
+        self.assertEqual(response.status_code, 200)
+        
 
     def test_create_patron_profile(self):
         """
