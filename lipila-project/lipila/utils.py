@@ -1,5 +1,5 @@
 """
-lipila app Helper Functions
+lipila app Util Functions
 """
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render

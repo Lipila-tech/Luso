@@ -1,5 +1,5 @@
 """
-Helper Functions
+Util Functions
 """
 from base64 import b64encode, b64decode
 from django.utils.encoding import force_bytes, force_str

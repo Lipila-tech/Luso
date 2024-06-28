@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import CreatorProfile
-from api.helpers import generate_reference_id
+from api.utils import generate_reference_id
 # Options
 STATUS_CHOICES = (
     ('pending', 'pending'),

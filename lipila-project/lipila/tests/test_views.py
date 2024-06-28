@@ -12,7 +12,7 @@ from accounts.models import CreatorProfile
 
 class IndexViewTest(TestCase):
     def setUp(self):
-        # Create test data (consider using @skip_unless for helper functions)
+        # Create test data (consider using @skip_unless for util functions)
         ContactInfo.objects.create(
             street="Test Street",
             location="Test Location",

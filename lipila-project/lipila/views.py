@@ -7,15 +7,15 @@ from django.http import JsonResponse
 import json
 from django.db.models import Q
 # Custom Models
-from api.helpers import generate_reference_id
-from lipila.helpers import (
+from api.utils import generate_reference_id
+from lipila.utils import (
     apology, get_lipila_contact_info,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
     query_disbursement, check_payment_status)
 from lipila.forms.forms import ContactForm
 from accounts.models import CreatorProfile
 from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals
-from patron.helpers import calculate_creators_balance
+from patron.utils import calculate_creators_balance
 
 
 # Public Views

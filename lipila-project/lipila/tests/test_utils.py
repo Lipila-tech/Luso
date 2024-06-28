@@ -8,7 +8,7 @@ from unittest.mock import Mock
 from api.models import LipilaCollection, LipilaDisbursement
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial)
-from lipila.helpers import (
+from lipila.utils import (
     get_lipila_contact_info,
     get_user_emails,
     get_lipila_index_page_info,
@@ -18,7 +18,7 @@ from lipila.helpers import (
     query_collection,
     check_payment_status,
 )
-from patron.helpers import generate_reference_id
+from patron.utils import generate_reference_id
 
 class TestCheckPaymentStatus(TestCase):
     def setUp(self):
@@ -48,7 +48,7 @@ class TestCheckPaymentStatus(TestCase):
         status = check_payment_status(self.ref1, 'payment')
         self.assertEqual(status, None)
 
-@patch('lipila.helpers.requests.get')
+@patch('lipila.utils.requests.get')
 class GetPaymentTest(TestCase):
     def test_get_query_disbursement_valid(self, mock_get):
         User.objects.create(username='test_user')
@@ -95,7 +95,7 @@ class GetPaymentTest(TestCase):
         self.assertEqual(response.data, {'data':'Invalid method passed'})
 
 
-@patch('lipila.helpers.requests.post')
+@patch('lipila.utils.requests.post')
 class PostPaymentTest(TestCase):
     def test_post_query_disbursement_valid(self, mock_post):
         mock_response = Mock()
@@ -112,7 +112,7 @@ class PostPaymentTest(TestCase):
         self.assertEqual(response.status_code, 202)
         self.assertEqual(response.data, {'data': 'request accepted, wait for client approval'})
 
-@patch('lipila.helpers.requests.get')
+@patch('lipila.utils.requests.get')
 class GetDisbursementTest(TestCase):
     def test_get_query_disbursement_valid(self, mock_get):
         User.objects.create(username='test_user')
@@ -159,7 +159,7 @@ class GetDisbursementTest(TestCase):
         self.assertEqual(response.data, {'data':'Invalid method passed'})
 
 
-@patch('lipila.helpers.requests.post')
+@patch('lipila.utils.requests.post')
 class PostDisbursementTest(TestCase):
     def test_post_query_disbursement_valid(self, mock_post):
         mock_response = Mock()
@@ -177,7 +177,7 @@ class PostDisbursementTest(TestCase):
         self.assertEqual(response.data, {'data': 'request accepted, wait for client approval'})
         
 
-class HelperFunctionTests(TestCase):
+class UtilFunctionTests(TestCase):
     def test_get_user_object_invalid(self):
         """Test get_user_object returns None"""
         user = 'testuser'

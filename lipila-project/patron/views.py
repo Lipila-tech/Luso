@@ -11,16 +11,16 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import json
 # custom modules
-from api.helpers import generate_reference_id
+from api.utils import generate_reference_id
 from accounts.models import CreatorProfile, PatronProfile
 from business.models import Product
-from lipila.helpers import get_user_object, apology, query_collection, check_payment_status
+from lipila.utils import get_user_object, apology, query_collection, check_payment_status
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
 from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
 from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
-from patron.helpers import (get_creator_subscribers,
+from patron.utils import (get_creator_subscribers,
                             get_creator_url, get_tier, calculate_total_payments,
                             calculate_total_contributions, calculate_total_withdrawals,
                             calculate_creators_balance)

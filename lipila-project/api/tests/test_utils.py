@@ -1,10 +1,10 @@
 import unittest
 from unittest.mock import patch
 from uuid import UUID
-from api.helpers import generate_reference_id, basic_auth, is_payment_details_valid
+from api.utils import generate_reference_id, basic_auth, is_payment_details_valid
 
 
-class TestHelperFunctions(unittest.TestCase):
+class TestUtilFunctions(unittest.TestCase):
     @patch('requests.get')
     def test_get_uuid4_successful_response(self, mock_get):
         mock_response = unittest.mock.Mock()

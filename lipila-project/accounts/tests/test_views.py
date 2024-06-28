@@ -6,7 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.contrib import messages
 # custom modules
-from accounts.helpers import basic_auth_encode, basic_auth_decode
+from accounts.utils import basic_auth_encode, basic_auth_decode
 
 
 class AccountsViewTests(TestCase):

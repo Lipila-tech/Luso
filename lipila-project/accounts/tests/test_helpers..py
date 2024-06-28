@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from accounts.helpers import basic_auth_encode, is_base64, basic_auth_decode
+from accounts.utils import basic_auth_encode, is_base64, basic_auth_decode
 
 
 class BasicAuthTest(TestCase):

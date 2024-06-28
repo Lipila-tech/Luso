@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 #  custom modules
-from .helpers import basic_auth_encode, basic_auth_decode
+from .utils import basic_auth_encode, basic_auth_decode
 from .forms import SignUpForm
 
 

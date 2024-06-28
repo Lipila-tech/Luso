@@ -14,7 +14,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import LipilaCollectionSerializer, LipilaDisbursementSerializer
 from .models import LipilaCollection, LipilaDisbursement
 from api.momo.mtn import Collections, Disbursement
-from .helpers import get_api_user
+from .utils import get_api_user
 
 # Define global variables
 env = environ.Env()

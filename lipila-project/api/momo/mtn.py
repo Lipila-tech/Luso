@@ -2,7 +2,7 @@
 import requests
 import json
 from rest_framework.response import Response
-from api.helpers import (
+from api.utils import (
     generate_reference_id, basic_auth, 
     is_payment_details_valid, is_deposit_details_valid
     )

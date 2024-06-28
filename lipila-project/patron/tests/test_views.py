@@ -254,10 +254,10 @@ class TestPatronViews(TestCase):
         self.client.force_login(self.creatoruser1)
         response = self.client.post(reverse(url), creator_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/profile/create/creator")
+        self.assertEqual(response.url, "/patron/accounts/profile/create/creator")
         response = self.client.post(reverse(url), patron_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/profile/create/patron")
+        self.assertEqual(response.url, "/patron/accounts/profile/create/patron")
 
     def test_redirect_unauthenticated_user(self):
         """
@@ -266,7 +266,7 @@ class TestPatronViews(TestCase):
         response = self.client.get(reverse('patron:profile'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            response.url, "/accounts/login/?next=/accounts/profile/")
+            response.url, "/accounts/login/?next=/patron/accounts/profile/")
 
     def test_profile_redirect(self):
         """
@@ -276,7 +276,7 @@ class TestPatronViews(TestCase):
         self.client.force_login(self.creatoruser1)
         response = self.client.get(reverse('patron:profile'))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/profile/choose")
+        self.assertEqual(response.url, "/patron/accounts/profile/choose")
 
     def test_create_patron_profile(self):
         """
@@ -288,7 +288,7 @@ class TestPatronViews(TestCase):
         data = {'account_number': account_number, 'city': city}
         response = self.client.post(reverse('patron:create_patron_profile'), data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/profile/")
+        self.assertEqual(response.url, "/patron/accounts/profile/")
         self.assertEqual(PatronProfile.objects.count(), 1)
         patron = PatronProfile.objects.get(user=self.creatoruser1)
         self.assertEqual(patron.account_number, '77477838')
@@ -307,7 +307,7 @@ class TestPatronViews(TestCase):
         }
         response = self.client.post(reverse('patron:create_creator_profile'), data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/accounts/profile/")
+        self.assertEqual(response.url, "/patron/accounts/profile/")
         self.assertEqual(CreatorProfile.objects.count(), 1)
         creator = CreatorProfile.objects.get(user=self.creatoruser1)
         self.assertEqual(creator.patron_title, 'TestPatron')

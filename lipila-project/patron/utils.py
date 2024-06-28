@@ -1,5 +1,5 @@
 """
-patron app Helper Functions
+patron app Util Functions
 """
 from accounts.models import CreatorProfile, PatronProfile
 from django.contrib.auth.models import User

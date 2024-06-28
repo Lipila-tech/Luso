@@ -3,8 +3,8 @@ Tests the mtn momo API
 """
 from django.test import TestCase, Client
 from api.momo.mtn import Collections, Disbursement
-from api.helpers import generate_reference_id
-from lipila.helpers import check_payment_status
+from api.utils import generate_reference_id
+from lipila.utils import check_payment_status
 
 
 class MTNBaseTestCase(TestCase):

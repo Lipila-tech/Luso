@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 from uuid import UUID
-from api.helpers import generate_reference_id
-from lipila.helpers import check_payment_status
+from api.utils import generate_reference_id
+from lipila.utils import check_payment_status
 
 
 class LipilaDisbursementViewTest(APITestCase):
