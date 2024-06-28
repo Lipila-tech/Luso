@@ -2,7 +2,10 @@
 import requests
 import json
 from rest_framework.response import Response
-from ..helpers import generate_reference_id, basic_auth, is_payment_details_valid
+from api.helpers import (
+    generate_reference_id, basic_auth, 
+    is_payment_details_valid, is_deposit_details_valid
+    )
 
 import environ
 
@@ -218,7 +221,6 @@ class Collections(MTNBase):
                 if response.status_code == 202:
                     return Response(status=202, data={'message': 'pending'})
                 elif response.status_code == 400:
-                    print(response)
                     return Response(status=400, data={'reason': 'Bad Request'})
                 elif response.status_code == 409:
                     return Response(status=409, data={'reason': 'Conflict user exists'})
@@ -280,7 +282,7 @@ class Disbursement(MTNBase):
         Returns:
             A HTTP Response.
         """
-        is_valid = is_payment_details_valid(amount, payee, reference_id)
+        is_valid = is_deposit_details_valid(amount, payee, reference_id)
         if is_valid:
             """ deposit funds to multiple users"""
             try:

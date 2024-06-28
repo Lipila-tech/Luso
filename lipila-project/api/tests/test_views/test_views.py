@@ -6,7 +6,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 from uuid import UUID
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from api.helpers import generate_reference_id
+from lipila.helpers import check_payment_status
 
 
 class LipilaDisbursementViewTest(APITestCase):
@@ -72,13 +73,14 @@ class LipilaCollectionViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
+        cls.ref = generate_reference_id()
         cls.user = User.objects.create(username='test_user1')
         cls.url = reverse('payments-list')
         
     def test_create_payment_success(self):
         data = {'amount': '100', 'payer_account_number': '0966443322',
                 'payment_method': 'mtn', 'description': 'testdescription'}
-
+        
         response = self.client.post(self.url, data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)

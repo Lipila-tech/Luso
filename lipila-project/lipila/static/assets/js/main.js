@@ -11,32 +11,89 @@
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById('payment-form').addEventListener('submit', function (event) {
     event.preventDefault();
-    const tierId = document.getElementById('tierId').value;
     const requestType = document.getElementById('requestType').value;
-    
+
     if (confirm(['You will be asked to confirm payment on your mobile.']) == true) {
-      if (requestType == 'contribute'){
-        initiatePayment(tierId, 'contribute');
-      }else{
-        initiatePayment(tierId, 'pay');
+      if (requestType == 'deposit') {
+        initiateDeposit();
       }
-      
+      if (requestType == 'contribute') {
+        const id_request = document.getElementById('id_request').value;
+        initiatePayment(id_request, 'contribute');
+      }
+      if (requestType == 'pay') {
+        const id_request = document.getElementById('id_request').value;
+        initiatePayment(id_request, 'pay');
+      }
     }
   });
 });
 
-async function initiatePayment(tierId, requestType) {
+async function initiateDeposit() {
+  document.getElementById('loader').style.display = 'block';
+  // const paymentMethod = document.getElementById('id_payment_method').value;  // Access value using ID
+  const amount = document.getElementById('id_amount').value;
+  const description = document.getElementById('id_reason').value;
+  const accountNumber = document.getElementById('id_account_number').value;
+  const paymentMethod = document.getElementById('id_payment_method').value;
+  const requestId = document.getElementById('id_request').value;
+  const action = document.getElementById('id_action').value
+
+
+  const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;  // Get CSRF token from the form
+
+  try {
+    const response = await fetch('http://localhost:8000/approve_withdrawals/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      body: JSON.stringify(
+        {
+          action: action, request_id: requestId, amount: amount,
+          payee_account_number: accountNumber,
+          description: description, payment_method: paymentMethod
+        })
+    });
+
+    if (!response.ok) {
+      document.getElementById('loader').style.display = 'none';
+      throw new Error(`Error initiating payment: ${response.statusText}`);
+    }
+
+    const data = await response.json();  // Parse JSON response
+
+    if (data.message === 'Payment initiated successfully') {
+      document.getElementById('loader').style.display = 'none';
+      // Handle successful payment initiation
+      const referenceId = data.reference_id;
+      redirectToProcessed();
+    } else {
+      document.getElementById('loader').style.display = 'none';
+      // alert('Error: ' + data.error);  // Handle potential error message from the view
+      redirectToApproveRequest()
+    }
+  } catch (error) {
+    document.getElementById('loader').style.display = 'none';
+    redirectToApproveRequest()
+  } finally {
+    // Perform any cleanup actions after the request completes (optional)
+  }
+}
+
+async function initiatePayment(id_request, requestType) {
   document.getElementById('loader').style.display = 'block';
   const paymentMethod = document.getElementById('id_payment_method').value;  // Access value using ID
   const amount = document.getElementById('id_amount').value;
   const phoneNumber = document.getElementById('id_payer_account_number').value;
   const description = document.getElementById('id_description').value;
-  
-  
+
+
   const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;  // Get CSRF token from the form
 
   try {
-    const response = await fetch(`http://localhost:8000/patron/payments/${requestType}/${tierId}`, {
+    const response = await fetch(`http://localhost:8000/patron/payments/${requestType}/${id_request}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,11 +118,11 @@ async function initiatePayment(tierId, requestType) {
     } else {
       document.getElementById('loader').style.display = 'none';
       // alert('Error: ' + data.error);  // Handle potential error message from the view
-      redirectToPayment(requestType,tierId)
+      redirectToPayment(requestType, id_request)
     }
   } catch (error) {
     document.getElementById('loader').style.display = 'none';
-    redirectToPayment(requestType,tierId)
+    redirectToPayment(requestType, id_request)
   } finally {
     // Perform any cleanup actions after the request completes (optional)
   }
@@ -75,8 +132,16 @@ function redirectToPaymentHistory(endpoint) {
   window.location.href = `http://localhost:8000/patron/history/${endpoint}`;
 }
 
-function redirectToPayment(endpoint, tierId){
-  window.location.href = `http://localhost:8000/patron/payments/${endpoint}/${tierId}`
+function redirectToPayment(endpoint, id_request) {
+  window.location.href = `http://localhost:8000/patron/payments/${endpoint}/${id_request}`
+}
+
+function redirectToProcessed() {
+  window.location.href = 'http://localhost:8000/processed_withdrawals/'
+}
+
+function redirectToApproveRequest() {
+  window.location.href = 'http://localhost:8000/approve_withdrawals/'
 }
 
 function checkPaymentStatus(referenceId) {

@@ -58,7 +58,6 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
     serializer_class = LipilaDisbursementSerializer
     queryset = LipilaDisbursement.objects.all()
     
-
     def create(self, request):
         """
         Handles POST requests, deserializing data and updating default fields.
@@ -77,11 +76,12 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                 provisioned_mtn_api_user.subscription_dis_key, reference_id)
             provisioned_mtn_api_user.create_api_token(
                 provisioned_mtn_api_user.subscription_dis_key, 'disbursement', reference_id)
-
+            
             if serializer.is_valid():
-                reference_id = provisioned_mtn_api_user.x_reference_id
+               
+                reference_id = reference_id
                 request_pay = provisioned_mtn_api_user.deposit(
-                    amount=amount, payer=payee, reference_id=str(reference_id))
+                    amount=amount, payee=payee, reference_id=str(reference_id))
                 # save payment object
                 api_user = User.objects.get(pk=1)
                 payment = serializer.save()
@@ -90,6 +90,7 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                 payment.reference_id = reference_id
 
                 if request_pay.status_code == 202:
+                    
                     payment.status = 'accepted'  # Set status based on mapping
                     payment.save()
                     response = provisioned_mtn_api_user.get_transaction_status('deposit',
@@ -98,6 +99,7 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                         payment.status = 'success'
                         payment.save()
                     else:
+                        
                         payment.status = 'failed'
                         payment.save()
                 elif request_pay.status_code == 403:
@@ -141,6 +143,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
         Handles POST requests, deserializing date and updating default fields.
         """
         reference_id = request.query_params.get('reference_id')
+        
 
         if not reference_id:
             return Response({"error": "reference id is missing"}, status=400)

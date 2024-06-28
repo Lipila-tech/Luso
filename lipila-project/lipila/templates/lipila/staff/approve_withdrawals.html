@@ -6,45 +6,53 @@
 {% block section %}
 <h2>Approve Withdrawal Requests</h2>
 {% if pending_requests %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Creator</th>
-                <th>Amount Requested</th>
-                <th>Account Balance</th>
-                <th>Request Date</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for request in pending_requests %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ request.creator.user.username }}</td>
-                <td>{{ request.amount }}</td>
-                <td>{{ request.balance }}</td>
-                <td>{{ request.request_date }}</td>
-                <td>
-                    <form method="POST" style="display: inline-block;">
-                        {% csrf_token %}
-                        <input type="hidden" name="withdrawal_amount" value="{{ request.amount }}">
-                        <input type="hidden" name="withdrawal_request_id" value="{{ request.pk }}">
-                        <button type="submit" name="action" value="approve">Approve</button>
-                    </form>
-                    <form method="POST" style="display: inline-block;">
-                        {% csrf_token %}
-                        <input type="hidden" name="withdrawal_request_id" value="{{ request.pk }}">
-                        <button type="submit" name="action" value="reject">Reject</button>
-                        <input type="text" name="rejection_reason" placeholder="Reason (optional)">
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Creator</th>
+            <th>Amount Requested</th>
+            <th>Account Balance</th>
+            <th>Request Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in pending_requests %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ request.creator.user.username }}</td>
+            <td>{{ request.amount }}</td>
+            <td>{{ request.balance }}</td>
+            <td>{{ request.request_date }}</td>
+            <td>{{ request.status }}</td>
+            <td>
+                <div>
+                    <input type="hidden" id="requestType" value="deposit">
+                    <input type="hidden" id="id_payment_method" value="{{request.payment_method}}">
+                    <input type="hidden" id="id_account_number" value="{{request.account_number}}">
+                    <input type="hidden" name="withdrawal_amount" id="id_amount" value="{{ request.amount }}">
+                </div>
+                <form method="POST" style="display: inline-block;" id="payment-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="withdrawal_request_id" id="id_request" value="{{ request.pk }}">
+                    <button type="submit" name="action" id="id_action" value="approve">Approve</button>
+                </form>
+                <form method="POST" style="display: inline-block;" id="payment-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="withdrawal_request_id" id="id_request" value="{{ request.pk }}">
+                    <button type="submit" name="action" id="id_action" value="reject">Reject</button>
+                    <input type="text" name="rejection_reason" id="id_reason" placeholder="Reason (optional)">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div id="loader" style="display: none;"></div>
 {% else %}
-    <p>There are no pending withdrawal requests at this time.</p>
+<p>There are no pending withdrawal requests at this time.</p>
 {% endif %}
 
 {% endblock %}

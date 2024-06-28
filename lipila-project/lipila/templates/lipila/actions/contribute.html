@@ -5,7 +5,7 @@
 {% block section %}
 <h2>Buy {{owner}} a coffee.</h2>
 <div id="loader" style="display: none;"></div>
-<input  type="hidden" id="tierId" value="{{creator}}">
+<input  type="hidden" id="id_request" value="{{creator}}">
 <input  type="hidden" id="requestType" value="contribute">
 <form method="post" id="payment-form">
   {% csrf_token %}

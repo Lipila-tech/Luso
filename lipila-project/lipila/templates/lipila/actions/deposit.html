@@ -4,7 +4,7 @@
 
 {% block section %}
 <h2>Pay "{{ tier.name }}"</h2>
-<input  type="hidden" id="tierId" value="{{tier.id}}">
+<input  type="hidden" id="id_request" value="{{tier.id}}">
 <input  type="hidden" id="requestType" value="pay">
 <div id="loader" style="display: none;"></div>
 <form method="post" id="payment-form">

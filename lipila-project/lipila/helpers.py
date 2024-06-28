@@ -61,7 +61,7 @@ def query_disbursement(user, method, reference_id, data={}):
         reference_id(str): The unique uuid id that will be used to identify the transactions
         data (dict):
                 {
-                    'amount': '', 'payer_account_number': '',
+                    'amount': '', 'payee_account_number': '',
                     'payment_method': '', 'description': ''
                     }
 
@@ -115,7 +115,6 @@ def check_payment_status(reference_id:str, transaction:str)->str:
             status = 'transaction id not found'
     else:
         return None
-    print(status)
     return status
 
 def get_lipila_contact_info() -> dict:

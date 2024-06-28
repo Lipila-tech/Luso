@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
+from django.http import JsonResponse
+import json
 from django.db.models import Q
 # Custom Models
 from api.helpers import generate_reference_id
@@ -88,8 +90,15 @@ def staff_users(request, user):
 @user_passes_test(lambda u: u.is_staff)  # Only allow staff users
 def approve_withdrawals(request):
     if request.method == 'POST':
-        withdrawal_request_id = request.POST.get('withdrawal_request_id')
-        action = request.POST.get('action')
+        raw_data = request.body.decode('utf-8')  # Decode bytes to string
+        data = json.loads(raw_data)  # Parse JSON data
+        withdrawal_request_id = data['request_id']
+        action = data['action']
+        amount = data['amount']
+        payee_account_number = data['payee_account_number']
+        description = data['description']
+        payment_method = data['payment_method']
+
         reference_id = generate_reference_id()
         if withdrawal_request_id and action:
             try:
@@ -101,10 +110,10 @@ def approve_withdrawals(request):
                 if action == 'approve':
                     # Process withdrawal (initiate payout using lipila api)
                     payload = {
-                        'amount': withdrawal_request.amount,
-                        'payment_method':withdrawal_request.payment_method,
-                        'payee_account_number':withdrawal_request.account_number,
-                        'description': request.POST.get('reason')
+                        'amount': amount,
+                        'payment_method': payment_method,
+                        'payee_account_number': payee_account_number,
+                        'description': description
                     }
                     response = query_disbursement(request.user, 'POST', reference_id, data=payload)
                     
@@ -125,9 +134,15 @@ def approve_withdrawals(request):
                             processed_withdrawals.save()
                         messages.success(
                             request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
+                        return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
                     else:
+                        withdrawal_request.status = 'failed'
+                        processed_withdrawals.status = 'failed'
+                        withdrawal_request.save()
+                        processed_withdrawals.save()
                         messages.error(
-                            request, f"Payment failed")
+                                    request, 'Payment failed. Please try again later!')
+                        return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
                 elif action == 'reject':
                     rejected_reason = request.POST.get('rejected_reason')
                     withdrawal_request.status = 'rejected'
@@ -148,13 +163,18 @@ def approve_withdrawals(request):
             except WithdrawalRequest.DoesNotExist:
                 messages.error(request, "Withdrawal request not found.")
                 return redirect('approve_withdrawals')
-    pending_requests = WithdrawalRequest.objects.filter(status='pending')
+        messages.error(request, "Withdrawal id or amount missing")
+        return redirect('approve_withdrawals')
+    pending_requests = WithdrawalRequest.objects.filter(Q(status='pending') | Q(status='failed'))
     data = []
     for obj in pending_requests:
         item = {}
         item['pk'] = obj.pk
         item['creator'] = obj.creator
         item['amount'] = obj.amount
+        item['status'] = obj.status
+        item['account_number'] = obj.account_number
+        item['payment_method'] = obj.payment_method
         item['request_date'] = obj.request_date
         item['balance'] = calculate_creators_balance(obj.creator)
         data.append(item)
