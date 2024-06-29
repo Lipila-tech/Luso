@@ -394,7 +394,8 @@ def subscription_detail(request, tier_id):
     Renders a detailed view of a tier
     """
     user_object = get_object_or_404(User, username=request.user)
-    subscription = TierSubscriptions.objects.get(pk=tier_id)
+    tier = Tier.objects.get(pk=tier_id)
+    subscription = TierSubscriptions.objects.get(tier=tier)
     return render(request, 'patron/admin/pages/subscription_detail.html', {'subscription': subscription})
 
 
