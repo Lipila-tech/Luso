@@ -373,8 +373,6 @@ def list_creators(request):
     creators = CreatorProfile.objects.all()
     context = {}
     context['creators'] = creators
-    if request.user.is_authenticated:
-        return render(request, 'patron/admin/pages/creators.html', context)
     return render(request, 'patron/creators.html', context)
 
 

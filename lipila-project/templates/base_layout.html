@@ -56,7 +56,11 @@
             <!-- Nav Menu -->
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="/#hero" class="active">Home</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a class="active" href="{% url 'dashboard' user=user %}">Dashboard</a></li>
+                    {% else %}
+                    <li><a href="/#hero">Home</a></li>
+                    {% endif %}
                     {% with target_fragment='#creators-info' %}
                     <li><a href="{% url 'patron:index' %}?fragment={{ target_fragment }}">Creators</a></li>
                     {% endwith %}
@@ -75,7 +79,7 @@
                 <p>
                 <form id="logout-form" method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-link">Logout</button>
+                    <button type="submit" id="btn-getstarted" class="btn-getstarted">Logout</button>
                 </form>
                 </p>
                 {% else %}
@@ -119,7 +123,11 @@
                 <div class="col-lg-2 col-6 footer-links">
                     <h4>Quick Links</h4>
                     <ul>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' user=user %}">Dashboard</a></li>
+                        {% else %}
                         <li><a href="/#hero">Home</a></li>
+                        {% endif %}
                         <li><a href="/#about">About us</a></li>
                         <li><a href="/#services">Services</a></li>
                         <li><a href="{% url 'terms' %}">Terms of use</a></li>
