@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const action = this.id.split('-')[0];
       const amount = document.getElementById(`id_amount-${formId}`).value;
       const accountNumber = document.getElementById(`id_account_number-${formId}`).value;
-      
+
       if (action == 'approve') {
         if (confirm(`Confirm disbursement of K${amount} to ${accountNumber}`) == true) {
           initiateDeposit(formId, action);
@@ -88,21 +88,27 @@ async function initiateDeposit(formId, action) {
  * Listens to submmission of the payment form and
  */
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById('payment-form').addEventListener('submit', function (event) {
-    event.preventDefault();
-    const tierId = document.getElementById('id_request').value;
-    const requestType = document.getElementById('requestType').value;
+  const paymentForm = document.getElementById('payment-form');
 
-    if (confirm(['You will be asked to confirm payment on your mobile.']) == true) {
-      if (requestType == 'contribute') {
-        initiatePayment(tierId, 'contribute');
-      } else {
-        initiatePayment(tierId, 'pay');
+  if (paymentForm) {
+    paymentForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const tierId = document.getElementById('id_request').value;
+      const requestType = document.getElementById('requestType').value;
+
+      if (confirm('You will be asked to confirm payment on your mobile.') == true) {
+        if (requestType == 'contribute') {
+          initiatePayment(tierId, 'contribute');
+        } else {
+          initiatePayment(tierId, 'pay');
+        }
       }
-
-    }
-  });
+    });
+  } else {
+    console.error('The payment form with id "payment-form" was not found.');
+  }
 });
+
 
 /**
  * This function queries the collections endpoint to initiae payment.
