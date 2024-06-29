@@ -29,21 +29,21 @@
             <td>{{ request.status }}</td>
             <td>
                 <div>
-                    <input type="hidden" id="requestType" value="deposit">
-                    <input type="hidden" id="id_payment_method" value="{{request.payment_method}}">
-                    <input type="hidden" id="id_account_number" value="{{request.account_number}}">
-                    <input type="hidden" name="withdrawal_amount" id="id_amount" value="{{ request.amount }}">
+                    <input type="hidden" id="requestType-{{ forloop.counter }}" value="deposit">
+                    <input type="hidden" id="id_payment_method-{{ forloop.counter }}" value="{{request.payment_method}}">
+                    <input type="hidden" id="id_account_number-{{ forloop.counter }}" value="{{request.account_number}}">
+                    <input type="hidden" name="withdrawal_amount" id="id_amount-{{ forloop.counter }}" value="{{ request.amount }}">
                 </div>
-                <form method="POST" style="display: inline-block;" id="payment-form">
+                <form method="POST" style="display: inline-block;" id="approve-form-{{ forloop.counter }}">
                     {% csrf_token %}
-                    <input type="hidden" name="withdrawal_request_id" id="id_request" value="{{ request.pk }}">
-                    <button type="submit" name="action" id="id_action" value="approve">Approve</button>
+                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}" value="{{ request.pk }}">
+                    <button type="submit" name="action" id="id_action-approve-{{ forloop.counter }}" value="approve">Approve</button>
                 </form>
-                <form method="POST" style="display: inline-block;" id="payment-form">
+                <form method="POST" style="display: inline-block;" id="reject-form-{{ forloop.counter }}">
                     {% csrf_token %}
-                    <input type="hidden" name="withdrawal_request_id" id="id_request" value="{{ request.pk }}">
-                    <button type="submit" name="action" id="id_action" value="reject">Reject</button>
-                    <input type="text" name="rejection_reason" id="id_reason" placeholder="Reason (optional)">
+                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}" value="{{ request.pk }}">
+                    <button type="submit" name="action" id="id_action-reject-{{ forloop.counter }}" value="reject">Reject</button>
+                    <input type="text" name="rejection_reason" id="id_reason-{{ forloop.counter }}" placeholder="Reason (optional)">
                 </form>
             </td>
         </tr>

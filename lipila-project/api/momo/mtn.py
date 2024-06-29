@@ -282,7 +282,11 @@ class Disbursement(MTNBase):
         Returns:
             A HTTP Response.
         """
-        is_valid = is_deposit_details_valid(amount, payee, reference_id)
+        try:
+            is_valid = is_deposit_details_valid(amount, payee, reference_id)
+        except (ValueError, TypeError):
+            return Response(status=400, data={'reason': 'Bad Request'})
+        
         if is_valid:
             """ deposit funds to multiple users"""
             try:

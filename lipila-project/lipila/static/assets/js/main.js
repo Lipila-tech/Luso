@@ -6,41 +6,50 @@
 * License: https://bootstrapmade.com/license/
 */
 
-// Payment-form loader
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('form[id^="approve-form-"], form[id^="reject-form-"]').forEach(form => {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const formId = this.id.split('-').pop();  // Get the form identifier
+      const requestType = document.getElementById(`requestType-${formId}`).value;
 
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById('payment-form').addEventListener('submit', function (event) {
-    event.preventDefault();
-    const requestType = document.getElementById('requestType').value;
-
-    if (confirm(['You will be asked to confirm payment on your mobile.']) == true) {
       if (requestType == 'deposit') {
-        initiateDeposit();
+        const amount = document.getElementById(`id_amount-${formId}`).value;
+        const accountNumber = document.getElementById(`id_account_number-${formId}`).value;
+
+        if (confirm(`Confirm disbursement of K${amount} to ${accountNumber}`) == true) {
+          initiateDeposit(formId);
+        }
+        
+      } else if (requestType == 'contribute') {
+        if (confirm('You will be asked to confirm payment on your mobile.') == true) {
+          initiatePayment(id_request, 'contribute');
+        }
+
+      } else {
+        if (confirm('You will be asked to confirm payment on your mobile.') == true) {
+          initiatePayment(id_request, 'pay');
+        }
       }
-      if (requestType == 'contribute') {
-        const id_request = document.getElementById('id_request').value;
-        initiatePayment(id_request, 'contribute');
-      }
-      if (requestType == 'pay') {
-        const id_request = document.getElementById('id_request').value;
-        initiatePayment(id_request, 'pay');
-      }
-    }
+    });
   });
 });
 
-async function initiateDeposit() {
+/**
+ * This function queries the api to disburse funds.
+ * @param {The id of the form to be submitted} formId 
+ */
+
+async function initiateDeposit(formId) {
   document.getElementById('loader').style.display = 'block';
-  // const paymentMethod = document.getElementById('id_payment_method').value;  // Access value using ID
-  const amount = document.getElementById('id_amount').value;
-  const description = document.getElementById('id_reason').value;
-  const accountNumber = document.getElementById('id_account_number').value;
-  const paymentMethod = document.getElementById('id_payment_method').value;
-  const requestId = document.getElementById('id_request').value;
-  const action = document.getElementById('id_action').value
+  const amount = document.getElementById(`id_amount-${formId}`).value;
+  const description = document.getElementById(`id_reason-${formId}`).value;
+  const accountNumber = document.getElementById(`id_account_number-${formId}`).value;
+  const paymentMethod = document.getElementById(`id_payment_method-${formId}`).value;
+  const requestId = document.getElementById(`id_request-${formId}`).value;
+  const action = document.getElementById(`id_action-approve-${formId}`) || document.getElementById(`id_action-reject-${formId}`).value;
 
-
-  const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;  // Get CSRF token from the form
+  const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
   try {
     const response = await fetch('http://localhost:8000/approve_withdrawals/', {
@@ -49,12 +58,11 @@ async function initiateDeposit() {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrftoken
       },
-      body: JSON.stringify(
-        {
-          action: action, request_id: requestId, amount: amount,
-          payee_account_number: accountNumber,
-          description: description, payment_method: paymentMethod
-        })
+      body: JSON.stringify({
+        action: action, request_id: requestId, amount: amount,
+        payee_account_number: accountNumber,
+        description: description, payment_method: paymentMethod
+      })
     });
 
     if (!response.ok) {
@@ -62,25 +70,30 @@ async function initiateDeposit() {
       throw new Error(`Error initiating payment: ${response.statusText}`);
     }
 
-    const data = await response.json();  // Parse JSON response
+    const data = await response.json();
 
     if (data.message === 'Payment initiated successfully') {
       document.getElementById('loader').style.display = 'none';
-      // Handle successful payment initiation
       const referenceId = data.reference_id;
       redirectToProcessed();
     } else {
       document.getElementById('loader').style.display = 'none';
-      // alert('Error: ' + data.error);  // Handle potential error message from the view
-      redirectToApproveRequest()
+      redirectToApproveRequest();
     }
   } catch (error) {
     document.getElementById('loader').style.display = 'none';
-    redirectToApproveRequest()
+    redirectToApproveRequest();
   } finally {
-    // Perform any cleanup actions after the request completes (optional)
+    // Optional cleanup actions
   }
 }
+
+
+/**
+ * This function queries the collections endpoint.
+ * @param {*} id_request 
+ * @param {*} requestType 
+ */
 
 async function initiatePayment(id_request, requestType) {
   document.getElementById('loader').style.display = 'block';
