@@ -1,34 +1,30 @@
 /**
-* Template Name: Lipila
-* Updated: Feb 01 2024 with Bootstrap v5.3.2
-* Template URL: https://bootstrapmade.com/lipila-bootstrap-website-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
+* Project Name: Lipila Patron
+* Updated: 29 June 2024 Lipila Patron v1
+* Author: Peter Zyambo
+* License:
 */
 
+
+/**
+ * Listens to the submmision of a depositi form and gets the forms ids.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('form[id^="approve-form-"], form[id^="reject-form-"]').forEach(form => {
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       const formId = this.id.split('-').pop();  // Get the form identifier
-      const requestType = document.getElementById(`requestType-${formId}`).value;
-
-      if (requestType == 'deposit') {
-        const amount = document.getElementById(`id_amount-${formId}`).value;
-        const accountNumber = document.getElementById(`id_account_number-${formId}`).value;
-
+      const action = this.id.split('-')[0];
+      const amount = document.getElementById(`id_amount-${formId}`).value;
+      const accountNumber = document.getElementById(`id_account_number-${formId}`).value;
+      
+      if (action == 'approve') {
         if (confirm(`Confirm disbursement of K${amount} to ${accountNumber}`) == true) {
-          initiateDeposit(formId);
+          initiateDeposit(formId, action);
         }
-        
-      } else if (requestType == 'contribute') {
-        if (confirm('You will be asked to confirm payment on your mobile.') == true) {
-          initiatePayment(id_request, 'contribute');
-        }
-
       } else {
-        if (confirm('You will be asked to confirm payment on your mobile.') == true) {
-          initiatePayment(id_request, 'pay');
+        if (confirm(`Reject withdraw of K${amount} from ${accountNumber}`) == true) {
+          initiateDeposit(formId, action);
         }
       }
     });
@@ -37,17 +33,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /**
  * This function queries the api to disburse funds.
- * @param {The id of the form to be submitted} formId 
+ * @param {The id of the form to be submitted} formId
+ * @param {The action to be taken} action
  */
 
-async function initiateDeposit(formId) {
+async function initiateDeposit(formId, action) {
   document.getElementById('loader').style.display = 'block';
   const amount = document.getElementById(`id_amount-${formId}`).value;
   const description = document.getElementById(`id_reason-${formId}`).value;
   const accountNumber = document.getElementById(`id_account_number-${formId}`).value;
   const paymentMethod = document.getElementById(`id_payment_method-${formId}`).value;
   const requestId = document.getElementById(`id_request-${formId}`).value;
-  const action = document.getElementById(`id_action-approve-${formId}`) || document.getElementById(`id_action-reject-${formId}`).value;
 
   const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
 
@@ -75,7 +71,7 @@ async function initiateDeposit(formId) {
     if (data.message === 'Payment initiated successfully') {
       document.getElementById('loader').style.display = 'none';
       const referenceId = data.reference_id;
-      redirectToProcessed();
+      redirectToApproveRequest();
     } else {
       document.getElementById('loader').style.display = 'none';
       redirectToApproveRequest();
@@ -88,9 +84,28 @@ async function initiateDeposit(formId) {
   }
 }
 
+/**
+ * Listens to submmission of the payment form and
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('payment-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const tierId = document.getElementById('tierId').value;
+    const requestType = document.getElementById('requestType').value;
+
+    if (confirm(['You will be asked to confirm payment on your mobile.']) == true) {
+      if (requestType == 'contribute') {
+        initiatePayment(tierId, 'contribute');
+      } else {
+        initiatePayment(tierId, 'pay');
+      }
+
+    }
+  });
+});
 
 /**
- * This function queries the collections endpoint.
+ * This function queries the collections endpoint to initiae payment.
  * @param {*} id_request 
  * @param {*} requestType 
  */
@@ -141,41 +156,35 @@ async function initiatePayment(id_request, requestType) {
   }
 }
 
+/**
+ * 
+ * @param {*} endpoint 
+ */
 function redirectToPaymentHistory(endpoint) {
   window.location.href = `http://localhost:8000/patron/history/${endpoint}`;
 }
 
+/**
+ * 
+ * @param {*} endpoint 
+ * @param {*} id_request 
+ */
 function redirectToPayment(endpoint, id_request) {
   window.location.href = `http://localhost:8000/patron/payments/${endpoint}/${id_request}`
 }
 
+/**
+ * Redirects user to the processed withdrawals
+ */
 function redirectToProcessed() {
   window.location.href = 'http://localhost:8000/processed_withdrawals/'
 }
 
+/**
+ * Redirects a user to Approve Withdrawals
+ */
 function redirectToApproveRequest() {
   window.location.href = 'http://localhost:8000/approve_withdrawals/'
-}
-
-function checkPaymentStatus(referenceId) {
-  fetch('localhost:8000/payments/status/', {
-    method: 'POST',
-    body: JSON.stringify({ reference_id: referenceId }),  // Send reference ID in JSON
-    headers: { 'Content-Type': 'application/json' }
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'accepted' || data.status === 'success') {
-        // Payment successful! Redirect or display success message
-        alert('Payment successful!');
-        document.getElementById('loader').style.display = 'none';
-      } else if (data.status === 'pending') {
-        // Payment still pending, check again after a delay
-        setTimeout(() => checkPaymentStatus(referenceId), 5000);  // Check every 5 seconds
-      } else {
-        alert('Payment failed');
-      }
-    })
 }
 
 

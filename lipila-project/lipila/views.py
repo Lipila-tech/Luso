@@ -106,7 +106,7 @@ def approve_withdrawals(request):
                 processed_withdrawals = ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request, status='pending')
                 reference_id = generate_reference_id()
-                
+
                 if action == 'approve':
                     # Process withdrawal (initiate payout using lipila api)
                     payload = {
@@ -115,8 +115,9 @@ def approve_withdrawals(request):
                         'payee_account_number': payee_account_number,
                         'description': description
                     }
-                    response = query_disbursement(request.user, 'POST', reference_id, data=payload)
-                    
+                    response = query_disbursement(
+                        request.user, 'POST', reference_id, data=payload)
+
                     if response.status_code == 202:
                         withdrawal_request.status = 'accepted'
                         withdrawal_request.processed_date = timezone.now()
@@ -134,17 +135,17 @@ def approve_withdrawals(request):
                             processed_withdrawals.save()
                         messages.success(
                             request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
-                        return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
+                        return JsonResponse({'message': 'Payment initiated successfully'})
                     else:
                         withdrawal_request.status = 'failed'
                         processed_withdrawals.status = 'failed'
                         withdrawal_request.save()
                         processed_withdrawals.save()
                         messages.error(
-                                    request, 'Payment failed. Please try again later!')
+                            request, 'Payment failed. Please try again later!')
                         return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
                 elif action == 'reject':
-                    rejected_reason = request.POST.get('rejected_reason')
+                    rejected_reason = request.POST.get('description')
                     withdrawal_request.status = 'rejected'
                     withdrawal_request.reason = rejected_reason
                     withdrawal_request.processed_date = timezone.now()
@@ -156,7 +157,8 @@ def approve_withdrawals(request):
                     processed_withdrawals.reason = rejected_reason
                     processed_withdrawals.save()
                     messages.success(
-                        request, f"Withdrawal request for {withdrawal_request.creator.user.username} rejected.")
+                        request, f"Withdrawal request for {withdrawal_request.creator.user.username} has been rejected.")
+                    return JsonResponse({'message': 'Payment has been rejected successfully'})
                 else:
                     messages.error(request, "Invalid action specified.")
                 return redirect('approve_withdrawals')
@@ -165,7 +167,8 @@ def approve_withdrawals(request):
                 return redirect('approve_withdrawals')
         messages.error(request, "Withdrawal id or amount missing")
         return redirect('approve_withdrawals')
-    pending_requests = WithdrawalRequest.objects.filter(Q(status='pending') | Q(status='failed'))
+    pending_requests = WithdrawalRequest.objects.filter(
+        Q(status='pending') | Q(status='failed') | Q(status='rejected'))
     data = []
     for obj in pending_requests:
         item = {}
