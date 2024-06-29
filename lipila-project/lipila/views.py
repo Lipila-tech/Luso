@@ -99,13 +99,13 @@ def approve_withdrawals(request):
         description = data['description']
         payment_method = data['payment_method']
 
-        reference_id = generate_reference_id()
         if withdrawal_request_id and action:
             try:
                 withdrawal_request = WithdrawalRequest.objects.get(
                     pk=withdrawal_request_id)
                 processed_withdrawals = ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request, status='pending')
+                reference_id = generate_reference_id()
                 
                 if action == 'approve':
                     # Process withdrawal (initiate payout using lipila api)

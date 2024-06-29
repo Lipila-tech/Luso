@@ -78,8 +78,6 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                 provisioned_mtn_api_user.subscription_dis_key, 'disbursement', reference_id)
             
             if serializer.is_valid():
-               
-                reference_id = reference_id
                 request_pay = provisioned_mtn_api_user.deposit(
                     amount=amount, payee=payee, reference_id=str(reference_id))
                 # save payment object
@@ -102,19 +100,22 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                         
                         payment.status = 'failed'
                         payment.save()
+                    return Response({'message': 'request accepted, wait for client approval'}, status=202)
                 elif request_pay.status_code == 403:
                     payment.status = 'failed'
                     payment.save()
                     status_code = request_pay.status_code
-                    return Response({'message': 'Request exceeded'}, status=status_code)
+                    return Response({'message': 'Request exceeded'}, status=403)
                 elif request_pay.status_code == 400:
                     payment.status = 'failed'
                     payment.save()
                     status_code = request_pay.status_code
-                    return Response({'message': 'Bad request to payment gateway'}, status=status_code)
+                    return Response({'message': 'Bad request to payment gateway'}, status=400)
+            else:
+                return Response({'message': 'Data not valid'}, status=400)
         except Exception as e:
             return Response({'message': f'Key Error in submitted data {e}'}, status=400)
-        return Response({'message': 'request accepted, wait for client approval'}, status=202)
+        # return Response({'message': 'request accepted, wait for client approval'}, status=202)
 
     def list(self, request):
         api_user = request.query_params.get('api_user')
@@ -160,7 +161,6 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 provisioned_mtn_api_user.subscription_col_key, 'collection', reference_id)
 
             if serializer.is_valid():
-                reference_id = reference_id
                 request_pay = provisioned_mtn_api_user.request_to_pay(
                     amount=amount, payer=payer, reference_id=str(reference_id))
                 # save payment request
@@ -181,19 +181,22 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                     else:
                         payment.status = 'failed'
                         payment.save()
+                    return Response({'message': 'request accepted, wait for client approval'}, status=202)
                 elif request_pay.status_code == 403:
                     payment.status = 'failed'
                     payment.save()
                     status_code = request_pay.status_code
-                    return Response({'message': 'Request exceeded'}, status=status_code)
+                    return Response({'message': 'Request exceeded'}, status=403)
                 elif request_pay.status_code == 400:
                     payment.status = 'failed'
                     payment.save()
                     status_code = request_pay.status_code
-                    return Response({'message': 'Bad request to payment gateway'}, status=status_code)
+                    return Response({'message': 'Bad request to payment gateway'}, status=400)
+            else:
+                return Response({'message': 'Data not valid'}, status=400)
         except Exception as e:
             return Response({'message': f'Key Error in submitted data {e}'}, status=400)
-        return Response({'message': 'request accepted, wait for client approval'}, status=202)
+        # return Response({'message': 'request accepted, wait for client approval'}, status=202)
 
     def list(self, request):
 

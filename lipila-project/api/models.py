@@ -23,7 +23,7 @@ class LipilaDisbursement(models.Model):
     reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
     processed_date = models.DateField(auto_now_add=True)
     updated_at = models.DateField(null=True, blank=True)
-    description = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
     

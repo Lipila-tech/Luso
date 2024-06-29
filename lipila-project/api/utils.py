@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 import datetime
 import random
+from uuid import uuid4
 unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"  # Example: '20231125154054_7548'
 
 
@@ -36,8 +37,8 @@ def generate_reference_id() -> str:
         payload = {}
         headers = {}
         try:
-            response = requests.get(url, headers=headers, data=payload)
-            return str(response.text)
+            uuid = uuid4()
+            return str(uuid)
         except Exception:
             return "none"
         
