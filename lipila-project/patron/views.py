@@ -21,9 +21,9 @@ from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
 from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
 from patron.utils import (get_creator_subscribers,
-                            get_creator_url, get_tier, calculate_total_payments,
-                            calculate_total_contributions, calculate_total_withdrawals,
-                            calculate_creators_balance)
+                          get_creator_url, get_tier, calculate_total_payments,
+                          calculate_total_contributions, calculate_total_withdrawals,
+                          calculate_creators_balance)
 
 
 def index(request):
@@ -396,7 +396,7 @@ def subscription_detail(request, tier_id):
     user_object = get_object_or_404(User, username=request.user)
     tier = Tier.objects.get(pk=tier_id)
     subscription = TierSubscriptions.objects.get(tier=tier)
-    return render(request, 'patron/admin/pages/subscription_detail.html', {'subscription': subscription})
+    return render(request, 'patron/admin/pages/subscription_detail.html', {'subscription': subscription, 'tier_id': tier_id})
 
 
 # PAYMENT HANDLING VIEWS
@@ -516,7 +516,7 @@ def contribute(request, tier_id):
             patron = User.objects.get(username=request.user)
             creator = User.objects.get(pk=tier_id)
             reference_id = generate_reference_id()
-            contribution =Contributions.objects.create(
+            contribution = Contributions.objects.create(
                 creator=creator, patron=patron, reference_id=reference_id)
             contribution.amount = amount
             contribution.payer_account_number = account_number
@@ -531,7 +531,7 @@ def contribute(request, tier_id):
 
             api_user = User.objects.get(pk=1)
             response = query_collection(
-                api_user.username, 'POST',reference_id, data=payload)
+                api_user.username, 'POST', reference_id, data=payload)
             if response.status_code == 202:
                 contribution.status = 'accepted'
                 contribution.save()
@@ -556,6 +556,7 @@ def contribute(request, tier_id):
     return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
 
 # ACCOUNT HISTORY VIEWS
+
 
 @login_required
 def withdrawal_history(request):

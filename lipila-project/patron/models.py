@@ -11,6 +11,7 @@ STATUS_CHOICES = (
 )
 
 CREATOR_CATEGORY_CHOICES = (
+    ('', ''),
     ('artist', 'Artist'),
     ('musician', 'Musician'),
     ('videocreator', 'Video Creator'),
@@ -24,6 +25,7 @@ CITY_CHOICES = (
     ('ndola', 'Ndola'),
 )
 PAYMENT_CHOICES = (
+    ('', ''),
     ('mtn', 'mtn'),
     ('airtel', 'airtel'),
 )
@@ -109,7 +111,7 @@ class Contributions(models.Model):
     description = models.CharField(max_length=200, null=True, blank=True)
     payer_account_number = models.CharField(max_length=300, null=True, blank=False)
     reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 

@@ -90,7 +90,7 @@ async function initiateDeposit(formId, action) {
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('payment-form').addEventListener('submit', function (event) {
     event.preventDefault();
-    const tierId = document.getElementById('tierId').value;
+    const tierId = document.getElementById('id_request').value;
     const requestType = document.getElementById('requestType').value;
 
     if (confirm(['You will be asked to confirm payment on your mobile.']) == true) {

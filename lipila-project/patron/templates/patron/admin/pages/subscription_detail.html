@@ -9,7 +9,7 @@
     <p>Patron name: {{subscription.tier.name}}</p>
     <P>Price: {{subscription.tier.price}}</P>
     <p class="">
-        <a href="{% url 'patron:make_payment' tier_id=subscription.tier.id %}"
+        <a href="{% url 'patron:make_payment' tier_id=tier_id %}"
                                             class="edit-button joined">Click to pay</a>
     </p>
 </div>
