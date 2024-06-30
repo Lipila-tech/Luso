@@ -128,7 +128,7 @@ class WithdrawalRequest(models.Model):
     # reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='')
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):

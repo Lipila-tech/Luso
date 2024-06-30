@@ -12,23 +12,36 @@
         <div class="withdraw-form">
             <form method="post" action="{% url 'patron:withdraw' %}" id="withdraw-form">
                 {% csrf_token %}
-                {{ form | crispy }}
-                {% if form.id == 'withdraw-form' %}
+                <div class="form-group">
+                    <label for="{{form.payment_method.auto_id}}">Select Service Provider</label>
+                    {{ form.payment_method }}
+                    <span class="text-danger">{{ form.payment_method.errors }}</span>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.amount.auto_id }}">Amount (ZMW)</label>
+                    {{ form.amount }}
+                    <span class="text-danger">{{ form.amount.errors }}</span>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.account_number.auto_id }}">Accoun number</label>
+                    {{ form.account_number }}
+                    <span class="text-danger">{{ form.account_number.errors }}</span>
+                </div>
+                <!-- {% if form.id == 'withdraw-form' %}
                 <script>
                     /**
                 * Handle withdraw button
                 */
                     document.addEventListener('DOMContentLoaded', () => {
-                        const contribForm = document.getElementById('withdraw-form');
+                        const withdrawForm = document.getElementById('withdraw-form');
 
-                        if (contribForm) {
+                        if (withdrawForm) {
                             addEventListener('submit', function (event) {
                                 event.preventDefault(); // Prevent form from submitting immediately
-                                const accountNumber = document.getElementById('account-number').value;
-                                const accountName = document.getElementById('account-name').value;
-                                const amount = document.getElementById('amount').value;
+                                const accountNumber = document.getElementById('id_account_number').value;
+                                const amount = document.getElementById('id_amount').value;
 
-                                const confirmation = confirm(`Are you sure you want to withdraw ZMW ${amount} using account ${accountName} (Account Number: ${accountNumber})?`);
+                                const confirmation = confirm(`Are you sure you want to withdraw ZMW ${amount} using (Account Number: ${accountNumber})?`);
                                 if (confirmation) {
                                     this.submit(); // Submit the form if the user confirms
                                 }
@@ -38,7 +51,7 @@
                         }
                     })
                 </script>
-                {% endif %}
+                {% endif %} -->
                 <input class="btn btn-dark" type="submit">
             </form>
         </div>
