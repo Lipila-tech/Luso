@@ -10,9 +10,35 @@
         {% else %}
         <h4>Request a Withdrawal</h4>
         <div class="withdraw-form">
-            <form method="post" action="{% url 'patron:withdraw' %}">
+            <form method="post" action="{% url 'patron:withdraw' %}" id="withdraw-form">
                 {% csrf_token %}
                 {{ form | crispy }}
+                {% if form.id == 'withdraw-form' %}
+                <script>
+                    /**
+                * Handle withdraw button
+                */
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const contribForm = document.getElementById('withdraw-form');
+
+                        if (contribForm) {
+                            addEventListener('submit', function (event) {
+                                event.preventDefault(); // Prevent form from submitting immediately
+                                const accountNumber = document.getElementById('account-number').value;
+                                const accountName = document.getElementById('account-name').value;
+                                const amount = document.getElementById('amount').value;
+
+                                const confirmation = confirm(`Are you sure you want to withdraw ZMW ${amount} using account ${accountName} (Account Number: ${accountNumber})?`);
+                                if (confirmation) {
+                                    this.submit(); // Submit the form if the user confirms
+                                }
+                            });
+                        } else {
+                            console.error('The withdraw form with id "withdraw-form" was not found.');
+                        }
+                    })
+                </script>
+                {% endif %}
                 <input class="btn btn-dark" type="submit">
             </form>
         </div>

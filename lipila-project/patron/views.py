@@ -415,6 +415,7 @@ def creator_withdrawal(request):
             # Redirect to same view after successful request
             return redirect(reverse('patron:withdraw'))
     form = WithdrawalRequestForm()
+    form.id = 'withdraw-form'
     total_payments = calculate_creators_balance(request.user.creatorprofile)
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
@@ -495,6 +496,7 @@ def make_payment(request, tier_id):
         tier = tier.name
         return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
     form = DepositForm()
+    form.id = 'payment-form'
     tier = tier
     return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
 
@@ -551,6 +553,7 @@ def contribute(request, tier_id):
         return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
 
     form = ContributeForm()
+    form.id = 'contribute-form'
     return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
 
 # ACCOUNT HISTORY VIEWS

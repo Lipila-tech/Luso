@@ -7,7 +7,7 @@
 
 
 /**
- * Listens to the submmision of a depositi form and gets the forms ids.
+ * Listens to the submmision of a deposit form and gets the forms ids.
  */
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('form[id^="approve-form-"], form[id^="reject-form-"]').forEach(form => {
@@ -84,45 +84,6 @@ async function initiateDeposit(formId, action) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const paymentForm = document.getElementById('contribute-form');
-
-  if (paymentForm) {
-    paymentForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-      const tierId = document.getElementById('id_request').value;
-      const requestType = document.getElementById('requestType').value;
-
-      if (confirm('You will be asked to confirm payment on your mobile.') == true) {
-        initiatePayment(tierId, 'contribute');
-      }
-    });
-  } else {
-    console.error('The payment form with id "contribute-form" was not found.');
-  }
-});
-
-/**
- * Listens to submmission of the payment form and
- */
-document.addEventListener("DOMContentLoaded", () => {
-  const paymentForm = document.getElementById('payment-form');
-
-  if (paymentForm) {
-    paymentForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-      const tierId = document.getElementById('id_request').value;
-      const requestType = document.getElementById('requestType').value;
-
-      if (confirm('You will be asked to confirm payment on your mobile.') == true) {
-          initiatePayment(tierId, 'pay');
-      }
-    });
-  } else {
-    console.error('The payment form with id "payment-form" was not found.');
-  }
-});
-
 
 /**
  * This function queries the collections endpoint to initiae payment.
@@ -131,15 +92,14 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 
 async function initiatePayment(id_request, requestType) {
+  console.log('function called');
   document.getElementById('loader').style.display = 'block';
   const paymentMethod = document.getElementById('id_payment_method').value;  // Access value using ID
   const amount = document.getElementById('id_amount').value;
   const phoneNumber = document.getElementById('id_payer_account_number').value;
   const description = document.getElementById('id_description').value;
-
-
   const csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;  // Get CSRF token from the form
-
+  
   try {
     const response = await fetch(`http://localhost:8000/patron/payments/${requestType}/${id_request}`, {
       method: 'POST',
@@ -148,7 +108,7 @@ async function initiatePayment(id_request, requestType) {
         'X-CSRFToken': csrftoken
       },
       body: JSON.stringify(
-        { amount: amount, payment_method: paymentMethod, payer_account_number: phoneNumber, description: description })  // Send payment amount in JSON format
+        { amount: amount, payment_method: paymentMethod, payer_account_number: phoneNumber, description: description })
     });
 
     if (!response.ok) {
@@ -261,13 +221,15 @@ document.addEventListener('DOMContentLoaded', () => {
       window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
     }
   }
-  scrollTop.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  document.addEventListener('DOMContentLoaded', () => {
+    scrollTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     });
-  });
+  })
 
   window.addEventListener('load', toggleScrollTop);
   document.addEventListener('scroll', toggleScrollTop);
@@ -318,7 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileNavToggleBtn.classList.toggle('bi-list');
     mobileNavToggleBtn.classList.toggle('bi-x');
   }
-  mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
+  })
+
 
   /**
    * Hide mobile nav on same-page/hash links
@@ -364,12 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /**
-   * Initiate glightbox
-   */
-  const glightbox = GLightbox({
-    selector: '.glightbox'
-  });
 
   /**
    * Initiate Pure Counter
@@ -625,20 +585,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const isSmallScreen = window.matchMedia('(max-width: 1023.5px)').matches;
 
-  /**
-   * Handle withdraw button
-   */
-  document.getElementById('withdraw-form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent form from submitting immediately
-    const accountNumber = document.getElementById('account-number').value;
-    const accountName = document.getElementById('account-name').value;
-    const amount = document.getElementById('amount').value;
-
-    const confirmation = confirm(`Are you sure you want to withdraw ZMW ${amount} using account ${accountName} (Account Number: ${accountNumber})?`);
-    if (confirmation) {
-      this.submit(); // Submit the form if the user confirms
-    }
-  });
 
   /**
    * Initiate Bootstrap validation check

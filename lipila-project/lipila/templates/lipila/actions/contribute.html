@@ -4,9 +4,10 @@
 
 {% block section %}
 <h2>Buy {{owner}} a coffee.</h2>
+
 <div id="loader" style="display: none;"></div>
-<input  type="hidden" id="id_request" value="{{creator}}">
-<input  type="hidden" id="requestType" value="contribute">
+<input type="hidden" id="id_request" value="{{creator}}">
+<input type="hidden" id="requestType" value="contribute">
 <form method="post" id="contribute-form">
   {% csrf_token %}
   <div class="form-group">
@@ -29,6 +30,26 @@
     {{ form.description }}
     <span class="text-danger">{{ form.description.errors }}</span>
   </div>
+  {% if form.id == 'contribute-form' %}
+  <script>
+    const paymentForm = document.getElementById('contribute-form');
+
+    if (paymentForm) {
+      paymentForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const amount = document.getElementById('id_amount').value;
+        const id_request = document.getElementById('id_request').value;
+        const requestType = document.getElementById('requestType').value;
+        if (confirm(`Confirm ${requestType} of K${amount} on your mobile.`) == true) {
+          initiatePayment(id_request, 'contribute');
+        }
+      });
+
+    } else {
+      console.error('The payment form with id "contribute-form" was not found.');
+    }
+  </script>
+  {% endif %}
   <button type="submit" class="btn btn-primary">Next</button>
 </form>
 {% endblock %}

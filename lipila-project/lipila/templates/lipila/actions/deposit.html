@@ -4,8 +4,8 @@
 
 {% block section %}
 <h2>Pay "{{ tier.name }}"</h2>
-<input  type="hidden" id="id_request" value="{{tier.id}}">
-<input  type="hidden" id="requestType" value="pay">
+<input type="hidden" id="id_request" value="{{tier.id}}">
+<input type="hidden" id="requestType" value="pay">
 <div id="loader" style="display: none;"></div>
 <form method="post" id="payment-form">
   {% csrf_token %}
@@ -30,5 +30,30 @@
     <span class="text-danger">{{ form.description.errors }}</span>
   </div>
   <button type="submit" class="btn btn-primary">Next</button>
+  {% if form.id == 'payment-form' %}
+  <script>
+    /**
+ * Listens to submmission of the payment form and
+ */
+    document.addEventListener("DOMContentLoaded", () => {
+      const paymentForm = document.getElementById('payment-form');
+
+      if (paymentForm) {
+        paymentForm.addEventListener('submit', function (event) {
+          event.preventDefault();
+          const id_request = document.getElementById('id_request').value;
+          const requestType = document.getElementById('requestType').value;
+
+          if (confirm('You will be asked to confirm payment on your mobile.') == true) {
+            initiatePayment(id_request, 'pay');
+          }
+        });
+      } else {
+        console.error('The payment form with id "payment-form" was not found.');
+      }
+    });
+
+  </script>
+  {% endif %}
 </form>
 {% endblock %}
