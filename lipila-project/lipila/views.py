@@ -145,7 +145,7 @@ def approve_withdrawals(request):
                             request, 'Payment failed. Please try again later!')
                         return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
                 elif action == 'reject':
-                    rejected_reason = request.POST.get('description')
+                    rejected_reason = description
                     withdrawal_request.status = 'rejected'
                     withdrawal_request.reason = rejected_reason
                     withdrawal_request.processed_date = timezone.now()
