@@ -92,7 +92,6 @@ async function initiateDeposit(formId, action) {
  */
 
 async function initiatePayment(id_request, requestType) {
-  console.log('function called');
   document.getElementById('loader').style.display = 'block';
   const paymentMethod = document.getElementById('id_payment_method').value;  // Access value using ID
   const amount = document.getElementById('id_amount').value;
