@@ -84,6 +84,24 @@ async function initiateDeposit(formId, action) {
   }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const paymentForm = document.getElementById('payment-form');
+
+  if (paymentForm) {
+    paymentForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const tierId = document.getElementById('id_request').value;
+      const requestType = document.getElementById('requestType').value;
+
+      if (confirm('You will be asked to confirm payment on your mobile.') == true) {
+        initiatePayment(tierId, 'contribute');
+      }
+    });
+  } else {
+    console.error('The payment form with id "payment-form" was not found.');
+  }
+});
+
 /**
  * Listens to submmission of the payment form and
  */
@@ -97,11 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const requestType = document.getElementById('requestType').value;
 
       if (confirm('You will be asked to confirm payment on your mobile.') == true) {
-        if (requestType == 'contribute') {
-          initiatePayment(tierId, 'contribute');
-        } else {
           initiatePayment(tierId, 'pay');
-        }
       }
     });
   } else {

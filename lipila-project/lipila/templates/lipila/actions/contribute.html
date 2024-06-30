@@ -7,7 +7,7 @@
 <div id="loader" style="display: none;"></div>
 <input  type="hidden" id="id_request" value="{{creator}}">
 <input  type="hidden" id="requestType" value="contribute">
-<form method="post" id="payment-form">
+<form method="post" id="contribute-form">
   {% csrf_token %}
   <div class="form-group">
     <label for="{{form.payment_method.auto_id}}">Select Service Provider</label>
