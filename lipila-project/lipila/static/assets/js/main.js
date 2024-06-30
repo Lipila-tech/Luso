@@ -85,7 +85,7 @@ async function initiateDeposit(formId, action) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const paymentForm = document.getElementById('payment-form');
+  const paymentForm = document.getElementById('contribute-form');
 
   if (paymentForm) {
     paymentForm.addEventListener('submit', function (event) {
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   } else {
-    console.error('The payment form with id "payment-form" was not found.');
+    console.error('The payment form with id "contribute-form" was not found.');
   }
 });
 
