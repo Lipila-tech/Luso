@@ -1,4 +1,4 @@
-""" Handles MoMo API calls"""
+"""Defines classes and methods that interact with the MTN momo api"""
 import requests
 import json
 from rest_framework.response import Response
