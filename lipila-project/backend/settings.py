@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'django_pagination_bootstrap',
+    'bootstrap_modal_forms',
     # My apps
     'api',
     'business',
