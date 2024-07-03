@@ -24,7 +24,8 @@
                     </a> -->
                     <div class="row">
                         <div class="col-12 mb-3">
-                            <button id="withdraw" class="btn btn-primary" type="button" name="button">Withdraw</button>
+                            <button id="request-withdraw" class="btn btn-primary" type="button"
+                                name="button">Withdraw</button>
                         </div>
                     </div>
                 </li>
@@ -149,15 +150,32 @@
             <span>Contact Us</span>
         </a>
     </li><!-- End Contact Page Nav -->
+    {% if user.is_authenticated %}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'index' %}">
+            <i class="bi bi-logout"></i>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <span><button type="submit" class="btn btn-link">Logout</button></span>
+            </form>
+        </a>
+
+    </li><!-- End Contact Page Nav -->
+    {% endif %}
     </ul>
 </aside><!-- End Sidebar-->
-{% block extrascripts %}
+{% block scripts %}
+<script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'assets/js/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<!-- You can alternatively load the minified version -->
+<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 <script type="text/javascript">
     $(function () {
         // Login
-        $("#withdraw").modalForm({
+        $("#request-withdraw").modalForm({
             formURL: "{% url 'withdrawals' %}"
         });
     });
 </script>
-{%endblock extrascripts%}
+{% endblock scripts %}

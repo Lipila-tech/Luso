@@ -31,7 +31,7 @@ from patron.utils import calculate_creators_balance
 
 # Django-bootstrap Modal forms views
 class CreateWithdrawalRequest(BSModalCreateView):
-    template_name = 'lipila/modals/approve.html'
+    template_name = 'lipila/modals/request_withdraw.html'
     form_class = WithdrawalModalForm
     success_message = 'Success: created.'
     success_url = reverse_lazy('index')
