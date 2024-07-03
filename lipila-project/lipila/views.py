@@ -29,60 +29,16 @@ from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals
 from patron.utils import calculate_creators_balance
 
 
-# Public Views
-def index(request):
-    context = {}
-    form = ContactForm()
-    contact_info = get_lipila_contact_info()
-    lipila_index = get_lipila_index_page_info()
-    testimonial = get_testimonials()
-    about = get_lipila_about_info()
-    context['form'] = form
-    context['contact'] = contact_info['contact']
-    context['lipila'] = lipila_index['lipila']
-    context['about'] = about['about']
-    context['testimony'] = testimonial
-
-    return render(request, 'index.html', context)
+# Django-bootstrap Modal forms views
+class CreateWithdrawalRequest(BSModalCreateView):
+    template_name = 'lipila/modals/approve.html'
+    form_class = WithdrawalModalForm
+    success_message = 'Success: created.'
+    success_url = reverse_lazy('index')
 
 
-def service_details(request):
-    return render(request, 'UI/services-details.html')
 
-
-def portfolio_details(request):
-    return render(request, 'UI/portfolio-details.html')
-
-
-def pages_faq(request):
-    return render(request, 'lipila/pages/pages_faq.html')
-
-
-def pages_terms(request):
-    return render(request, 'lipila/pages/pages_terms.html')
-
-
-def pages_privacy(request):
-    return render(request, 'lipila/pages/pages_privacy.html')
-
-
-def contact(request):
-    context = get_lipila_contact_info()
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save contact information to the database
-            messages.success(
-                request, "Your message has been sent successfully")
-            return redirect('index')  # Redirect to a success page (optional)
-    else:
-        messages.error(
-            request, "Failed to send message")
-        form = ContactForm()
-        context['form'] = form
-    return render(request, 'index.html', context)
-
-
+# Lipila staff users views
 @login_required
 def staff_users(request, user):
     total_users = len(User.objects.all().order_by('date_joined'))
@@ -96,12 +52,6 @@ def staff_users(request, user):
     }
     return render(request, 'lipila/staff/home.html', context)
 
-
-class WithdrawCreateView(BSModalCreateView):
-    template_name = 'lipila/staff/approve.html'
-    form_class = WithdrawalModalForm
-    success_message = 'Success: created.'
-    success_url = reverse_lazy('index')
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)  # Only allow staff users
@@ -221,3 +171,58 @@ def processed_withdrawals(request):
     context = {}
     context['processed_withdrawals'] = data
     return render(request, 'lipila/staff/processed_withdrawals.html', context)
+
+
+# Lipila informational public views
+def index(request):
+    context = {}
+    form = ContactForm()
+    contact_info = get_lipila_contact_info()
+    lipila_index = get_lipila_index_page_info()
+    testimonial = get_testimonials()
+    about = get_lipila_about_info()
+    context['form'] = form
+    context['contact'] = contact_info['contact']
+    context['lipila'] = lipila_index['lipila']
+    context['about'] = about['about']
+    context['testimony'] = testimonial
+
+    return render(request, 'index.html', context)
+
+
+def service_details(request):
+    return render(request, 'UI/services-details.html')
+
+
+def portfolio_details(request):
+    return render(request, 'UI/portfolio-details.html')
+
+
+def pages_faq(request):
+    return render(request, 'lipila/pages/pages_faq.html')
+
+
+def pages_terms(request):
+    return render(request, 'lipila/pages/pages_terms.html')
+
+
+def pages_privacy(request):
+    return render(request, 'lipila/pages/pages_privacy.html')
+
+
+def contact(request):
+    context = get_lipila_contact_info()
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save contact information to the database
+            messages.success(
+                request, "Your message has been sent successfully")
+            return redirect('index')  # Redirect to a success page (optional)
+    else:
+        messages.error(
+            request, "Failed to send message")
+        form = ContactForm()
+        context['form'] = form
+    return render(request, 'index.html', context)
+

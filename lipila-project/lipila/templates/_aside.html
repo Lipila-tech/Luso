@@ -1,5 +1,7 @@
 {% load static %}
 
+{% include '_modal.html' %}
+
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -17,9 +19,14 @@
             </a>
             <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{% url 'patron:withdraw' %}">
+                    <!-- <a href="{% url 'patron:withdraw' %}">
                         <i class="bi bi-circle"></i><span>Withdraw</span>
-                    </a>
+                    </a> -->
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <button id="withdraw" class="btn btn-primary" type="button" name="button">Withdraw</button>
+                        </div>
+                    </div>
                 </li>
             </ul>
             <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
@@ -143,5 +150,14 @@
         </a>
     </li><!-- End Contact Page Nav -->
     </ul>
-
 </aside><!-- End Sidebar-->
+{% block extrascripts %}
+<script type="text/javascript">
+    $(function () {
+        // Login
+        $("#withdraw").modalForm({
+            formURL: "{% url 'withdrawals' %}"
+        });
+    });
+</script>
+{%endblock extrascripts%}

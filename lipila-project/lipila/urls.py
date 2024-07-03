@@ -17,7 +17,7 @@ urlpatterns = [
     # lipila difened authenticated user views
     path('approve_withdrawals/', views.approve_withdrawals, name ='approve_withdrawals'),
     path('processed_withdrawals/', views.processed_withdrawals, name ='processed_withdrawals'),
-    path('withdrawals/', views.WithdrawCreateView.as_view(), name ='withdrawals'),
+    path('withdrawals/', views.CreateWithdrawalRequest.as_view(), name ='withdrawals'),
     path('faq/', views.pages_faq, name='faq'),
     path('terms-of-use/', views.pages_terms, name='terms'),
     path('privacy-policy/', views.pages_privacy, name='privacy'),
