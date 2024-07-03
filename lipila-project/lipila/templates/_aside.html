@@ -1,5 +1,25 @@
 {% load static %}
+<style>
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        /* Optional: Adjust button spacing */
+    }
 
+    .button {
+        flex: 1;
+        max-width: max-content;
+        background-color: #20ae91;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 15px 30px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+</style>
 {% include '_modal.html' %}
 
 <!-- ======= Sidebar ======= -->
@@ -19,22 +39,12 @@
             </a>
             <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                 <li>
-                    <!-- <a href="{% url 'patron:withdraw' %}">
-                        <i class="bi bi-circle"></i><span>Withdraw</span>
-                    </a> -->
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <button id="request-withdraw" class="btn btn-primary" type="button"
+                    <div class="button-container">
+                        <a>
+                            <button id="request-withdraw" class="btn btn-primary button" type="button"
                                 name="button">Withdraw</button>
-                        </div>
+                        </a>
                     </div>
-                </li>
-            </ul>
-            <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{% url 'patron:tiers' %}">
-                        <i class="bi bi-circle"></i><span>Tiers</span>
-                    </a>
                 </li>
             </ul>
         </li><!-- End Forms Nav -->
@@ -44,6 +54,13 @@
                     class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'patron:tiers' %}">
+                            <i class="bi bi-circle"></i><span>My Tiers</span>
+                        </a>
+                    </li>
+                </ul>
                 <li>
                     <a href="{% url 'patron:patrons' %}">
                         <i class="bi bi-circle"></i><span>My Patrons</span>

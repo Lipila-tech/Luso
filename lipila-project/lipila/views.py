@@ -49,14 +49,14 @@ class TierUpdateView(BSModalUpdateView):
     success_url = reverse_lazy('index')
 
 
-class TierDeleteView(BSModalUpdateView):
+class TierDeleteView(BSModalDeleteView):
     model = Tier
     template_name = 'lipila/modals/delete_tier.html'
     success_message = 'Success: Tier was deleted.'
     success_url = reverse_lazy('index')
 
 
-class TierReadView(BSModalUpdateView):
+class TierReadView(BSModalReadView):
     model = Tier
     template_name = 'lipila/modals/view_tier.html'
     
