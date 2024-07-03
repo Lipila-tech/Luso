@@ -4,6 +4,7 @@
 {% block title %} Pending Withdrawals {% endblock %}
 
 {% block section %}
+{% include "_modal.html" %}
 <h2>Approve Withdrawal Requests</h2>
 {% if pending_requests %}
 <table class="table">
@@ -30,20 +31,33 @@
             <td>
                 <div>
                     <input type="hidden" id="requestType-{{ forloop.counter }}" value="deposit">
-                    <input type="hidden" id="id_payment_method-{{ forloop.counter }}" value="{{request.payment_method}}">
-                    <input type="hidden" id="id_account_number-{{ forloop.counter }}" value="{{request.account_number}}">
-                    <input type="hidden" name="withdrawal_amount" id="id_amount-{{ forloop.counter }}" value="{{ request.amount }}">
+                    <input type="hidden" id="id_payment_method-{{ forloop.counter }}"
+                        value="{{request.payment_method}}">
+                    <input type="hidden" id="id_account_number-{{ forloop.counter }}"
+                        value="{{request.account_number}}">
+                    <input type="hidden" name="withdrawal_amount" id="id_amount-{{ forloop.counter }}"
+                        value="{{ request.amount }}">
                 </div>
-                <form method="POST" style="display: inline-block;" id="approve-form-{{ forloop.counter }}">
+                <!-- <form method="POST" style="display: inline-block;" id="approve-form-{{ forloop.counter }}">
                     {% csrf_token %}
-                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}" value="{{ request.pk }}">
-                    <button type="submit" name="action" id="id_action-approve-{{ forloop.counter }}" value="approve">Approve</button>
-                </form>
+                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}"
+                        value="{{ request.pk }}">
+                    <button type="submit" name="action" id="id_action-approve-{{ forloop.counter }}"
+                        value="approve">Approve</button>
+                </form> -->
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <button id="withdraw" class="btn btn-primary" type="button" name="button">Approve</button>
+                    </div>
+                </div>
                 <form method="POST" style="display: inline-block;" id="reject-form-{{ forloop.counter }}">
                     {% csrf_token %}
-                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}" value="{{ request.pk }}">
-                    <button type="submit" name="action" id="id_action-reject-{{ forloop.counter }}" value="reject">Reject</button>
-                    <input type="text" name="rejection_reason" id="id_reason-{{ forloop.counter }}" placeholder="Reason (optional)">
+                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}"
+                        value="{{ request.pk }}">
+                    <button type="submit" name="action" id="id_action-reject-{{ forloop.counter }}"
+                        value="reject">Reject</button>
+                    <input type="text" name="rejection_reason" id="id_reason-{{ forloop.counter }}"
+                        placeholder="Reason (optional)">
                 </form>
             </td>
         </tr>
@@ -55,4 +69,14 @@
 <p>There are no pending withdrawal requests at this time.</p>
 {% endif %}
 
-{% endblock %}
+{% endblock section %}
+{% block extrascripts %}
+<script type="text/javascript">
+    $(function () {
+        // Login
+        $("#withdraw").modalForm({
+            formURL: "{% url 'withdrawals' %}"
+        });
+    });
+</script>
+{%endblock extrascripts%}

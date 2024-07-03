@@ -4,8 +4,19 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 import json
 from django.db.models import Q
+from bootstrap_modal_forms.generic import (
+    BSModalLoginView,
+    BSModalFormView,
+    BSModalCreateView,
+    BSModalUpdateView,
+    BSModalReadView,
+    BSModalDeleteView
+)
+from lipila.forms.forms import WithdrawalModalForm
+
 # Custom Models
 from api.utils import generate_reference_id
 from lipila.utils import (
@@ -85,6 +96,12 @@ def staff_users(request, user):
     }
     return render(request, 'lipila/staff/home.html', context)
 
+
+class WithdrawCreateView(BSModalCreateView):
+    template_name = 'lipila/staff/approve.html'
+    form_class = WithdrawalModalForm
+    success_message = 'Success: created.'
+    success_url = reverse_lazy('index')
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)  # Only allow staff users

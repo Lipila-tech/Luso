@@ -3,6 +3,14 @@ from lipila.models import CustomerMessage
 from patron.models import Contributions, PAYMENT_CHOICES
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
+from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
+from patron.models import WithdrawalRequest
+
+class WithdrawalModalForm(BSModalModelForm):
+    class Meta:
+        model = WithdrawalRequest
+        exclude = ['request_date']
+
 
 class ContactForm(forms.ModelForm):
     class Meta:
