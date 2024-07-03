@@ -234,7 +234,7 @@ def patron(request):
     creator = get_object_or_404(CreatorProfile, user=request.user)
     patrons = get_creator_subscribers(creator)
     context['patrons'] = patrons
-    return render(request, 'patron/admin/pages/patrons.html', context)
+    return render(request, 'patron/admin/pages/view_patrons.html', context)
 
 
 @login_required
@@ -373,7 +373,9 @@ def list_creators(request):
     creators = CreatorProfile.objects.all()
     context = {}
     context['creators'] = creators
-    return render(request, 'patron/creators.html', context)
+    if request.user.is_authenticated:
+        return render(request, 'patron/admin/pages/view_creators_auth.html', context)
+    return render(request, 'patron/admin/pages/view_creators_unauth.html', context)
 
 
 @login_required

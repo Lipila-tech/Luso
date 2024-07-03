@@ -9,7 +9,7 @@ from patron.models import WithdrawalRequest, Tier
 class WithdrawalModelForm(BSModalModelForm):
     class Meta:
         model = WithdrawalRequest
-        exclude = ['request_date', 'processed_date', 'status', 'reason', 'creator']
+        fields = ['payment_method', 'account_number', 'amount']
 
 
 class TierModelForm(BSModalModelForm):

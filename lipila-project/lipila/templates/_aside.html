@@ -169,14 +169,11 @@
     </li><!-- End Contact Page Nav -->
     {% if user.is_authenticated %}
     <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'index' %}">
-            <i class="bi bi-logout"></i>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <span><button type="submit" class="btn btn-link">Logout</button></span>
-            </form>
-        </a>
-
+        <i class="bi bi-logout"></i>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <span><button type="submit" class="btn btn-dark">Logout</button></span>
+        </form>
     </li><!-- End Contact Page Nav -->
     {% endif %}
     </ul>

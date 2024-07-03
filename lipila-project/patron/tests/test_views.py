@@ -131,7 +131,7 @@ class TestSubscription(TestCase):
         TierSubscriptions.objects.create(patron=user5, tier=tier2)
         response = self.client.get(reverse('patron:patrons'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('patron/admin/pages/patrons.html')
+        self.assertTemplateUsed('patron/admin/pages/view_patrons.html')
         self.assertEqual(TierSubscriptions.objects.count(), 5)
 
     def test_get_creator_home(self):

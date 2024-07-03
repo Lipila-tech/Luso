@@ -1,0 +1,34 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %}My Patrons {% endblock %}
+
+{% block section %}
+
+<h4>My Patrons</h4>
+{% if patrons %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>username</th>
+            <th>Subscription</th>
+            <th>Contributions</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patron in patrons %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ patron.username }}</td>
+            <td>{{ patron.subscriptions }}</td>
+            <td>{{ patron.contributions_sent }}</td>
+            <td>{{ patron.email }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>You do not have any patrons yet.</p>
+{% endif %}
+{% endblock section %}

@@ -18,6 +18,13 @@ CITY_CHOICES = (
     ('ndola', 'Ndola'),
 )
 
+default_socials = {
+    'fb': 'https://facebook.com',
+    'x': 'https://twitter.com',
+    'lk': 'https://linkedin.com',
+    'ig': 'https://instagram.com',
+}
+
 class PatronProfile(models.Model):
     user = models.OneToOneField(  # Relate to the User model
         'auth.User',
@@ -46,10 +53,10 @@ class CreatorProfile(models.Model):
     country = models.CharField(max_length=50, blank=True, default='Zambia')
     address = models.CharField(max_length=300, blank=True, default='Zambia resident')
     creator_category = models.CharField(max_length=50, choices=CREATOR_CATEGORY_CHOICES, default='other')
-    facebook_url = models.URLField(blank=True, null=True)
-    twitter_url = models.URLField(blank=True, null=True)
-    instagram_url = models.URLField(blank=True, null=True)
-    linkedin_url = models.URLField(blank=True, null=True)
+    facebook_url = models.URLField(blank=True, null=True, default=default_socials['fb'])
+    twitter_url = models.URLField(blank=True, null=True, default=default_socials['x'])
+    instagram_url = models.URLField(blank=True, null=True, default=default_socials['ig'])
+    linkedin_url = models.URLField(blank=True, null=True, default=default_socials['lk'])
 
     def __str__(self):
         return self.user.username
