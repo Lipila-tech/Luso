@@ -6,11 +6,10 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <title>Lipila-{% block title %}{% endblock%}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
+    {% block stylesheets %}
     <!-- Favicons -->
     <link href="{% static 'assets/img/logo-color.png' %}" rel="icon">
     <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
@@ -20,7 +19,6 @@
     <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
         rel="stylesheet">
-
     <!-- Vendor CSS Files -->
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -28,251 +26,21 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
-
     <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+    {% endblock stylesheets %}
+    {% block extrastylesheets %}{% endblock extrastylesheets %}
+
+    <title>Lipila-{% block title %}{% endblock title %}</title>
 </head>
 
 <body>
+    {% include '_header.html' %}
 
-    <!-- ======= Header ======= -->
-    <header id="header" class="header fixed-top d-flex align-items-center">
-
-        <div class="d-flex align-items-center justify-content-between">
-            <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
-                <img src="{% static 'assets/img/logo-color.png' %}" alt="">
-                <span class="d-none d-lg-block"> Home</span>
-            </a>
-            <i class="bi bi-list toggle-sidebar-btn"></i>
-        </div><!-- End Logo -->
-
-        <nav class="header-nav ms-auto">
-            <ul class="d-flex align-items-center">
-                <li class="nav-item dropdown pe-3">
-                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        {% if user.profile_image %}
-
-                        {% if user.profile_image.url %}
-                        <img src="{{user.profile_image.url}}" alt="Profile" class="rounded-circle">
-                        {% endif %}
-                        {% else%}
-                        <img src="{% static 'assets/img/avator.jpeg' %}" alt="profile" class="rounded-circle">
-                        {% endif %}
-                        <span class="d-none d-md-block dropdown-toggle ps-2">{{user.username}}</span>
-                    </a><!-- End Profile Iamge Icon -->
-
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                        <li class="dropdown-header">
-                            <h6>{{ user.username }}</h6>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{% url 'patron:profile' %}">
-                                <i class="bi bi-person"></i>
-                                <span>My Profile</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="{% url 'patron:profile' %}">
-                                <i class="bi bi-gear"></i>
-                                <span>Account Settings</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-question-circle"></i>
-                                <span>Need Help?</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-box-arrow-right"></i>
-                                {% if user.is_authenticated %}
-                                <p>
-                                    <form id="logout-form" method="post" action="{% url 'logout' %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-link">Logout</button>
-                                    </form>
-                                </p>
-                                {% else %}
-                                <p><a id="btn-getstarted" class="btn-getstarted" href="{% url 'login' %}">Login</a></p>
-                                {% endif %}
-                            </a>
-                        </li>
-
-                    </ul><!-- End Profile Dropdown Items -->
-                </li><!-- End Profile Nav -->
-
-            </ul>
-        </nav><!-- End Icons Navigation -->
-
-    </header><!-- End Header -->
-
-    <!-- ======= Sidebar ======= -->
-    <aside id="sidebar" class="sidebar">
-        <ul class="sidebar-nav" id="sidebar-nav">
-            <li class="nav-item">
-                <a class="nav-link " href="{% url 'dashboard' user=user %}">
-                    <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li><!-- End Dashboard Nav -->
-
-            {% if request.user.creatorprofile %}
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'patron:withdraw' %}">
-                            <i class="bi bi-circle"></i><span>Withdraw</span>
-                        </a>
-                    </li>
-                </ul>
-                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'patron:tiers' %}">
-                            <i class="bi bi-circle"></i><span>Tiers</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Forms Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'patron:patrons' %}">
-                            <i class="bi bi-circle"></i><span>My Patrons</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'patron:withdrawals_history' %}">
-                            <i class="bi bi-circle"></i><span>My Withdrawals</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'patron:subscriptions_history' %}">
-                            <i class="bi bi-circle"></i><span>Subscriptions Received</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'patron:contributions_history' %}">
-                            <i class="bi bi-circle"></i><span>Contributions Received</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            {% elif request.user.is_staff %}
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'approve_withdrawals' %}">
-                            <i class="bi bi-circle"></i><span>Withdrawal Requests</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Forms Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{% url 'processed_withdrawals' %}">
-                            <i class="bi bi-circle"></i><span>Withdrawals Processed</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            {% else %}
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                    <li>
-                        {% with target_fragment='#find-creator' %}
-                    <li><a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a></li>
-                    {% endwith %}
-            </li>
-        </ul>
-        </li><!-- End Forms Nav -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{% url 'patron:subscriptions' %}">
-                        <i class="bi bi-circle"></i><span>My Subscriptions</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'patron:subscriptions_history' %}">
-                        <i class="bi bi-circle"></i><span>My Payments</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'patron:contributions_history' %}">
-                        <i class="bi bi-circle"></i><span>My Contributions</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        {% endif %}
-
-        <li class="nav-heading">Pages</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{% url 'patron:profile' %}">
-                <i class="bi bi-person"></i>
-                <span>Profile</span>
-            </a>
-        </li><!-- End Profile Page Nav -->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{% url 'faq' %}">
-                <i class="bi bi-question-circle"></i>
-                <span>F.A.Q</span>
-            </a>
-        </li><!-- End F.A.Q Page Nav -->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{% url 'index' %}">
-                <i class="bi bi-envelope"></i>
-                <span>Contact Us</span>
-            </a>
-        </li><!-- End Contact Page Nav -->
-        </ul>
-
-    </aside><!-- End Sidebar-->
+    {% include '_aside.html' %}
 
     <main id="main" class="main">
-
         <div class="pagetitle">
             <h1>Dashboard</h1>
             <nav>
@@ -282,7 +50,6 @@
                 </ol>
             </nav>
         </div><!-- End Page Title -->
-
         <section class="section dashboard">
             {% if messages %}
             <div class="message">
@@ -292,26 +59,16 @@
                 {% endfor %}
             </div>
             {% endif %}
-            {% block section %}
-            {% endblock %}
-        </section>
 
+            {% block section %}
+            {% endblock section %}
+        </section>
     </main><!-- End #main -->
 
-    <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer">
-        <div class="container copyright text-center mt-4">
-            <p>&copy; <span>Copyright</span> <strong class="px-1">Lipila Technologies Ltd</strong> <span>All Rights
-                    Reserved</span></p>
-            <div class="credits">
-                Designed by <a href="#">Lipila Technologies Limited</a>
-            </div>
-        </div>
-    </footer><!-- End Footer -->
+    {% include '_footer.html' %}
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
-
     <!-- Preloader -->
     <div id="preloader">
         <div></div>
@@ -336,8 +93,7 @@
     </script>
     {% endblock scripts %}
 
-    {% block extrascripts %}
-    {%endblock extrascripts%}
+    {% block extrascripts %}{%endblock extrascripts%}
 </body>
 
 </html>
