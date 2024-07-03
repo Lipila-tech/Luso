@@ -1,0 +1,32 @@
+{% load widget_tweaks %}
+
+<div class="modal-header">
+  <h3 class="modal-title">Tier details</h3>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <div class="">
+    Title:
+    {{ tier.name }}
+  </div>
+  <div class="">
+    Published date:
+    {{ tier.updated_at }}
+  </div>
+  <div class="">
+    Price:
+    {{ tier.price }}
+    K
+  </div>
+  <div class="">
+    Visible to fans:
+    {{ tier.visible_to_fans }}
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>

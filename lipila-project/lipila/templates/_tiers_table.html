@@ -1,0 +1,40 @@
+<table id="tiers-table" class="table">
+    <thead>
+    <tr>
+      <th class="text-center" scope="col">#</th>
+      <th class="text-center" scope="col">Title</th>
+      <th class="text-center" scope="col">Description</th>
+      <th class="text-center" scope="col">Price</th>
+      <th class="text-center" scope="col">Publication date</th>
+      <th class="text-center" scope="col">Visible to Fans</th>
+      <th class="text-center" scope="col">Read / Update / Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tier in tiers %}
+      <tr>
+        <th class="text-center" scope="row">{{ forloop.counter }}</th>
+        <td class="text-center">{{ tier.name }}</td>
+        <td class="text-center">{{ tier.description }}</td>
+        <td class="text-center">{{ tier.price }}</td>
+        <td class="text-center">{{ tier.updated_at }}</td>
+        <td class="text-center">{{ tier.visible_to_fans }}</td>
+        <td class="text-center">
+          <!-- Read tier buttons -->
+          <button type="button" class="read-tier btn btn-sm btn-primary" data-form-url="{% url 'view_tier' tier.id %}">
+            <span class="fa fa-eye"></span>
+          </button>
+          <!-- Update tier buttons -->
+          <button type="button" class="update-tier btn btn-sm btn-primary" data-form-url="{% url 'update_tier' tier.id %}">
+            <span class="fa fa-pencil"></span>
+          </button>
+          <!-- Delete tier buttons -->
+          <button type="button" class="delete-tier btn btn-sm btn-danger" data-form-url="{% url 'delete_tier' tier.id %}">
+            <span class="fa fa-trash"></span>
+          </button>
+        </td>
+      </tr>
+    {% endfor %}
+  
+    </tbody>
+  </table>

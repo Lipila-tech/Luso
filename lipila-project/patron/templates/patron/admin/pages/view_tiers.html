@@ -3,26 +3,78 @@
 {% block title %} Tiers {% endblock %}
 
 {% block section %}
-<section class="admin-other-body">
+
+{% include "_modal.html" %}
+
+<section class="">
     <div class="tiers-container">
-        <h2>{{user.creatorprofile.patron_title}}'s Tiers</h2>
-        {% for tier in tiers %}
-        <div class="tier">
-            <div>
-                <h3>{{tier.name}}</h3>
-                <p>{{tier.description}}</p>
-            </div>
-            <div class="price">{{tier.price}}/Month</div>
-            {% if tier.visible_to_fans %}
-            <p>Visible to Fans: Yes </p>
-            {% else %}
-            <p>Visible to Fans: No </p>
-            {% endif %}
-            <div class="edit-button-container">
-                <a class="edit-button" href="{% url 'patron:edit_tier' tier_id=tier.id %}">Edit</a>
-            </div>
-        </div>
-        {% endfor %}
+        <h2>My Tiers</h2>
     </div>
+    {% include '_tiers_table.html' %}
 </section>
-{% endblock %}
+{% endblock section %}
+{% block extrascripts %}
+<script type="text/javascript">
+    // Update tier asynchronous button
+    // message
+    var asyncSuccessMessageUpdate = [
+        "<div ",
+        "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+        "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+        "Success: Tier was updated.",
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+        "<span aria-hidden='true'>&times;</span>",
+        "</button>",
+        "</div>",
+        "<script>",
+        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+        "<\/script>"
+    ].join("");
+
+    // modal form
+    function updateTierModalForm() {
+        $(".update-tier").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: true,
+                asyncSettings: {
+                    closeOnSubmit: false,
+                    successMessage: asyncSuccessMessageUpdate,
+                    dataUrl: "tiers/",
+                    dataElementId: "#tier-table",
+                    dataKey: "table",
+                    addModalFormFunction: reinstantiateModalForms
+                }
+            });
+        });
+    }
+    updateTierModalForm();
+
+    // Delete tier buttons - formURL is retrieved from the data of the element
+    function deleteTierModalForm() {
+        $(".delete-tier").each(function () {
+            $(this).modalForm({ formURL: $(this).data("form-url"), isDeleteForm: true });
+        });
+    }
+    deleteTierModalForm();
+
+    // Read tier buttons
+    function readTierModalForm() {
+        $(".read-tier").each(function () {
+            $(this).modalForm({ formURL: $(this).data("form-url") });
+        });
+    }
+    readTierModalForm();
+
+    function reinstantiateModalForms() {
+        readTierModalForm();
+        updateTierModalForm();
+        deleteTierModalForm();
+    }
+
+    // Hide message
+    $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+        $(".alert").slideUp(500);
+    });
+</script>
+{%endblock extrascripts%}

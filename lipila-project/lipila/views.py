@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
@@ -15,7 +16,11 @@ from bootstrap_modal_forms.generic import (
     BSModalReadView,
     BSModalDeleteView
 )
-from lipila.forms.forms import WithdrawalModalForm
+from lipila.forms.forms import (
+    ContactForm,
+    WithdrawalModelForm,
+    TierModelForm,
+    )
 
 # Custom Models
 from api.utils import generate_reference_id
@@ -23,21 +28,50 @@ from lipila.utils import (
     apology, get_lipila_contact_info,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
     query_disbursement, check_payment_status)
-from lipila.forms.forms import ContactForm
 from accounts.models import CreatorProfile
-from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals
+from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals, Tier
 from patron.utils import calculate_creators_balance
 
 
 # Django-bootstrap Modal forms views
 class CreateWithdrawalRequest(BSModalCreateView):
     template_name = 'lipila/modals/request_withdraw.html'
-    form_class = WithdrawalModalForm
+    form_class = WithdrawalModelForm
     success_message = 'Success: created.'
     success_url = reverse_lazy('index')
 
 
+class TierUpdateView(BSModalUpdateView):
+    model = Tier
+    template_name = 'lipila/modals/edit_tier.html'
+    form_class = TierModelForm
+    success_message = 'Success: Tier was updated.'
+    success_url = reverse_lazy('index')
 
+
+class TierDeleteView(BSModalUpdateView):
+    model = Tier
+    template_name = 'lipila/modals/delete_tier.html'
+    success_message = 'Success: Tier was deleted.'
+    success_url = reverse_lazy('index')
+
+
+class TierReadView(BSModalUpdateView):
+    model = Tier
+    template_name = 'lipila/modals/view_tier.html'
+    
+
+def tiers(request):
+    data = {}
+    if request.method == 'GET':
+        tiers = Tier.objects.filter(creator=request.user.creatorprofile)
+        data['table'] = render_to_string(
+            '_tiers_table.html',
+            {'tiers': tiers},
+            request=request
+        )
+        return JsonResponse(data)
+    
 # Lipila staff users views
 @login_required
 def staff_users(request, user):

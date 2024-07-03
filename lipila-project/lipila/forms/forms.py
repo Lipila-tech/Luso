@@ -4,13 +4,19 @@ from patron.models import Contributions, PAYMENT_CHOICES
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
-from patron.models import WithdrawalRequest
+from patron.models import WithdrawalRequest, Tier
 
-class WithdrawalModalForm(BSModalModelForm):
+class WithdrawalModelForm(BSModalModelForm):
     class Meta:
         model = WithdrawalRequest
         exclude = ['request_date']
 
+
+class TierModelForm(BSModalModelForm):
+    class Meta:
+        model = Tier
+        exclude = ['updated_at']
+                   
 
 class ContactForm(forms.ModelForm):
     class Meta:
