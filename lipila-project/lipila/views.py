@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -32,7 +32,7 @@ from lipila.utils import (
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
     query_disbursement, check_payment_status)
 from accounts.models import CreatorProfile
-from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals, Tier
+from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals, Tier, TierSubscriptions
 from patron.utils import calculate_creators_balance
 
 
@@ -57,6 +57,19 @@ class TierDeleteView(BSModalDeleteView):
     template_name = 'lipila/modals/delete_tier.html'
     success_message = 'Success: Tier was deleted.'
     success_url = reverse_lazy('index')
+
+class UnsubScribeView(BSModalDeleteView):
+    model = TierSubscriptions
+    template_name = 'lipila/modals/unsubscribe_tier.html'
+    success_message = 'Success: You have unsubscribed.'
+    success_url = reverse_lazy('index')
+
+
+    def get_object(self, queryset=None):
+        tier_id = self.kwargs.get('tier_id')
+        if tier_id:
+            return get_object_or_404(TierSubscriptions, tier__id=tier_id)
+        return None
 
 
 class TierReadView(BSModalReadView):

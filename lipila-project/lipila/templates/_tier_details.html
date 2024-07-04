@@ -102,7 +102,7 @@
         transform: scale(2, 2);
     }
 
-    .facebook:hover {
+    .facetier:hover {
         color: rgb(4, 0, 255);
         transform: scale(2, 2);
     }
@@ -172,8 +172,8 @@
                 {{subscription.tier.description}}
             </p>
             <div class="links">
-                <a class="facebook c-a" href="{{subscription.tier.facebook_url}}" target="_blank" title="GFG_facebook">
-                    <i class="fab fa-facebook"></i>
+                <a class="facetier c-a" href="{{subscription.tier.facetier_url}}" target="_blank" title="GFG_facetier">
+                    <i class="fab fa-facetier"></i>
                 </a>
                 <a class="linkedin c-a" href="{{subscription.linkedin_url}}" title="GFG_linkedin" target="_blank">
                     <i class="fab fa-linkedin"></i>
@@ -185,28 +185,21 @@
             <p class="details">
                 {{subscription.tier.about}}
             </p>
-            <div class="row gy-4">
+            <div class="row">
                 <div class="d-flex justify-content-center">
-                    <div class="col-1">
-                        <div class="row">
-                            <div class="col-12 mb-3">
-                                <button id="send-money" class="btn btn-sm btn-primary" type="button"
-                                    name="button">Pay</button>
-                            </div>
-                        </div>
+                    <div class="col-12 mb-3">
+                        <button id="send-money" class="btn btn-sm btn-primary" type="button" name="button">Pay</button>
                     </div>
-                    <div class="col-12">
-                        <!-- unsubscribe the user -->
-                        <form action="{% url 'patron:unsubscribe' tier_id=subscription.tier.id %}" method="post"
-                            class="tier-form">
-                            {% csrf_token %}
-                            <button class="btn btn-sm btn-danger">Unsubscribe</button>
-                        </form>
+                    <div class="col-12 mb-3">
+                        <button id="delete-subscription" class="btn btn-sm btn-danger" type="button"
+                            name="button">Unsubscribe</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 
 <!-- This is link of adding small images

@@ -12,10 +12,18 @@
 {% endblock section %}
 {% block extrascripts %}
 <script type="text/javascript">
-    // Pay to tier buttons
-    // Login
-    $("#send-money").modalForm({
-        formURL: "{% url 'send_money' %}"
-    });
+
+    $(function () {
+        // Pay to tier buttons
+        // Login
+        $("#send-money").modalForm({
+            formURL: "{% url 'send_money' %}"
+        });
+
+        // Delete tier buttons - formURL is retrieved from the data of the element
+        $("#delete-subscription").modalForm({
+            formURL: "{% url 'unsubscribe' tier_id=subscription.tier.id %}"
+        });
+    })
 </script>
 {%endblock extrascripts%}
