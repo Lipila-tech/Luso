@@ -20,7 +20,10 @@ from lipila.forms.forms import (
     ContactForm,
     WithdrawalModelForm,
     TierModelForm,
-    )
+    SendMoneyForm
+)
+from .utils import query_collection
+from patron.models import Contributions
 
 # Custom Models
 from api.utils import generate_reference_id
@@ -59,7 +62,61 @@ class TierDeleteView(BSModalDeleteView):
 class TierReadView(BSModalReadView):
     model = Tier
     template_name = 'lipila/modals/view_tier.html'
-    
+
+
+class SendMoneyView(BSModalFormView):
+    template_name = 'lipila/modals/send_money.html'
+    form_class = SendMoneyForm
+    success_url = 'patron:contributions_history'
+
+    def form_valid(self, form):
+        amount = form.cleaned_data['amount']
+        payment_method = form.cleaned_data['payment_method']
+        account_number = form.cleaned_data['payer_account_number']
+        description = form.cleaned_data['description']
+
+        # Your payment processing logic here
+        patron = User.objects.get(username=self.request.user)
+        creator = User.objects.get(pk=self.kwargs.get('tier_id'))
+        reference_id = generate_reference_id()
+        contribution = Contributions.objects.create(
+            creator=creator, patron=patron, reference_id=reference_id)
+        contribution.amount = amount
+        contribution.payer_account_number = account_number
+        contribution.payment_method = payment_method
+        contribution.description = description
+        payload = {
+            'amount': amount,
+            'payment_method': payment_method,
+            'payer_account_number': account_number,
+            'description': description
+        }
+
+        api_user = User.objects.get(pk=1)
+        response = query_collection(
+            api_user.username, 'POST', reference_id, data=payload)
+        if response.status_code == 202:
+            contribution.status = 'accepted'
+            contribution.save()
+            # consider making an async function
+            if check_payment_status(reference_id, 'col') == 'success':
+                contribution.status = 'success'
+                contribution.save()
+            messages.success(
+                self.request, f"Payment of K{contribution.amount} successful!")
+            # return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
+            return redirect(reverse_lazy(self.success_url))
+        else:
+            contribution.status = 'failed'
+            contribution.save()
+            messages.error(
+                self.request, 'Payment failed. Please try again later!')
+            return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
+
+        # If form is invalid (shouldn't reach here due to form validation)
+        messages.error(self.request, f"Invalid data sent")
+        return super().form_valid(form)
+
 
 def tiers(request):
     data = {}
@@ -71,8 +128,10 @@ def tiers(request):
             request=request
         )
         return JsonResponse(data)
-    
+
 # Lipila staff users views
+
+
 @login_required
 def staff_users(request, user):
     total_users = len(User.objects.all().order_by('date_joined'))
@@ -259,4 +318,3 @@ def contact(request):
         form = ContactForm()
         context['form'] = form
     return render(request, 'index.html', context)
-

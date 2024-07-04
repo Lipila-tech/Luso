@@ -4,7 +4,7 @@
 {% load patron_tags %}
 {% block title %}Home {% endblock %}
 {% block section %}
-
+{% include '_modal.html' %}
 <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
     <div class="card p-4">
         <div class=" image d-flex flex-column justify-content-center align-items-center"> <button
@@ -22,7 +22,7 @@
             <div class="tiers-container">
                 <section class="admin-other-body">
                     <div class="tiers-container">
-                        
+
                         <div class="tier">
                             <div>
                                 <div>
@@ -30,10 +30,17 @@
                                     <p>Make a one-time contribution to support my work.</p>
                                 </div>
                                 <div class="price">K50/Month</div>
-                                <div class="join-status">
+                                <input type="hidden" value="{{creator.pk}}" id="tier">
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <button id="send-money" class="btn btn-primary" type="button"
+                                            name="button">Contribute</button>
+                                    </div>
+                                </div>
+                                <!-- <div class="join-status">
                                     <a href="{% url 'patron:contribute' tier_id=creator.pk %}"
                                         class="edit-button joined">Contribute</a>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         {% for tier in tiers %}
@@ -57,7 +64,7 @@
                                         <button class="edit-button">Unsubscribe</button>
                                     </form>
                                     {% else %}
-                                    
+
                                     <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post"
                                         class="tier-form">
                                         {% csrf_token %}
@@ -82,4 +89,13 @@
 </div>
 </div>
 </div>
-{% endblock %}
+{% endblock section %}
+{% block extrascripts %}
+<script type="text/javascript">
+    $(function () {
+        $("#send-money").modalForm({
+            formURL: "{% url 'send_money' %}"
+        });
+    });
+</script>
+{%endblock extrascripts%}

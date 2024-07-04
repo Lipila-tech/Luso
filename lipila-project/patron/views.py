@@ -385,7 +385,7 @@ def subscriptions(request):
     """
     user_object = get_object_or_404(User, username=request.user)
     subscriptions = TierSubscriptions.objects.filter(patron=user_object)
-    return render(request, 'patron/admin/pages/subscriptions.html', {'subscriptions': subscriptions})
+    return render(request, 'patron/admin/pages/view_subscriptions.html', {'subscriptions': subscriptions})
 
 
 @login_required
@@ -396,7 +396,7 @@ def subscription_detail(request, tier_id):
     user_object = get_object_or_404(User, username=request.user)
     tier = Tier.objects.get(pk=tier_id)
     subscription = TierSubscriptions.objects.get(tier=tier)
-    return render(request, 'patron/admin/pages/subscription_detail.html', {'subscription': subscription, 'tier_id': tier_id})
+    return render(request, 'patron/admin/pages/view_subscription_detail.html', {'subscription': subscription, 'tier_id': tier_id})
 
 
 # PAYMENT HANDLING VIEWS
@@ -502,61 +502,6 @@ def make_payment(request, tier_id):
     tier = tier
     return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
 
-
-@login_required
-def contribute(request, tier_id):
-    owner = User.objects.get(pk=tier_id)
-    if request.method == 'POST':
-        raw_data = request.body.decode('utf-8')  # Decode bytes to string
-        data = json.loads(raw_data)  # Parse JSON data
-        amount = data.get('amount')
-        account_number = data.get('payer_account_number')
-        description = data.get('description')
-        payment_method = data.get('payment_method')
-
-        if amount and payment_method:
-            patron = User.objects.get(username=request.user)
-            creator = User.objects.get(pk=tier_id)
-            reference_id = generate_reference_id()
-            contribution = Contributions.objects.create(
-                creator=creator, patron=patron, reference_id=reference_id)
-            contribution.amount = amount
-            contribution.payer_account_number = account_number
-            contribution.payment_method = payment_method
-            contribution.description = description
-            payload = {
-                'amount': amount,
-                'payment_method': payment_method,
-                'payer_account_number': account_number,
-                'description': description
-            }
-
-            api_user = User.objects.get(pk=1)
-            response = query_collection(
-                api_user.username, 'POST', reference_id, data=payload)
-            if response.status_code == 202:
-                contribution.status = 'accepted'
-                contribution.save()
-                # consider making an async function
-                if check_payment_status(reference_id, 'col') == 'success':
-                    contribution.status = 'success'
-                    contribution.save()
-                messages.success(
-                    request, f"Payment of K{contribution.amount} successfull!")
-                return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
-            else:
-                contribution.status = 'failed'
-                contribution.save()
-                messages.error(
-                    request, 'Payment failed. Please try again later!')
-                return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
-        messages.error(request, f"Invalid data sent")
-        form = ContributeForm()
-        return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
-
-    form = ContributeForm()
-    form.id = 'contribute-form'
-    return render(request, 'lipila/actions/contribute.html', {'form': form, 'creator': tier_id, 'owner': owner})
 
 # ACCOUNT HISTORY VIEWS
 

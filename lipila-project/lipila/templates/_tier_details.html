@@ -1,6 +1,6 @@
 {% load static %}
 <style>
-    .creator-container {
+    .subscription-container {
         background-color: rgb(255, 255, 255);
         border-radius: 1em;
         text-align: center;
@@ -21,7 +21,7 @@
     @media screen and (max-width: 768px) {
 
         /* Adjust breakpoint as needed */
-        .creator-container {
+        .subscription-container {
             flex-direction: column;
             padding: 15px;
             /* Change layout to vertical */
@@ -153,42 +153,60 @@
     }
 </style>
 
-<h1 class="title">Find Your favorite Creator</h1>
-<div class="creator-container">
-    {% for creator in creators %}
+<div class="subscription-container">
     <div class="float-container">
         <div class="user-image">
-            {% if creator.profile_image %}
-            {% if creator.profile_image.url %}
-            <img src="{{creator.profile_image.url}}" alt="profile image" class="img-fluid">
+            {% if subscription.profile_image %}
+            {% if subscription.profile_image.url %}
+            <img src="{{subscription.profile_image.url}}" alt="profile image" class="img-fluid">
             {% endif %}
             {% else %}
             <img src="{% static 'assets/img/avator.jpeg' %}" alt="profile image" class="img-fluid">
             {% endif %}
         </div>
         <div class="content">
-            <h3 class="name">{{creator.patron_title}}</h3>
-            <p class="username">@{{creator.user}}</p>
+            <h3 class="name">{{subscription.tier.name}}</h3>
+            <p class="username">@{{subscription.tier.creator}}</p>
+            <p class="username">K{{subscription.tier.price}}</p>
+            <p class="details">
+                {{subscription.tier.description}}
+            </p>
             <div class="links">
-                <a class="facebook c-a" href="{{creator.facebook_url}}" target="_blank" title="GFG_facebook">
+                <a class="facebook c-a" href="{{subscription.tier.facebook_url}}" target="_blank" title="GFG_facebook">
                     <i class="fab fa-facebook"></i>
                 </a>
-                <a class="linkedin c-a" href="{{creator.linkedin_url}}" title="GFG_linkedin" target="_blank">
+                <a class="linkedin c-a" href="{{subscription.linkedin_url}}" title="GFG_linkedin" target="_blank">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a class="insta c-a" href="{{creator.instagram_url}}" target="_blank" title="GFG_instagram">
+                <a class="insta c-a" href="{{subscription.instagram_url}}" target="_blank" title="GFG_instagram">
                     <i class="fab fa-instagram-square"></i>
                 </a>
             </div>
             <p class="details">
-                {{creator.about}}
+                {{subscription.tier.about}}
             </p>
-            <a class="effect c-a" href="{% url 'patron:creator_home' creator=creator.user %}">
-                View
-            </a>
+            <div class="row gy-4">
+                <div class="d-flex justify-content-center">
+                    <div class="col-1">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <button id="send-money" class="btn btn-sm btn-primary" type="button"
+                                    name="button">Pay</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <!-- unsubscribe the user -->
+                        <form action="{% url 'patron:unsubscribe' tier_id=subscription.tier.id %}" method="post"
+                            class="tier-form">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-danger">Unsubscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
 </div>
 
 <!-- This is link of adding small images

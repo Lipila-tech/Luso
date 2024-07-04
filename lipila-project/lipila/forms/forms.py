@@ -17,7 +17,12 @@ class TierModelForm(BSModalModelForm):
         model = Tier
         exclude = ['updated_at']
                    
+class SendMoneyForm(BSModalModelForm):
+    class Meta:
+        model = Contributions
+        fields = ('amount', 'payer_account_number', 'payment_method', 'description')
 
+        
 class ContactForm(forms.ModelForm):
     class Meta:
         model = CustomerMessage

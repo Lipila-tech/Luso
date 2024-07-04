@@ -26,6 +26,8 @@ urlpatterns = [
     path('update/<int:pk>', views.TierUpdateView.as_view(), name ='update_tier'),
     path('view/<int:pk>', views.TierReadView.as_view(), name ='view_tier'),
     path('delete/<int:pk>', views.TierDeleteView.as_view(), name ='delete_tier'),
+
+    path('payments/sendmoney/', views.SendMoneyView.as_view(), name='send_money'),
     
 
     path('tiers/', views.tiers, name = 'tiers'),

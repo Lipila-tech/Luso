@@ -1,0 +1,21 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %} Subscription detail {% endblock %}
+
+{% block section %}
+{% include '_modal.html' %}
+
+<h2>Subscription Details</h2>
+{% include '_modal.html' %}
+{% include '_tier_details.html' %}
+
+{% endblock section %}
+{% block extrascripts %}
+<script type="text/javascript">
+    // Pay to tier buttons
+    // Login
+    $("#send-money").modalForm({
+        formURL: "{% url 'send_money' %}"
+    });
+</script>
+{%endblock extrascripts%}

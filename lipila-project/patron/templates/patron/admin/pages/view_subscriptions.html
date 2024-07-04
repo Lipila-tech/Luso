@@ -1,0 +1,61 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %} Subscriptions {% endblock %}
+
+{% block section %}
+
+{% include '_modal.html' %}
+{% if subscriptions %}
+<h2>My Subscriptions</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Creator</th>
+            <th>Subscription</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sub in subscriptions %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ sub.tier.creator }}</td>
+            <td>{{ sub.tier.name }}</td>
+            <td>{{ sub.tier.price }}</td>
+            <td>
+                <!-- View Subscription details button -->
+                <a type="button" class="read-tier btn btn-sm btn-primary"
+                    href="{% url 'patron:subscription_detail' tier_id=sub.tier.id  %}">
+                    <span class="fa fa-eye">View</span>
+                </a>
+                <!-- Pay or unssubscribe button -->
+                <button type="button" class="pay-tier btn btn-sm btn-primary" data-form-url="{% url 'send_money' %}">
+                    <span class="fa fa-pencil">Pay</span>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h3>You have no subscriptions.</h3>
+<div class="patrons-container">
+    <a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a>
+</div>
+
+{% endif %}
+
+{% endblock section %}
+{% block extrascripts %}
+<script type="text/javascript">
+    // Pay to tier buttons
+    function PayTierModalForm() {
+        $(".pay-tier").each(function () {
+            $(this).modalForm({ formURL: $(this).data("form-url") });
+        });
+    }
+    PayTierModalForm();
+</script>
+{%endblock extrascripts%}
