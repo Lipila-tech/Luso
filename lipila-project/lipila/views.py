@@ -68,7 +68,7 @@ class UnsubScribeView(BSModalDeleteView):
     def get_object(self, queryset=None):
         tier_id = self.kwargs.get('tier_id')
         if tier_id:
-            return get_object_or_404(TierSubscriptions, tier__id=tier_id)
+            return get_object_or_404(TierSubscriptions, tier__id=tier_id, patron=self.request.user)
         return None
 
 

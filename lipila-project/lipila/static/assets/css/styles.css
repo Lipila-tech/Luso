@@ -184,22 +184,11 @@ hr .new1 {
   box-sizing: border-box;
 }
 
-.tier h3 {
-  margin: 0;
-  font-size: 1.5em;
-  color: #007bff;
-}
-
 .tier p {
   margin: 10px 0 0;
   color: #6c757d;
 }
 
-.tier .price {
-  font-size: 1.2em;
-  color: #28a745;
-  font-weight: bold;
-}
 
 .tier .edit-button {
   background-color: #007bff;

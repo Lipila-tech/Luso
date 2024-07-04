@@ -17,7 +17,7 @@
         // Pay to tier buttons
         // Login
         $("#send-money").modalForm({
-            formURL: "{% url 'send_money' %}"
+            formURL: "{% url 'send_money' 'subscription' %}"
         });
 
         // Delete tier buttons - formURL is retrieved from the data of the element

@@ -27,7 +27,7 @@ urlpatterns = [
     path('view/<int:pk>', views.TierReadView.as_view(), name ='view_tier'),
     path('delete/<int:pk>', views.TierDeleteView.as_view(), name ='delete_tier'),
 
-    path('payments/sendmoney/', views.SendMoneyView.as_view(), name='send_money'),
+    path('payments/sendmoney/<str:type>', views.SendMoneyView.as_view(), name='send_money'),
     path('unsubscribe/<int:tier_id>', views.UnsubScribeView.as_view(), name='unsubscribe'),
     
 

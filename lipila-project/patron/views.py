@@ -395,7 +395,7 @@ def subscription_detail(request, tier_id):
     """
     user_object = get_object_or_404(User, username=request.user)
     tier = Tier.objects.get(pk=tier_id)
-    subscription = TierSubscriptions.objects.get(tier=tier)
+    subscription = TierSubscriptions.objects.get(tier=tier, patron=request.user)
     return render(request, 'patron/admin/pages/view_subscription_detail.html', {'subscription': subscription, 'tier_id': tier_id})
 
 
