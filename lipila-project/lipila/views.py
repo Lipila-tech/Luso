@@ -58,12 +58,12 @@ class TierDeleteView(BSModalDeleteView):
     success_message = 'Success: Tier was deleted.'
     success_url = reverse_lazy('index')
 
+
 class UnsubScribeView(BSModalDeleteView):
     model = TierSubscriptions
     template_name = 'lipila/modals/unsubscribe_tier.html'
     success_message = 'Success: You have unsubscribed.'
     success_url = reverse_lazy('index')
-
 
     def get_object(self, queryset=None):
         tier_id = self.kwargs.get('tier_id')
@@ -124,9 +124,9 @@ class SendMoneyView(BSModalFormView):
             contribution.save()
             messages.error(
                 self.request, 'Payment failed. Please try again later!')
-            return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
+            return redirect(reverse_lazy(self.success_url))
 
-        # If form is invalid (shouldn't reach here due to form validation)
+    def form_invalid(self, form):
         messages.error(self.request, f"Invalid data sent")
         return super().form_valid(form)
 
