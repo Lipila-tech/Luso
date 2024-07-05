@@ -21,7 +21,7 @@ class LipilaDisbursementViewTest(APITestCase):
     
     def test_make_deposit_success(self):        
         data = {'amount': '100', 'payee_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
 
         response = self.client.post(self.url, data, format='json')
         
@@ -39,7 +39,7 @@ class LipilaDisbursementViewTest(APITestCase):
 
     def test_deposit_lipila_fail_validation(self):
         data = {'amount': '100', 'payee_account_number': 'invalid',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(LipilaDisbursement.objects.count(), 0)
@@ -47,7 +47,7 @@ class LipilaDisbursementViewTest(APITestCase):
     def test_deposit_no_user_fail_payer(self):
         User.objects.all().delete()
         data = {'amount': '100', 'payee_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(LipilaDisbursement.objects.count(), 0)
@@ -79,7 +79,7 @@ class LipilaCollectionViewTest(APITestCase):
         
     def test_create_payment_success(self):
         data = {'amount': '100', 'payer_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
         
         response = self.client.post(self.url, data, format='json')
         

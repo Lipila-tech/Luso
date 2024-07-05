@@ -161,7 +161,7 @@ class TestSubscription(TestCase):
 
         url = reverse('patron:make_payment', kwargs={'tier_id': tier1.id})
         data = {'amount': '100', 'payer_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
         
         # data = json.dumps(data)
         response = self.client.post(url, data=data)
@@ -182,7 +182,7 @@ class TestSubscription(TestCase):
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
         data = {'amount': '100', 'payer_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
 
         url = reverse('patron:make_payment', kwargs={'tier_id': tier1.id})
         self.client.post(url, data=data)
@@ -203,7 +203,7 @@ class TestSubscription(TestCase):
         url = reverse('patron:contribute', kwargs={
                       'tier_id': self.creator1_obj.pk})
         data = {'amount': '100', 'payer_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))

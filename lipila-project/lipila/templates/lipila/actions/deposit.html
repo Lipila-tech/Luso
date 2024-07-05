@@ -10,9 +10,9 @@
 <form method="post" id="payment-form">
   {% csrf_token %}
   <div class="form-group">
-    <label for="{{ form.payment_method.auto_id }}">Select Service Provider</label>
-    {{ form.payment_method }}
-    <span class="text-danger">{{ form.payment_method.errors }}</span>
+    <label for="{{ form.network_operator.auto_id }}">Select Service Provider</label>
+    {{ form.network_operator }}
+    <span class="text-danger">{{ form.network_operator.errors }}</span>
   </div>
   <div class="form-group">
     <label for="{{ form.amount.auto_id }}">Amount (ZMW)</label>

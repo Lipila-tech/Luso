@@ -23,7 +23,7 @@ def query_collection(user, method, reference_id, data={}):
         data (dict): data (dict):
                 {
                     'amount': '', 'payer_account_number': '',
-                    'payment_method': '', 'description': ''
+                    'network_operator': '', 'description': ''
                     }
                     
     Returns:
@@ -62,7 +62,7 @@ def query_disbursement(user, method, reference_id, data={}):
         data (dict):
                 {
                     'amount': '', 'payee_account_number': '',
-                    'payment_method': '', 'description': ''
+                    'network_operator': '', 'description': ''
                     }
 
     Returns:

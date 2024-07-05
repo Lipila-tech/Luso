@@ -84,7 +84,7 @@ class SendMoneyView(BSModalFormView):
 
     def form_valid(self, form):
         amount = form.cleaned_data['amount']
-        payment_method = form.cleaned_data['payment_method']
+        network_operator = form.cleaned_data['network_operator']
         account_number = form.cleaned_data['payer_account_number']
         description = form.cleaned_data['description']
 
@@ -96,11 +96,11 @@ class SendMoneyView(BSModalFormView):
             creator=creator, patron=patron, reference_id=reference_id)
         contribution.amount = amount
         contribution.payer_account_number = account_number
-        contribution.payment_method = payment_method
+        contribution.network_operator = network_operator
         contribution.description = description
         payload = {
             'amount': amount,
-            'payment_method': payment_method,
+            'network_operator': network_operator,
             'payer_account_number': account_number,
             'description': description
         }
@@ -170,7 +170,7 @@ def approve_withdrawals(request):
         amount = data['amount']
         payee_account_number = data['payee_account_number']
         description = data['description']
-        payment_method = data['payment_method']
+        network_operator = data['network_operator']
 
         if withdrawal_request_id and action:
             try:
@@ -184,7 +184,7 @@ def approve_withdrawals(request):
                     # Process withdrawal (initiate payout using lipila api)
                     payload = {
                         'amount': amount,
-                        'payment_method': payment_method,
+                        'network_operator': network_operator,
                         'payee_account_number': payee_account_number,
                         'description': description
                     }
@@ -250,7 +250,7 @@ def approve_withdrawals(request):
         item['amount'] = obj.amount
         item['status'] = obj.status
         item['account_number'] = obj.account_number
-        item['payment_method'] = obj.payment_method
+        item['network_operator'] = obj.network_operator
         item['request_date'] = obj.request_date
         item['balance'] = calculate_creators_balance(obj.creator)
         data.append(item)

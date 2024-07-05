@@ -1,6 +1,6 @@
 from django import forms
 from lipila.models import CustomerMessage
-from patron.models import Contributions, PAYMENT_CHOICES
+from patron.models import Contributions, ISP_CHOICES
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
@@ -9,7 +9,7 @@ from patron.models import WithdrawalRequest, Tier
 class WithdrawalModelForm(BSModalModelForm):
     class Meta:
         model = WithdrawalRequest
-        fields = ['payment_method', 'account_number', 'amount']
+        fields = ['network_operator', 'account_number', 'amount']
 
 
 class TierModelForm(BSModalModelForm):
@@ -20,7 +20,7 @@ class TierModelForm(BSModalModelForm):
 class SendMoneyForm(BSModalModelForm):
     class Meta:
         model = Contributions
-        fields = ('amount', 'payer_account_number', 'payment_method', 'description')
+        fields = ('amount', 'payer_account_number', 'network_operator', 'description')
 
         
 class ContactForm(forms.ModelForm):
@@ -44,11 +44,11 @@ class SignupForm(forms.ModelForm):
 class DepositForm(forms.Form):
     amount = forms.DecimalField(min_value=5, validators=[MinValueValidator(10, message='Minimum deposit amount is ZMW 5')], required=True)
     payer_account_number = forms.CharField(max_length=20, required=True)
-    payment_method = forms.ChoiceField(choices=PAYMENT_CHOICES)
+    network_operator = forms.ChoiceField(choices=ISP_CHOICES)
     description = forms.CharField(max_length=300, required=False)
     
 
 class ContributeForm(forms.ModelForm):
     class Meta:
         model = Contributions
-        fields = ('amount', 'payer_account_number', 'payment_method', 'description')
+        fields = ('amount', 'payer_account_number', 'network_operator', 'description')

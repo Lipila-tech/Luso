@@ -449,7 +449,7 @@ def make_payment(request, tier_id):
         amount = data.get('amount')
         account_number = data.get('payer_account_number')
         description = data.get('description')
-        payment_method = data.get('payment_method')
+        network_operator = data.get('network_operator')
 
         if amount and account_number:
             patron = User.objects.get(username=request.user)
@@ -461,14 +461,14 @@ def make_payment(request, tier_id):
             payment = Payments.objects.create(
                 subscription=subscription, reference_id=reference_id)
             payment.amount = amount
-            payment.payment_method = payment_method
+            payment.network_operator = network_operator
             payment.payer_account_number = account_number
             payment.description = description
 
             # Process deposit logic here (query lipila api)
             payload = {
                 'amount': amount,
-                'payment_method': payment_method,
+                'network_operator': network_operator,
                 'payer_account_number': account_number,
                 'description': description
             }

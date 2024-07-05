@@ -24,7 +24,7 @@ CITY_CHOICES = (
     ('lusaka', 'Lusaka'),
     ('ndola', 'Ndola'),
 )
-PAYMENT_CHOICES = (
+ISP_CHOICES = (
     ('', ''),
     ('mtn', 'mtn'),
     ('airtel', 'airtel'),
@@ -87,13 +87,26 @@ class TierSubscriptions(models.Model):
         return f"{self.tier}"
 
 
+class Transfer(models.Model):
+    sender = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='tranfers')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=False)
+    payer_account_number = models.CharField(max_length=300, null=True, blank=False)
+    payee_account_number = models.CharField(max_length=300, null=True, blank=False)
+    reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
+    network_operator = models.CharField(max_length=20, choices=ISP_CHOICES, default='')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
+
 class Payments(models.Model):
     subscription = models.ForeignKey(
         TierSubscriptions, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     payer_account_number = models.CharField(max_length=300, null=True, blank=True)
     reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
+    network_operator = models.CharField(max_length=20, choices=ISP_CHOICES , default='mtn')
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -108,11 +121,11 @@ class Contributions(models.Model):
     patron = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='contributions_sent')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=False)
-    description = models.CharField(max_length=200, null=True, blank=True)
     payer_account_number = models.CharField(max_length=300, null=True, blank=False)
     reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='')
+    network_operator = models.CharField(max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
@@ -128,7 +141,7 @@ class WithdrawalRequest(models.Model):
     # reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='')
+    network_operator = models.CharField(max_length=20, choices=ISP_CHOICES , default='')
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
@@ -147,7 +160,7 @@ class ProcessedWithdrawals(models.Model):
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
     status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES , default='mtn')
+    network_operator = models.CharField(max_length=20, choices=ISP_CHOICES , default='mtn')
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):

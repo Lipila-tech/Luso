@@ -34,7 +34,7 @@
                 <div>
                     <input type="hidden" id="requestType-{{ forloop.counter }}" value="deposit">
                     <input type="hidden" id="id_payment_method-{{ forloop.counter }}"
-                        value="{{request.payment_method}}">
+                        value="{{request.network_operator}}">
                     <input type="hidden" id="id_account_number-{{ forloop.counter }}"
                         value="{{request.account_number}}">
                     <input type="hidden" name="withdrawal_amount" id="id_amount-{{ forloop.counter }}"

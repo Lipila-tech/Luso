@@ -57,7 +57,7 @@ async function initiateDeposit(formId, action) {
       body: JSON.stringify({
         action: action, request_id: requestId, amount: amount,
         payee_account_number: accountNumber,
-        description: description, payment_method: paymentMethod
+        description: description, network_operator: paymentMethod
       })
     });
 
@@ -107,7 +107,7 @@ async function initiatePayment(id_request, requestType) {
         'X-CSRFToken': csrftoken
       },
       body: JSON.stringify(
-        { amount: amount, payment_method: paymentMethod, payer_account_number: phoneNumber, description: description })
+        { amount: amount, network_operator: paymentMethod, payer_account_number: phoneNumber, description: description })
     });
 
     if (!response.ok) {

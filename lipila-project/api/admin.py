@@ -21,7 +21,7 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
 class ContributionsAdmin(admin.ModelAdmin):
     list_display = ('creator', 'patron', 'amount', 'status',
                     'description', 'payer_account_number',
-                    'payment_method', 'timestamp', 'reference_id')
+                    'network_operator', 'timestamp', 'reference_id')
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -36,17 +36,17 @@ class TierAdmin(admin.ModelAdmin):
 
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('subscription', 'amount', 'status', 'description', 'payer_account_number',
-                     'timestamp', 'reference_id', 'payment_method')
+                     'timestamp', 'reference_id', 'network_operator')
 
 
 class DisbursementAdmin(admin.ModelAdmin):
     list_display = ['payee_account_number', 'processed_date', 'updated_at', 'amount',
-                  'reference_id', 'payment_method', 'description']
+                  'reference_id', 'network_operator', 'description']
 
 
 class LipilaCollectionAdmin(admin.ModelAdmin):
     list_display = ['payer_account_number', 'processed_date', 'updated_at', 'amount',
-                  'reference_id', 'payment_method', 'description']
+                  'reference_id', 'network_operator', 'description']
 
 
 class ProductAdmin(admin.ModelAdmin):

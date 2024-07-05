@@ -22,17 +22,17 @@ class LipilaCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
         fields = ['payer_account_number', 'amount',
-                  'payment_method', 'description']
+                  'network_operator', 'description']
 
 
 class LipilaDisbursementSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaDisbursement
         fields = ['payee_account_number', 'amount',
-                  'payment_method', 'description']
+                  'network_operator', 'description']
 
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         mdodel = Payments
-        fields = ['amount', 'payer_account-number', 'description', 'payment_method']
+        fields = ['amount', 'payer_account-number', 'description', 'network_operator']

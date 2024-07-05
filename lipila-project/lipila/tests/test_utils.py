@@ -111,7 +111,7 @@ class PostPaymentTest(TestCase):
         ref_id = generate_reference_id()
 
         data = {'amount': '100', 'payer_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
         
         response = query_collection('test_user', 'POST', ref_id, data=data)
         self.assertEqual(response.status_code, 202)
@@ -179,7 +179,7 @@ class PostDisbursementTest(TestCase):
         ref_id = generate_reference_id()
 
         data = {'amount': '100', 'payee_account_number': '0966443322',
-                'payment_method': 'mtn', 'description': 'testdescription'}
+                'network_operator': 'mtn', 'description': 'testdescription'}
         
         response = query_disbursement('test_user', 'POST', ref_id, data=data)
         self.assertEqual(response.status_code, 202)
