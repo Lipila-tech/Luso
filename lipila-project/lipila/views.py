@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+from rest_framework.response import Response
 import json
 from django.db.models import Q
 from bootstrap_modal_forms.generic import (
@@ -24,15 +25,16 @@ from lipila.forms.forms import (
 )
 from .utils import query_collection
 from patron.models import Contributions
-
+from django.http import HttpResponseRedirect
 # Custom Models
 from api.utils import generate_reference_id
 from lipila.utils import (
     apology, get_lipila_contact_info,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
-    query_disbursement, check_payment_status)
+    query_disbursement, check_payment_status, save_payment)
 from accounts.models import CreatorProfile
-from patron.models import WithdrawalRequest, Payments, ProcessedWithdrawals, Tier, TierSubscriptions
+from patron.models import (WithdrawalRequest, SubscriptionPayments,
+                           ProcessedWithdrawals, Tier, TierSubscriptions, Transfer)
 from patron.utils import calculate_creators_balance
 
 
@@ -82,46 +84,73 @@ class SendMoneyView(BSModalFormView):
     form_class = SendMoneyForm
     success_url = 'patron:contributions_history'
 
+   
     def form_valid(self, form):
+        transaction_type = self.kwargs.get('type')
         amount = form.cleaned_data['amount']
         network_operator = form.cleaned_data['network_operator']
-        account_number = form.cleaned_data['payer_account_number']
+        payer_account_number = form.cleaned_data['payer_account_number']
         description = form.cleaned_data['description']
 
-        # Your payment processing logic here
-        patron = User.objects.get(username=self.request.user)
-        creator = User.objects.get(pk=self.kwargs.get('tier_id'))
         reference_id = generate_reference_id()
-        contribution = Contributions.objects.create(
-            creator=creator, patron=patron, reference_id=reference_id)
-        contribution.amount = amount
-        contribution.payer_account_number = account_number
-        contribution.network_operator = network_operator
-        contribution.description = description
+        payer = User.objects.get(username=self.request.user)
+        payee = ''
+        payee_account_number = ''
+        model_class = ''
+        
+        if transaction_type == 'contribution':
+            model_class = Contributions
+            payee = User.objects.get(pk=self.kwargs.get('id'))
+        elif transaction_type == 'payment':
+            model_class = SubscriptionPayments
+            payee = TierSubscriptions.objects.get(tier=self.kwargs.get('id'), patron=self.request.user)
+        else:
+            payee_account_number = form.cleaned_data['payee_account_number']
+            model_class = Transfer
+
+        if network_operator != 'mtn':
+            messages.error(
+                self.request, 'Sorry only mtn is suported at the moment')
+            # redirect user to the same page
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
+
+        # Save the payment using the utility function
+        payment = save_payment(
+            model_class,
+            reference_id=reference_id,
+            amount=amount,
+            payer_account_number=payer_account_number,
+            payee_account_number=payee_account_number,
+            network_operator=network_operator,
+            description=description,
+            payer=payer,
+            payee=payee
+        )
+
         payload = {
             'amount': amount,
             'network_operator': network_operator,
-            'payer_account_number': account_number,
+            'payer_account_number': payer_account_number,
             'description': description
         }
 
         api_user = User.objects.get(pk=1)
+
+        
         response = query_collection(
             api_user.username, 'POST', reference_id, data=payload)
         if response.status_code == 202:
-            contribution.status = 'accepted'
-            contribution.save()
-            # consider making an async function
+            payment.status = 'accepted'
+            payment.save()
             if check_payment_status(reference_id, 'col') == 'success':
-                contribution.status = 'success'
-                contribution.save()
+                payment.status = 'success'
+                payment.save()
             messages.success(
-                self.request, f"Payment of K{contribution.amount} successful!")
-            # return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
+                self.request, f"Payment of K{payment.amount} successful!")
             return redirect(reverse_lazy(self.success_url))
         else:
-            contribution.status = 'failed'
-            contribution.save()
+            payment.status = 'failed'
+            payment.save()
             messages.error(
                 self.request, 'Payment failed. Please try again later!')
             return redirect(reverse_lazy(self.success_url))
@@ -149,7 +178,7 @@ def tiers(request):
 def staff_users(request, user):
     total_users = len(User.objects.all().order_by('date_joined'))
     total_creators = len(CreatorProfile.objects.all())
-    total_payments = len(Payments.objects.all())
+    total_payments = len(SubscriptionPayments.objects.all())
     context = {
         'all_users': total_users,
         'all_creators': total_creators,
