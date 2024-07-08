@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import (LipilaCollection, LipilaDisbursement)
-from patron.models import Payments
+from patron.models import SubscriptionPayments
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,5 +34,5 @@ class LipilaDisbursementSerializer(serializers.ModelSerializer):
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
-        mdodel = Payments
+        mdodel = SubscriptionPayments
         fields = ['amount', 'payer_account-number', 'description', 'network_operator']

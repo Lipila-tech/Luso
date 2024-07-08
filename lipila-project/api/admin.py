@@ -4,7 +4,7 @@ from business.models import Product, BNPL, Student
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
-from patron.models import Tier, Payments, ProcessedWithdrawals, WithdrawalRequest, Contributions
+from patron.models import Tier, SubscriptionPayments, ProcessedWithdrawals, WithdrawalRequest, Contributions
 from accounts.models import PatronProfile, CreatorProfile
 
 
@@ -19,7 +19,7 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
 
 
 class ContributionsAdmin(admin.ModelAdmin):
-    list_display = ('creator', 'patron', 'amount', 'status',
+    list_display = ('payee', 'payer', 'amount', 'status',
                     'description', 'payer_account_number',
                     'network_operator', 'timestamp', 'reference_id')
 
@@ -35,7 +35,7 @@ class TierAdmin(admin.ModelAdmin):
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('subscription', 'amount', 'status', 'description', 'payer_account_number',
+    list_display = ('payee', 'amount', 'status', 'description', 'payer_account_number',
                      'timestamp', 'reference_id', 'network_operator')
 
 
@@ -105,7 +105,7 @@ class CreatorProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tier, TierAdmin)
-admin.site.register(Payments, PaymentAdmin)
+admin.site.register(SubscriptionPayments, PaymentAdmin)
 admin.site.register(Contributions, ContributionsAdmin)
 admin.site.register(ProcessedWithdrawals, ProcessedWithdrawalAdmin)
 admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
