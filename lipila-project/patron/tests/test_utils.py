@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from django.urls import reverse
 
 # custom modules
@@ -107,9 +107,9 @@ class TestUtilFunctions(TestCase):
             patron=self.user1, tier=tier1)
         subscription2 = TierSubscriptions.objects.create(
             patron=self.user2, tier=tier2)
-        Payments.objects.create(subscription=subscription1, amount=200,
+        SubscriptionPayments.objects.create(subscription=subscription1, amount=200,
                                 reference_id=generate_reference_id(), status='success')
-        Payments.objects.create(subscription=subscription2, amount=200,
+        SubscriptionPayments.objects.create(subscription=subscription2, amount=200,
                                 reference_id=generate_reference_id(), status='success')
         total_amounts1 = utils.calculate_total_payments(self.creator1_obj)
         total_amounts2 = utils.calculate_total_payments(self.creator2_obj)
@@ -141,9 +141,9 @@ class TestUtilFunctions(TestCase):
             patron=self.user1, tier=tier1)
         subscription2 = TierSubscriptions.objects.create(
             patron=self.user2, tier=tier2)
-        Payments.objects.create(
+        SubscriptionPayments.objects.create(
             subscription=subscription1, amount=200, reference_id=generate_reference_id())
-        Payments.objects.create(
+        SubscriptionPayments.objects.create(
             subscription=subscription2, amount=200, reference_id=generate_reference_id())
         WithdrawalRequest.objects.create(
             creator=self.creator1_obj, amount=100, status='success')
@@ -164,7 +164,7 @@ class TestUtilFunctions(TestCase):
         tier2 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         subscription1 = TierSubscriptions.objects.create(
             patron=self.user1, tier=tier1)
-        Payments.objects.create(subscription=subscription1, amount=200,
+        SubscriptionPayments.objects.create(subscription=subscription1, amount=200,
                                 status='success', reference_id=generate_reference_id())
         WithdrawalRequest.objects.create(
             creator=self.creator1_obj, amount=100, status='success')

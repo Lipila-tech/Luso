@@ -17,14 +17,14 @@
         </tr>
     </thead>
     <tbody>
-        {% for item in contributions %}
+        {% for contribution in contributions %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ item.amount }}</td>
-            <td>{{ item.timestamp }}</td>
-            <td>{{ item.patron }}</td>
-            <td>{{ item.description }}</td>
-            <td>{{ item.status |upper }}</td>
+            <td>{{ contribution.amount }}</td>
+            <td>{{ contribution.timestamp }}</td>
+            <td>{{ contribution.payer }}</td>
+            <td>{{ contribution.description }}</td>
+            <td>{{ contribution.status |upper }}</td>
         </tr>
         {% endfor %}
     </tbody>

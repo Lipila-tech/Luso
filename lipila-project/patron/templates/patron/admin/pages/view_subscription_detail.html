@@ -14,10 +14,10 @@
 <script type="text/javascript">
 
     $(function () {
-        // Pay to tier buttons
+        // Pay to tier buttons 
         // Login
         $("#send-money").modalForm({
-            formURL: "{% url 'send_money' 'subscription' %}"
+            formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}"
         });
 
         // Delete tier buttons - formURL is retrieved from the data of the element

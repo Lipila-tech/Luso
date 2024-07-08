@@ -121,10 +121,10 @@
                                     <span class="price">K50/Month</span>
                                     <p class="description">Make a one-time contribution to support my work.</p>
                                 </div>
-                                <input type="hidden" value="{{creator.pk}}" id="tier">
+                                <input type="hidden" value="{{creator.pk}}" id="creator_id">
                                 <div class="row">
                                     <div class="col-12 mb-3">
-                                        <button id="send-money-1" class="btn btn-primary" type="button"
+                                        <button id="send-money" class="btn btn-primary" type="button"
                                             name="button">Contribute</button>
                                     </div>
                                 </div>
@@ -178,13 +178,8 @@
 <script type="text/javascript">
     $(function () {
         // make a contributions
-        $("#send-money-1").modalForm({
-            formURL: "{% url 'send_money' type='contribution' %}"
-        });
-
-        // make a subscription payment
-        $("#send-money-2").modalForm({
-            formURL: "{% url 'send_money' type='subscription' %}"
+        $("#send-money").modalForm({
+            formURL: "{% url 'send_money_id' 'contribution' creator.pk %}"
         });
     });
 </script>

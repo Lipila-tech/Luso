@@ -19,7 +19,7 @@ from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
 from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
 from lipila.forms.forms import DepositForm, ContributeForm
-from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from patron.utils import (get_creator_subscribers,
                           get_creator_url, get_tier, calculate_total_payments,
                           calculate_total_contributions, calculate_total_withdrawals,
@@ -458,7 +458,7 @@ def make_payment(request, tier_id):
             reference_id = generate_reference_id()
 
             # Create a payment object
-            payment = Payments.objects.create(
+            payment = SubscriptionPayments.objects.create(
                 subscription=subscription, reference_id=reference_id)
             payment.amount = amount
             payment.network_operator = network_operator
@@ -538,13 +538,13 @@ def payments_history(request):
     context = {}
     try:
         creator = request.user.creatorprofile
-        payments = Payments.objects.filter(subscription__tier__creator=creator)
+        payments = SubscriptionPayments.objects.filter(subscription__tier__creator=creator)
         context['payments'] = payments
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/payments_received.html', context)
     except User.creatorprofile.RelatedObjectDoesNotExist:
         # Get a patron users history
-        payments = Payments.objects.filter(subscription__patron=request.user)
+        payments = SubscriptionPayments.objects.filter(subscription__patron=request.user)
         context['payments'] = payments
         return render(request, 'patron/admin/pages/payments_made.html', context)
 
@@ -558,12 +558,12 @@ def contributions_history(request):
     context = {}
     try:
         creator = request.user.creatorprofile
-        contributions = Contributions.objects.filter(creator=request.user)
+        contributions = Contributions.objects.filter(payee=request.user)
         context['contributions'] = contributions
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/contributions_received.html', context)
     except User.creatorprofile.RelatedObjectDoesNotExist:
         # Get a patron users history
-        contributions = Contributions.objects.filter(patron=request.user)
+        contributions = Contributions.objects.filter(payer=request.user)
         context['contributions'] = contributions
         return render(request, 'patron/admin/pages/contributions_made.html', context)

@@ -11,8 +11,8 @@
                 <th>#</th>
                 <th>Amount</th>
                 <th>Date</th>
-                <th>Subscription</th>
-                <th>Contribution method</th>
+                <th>Contributed to</th>
+                <th>Wallet Type</th>
                 <th>Account</th>
                 <th>Status</th>
             </tr>
@@ -23,7 +23,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ contribution.amount }}</td>
                 <td>{{ contribution.timestamp }}</td>
-                <td>{{ contribution.creator }}</td>
+                <td>{{ contribution.payee }}</td>
                 <td>{{ contribution.network_operator }}</td>
                 <td>{{ contribution.payer_account_number }}</td>
                 <td>{{ contribution.status |upper }}</td>

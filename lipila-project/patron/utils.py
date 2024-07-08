@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from typing import Union, List
-from patron.models import Tier, TierSubscriptions, Payments, Contributions, WithdrawalRequest
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from django.urls import reverse
 from django.db.models import Sum
 
@@ -52,7 +52,7 @@ def calculate_total_payments(creator):
         A decimal value representing the total amount of payments.
     """
     # Filter payments for subscriptions belonging to the given creator's tiers
-    payments = Payments.objects.filter(
+    payments = SubscriptionPayments.objects.filter(
         subscription__tier__creator=creator, status='success'
     ).aggregate(total_amount=Sum('amount'))
 

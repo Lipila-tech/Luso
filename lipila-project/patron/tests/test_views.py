@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import json
 # Custom models
 from accounts.models import PatronProfile, CreatorProfile
-from patron.models import Tier, TierSubscriptions, Payments, Contributions
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions
 
 
 class TestPatronViewsMore(TestCase):
@@ -168,7 +168,7 @@ class TestSubscription(TestCase):
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Paid ZMW 100 successfully!')
-        self.assertEqual(Payments.objects.count(), 1)
+        self.assertEqual(SubscriptionPayments.objects.count(), 1)
 
     @patch('patron.views.query_collection')
     def test_get_make_payment_valid(self, mock_get):

@@ -31,7 +31,7 @@
                     <span class="fa fa-eye">View</span>
                 </a>
                 <!-- Pay or unssubscribe button -->
-                <button type="button" class="pay-tier btn btn-sm btn-primary" data-form-url="{% url 'send_money' %}">
+                <button type="button" class="pay-tier btn btn-sm btn-primary" data-form-url="{% url 'send_money_id' type='subscription' id=sub.tier.id %}">
                     <span class="fa fa-pencil">Pay</span>
                 </button>
             </td>
