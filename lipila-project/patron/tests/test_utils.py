@@ -107,9 +107,9 @@ class TestUtilFunctions(TestCase):
             patron=self.user1, tier=tier1)
         subscription2 = TierSubscriptions.objects.create(
             patron=self.user2, tier=tier2)
-        SubscriptionPayments.objects.create(subscription=subscription1, amount=200,
+        SubscriptionPayments.objects.create(payee=subscription1, amount=200,
                                 reference_id=generate_reference_id(), status='success')
-        SubscriptionPayments.objects.create(subscription=subscription2, amount=200,
+        SubscriptionPayments.objects.create(payee=subscription2, amount=200,
                                 reference_id=generate_reference_id(), status='success')
         total_amounts1 = utils.calculate_total_payments(self.creator1_obj)
         total_amounts2 = utils.calculate_total_payments(self.creator2_obj)
@@ -121,11 +121,11 @@ class TestUtilFunctions(TestCase):
         Test if the function calculates and returns the expected values.
         """
         contri1 = Contributions.objects.create(
-            creator=self.creator_user1, patron=self.user1, amount=100, reference_id=generate_reference_id(), status='pending')
+            payee=self.creator_user1, payer=self.user1, amount=100, reference_id=generate_reference_id(), status='pending')
         contri2 = Contributions.objects.create(
-            creator=self.creator_user1, patron=self.user2, amount=100, reference_id=generate_reference_id(), status='success')
+            payee=self.creator_user1, payer=self.user2, amount=100, reference_id=generate_reference_id(), status='success')
         contri3 = Contributions.objects.create(
-            creator=self.creator_user2, patron=self.user1, amount=100, reference_id=generate_reference_id(), status='success')
+            payee=self.creator_user2, payer=self.user1, amount=100, reference_id=generate_reference_id(), status='success')
         self.assertEqual(utils.calculate_total_contributions(
             self.creator_user1), 100)
         self.assertEqual(utils.calculate_total_contributions(
@@ -142,9 +142,9 @@ class TestUtilFunctions(TestCase):
         subscription2 = TierSubscriptions.objects.create(
             patron=self.user2, tier=tier2)
         SubscriptionPayments.objects.create(
-            subscription=subscription1, amount=200, reference_id=generate_reference_id())
+            payee=subscription1, amount=200, reference_id=generate_reference_id())
         SubscriptionPayments.objects.create(
-            subscription=subscription2, amount=200, reference_id=generate_reference_id())
+            payee=subscription2, amount=200, reference_id=generate_reference_id())
         WithdrawalRequest.objects.create(
             creator=self.creator1_obj, amount=100, status='success')
         WithdrawalRequest.objects.create(
@@ -164,14 +164,14 @@ class TestUtilFunctions(TestCase):
         tier2 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         subscription1 = TierSubscriptions.objects.create(
             patron=self.user1, tier=tier1)
-        SubscriptionPayments.objects.create(subscription=subscription1, amount=200,
+        SubscriptionPayments.objects.create(payee=subscription1, amount=200,
                                 status='success', reference_id=generate_reference_id())
         WithdrawalRequest.objects.create(
             creator=self.creator1_obj, amount=100, status='success')
         WithdrawalRequest.objects.create(
             creator=self.creator1_obj, amount=100, status='success')
         Contributions.objects.create(
-            creator=self.creator_user1, patron=self.user1, amount=100, status='success')
+            payee=self.creator_user1, payer=self.user1, amount=100, status='success')
         self.assertEqual(utils.calculate_creators_balance(
             self.creator1_obj), 100)
         WithdrawalRequest.objects.create(
