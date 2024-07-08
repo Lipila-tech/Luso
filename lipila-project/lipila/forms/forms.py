@@ -16,7 +16,8 @@ class TierModelForm(BSModalModelForm):
     class Meta:
         model = Tier
         exclude = ['updated_at']
-                   
+                
+
 class SendMoneyForm(BSModalModelForm):
     class Meta:
         model = Contributions

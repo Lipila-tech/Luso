@@ -6,7 +6,7 @@
 {% block section %}
 
 {% include "_modal.html" %}
-
+{% include "_confirmation.html" %}
 <h2>Approve Withdrawal Requests</h2>
 {% if pending_requests %}
 <table class="table">
@@ -31,36 +31,16 @@
             <td>{{ request.request_date }}</td>
             <td>{{ request.status }}</td>
             <td>
-                <div>
-                    <input type="hidden" id="requestType-{{ forloop.counter }}" value="deposit">
-                    <input type="hidden" id="id_payment_method-{{ forloop.counter }}"
-                        value="{{request.network_operator}}">
-                    <input type="hidden" id="id_account_number-{{ forloop.counter }}"
-                        value="{{request.account_number}}">
-                    <input type="hidden" name="withdrawal_amount" id="id_amount-{{ forloop.counter }}"
-                        value="{{ request.amount }}">
-                </div>
-                <!-- <form method="POST" style="display: inline-block;" id="approve-form-{{ forloop.counter }}">
-                    {% csrf_token %}
-                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}"
-                        value="{{ request.pk }}">
-                    <button type="submit" name="action" id="id_action-approve-{{ forloop.counter }}"
-                        value="approve">Approve</button>
-                </form> -->
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <button id="withdraw" class="btn btn-primary" type="button" name="button">Approve</button>
-                    </div>
-                </div>
-                <form method="POST" style="display: inline-block;" id="reject-form-{{ forloop.counter }}">
-                    {% csrf_token %}
-                    <input type="hidden" name="withdrawal_request_id" id="id_request-{{ forloop.counter }}"
-                        value="{{ request.pk }}">
-                    <button type="submit" name="action" id="id_action-reject-{{ forloop.counter }}"
-                        value="reject">Reject</button>
-                    <input type="text" name="rejection_reason" id="id_reason-{{ forloop.counter }}"
-                        placeholder="Reason (optional)">
-                </form>
+                <!-- Approve request buttons -->
+                <button class="approve-request btn btn-md btn-primary"
+                    data-form-url="{% url 'approve_withdraw' request.pk %}">
+                    <span class="fa fa-trash"></span>
+                </button>
+                <!-- Reject request buttons -->
+                <button class="reject-request btn btn-md btn-primary"
+                    data-form-url="{% url 'reject_withdraw' request.pk %}">
+                    <span class="fa fa-trash"></span>
+                </button>
             </td>
         </tr>
         {% endfor %}
@@ -75,9 +55,47 @@
 {% block extrascripts %}
 <script type="text/javascript">
     $(function () {
-        // Login
-        $("#withdraw").modalForm({
-            formURL: "{% url 'withdrawals' %}"
+        $('.approve-request, .reject-request').click(function () {
+            const isApprove = $(this).hasClass('approve-request');
+            const formUrl = $(this).data('form-url');
+
+            $('#confirmationModal').modal('show');
+
+            $('.approve-button').off('click').click(() => {
+                // Handle approval logic
+                $.ajax({
+                    url: formUrl,
+                    type: 'POST',
+                    data: { is_approve: true }, // Add necessary data
+                    success: function (response) {
+                        // Handle success
+                        $('#confirmationModal').modal('hide');
+                        // Update the table or display a success message
+                    },
+                    error: function (error) {
+                        // Handle error
+                        console.error(error);
+                    }
+                });
+            });
+
+            $('.reject-button').off('click').click(() => {
+                // Handle rejection logic
+                $.ajax({
+                    url: formUrl,
+                    type: 'POST',
+                    data: { is_approve: false }, // Add necessary data
+                    success: function (response) {
+                        // Handle success
+                        $('#confirmationModal').modal('hide');
+                        // Update the table or display a success message
+                    },
+                    error: function (error) {
+                        // Handle error
+                        console.error(error);
+                    }
+                });
+            });
         });
     });
 </script>

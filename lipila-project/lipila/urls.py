@@ -30,9 +30,10 @@ urlpatterns = [
     path('payments/sendmoney/<str:type>/<int:id>', views.SendMoneyView.as_view(), name='send_money_id'),
     path('payments/sendmoney/', views.SendMoneyView.as_view(), name='send_money_transfer'),
     path('unsubscribe/<int:tier_id>', views.UnsubScribeView.as_view(), name='unsubscribe'),
-    
-
     path('tiers/', views.tiers, name = 'tiers'),
+
+    path('approve/<int:pk>', views.ApproveWithdrawModalView.as_view(), name='approve_withdraw'),
+    path('reject/<int:pk>', views.RejectWithdrawModalView.as_view(), name='reject_withdraw'),
 ]
 
 if settings.DEBUG:

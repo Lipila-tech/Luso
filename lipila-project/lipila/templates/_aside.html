@@ -21,6 +21,7 @@
     }
 </style>
 {% include '_modal.html' %}
+{% include '_confirmation.html' %}
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
@@ -186,10 +187,16 @@
 <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 <script type="text/javascript">
     $(function () {
-        // Login
+        // open withdrawal form
         $("#request-withdraw").modalForm({
             formURL: "{% url 'withdrawals' %}"
         });
+
+        // open confirmation
+        $("#confirm-withdraw").click(function () {
+            $('#confirmationModal').modal('show');
+        });
+
     });
 </script>
 {% endblock scripts %}

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib import messages
@@ -21,7 +22,7 @@ from lipila.forms.forms import (
     ContactForm,
     WithdrawalModelForm,
     TierModelForm,
-    SendMoneyForm
+    SendMoneyForm,
 )
 from .utils import query_collection
 from patron.models import Contributions
@@ -39,11 +40,33 @@ from patron.utils import calculate_creators_balance
 
 
 # Django-bootstrap Modal forms views
+
+class ApproveWithdrawModalView(View):
+    def post(self, request, pk):
+        # Your approval logic here
+        # Update withdrawal request status
+        # Call API for payment if approved
+        messages.success(request, 'Withdrawal approved successfully')
+        return redirect('approve_withdrawals')  # Replace with your list URL
+
+
+class RejectWithdrawModalView(View):
+    def post(self, request, pk):
+        # Your rejection logic here
+        # Update withdrawal request status
+        messages.success(request, 'Withdrawal rejected successfully')
+        return redirect('approve_withdrawals')
+
+
 class CreateWithdrawalRequest(BSModalCreateView):
-    template_name = 'lipila/modals/request_withdraw.html'
     form_class = WithdrawalModelForm
+    template_name = 'lipila/modals/request_withdraw.html'
     success_message = 'Success: created.'
     success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        return JsonResponse({'msg':'form is valid'})
+
 
 
 class TierUpdateView(BSModalUpdateView):
