@@ -87,7 +87,7 @@ class ApproveWithdrawalTest(FunctionalTest):
     
 
     @override_settings(DEBUG=True)
-    def test_approve_withdraw_authenticated(self):
+    def test_approve_withdraw_modal_cancel_btn(self):
         url = f'{self.base_url}/approve_withdrawals/'
         self.BROWSER.get(url)
 
@@ -100,13 +100,40 @@ class ApproveWithdrawalTest(FunctionalTest):
         
         # Confirmation modal opens
         modal = self.wait_for(element_id='confirmationModal')
-        self.BROWSER.find_element(By.CLASS_NAME, 'reject-request').click()
-        modal = self.wait_for(element_id='confirmationModal')
         self.BROWSER.find_element(By.ID, 'cancel').click()
+               
         
 
+class RejectWithdrawalTest(FunctionalTest):
     @override_settings(DEBUG=True)
-    def test_reject_withdraw_authenticated(self):
+    def setUp(self):
+        super().setUp()
+        # Create a creator user and a withdrawal request
+        self.user1 = User.objects.create_user(
+            username='testuser', password='testpassword', is_staff=True)
+        self.user2 = User.objects.create_user(
+            username='testcreator', password='testpassword')
+        self.creator_user = CreatorProfile.objects.create(
+            user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
+        self.withdrawal_request = WithdrawalRequest.objects.create(
+            creator=self.creator_user,
+            amount=100.00,
+            account_number='0966445333',
+        )
+        self.base_url = self.live_server_url
+        # login user
+        self.BROWSER.get(f'{self.base_url}/accounts/login/')
+        username_field = self.BROWSER.find_element(By.ID, 'id_username')
+        password_field = self.BROWSER.find_element(By.ID, 'id_password')
+        username_field.send_keys('testuser')
+        password_field.send_keys('testpassword')
+        login_button = self.BROWSER.find_element(
+            By.CSS_SELECTOR, "input[type='submit'][value='login']")
+        login_button.click()
+            
+
+    @override_settings(DEBUG=True)
+    def test_reject_withdraw_modal_cnacel_btn(self):
         url = f'{self.base_url}/approve_withdrawals/'
         self.BROWSER.get(url)
 
@@ -117,3 +144,4 @@ class ApproveWithdrawalTest(FunctionalTest):
         # User clicks the approve button
         self.BROWSER.find_element(By.CLASS_NAME, 'reject-request').click()
         modal = self.wait_for(element_id='confirmationModal')
+        self.BROWSER.find_element(By.ID, 'cancel').click()
