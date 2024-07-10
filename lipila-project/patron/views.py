@@ -253,34 +253,6 @@ def view_tiers(request):
                   {'user': request.user, 'tiers': tiers})
 
 
-@login_required
-def edit_tiers(request, tier_id):
-    """
-    renders a form to edit a crators tiers.
-
-    Args:
-        request: THe incoming HTTP request object.
-        tiers: The tier the creator user wants to edit.
-    """
-    tier = get_object_or_404(Tier, pk=tier_id)
-    if request.method == 'POST':
-        form = EditTiersForm(request.POST, instance=tier)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Tier Edited Successfully.")
-            return redirect(reverse('patron:tiers'))
-        else:
-            messages.error(request, "Invalid form. Please check your data.")
-        return render(request,
-                      'patron/admin/actions/edit_tiers.html',
-                      {'user': request.user, 'tier': tier_id, 'form': form})
-
-    form = EditTiersForm(instance=tier)
-    return render(request,
-                  'patron/admin/actions/edit_tiers.html',
-                  {'user': request.user, 'tier_id': tier_id, 'form': form})
-
-
 def creator_home(request, creator):
     """
     renders a creator home page.

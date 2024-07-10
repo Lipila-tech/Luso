@@ -18,16 +18,16 @@
         <td class="text-center">
           <!-- Read tier buttons -->
           <button type="button" class="read-tier btn btn-sm btn-primary" data-form-url="{% url 'view_tier' tier.id %}">
-            <span class="fa fa-eye"></span>
+            View
           </button>
           <!-- Update tier buttons -->
           <button type="button" class="update-tier btn btn-sm btn-primary" data-form-url="{% url 'update_tier' tier.id %}">
-            <span class="fa fa-pencil"></span>
+            Edit
           </button>
           <!-- Delete tier buttons -->
-          <button type="button" class="delete-tier btn btn-sm btn-danger" data-form-url="{% url 'delete_tier' tier.id %}">
-            <span class="fa fa-trash"></span>
-          </button>
+          <!-- <button type="button" class="delete-tier btn btn-sm btn-danger" data-form-url="{% url 'delete_tier' tier.id %}">
+            Del
+          </button> -->
         </td>
       </tr>
     {% endfor %}
