@@ -371,6 +371,7 @@ def approve_withdrawals(request):
         item['account_number'] = obj.account_number
         item['network_operator'] = obj.network_operator
         item['request_date'] = obj.request_date
+        item['reference_id'] = obj.reference_id
         item['balance'] = calculate_creators_balance(obj.creator)
         data.append(item)
     context = {}
