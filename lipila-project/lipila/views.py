@@ -23,8 +23,11 @@ from lipila.forms.forms import (
     ContactForm,
     WithdrawalModelForm,
     TierModelForm,
-    SendMoneyForm,
+    ContributionsForm,
+    TransferForm,
+    SubscriptionPaymentsForm
 )
+
 from .utils import query_collection
 from patron.models import Contributions
 from django.http import HttpResponseRedirect
@@ -115,8 +118,17 @@ class TierReadView(BSModalReadView):
 
 class SendMoneyView(BSModalFormView):
     template_name = 'lipila/modals/send_money.html'
-    form_class = SendMoneyForm
     success_url = 'transfers_history'
+
+    def get_form_class(self):
+        transaction_type = self.kwargs.get('type')
+        if transaction_type == 'contribution':
+            return ContributionsForm
+        elif transaction_type == 'subscription':
+            return SubscriptionPaymentsForm
+        elif transaction_type == 'transfer':
+            return TransferForm
+        return super().get_form_class()
 
     def form_valid(self, form):
         network_operator = form.cleaned_data['network_operator']
@@ -143,7 +155,7 @@ class SendMoneyView(BSModalFormView):
             model_class = Contributions
             payee = User.objects.get(pk=self.kwargs.get('id'))
             self.success_url = 'patron:contributions_history'
-        elif transaction_type == 'payment':
+        elif transaction_type == 'subscription':
             model_class = SubscriptionPayments
             payee = TierSubscriptions.objects.get(tier=self.kwargs.get('id'), patron=self.request.user)
             self.success_url = 'patron:subscriptions_history'

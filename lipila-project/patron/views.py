@@ -18,7 +18,6 @@ from lipila.utils import get_user_object, apology, query_collection, check_payme
 from patron.forms.forms import (
     CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
 from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
-from lipila.forms.forms import DepositForm, ContributeForm
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from patron.utils import (get_creator_subscribers,
                           get_creator_url, get_tier, calculate_total_payments,
@@ -400,7 +399,6 @@ def subscription_detail(request, tier_id):
 
 
 # PAYMENT HANDLING VIEWS
-
 @login_required
 def withdrawal_request(request):
     form = WithdrawalRequestForm()
@@ -417,81 +415,8 @@ def withdrawal_request(request):
     return render(request, 'patron/admin/actions/withdrawal_request.html', context)
 
 
-@login_required
-def make_payment(request, tier_id):
-    """
-    Makes a payment to the appropriate patrons based on (tier_sub).
-
-    Args:
-        request: The incoming HTTP request object.
-        tier: The tier to make a payment for.
-
-    Returns:
-        A redirected response to the dashboard.
-    """
-    tier = get_tier(tier_id)
-    if request.method == 'POST':
-        raw_data = request.body.decode('utf-8')  # Decode bytes to string
-        data = json.loads(raw_data)  # Parse JSON data
-        amount = data.get('amount')
-        account_number = data.get('payer_account_number')
-        description = data.get('description')
-        network_operator = data.get('network_operator')
-
-        if amount and account_number:
-            patron = User.objects.get(username=request.user)
-            subscription = TierSubscriptions.objects.get(
-                patron=patron, tier=tier)
-            reference_id = generate_reference_id()
-
-            # Create a payment object
-            payment = SubscriptionPayments.objects.create(
-                subscription=subscription, reference_id=reference_id)
-            payment.amount = amount
-            payment.network_operator = network_operator
-            payment.payer_account_number = account_number
-            payment.description = description
-
-            # Process deposit logic here (query lipila api)
-            payload = {
-                'amount': amount,
-                'network_operator': network_operator,
-                'payer_account_number': account_number,
-                'description': description
-            }
-            api_user = User.objects.get(pk=1)
-            # process payment
-            response = query_collection(
-                api_user.username, 'POST', reference_id, data=payload)
-
-            if response.status_code == 202:
-                payment.status = 'accepted'
-                payment.save()
-                # consider making an async function
-                if check_payment_status(reference_id, 'col') == 'success':
-                    payment.status = 'success'
-                    payment.save()
-                messages.success(request, f"Paid ZMW {amount} successfully!")
-                return JsonResponse({'message': 'Payment initiated successfully', 'reference_id': reference_id})
-            else:
-                payment.status = 'failed'
-                payment.save()
-                messages.error(
-                    request, 'Payment failed. Please try again later!')
-                return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
-
-        messages.error(request, f"Invalid data sent")
-        form = DepositForm()
-        tier = tier.name
-        return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
-    form = DepositForm()
-    form.id = 'payment-form'
-    tier = tier
-    return render(request, 'lipila/actions/deposit.html', {'form': form, 'tier': tier})
-
 
 # ACCOUNT HISTORY VIEWS
-
 
 @login_required
 def withdrawal_history(request):
