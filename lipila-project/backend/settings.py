@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import posixpath
 import environ
-
+import sys
 env = environ.Env()
 # read .env
 environ.Env.read_env()
@@ -183,8 +183,14 @@ REST_FRAMEWORK = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+
+STATICFILES_STORAGE = (
+    'django.contrib.staticfiles.storage.StaticFilesStorage'
+    if TESTING
+    else 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
 STATIC_URL = "static/"

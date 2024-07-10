@@ -46,20 +46,16 @@ def save_payment(model_class, **kwargs):
         network_operator=network_operator,
         description=description,
     )
-    payment.save()
     if model_class == Contributions:
         payment.payer = payer
         payment.payee = payee
-        payment.save()
 
     if model_class == SubscriptionPayments:    
         payment.payee = payee
-        payment.save()
         
     if model_class == Transfer:
         payment.payer = payer
         payment.payee_account_number = payee_account_number
-        payment.save()
     return payment
 
 

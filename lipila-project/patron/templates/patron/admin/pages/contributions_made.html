@@ -15,6 +15,7 @@
                 <th>Wallet Type</th>
                 <th>Account</th>
                 <th>Status</th>
+                <th>Reference_id</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +28,7 @@
                 <td>{{ contribution.network_operator }}</td>
                 <td>{{ contribution.payer_account_number }}</td>
                 <td>{{ contribution.status |upper }}</td>
+                <td>{{ contribution.reference_id }}</td>
             </tr>
             {% endfor %}
         </tbody>

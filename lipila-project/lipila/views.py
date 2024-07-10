@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+import logging
 from rest_framework.response import Response
 import json
 from django.db.models import Q
@@ -105,37 +106,41 @@ class TierReadView(BSModalReadView):
 class SendMoneyView(BSModalFormView):
     template_name = 'lipila/modals/send_money.html'
     form_class = SendMoneyForm
-    success_url = 'patron:contributions_history'
+    success_url = 'transfers_history'
 
-   
     def form_valid(self, form):
-        transaction_type = self.kwargs.get('type')
-        amount = form.cleaned_data['amount']
         network_operator = form.cleaned_data['network_operator']
-        payer_account_number = form.cleaned_data['payer_account_number']
-        description = form.cleaned_data['description']
-
-        reference_id = generate_reference_id()
-        payer = User.objects.get(username=self.request.user)
-        payee = ''
-        payee_account_number = ''
-        model_class = ''
-        
-        if transaction_type == 'contribution':
-            model_class = Contributions
-            payee = User.objects.get(pk=self.kwargs.get('id'))
-        elif transaction_type == 'payment':
-            model_class = SubscriptionPayments
-            payee = TierSubscriptions.objects.get(tier=self.kwargs.get('id'), patron=self.request.user)
-        else:
-            payee_account_number = form.cleaned_data['payee_account_number']
-            model_class = Transfer
 
         if network_operator != 'mtn':
             messages.error(
                 self.request, 'Sorry only mtn is suported at the moment')
             # redirect user to the same page
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
+        
+        transaction_type = self.kwargs.get('type')
+        amount = form.cleaned_data['amount']
+        payer_account_number = form.cleaned_data['payer_account_number']
+        description = form.cleaned_data['description']
+
+        payer = User.objects.get(username=self.request.user)
+        payee = ''
+        payee_account_number = ''
+        model_class = ''
+
+        reference_id = generate_reference_id() # generate uniq transaction id
+        
+        if transaction_type == 'contribution':
+            model_class = Contributions
+            payee = User.objects.get(pk=self.kwargs.get('id'))
+            self.success_url = 'patron:contributions_history'
+        elif transaction_type == 'payment':
+            model_class = SubscriptionPayments
+            payee = TierSubscriptions.objects.get(tier=self.kwargs.get('id'), patron=self.request.user)
+            self.success_url = 'patron:subscriptions_history'
+        elif transaction_type == 'transfer':
+            payee_account_number = form.cleaned_data['payee_account_number']
+            model_class = Transfer
+            self.success_url = 'transfers_history'
 
         # Save the payment using the utility function
         payment = save_payment(
@@ -168,15 +173,16 @@ class SendMoneyView(BSModalFormView):
             if check_payment_status(reference_id, 'col') == 'success':
                 payment.status = 'success'
                 payment.save()
-            messages.success(
-                self.request, f"Payment of K{payment.amount} successful!")
+                messages.success(
+                    self.request, f"Payment of K{payment.amount} successful!")
             return redirect(reverse_lazy(self.success_url))
         else:
+            failure_url = 'transfers_history'
             payment.status = 'failed'
             payment.save()
             messages.error(
                 self.request, 'Payment failed. Please try again later!')
-            return redirect(reverse_lazy(self.success_url))
+            return redirect(reverse_lazy(failure_url))
 
     def form_invalid(self, form):
         messages.error(self.request, f"Invalid data sent")

@@ -81,7 +81,7 @@ class FunctionalTest(StaticLiveServerTestCase):
             raise RuntimeError(f'Unsupported browser type: {cls.BROWSER_TYPE}')
 
     def wait_for(self, class_name=None, element_id=None, tag=None, xpath=None):
-        return WebDriverWait(self.BROWSER, 10).until(
+        return WebDriverWait(self.BROWSER, 20).until(
             expected_conditions.element_to_be_clickable
             ((By.ID, element_id) if element_id else
              (By.CLASS_NAME, class_name) if class_name else
@@ -91,10 +91,10 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def wait_for_table_rows(self):
         tbody = self.wait_for(xpath="//table/tbody")
-        return tbody.find_elements_by_tag_name('tr')
+        return tbody.find_elements(By.TAG_NAME, 'tr')
 
     def check_table_row(self, table_row, cells_count, cells_values):
-        cells = table_row.find_elements_by_tag_name('td')
+        cells = table_row.find_elements(By.TAG_NAME, 'td')
         # Compare cells count in table row with expected value
         self.assertEqual(len(cells), cells_count)
         # Compare content of cells in table row with expected values

@@ -124,7 +124,7 @@
                                 <input type="hidden" value="{{creator.pk}}" id="creator_id">
                                 <div class="row">
                                     <div class="col-12 mb-3">
-                                        <button id="send-money" class="btn btn-primary" type="button"
+                                        <button id="send-contribution" class="btn btn-primary" type="button"
                                             name="button">Contribute</button>
                                     </div>
                                 </div>
@@ -176,10 +176,16 @@
 {% endblock section %}
 {% block extrascripts %}
 <script type="text/javascript">
+
+
     $(function () {
         // make a contributions
-        $("#send-money").modalForm({
+        $("#send-contribution").modalForm({
             formURL: "{% url 'send_money_id' 'contribution' creator.pk %}"
+        });
+
+        $('form').on('submit', function () {
+            $(this).find('button[type="submit"]').prop('disabled', true);
         });
     });
 </script>
