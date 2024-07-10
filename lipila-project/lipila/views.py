@@ -46,20 +46,50 @@ from patron.utils import calculate_creators_balance
 # Django-bootstrap Modal forms views
 
 class ApproveWithdrawModalView(View):
+    success_url = 'processed_withdrawals'
+
     def post(self, request, pk):
         # Your approval logic here
         # Update withdrawal request status
         # Call API for payment if approved
         messages.success(request, 'Withdrawal approved successfully')
-        return redirect('approve_withdrawals')  # Replace with your list URL
+        return redirect(self.success_url)
 
 
 class RejectWithdrawModalView(View):
-    def post(self, request, pk):
-        # Your rejection logic here
-        # Update withdrawal request status
-        messages.success(request, 'Withdrawal rejected successfully')
-        return redirect('approve_withdrawals')
+    success_url = reverse_lazy('processed_withdrawals')
+
+    def post(self, request, pk):       
+        withdrawal_request_id = request.POST.get('request_id')
+        
+        if withdrawal_request_id:
+            try:
+                withdrawal_request = WithdrawalRequest.objects.get(
+                    pk=withdrawal_request_id)
+                processed_withdrawals = ProcessedWithdrawals.objects.create(
+                    withdrawal_request=withdrawal_request, status='pending')
+                
+                amount = withdrawal_request.amount
+                request_date = withdrawal_request.request_date
+                reference_id = withdrawal_request.reference_id
+
+                withdrawal_request.status = 'rejected'
+                withdrawal_request.processed_date = timezone.now()
+                withdrawal_request.save()
+
+                # Process withdraw
+                processed_withdrawals.processed_date = timezone.now()
+                processed_withdrawals.request_date = request_date
+                processed_withdrawals.reference_id = reference_id
+                processed_withdrawals.rejected_by = request.user
+                processed_withdrawals.status = 'rejected'
+                processed_withdrawals.save()
+                messages.success(
+                    request, f"Rejected.: Withdrawal request of K{amount} by {withdrawal_request.creator.user.username}")
+                return JsonResponse({'message':'OK', 'redirect_url':self.success_url})
+            except WithdrawalRequest.DoesNotExist:
+                messages.error(request, "Withdrawal request not found.")
+                return redirect('approve_withdrawals')
 
 
 class CreateWithdrawalRequest(BSModalCreateView):
@@ -69,7 +99,7 @@ class CreateWithdrawalRequest(BSModalCreateView):
     success_url = reverse_lazy('patron:withdraw_request')
 
     def form_valid(self, form):
-        reference_id = generate_reference_id() # generate uniq transaction id
+        reference_id = generate_reference_id()  # generate uniq transaction id
         withdrawal_request = form.save(commit=False)
         # Assuming user is authenticated creator
         withdrawal_request.creator = self.request.user.creatorprofile
@@ -80,7 +110,6 @@ class CreateWithdrawalRequest(BSModalCreateView):
             self.request,
             'Withdrawal request submitted successfully. We will review your request and process it within 2 business days.')
         return super().form_valid(form)
-
 
 
 class TierUpdateView(BSModalUpdateView):
@@ -138,7 +167,7 @@ class SendMoneyView(BSModalFormView):
                 self.request, 'Sorry only mtn is suported at the moment')
             # redirect user to the same page
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
-        
+
         transaction_type = self.kwargs.get('type')
         amount = form.cleaned_data['amount']
         payer_account_number = form.cleaned_data['payer_account_number']
@@ -149,15 +178,16 @@ class SendMoneyView(BSModalFormView):
         payee_account_number = ''
         model_class = ''
 
-        reference_id = generate_reference_id() # generate uniq transaction id
-        
+        reference_id = generate_reference_id()  # generate uniq transaction id
+
         if transaction_type == 'contribution':
             model_class = Contributions
             payee = User.objects.get(pk=self.kwargs.get('id'))
             self.success_url = 'patron:contributions_history'
         elif transaction_type == 'subscription':
             model_class = SubscriptionPayments
-            payee = TierSubscriptions.objects.get(tier=self.kwargs.get('id'), patron=self.request.user)
+            payee = TierSubscriptions.objects.get(
+                tier=self.kwargs.get('id'), patron=self.request.user)
             self.success_url = 'patron:subscriptions_history'
         elif transaction_type == 'transfer':
             payee_account_number = form.cleaned_data['payee_account_number']
@@ -186,7 +216,6 @@ class SendMoneyView(BSModalFormView):
 
         api_user = User.objects.get(pk=1)
 
-        
         response = query_collection(
             api_user.username, 'POST', reference_id, data=payload)
         if response.status_code == 202:
@@ -331,7 +360,7 @@ def approve_withdrawals(request):
         messages.error(request, "Withdrawal id or amount missing")
         return redirect('approve_withdrawals')
     pending_requests = WithdrawalRequest.objects.filter(
-        Q(status='pending') | Q(status='failed') | Q(status='rejected'))
+        Q(status='pending') | Q(status='failed'))
     data = []
     for obj in pending_requests:
         item = {}
@@ -360,9 +389,9 @@ def processed_withdrawals(request):
         items['creator'] = item.withdrawal_request.creator
         items['amount'] = item.withdrawal_request.amount
         items['status'] = item.status
-        items['approved'] = item.approved_date
-        items['rejected'] = item.rejected_date
-        items['reason'] = item.withdrawal_request.reason
+        items['request_date'] = item.request_date
+        items['processed_date'] = item.processed_date
+        items['reference_id'] = item.withdrawal_request.reference_id
         data.append(items)
     context = {}
     context['processed_withdrawals'] = data

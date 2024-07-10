@@ -16,8 +16,9 @@
             <th>Creator</th>
             <th>Amount Requested</th>
             <th>Account Balance</th>
-            <th>Request Date</th>
             <th>Status</th>
+            <th>Request Date</th>
+            <th>Reference ID</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -27,19 +28,20 @@
             <td>{{ forloop.counter }}</td>
             <td>{{ request.creator.user.username }}</td>
             <td>{{ request.amount }}</td>
+            <td>{{ request.status }}</td>
             <td>{{ request.balance }}</td>
             <td>{{ request.request_date }}</td>
-            <td>{{ request.status }}</td>
+            <td>{{ request.reference_id }}</td>
             <td>
                 <!-- Approve request buttons -->
                 <button class="approve-request btn btn-md btn-primary"
                     data-form-url="{% url 'approve_withdraw' request.pk %}">
-                    <span class="fa fa-trash"></span>
+                    Approve
                 </button>
                 <!-- Reject request buttons -->
                 <button class="reject-request btn btn-md btn-primary"
                     data-form-url="{% url 'reject_withdraw' request.pk %}">
-                    <span class="fa fa-trash"></span>
+                    Reject
                 </button>
             </td>
         </tr>
@@ -58,6 +60,8 @@
         $('.approve-request, .reject-request').click(function () {
             const isApprove = $(this).hasClass('approve-request');
             const formUrl = $(this).data('form-url');
+            const csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+            const requestId = extractRequestIdFromUrl(formUrl); // Extract request ID from URL
 
             $('#confirmationModal').modal('show');
 
@@ -66,11 +70,23 @@
                 $.ajax({
                     url: formUrl,
                     type: 'POST',
-                    data: { is_approve: true }, // Add necessary data
+                    data: { is_approve: true, request_id: requestId },
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
                     success: function (response) {
-                        // Handle success
-                        $('#confirmationModal').modal('hide');
-                        // Update the table or display a success message
+                        if (response.message) {
+                            if (response.redirect_url) {
+                                window.location.href = response.redirect_url;
+                            } else {
+                                // Handle success without redirection
+                                $('#confirmationModal').modal('hide');
+                                // Update the table or display a success message
+                            }
+                        } else {
+                            // Handle error
+                            console.error(response.error);
+                        }
                     },
                     error: function (error) {
                         // Handle error
@@ -85,10 +101,22 @@
                     url: formUrl,
                     type: 'POST',
                     data: { is_approve: false }, // Add necessary data
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
                     success: function (response) {
-                        // Handle success
-                        $('#confirmationModal').modal('hide');
-                        // Update the table or display a success message
+                        if (response.message) {
+                            if (response.redirect_url) {
+                                window.location.href = response.redirect_url;
+                            } else {
+                                // Handle success without redirection
+                                $('#confirmationModal').modal('hide');
+                                // Update the table or display a success message
+                            }
+                        } else {
+                            // Handle error
+                            console.error(response.error);
+                        }
                     },
                     error: function (error) {
                         // Handle error
@@ -97,6 +125,12 @@
                 });
             });
         });
+
+        function extractRequestIdFromUrl(url) {
+            // Extract the request ID from the URL (adjust based on your URL structure)
+            // For example, if the URL is '/approve_withdraw/123/', you can use:
+            return url.split('/').pop();
+        }
     });
 </script>
 {%endblock extrascripts%}

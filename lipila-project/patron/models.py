@@ -152,11 +152,11 @@ class WithdrawalRequest(models.Model):
 class ProcessedWithdrawals(models.Model):
     approved_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_withdrawals')
-    approved_date = models.DateTimeField(auto_now_add=True)
     rejected_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
-    rejected_date = models.DateTimeField(auto_now_add=True)
-    # reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
+    processed_date = models.DateTimeField(auto_now_add=True)
+    request_date = models.CharField(max_length=120, blank=True, null=True)
+    reference_id = models.CharField(max_length=120, blank=False, null=False)
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
     status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')

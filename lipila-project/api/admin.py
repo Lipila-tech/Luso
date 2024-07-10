@@ -10,7 +10,7 @@ from accounts.models import PatronProfile, CreatorProfile
 
 class ProcessedWithdrawalAdmin(admin.ModelAdmin):
     list_display = ('withdrawal_request', 'approved_by',
-                    'rejected_by', 'approved_date', 'rejected_date', 'status')
+                    'rejected_by', 'request_date', 'processed_date', 'status')
 
 
 class WithdrawalRequestAdmin(admin.ModelAdmin):
