@@ -406,7 +406,7 @@ def withdrawal_history(request):
             item['transaction_type'] = 'Withdraw Request'
             item['account_number'] = obj.account_number
             item['status'] = obj.status
-            item['reason'] = obj.reason
+            item['reference_id'] = obj.reference_id
             history.append(item)
 
     context['history'] = history

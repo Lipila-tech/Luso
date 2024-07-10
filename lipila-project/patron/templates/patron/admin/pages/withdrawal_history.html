@@ -1,6 +1,6 @@
 {% extends 'admin_layout.html' %}
 {% load static %}
-{% block title %} History {% endblock %}
+{% block title %}History {% endblock %}
 
 {% block section %}
 <h4>Transaction History</h4>
@@ -13,7 +13,7 @@
             <th>Transaction Type</th>
             <th>Account Number</th>
             <th>Status</th>
-            <th>Reason</th>
+            <th>Reference ID</th>
         </tr>
     </thead>
     <tbody>
@@ -25,7 +25,7 @@
             <td>{{ item.transaction_type }}</td>
             <td>{{ item.account_number }}</td>
             <td>{{ item.status |upper }}</td>
-            <td>{{ item.reason |upper }}</td>
+            <td>{{ item.reference_id }}</td>
         </tr>
         {% endfor %}
     </tbody>
