@@ -17,7 +17,7 @@ urlpatterns = [
      path('patron/all/', views.patron, name='patrons'),
      path('subscriptions/', views.subscriptions, name='subscriptions'),
      path('subscription/<int:tier_id>', views.subscription_detail, name='subscription_detail'),
-     path('withdraw/', views.creator_withdrawal, name='withdraw'),
+     path('withdraw/', views.withdrawal_request, name='withdraw_request'),
 
      # Profile views
      path('accounts/profile/', views.profile, name='profile'),

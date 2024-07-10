@@ -402,20 +402,7 @@ def subscription_detail(request, tier_id):
 # PAYMENT HANDLING VIEWS
 
 @login_required
-def creator_withdrawal(request):
-    if request.method == 'POST':
-        form = WithdrawalRequestForm(request.POST)
-        if form.is_valid():
-            withdrawal_request = form.save(commit=False)
-            # Assuming user is authenticated creator
-            withdrawal_request.creator = request.user.creatorprofile
-            withdrawal_request.status = 'pending'
-            withdrawal_request.save()
-            messages.success(
-                request,
-                'Withdrawal request submitted successfully. We will review your request and process it within 2 business days.')
-            # Redirect to same view after successful request
-            return redirect(reverse('patron:withdraw'))
+def withdrawal_request(request):
     form = WithdrawalRequestForm()
     form.id = 'withdraw-form'
     total_payments = calculate_creators_balance(request.user.creatorprofile)
@@ -427,7 +414,7 @@ def creator_withdrawal(request):
 
     context = {'form': form, 'pending_requests': pending_requests, 'approved_payouts': approved_payouts,
                'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
-    return render(request, 'patron/admin/actions/creator_withdrawal.html', context)
+    return render(request, 'patron/admin/actions/withdrawal_request.html', context)
 
 
 @login_required

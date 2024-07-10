@@ -138,7 +138,7 @@ class WithdrawalRequest(models.Model):
         CreatorProfile, on_delete=models.CASCADE, related_name='withdrawal_requests')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     account_number = models.CharField(max_length=30)
-    # reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
+    reference_id = models.CharField(max_length=120, blank=False, null=False)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
     network_operator = models.CharField(max_length=20, choices=ISP_CHOICES , default='')

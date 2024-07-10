@@ -1,0 +1,74 @@
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} Withdraw Funds {% endblock %}
+
+{% block section %}
+{% include '_modal.html' %}
+
+<div class="withdraw-form">
+
+    {% if total_payments < 10 %} <h2>You have low balance.</h2>
+        <h3>Wallet Balance: {{total_payments}}</h3>
+        {% else %}
+        <h3>Wallet Balance: {{total_payments}}</h3>
+        <div class="withdraw-form">
+            <div class="button-container">
+                <a>
+                    <button id="request-withdraw" class="btn btn-primary button" type="button"
+                        name="button">Withdraw</button>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        {% if pending_requests %}
+        <br><br>
+        <h5>Pending Requests</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Amount</th>
+                    <th>Request Date</th>
+                    <th>Transaction ID</th>
+                    <th>Account</th>
+                    <th>Payment Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in pending_requests %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ request.amount }}</td>
+                    <td>{{ request.request_date }}</td>
+                    <td>{{ request.reference_id|safe }}</td>
+                    <td>{{ request.account_number }}</td>
+                    <td>{{ request.network_operator }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+</div>
+{% endblock section %}
+{% block extrascripts %}
+<script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'assets/js/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<!-- You can alternatively load the minified version -->
+<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+<script type="text/javascript">
+    $(function () {
+        // open withdrawal form
+        $("#request-withdraw").modalForm({
+            formURL: "{% url 'withdrawals' %}"
+        });
+
+        // open confirmation
+        $("#confirm-withdraw").click(function () {
+            $('#confirmationModal').modal('show');
+        });
+
+    });
+</script>
+{% endblock extrascripts %}

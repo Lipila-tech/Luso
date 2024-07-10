@@ -20,8 +20,6 @@
         font-size: 16px;
     }
 </style>
-{% include '_modal.html' %}
-{% include '_confirmation.html' %}
 
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
@@ -40,12 +38,9 @@
             </a>
             <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                 <li>
-                    <div class="button-container">
-                        <a>
-                            <button id="request-withdraw" class="btn btn-primary button" type="button"
-                                name="button">Withdraw</button>
-                        </a>
-                    </div>
+                    <a href="{% url 'patron:withdraw_request' %}">
+                        <i class="bi bi-circle"></i><span>Withdraw</span>
+                    </a>
                 </li>
             </ul>
         </li><!-- End Forms Nav -->
@@ -179,24 +174,3 @@
     {% endif %}
     </ul>
 </aside><!-- End Sidebar-->
-{% block scripts %}
-<script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
-<script src="{% static 'assets/js/popper.min.js' %}"></script>
-<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-<!-- You can alternatively load the minified version -->
-<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
-<script type="text/javascript">
-    $(function () {
-        // open withdrawal form
-        $("#request-withdraw").modalForm({
-            formURL: "{% url 'withdrawals' %}"
-        });
-
-        // open confirmation
-        $("#confirm-withdraw").click(function () {
-            $('#confirmationModal').modal('show');
-        });
-
-    });
-</script>
-{% endblock scripts %}

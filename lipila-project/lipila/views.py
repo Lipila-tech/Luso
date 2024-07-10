@@ -63,10 +63,20 @@ class CreateWithdrawalRequest(BSModalCreateView):
     form_class = WithdrawalModelForm
     template_name = 'lipila/modals/request_withdraw.html'
     success_message = 'Success: created.'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('patron:withdraw_request')
 
     def form_valid(self, form):
-        return JsonResponse({'msg':'form is valid'})
+        reference_id = generate_reference_id() # generate uniq transaction id
+        withdrawal_request = form.save(commit=False)
+        # Assuming user is authenticated creator
+        withdrawal_request.creator = self.request.user.creatorprofile
+        withdrawal_request.status = 'pending'
+        withdrawal_request.reference_id = reference_id
+        withdrawal_request.save()
+        messages.success(
+            self.request,
+            'Withdrawal request submitted successfully. We will review your request and process it within 2 business days.')
+        return super().form_valid(form)
 
 
 
@@ -200,7 +210,17 @@ def tiers(request):
         )
         return JsonResponse(data)
 
-# Lipila staff users views
+
+@login_required
+def transfers_history(request):
+    """
+    Retrieves an authenticated Users transfers payment history.
+    """
+    context = {}
+    # Get a patron users history
+    payments = Transfer.objects.filter(payer=request.user)
+    context['transfers'] = payments
+    return render(request, 'lipila/pages/transfers_made.html', context)
 
 
 @login_required

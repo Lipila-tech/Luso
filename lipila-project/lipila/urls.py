@@ -21,6 +21,8 @@ urlpatterns = [
     path('terms-of-use/', views.pages_terms, name='terms'),
     path('privacy-policy/', views.pages_privacy, name='privacy'),
 
+    path('history/transfers/', views.transfers_history, name='transfers_history'),
+
     # Modal-forms urls
     path('withdrawals/request', views.CreateWithdrawalRequest.as_view(), name ='withdrawals'),
     path('update/<int:pk>', views.TierUpdateView.as_view(), name ='update_tier'),

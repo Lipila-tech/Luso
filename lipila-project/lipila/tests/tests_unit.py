@@ -12,7 +12,7 @@ from unittest.mock import patch
 class SendMoneyViewTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(
+        User.objects.create(
             username='testuser', password='password')
         self.creator = User.objects.create_user(
             username='creatoruser', password='password')
@@ -53,6 +53,7 @@ class SendMoneyViewTests(TestCase):
         self.assertRedirects(response, reverse('patron:contributions_history'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Payment of K1000 successful!')
+        self.assertEqual(Contributions.objects.count(), 1)
 
     @patch('lipila.views.generate_reference_id')
     @patch('lipila.views.query_collection')
@@ -63,13 +64,12 @@ class SendMoneyViewTests(TestCase):
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
         mock_save_payment.return_value = SubscriptionPayments(reference_id='ref123', amount=1000, payer_account_number='12345',
-                                                               description='Test', network_operator='mtn',
-                                                               payee=self.tier_subscription)
-
+                                                              description='Test', network_operator='mtn',
+                                                              payee=self.tier_subscription)
 
         url = reverse('send_money_id', kwargs={
                       'type': 'payment', 'id': self.tier_subscription.tier.pk})
-        
+
         data = {
             'amount': 1000,
             'network_operator': 'mtn',
@@ -93,14 +93,14 @@ class SendMoneyViewTests(TestCase):
         mock_check_payment_status.return_value = 'success'
         mock_save_payment.return_value = Transfer(reference_id='ref123', amount=1000, payer_account_number='12345',
                                                   network_operator='mtn', description='Test',
-                                                  payer=self.user, payee_account_number='98765')
+                                                  payer=self.contribution_user, payee_account_number='98765')
 
         url = reverse('send_money_transfer', kwargs={'type': 'transfer'})
         data = {
             'amount': 1000,
             'network_operator': 'mtn',
-            'payee_account_number': '12345',
-            'payer_account_number': '98765',
+            'payer_account_number': '12345',
+            'payee_account_number': '98765',
             'description': 'Test'
         }
         response = self.client.post(url, data)
@@ -109,8 +109,8 @@ class SendMoneyViewTests(TestCase):
         self.assertRedirects(response, reverse('transfers_history'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Payment of K1000 successful!')
+        self.assertEqual(Transfer.objects.count(), 1)
 
-    
     def test_send_money_invalid_network_operator(self):
         url = reverse('send_money_id', kwargs={
                       'type': 'payment', 'id': 1})
@@ -121,7 +121,7 @@ class SendMoneyViewTests(TestCase):
             'description': 'Test'
         }
         response = self.client.post(url, data)
-        
+
         self.assertEqual(response.status_code, 302)
         # self.assertRedirects(response, url)
         messages = list(get_messages(response.wsgi_request))
@@ -129,6 +129,7 @@ class SendMoneyViewTests(TestCase):
             str(messages[0]), 'Sorry only mtn is suported at the moment')
 
     def test_send_money_invalid_form(self):
+
         url = reverse('send_money_id', kwargs={
                       'type': 'contribution', 'id': self.contribution_user.id})
         data = {
@@ -142,3 +143,10 @@ class SendMoneyViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Invalid data sent')
+
+    def tearDown(self):
+        User.objects.all().delete()
+        Contributions.objects.all().delete()
+        SubscriptionPayments.objects.all().delete()
+        TierSubscriptions.objects.all().delete()
+        Transfer.objects.all().delete()

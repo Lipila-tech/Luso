@@ -9,8 +9,11 @@ from patron.models import WithdrawalRequest, Tier
 class WithdrawalModelForm(BSModalModelForm):
     class Meta:
         model = WithdrawalRequest
-        fields = ['network_operator', 'account_number', 'amount']
-
+        exclude = ['creator', 'reference_id', 'processed_date', 'request_date', 'status']
+        labels = {
+            'reason': 'Reference'
+        }
+       
 
 class TierModelForm(BSModalModelForm):
     class Meta:
@@ -18,10 +21,21 @@ class TierModelForm(BSModalModelForm):
         exclude = ['updated_at']
                 
 
-class SendMoneyForm(BSModalModelForm):
-    class Meta:
-        model = Contributions
-        fields = ('amount', 'payer_account_number', 'network_operator', 'description')
+class SendMoneyForm(BSModalForm):
+    amount = forms.DecimalField(max_digits=10, decimal_places=2)
+    network_operator = forms.CharField(max_length=50)
+    payer_account_number = forms.CharField(max_length=20)
+    description = forms.CharField(max_length=255, required=False)
+    payee_account_number = forms.CharField(max_length=20, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        transaction_type = self.initial.get('transaction_type')
+
+        if transaction_type == 'transfer' and not cleaned_data.get('payee_account_number'):
+            self.add_error('payee_account_number', 'This field is required for transfers.')
+
+        return cleaned_data
 
         
 class ContactForm(forms.ModelForm):
