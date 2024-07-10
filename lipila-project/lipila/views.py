@@ -46,22 +46,9 @@ from patron.utils import calculate_creators_balance
 # Django-bootstrap Modal forms views
 
 class ApproveWithdrawModalView(View):
-    success_url = 'processed_withdrawals'
-
-    def post(self, request, pk):
-        # Your approval logic here
-        # Update withdrawal request status
-        # Call API for payment if approved
-        messages.success(request, 'Withdrawal approved successfully')
-        return redirect(self.success_url)
-
-
-class RejectWithdrawModalView(View):
     success_url = reverse_lazy('processed_withdrawals')
-
-    def post(self, request, pk):       
+    def post(self, request, pk):
         withdrawal_request_id = request.POST.get('request_id')
-        
         if withdrawal_request_id:
             try:
                 withdrawal_request = WithdrawalRequest.objects.get(
@@ -69,6 +56,66 @@ class RejectWithdrawModalView(View):
                 processed_withdrawals = ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request, status='pending')
                 
+                amount = withdrawal_request.amount
+                network_operator = withdrawal_request.network_operator
+                payee_account_number = withdrawal_request.account_number
+                description = withdrawal_request.reason
+                reference_id = withdrawal_request.reference_id
+                
+                # Process withdrawal (initiate payout using lipila api)
+                payload = {
+                    'amount': amount,
+                    'network_operator': network_operator,
+                    'payee_account_number': payee_account_number,
+                    'description': description
+                }
+                response = query_disbursement(
+                    request.user, 'POST', reference_id, data=payload)
+
+                if response.status_code == 202:
+                    withdrawal_request.status = 'accepted'
+                    withdrawal_request.processed_date = timezone.now()
+                    withdrawal_request.save()
+
+                    # save to processed withdrawals
+                    processed_withdrawals.approved_by = request.user
+                    processed_withdrawals.status = 'accepted'
+                    processed_withdrawals.save()
+                    # consider making an async function
+                    if check_payment_status(reference_id, 'dis') == 'success':
+                        withdrawal_request.status = 'success'
+                        processed_withdrawals.status = 'success'
+                        withdrawal_request.save()
+                        processed_withdrawals.save()
+                    messages.success(
+                        request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
+                    return JsonResponse({'message': 'Ok', 'redirect_url': self.success_url})
+                else:
+                    withdrawal_request.status = 'failed'
+                    processed_withdrawals.status = 'failed'
+                    withdrawal_request.save()
+                    processed_withdrawals.save()
+                    messages.error(
+                        request, 'Payment failed. Please try again later!')
+                    return JsonResponse({'message': 'Failed', 'redirect_url': self.success_url})
+            except WithdrawalRequest.DoesNotExist:
+                messages.error(request, "Withdrawal request not found.")
+                return redirect('approve_withdrawals')
+
+
+class RejectWithdrawModalView(View):
+    success_url = reverse_lazy('processed_withdrawals')
+
+    def post(self, request, pk):
+        withdrawal_request_id = request.POST.get('request_id')
+
+        if withdrawal_request_id:
+            try:
+                withdrawal_request = WithdrawalRequest.objects.get(
+                    pk=withdrawal_request_id)
+                processed_withdrawals = ProcessedWithdrawals.objects.create(
+                    withdrawal_request=withdrawal_request, status='pending')
+
                 amount = withdrawal_request.amount
                 request_date = withdrawal_request.request_date
                 reference_id = withdrawal_request.reference_id
@@ -86,7 +133,7 @@ class RejectWithdrawModalView(View):
                 processed_withdrawals.save()
                 messages.success(
                     request, f"Rejected.: Withdrawal request of K{amount} by {withdrawal_request.creator.user.username}")
-                return JsonResponse({'message':'OK', 'redirect_url':self.success_url})
+                return JsonResponse({'message': 'OK', 'redirect_url': self.success_url})
             except WithdrawalRequest.DoesNotExist:
                 messages.error(request, "Withdrawal request not found.")
                 return redirect('approve_withdrawals')
@@ -117,21 +164,21 @@ class TierUpdateView(BSModalUpdateView):
     template_name = 'lipila/modals/edit_tier.html'
     form_class = TierModelForm
     success_message = 'Success: Tier was updated.'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('patron:profile')
 
 
 class TierDeleteView(BSModalDeleteView):
     model = Tier
     template_name = 'lipila/modals/delete_tier.html'
     success_message = 'Success: Tier was deleted.'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('patron:profile')
 
 
 class UnsubScribeView(BSModalDeleteView):
     model = TierSubscriptions
     template_name = 'lipila/modals/unsubscribe_tier.html'
     success_message = 'Success: You have unsubscribed.'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('patron:profile')
 
     def get_object(self, queryset=None):
         tier_id = self.kwargs.get('tier_id')
@@ -281,84 +328,12 @@ def staff_users(request, user):
 @login_required
 @user_passes_test(lambda u: u.is_staff)  # Only allow staff users
 def approve_withdrawals(request):
-    if request.method == 'POST':
-        raw_data = request.body.decode('utf-8')  # Decode bytes to string
-        data = json.loads(raw_data)  # Parse JSON data
-        withdrawal_request_id = data['request_id']
-        action = data['action']
-        amount = data['amount']
-        payee_account_number = data['payee_account_number']
-        description = data['description']
-        network_operator = data['network_operator']
+    """
+    Renders a table that lists all withdraw (pending or failed) requests.
 
-        if withdrawal_request_id and action:
-            try:
-                withdrawal_request = WithdrawalRequest.objects.get(
-                    pk=withdrawal_request_id)
-                processed_withdrawals = ProcessedWithdrawals.objects.create(
-                    withdrawal_request=withdrawal_request, status='pending')
-                reference_id = generate_reference_id()
-
-                if action == 'approve':
-                    # Process withdrawal (initiate payout using lipila api)
-                    payload = {
-                        'amount': amount,
-                        'network_operator': network_operator,
-                        'payee_account_number': payee_account_number,
-                        'description': description
-                    }
-                    response = query_disbursement(
-                        request.user, 'POST', reference_id, data=payload)
-
-                    if response.status_code == 202:
-                        withdrawal_request.status = 'accepted'
-                        withdrawal_request.processed_date = timezone.now()
-                        withdrawal_request.save()
-
-                        # save to processed withdrawals
-                        processed_withdrawals.approved_by = request.user
-                        processed_withdrawals.status = 'accepted'
-                        processed_withdrawals.save()
-                        # consider making an async function
-                        if check_payment_status(reference_id, 'dis') == 'success':
-                            withdrawal_request.status = 'success'
-                            processed_withdrawals.status = 'success'
-                            withdrawal_request.save()
-                            processed_withdrawals.save()
-                        messages.success(
-                            request, f"Withdrawal request for {withdrawal_request.creator.user.username} approved successfully.")
-                        return JsonResponse({'message': 'Payment initiated successfully'})
-                    else:
-                        withdrawal_request.status = 'failed'
-                        processed_withdrawals.status = 'failed'
-                        withdrawal_request.save()
-                        processed_withdrawals.save()
-                        messages.error(
-                            request, 'Payment failed. Please try again later!')
-                        return JsonResponse({'message': 'Payment failed', 'reference_id': reference_id})
-                elif action == 'reject':
-                    rejected_reason = description
-                    withdrawal_request.status = 'rejected'
-                    withdrawal_request.reason = rejected_reason
-                    withdrawal_request.processed_date = timezone.now()
-                    withdrawal_request.save()
-
-                    # save to processed withdrawals
-                    processed_withdrawals.rejected_by = request.user
-                    processed_withdrawals.status = 'rejected'
-                    processed_withdrawals.reason = rejected_reason
-                    processed_withdrawals.save()
-                    messages.success(
-                        request, f"Withdrawal request for {withdrawal_request.creator.user.username} has been rejected.")
-                    return JsonResponse({'message': 'Payment has been rejected successfully'})
-                else:
-                    messages.error(request, "Invalid action specified.")
-                return redirect('approve_withdrawals')
-            except WithdrawalRequest.DoesNotExist:
-                messages.error(request, "Withdrawal request not found.")
-                return redirect('approve_withdrawals')
-        messages.error(request, "Withdrawal id or amount missing")
-        return redirect('approve_withdrawals')
+    Args:
+        request: The incoming HTTP request object
+    """
     pending_requests = WithdrawalRequest.objects.filter(
         Q(status='pending') | Q(status='failed'))
     data = []
@@ -382,6 +357,12 @@ def approve_withdrawals(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)  # Only allow staff users
 def processed_withdrawals(request):
+    """
+    Renders a table that lists all processed withdrawal requests.
+
+    Args:
+        request: The incoming HTTP request object
+    """
     processed_withdrawals = ProcessedWithdrawals.objects.filter(
         Q(approved_by=request.user) | Q(rejected_by=request.user))
     data = []

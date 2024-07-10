@@ -407,10 +407,9 @@ def withdrawal_request(request):
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
     total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
-    approved_payouts = WithdrawalRequest.objects.filter(
-        creator=request.user.creatorprofile, status='success')
+    
 
-    context = {'form': form, 'pending_requests': pending_requests, 'approved_payouts': approved_payouts,
+    context = {'form': form, 'pending_requests': pending_requests,
                'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
     return render(request, 'patron/admin/actions/withdrawal_request.html', context)
 
