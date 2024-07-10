@@ -42,7 +42,7 @@
 {% else %}
 <h3>You have no subscriptions.</h3>
 <div class="patrons-container">
-    <a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a>
+    <a class="btn btn-primary" href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a>
 </div>
 
 {% endif %}

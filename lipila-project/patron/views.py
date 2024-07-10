@@ -386,7 +386,6 @@ def withdrawal_request(request):
     return render(request, 'patron/admin/actions/withdrawal_request.html', context)
 
 
-
 # ACCOUNT HISTORY VIEWS
 
 @login_required

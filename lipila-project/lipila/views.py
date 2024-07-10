@@ -299,6 +299,13 @@ def tiers(request):
         return JsonResponse(data)
 
 
+
+@login_required
+def transfer(request):
+    transfers =  Transfer.objects.filter(payer=request.user)
+    return render(request, 'lipila/actions/transfer.html', {'transfers':transfers})
+
+
 @login_required
 def transfers_history(request):
     """

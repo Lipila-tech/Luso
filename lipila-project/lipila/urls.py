@@ -24,6 +24,7 @@ urlpatterns = [
     path('history/transfers/', views.transfers_history, name='transfers_history'),
 
     # Modal-forms urls
+    path('transfers', views.transfer, name ='transfer'),
     path('withdrawals/request', views.CreateWithdrawalRequest.as_view(), name ='withdrawals'),
     path('update/<int:pk>', views.TierUpdateView.as_view(), name ='update_tier'),
     path('view/<int:pk>', views.TierReadView.as_view(), name ='view_tier'),

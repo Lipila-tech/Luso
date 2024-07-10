@@ -1,1 +1,45 @@
-<p>Under construction</p>
+{% extends 'admin_layout.html' %}
+{% load static %}
+{% block title %}Transaction History {% endblock %}
+
+{% block section %}
+
+<style>
+    table {
+
+        border-style: collapse;
+    }
+</style>
+
+<h2>Transfer History</h2>
+{% if transfers %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Paid from</th>
+            <th>Paid to</th>
+            <th>Status</th>
+            <th>Reference ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transfer in transfers %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ transfer.amount }}</td>
+            <td>{{ transfer.timestamp }}</td>
+            <td>{{ transfer.payer_account_number }}</td>
+            <td>{{ transfer.payee_account_number }}</td>
+            <td>{{ transfer.status |upper }}</td>
+            <td>{{ transfer.reference_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have not made any transfers yet.</p>
+{% endif %}
+{% endblock %}
