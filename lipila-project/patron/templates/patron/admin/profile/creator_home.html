@@ -1,13 +1,21 @@
-{% extends 'pages_layout.html' %}
+{% extends 'admin_layout.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% load patron_tags %}
-{% block title %}Home {% endblock %}
+{% block title %}Home{% endblock %}
+
+{% block extrastylesheets %}
+{% if not user.is_authenticated %}
+<link href="{% static 'assets/css/nav.css' %}" rel="stylesheet">
+{% endif %}
+{% endblock extrastylesheets %}
+
 {% block section %}
 
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
-    <div class="card p-4">
-        <div class=" image d-flex flex-column justify-content-center align-items-center"> <button
+{% include '_modal.html' %}
+<div class="subscription-container">
+    <div class="float-container">
+        <div class="user-image d-flex flex-column justify-content-center align-items-center"> <button
                 class="btn btn-secondary">
                 {% if creator.profile_image %}
                 {% if creator.profile_image.url %}
@@ -16,51 +24,83 @@
                 {% else %}
                 <img src="{% static 'assets/img/avator.jpeg' %}" height="100" width="100">
                 {% endif %}
-            </button> <span class="name mt-3">{{creator.patron_title}}</span> <span
-                class="idd">{{creator.creator_category}}</span>
-            <div class="text mt-3"> <span>{{creator.about}} </span> </div>
-            <div class="tiers-container">
-                <section class="admin-other-body">
-                    <div class="tiers-container">
-                        
+            </button> <span class="name mt-3">@{{creator.patron_title}}</span> <span
+                class="usernmae">{{creator.creator_category}}</span>
+            <div class="description text mt-3"> <span>{{creator.about}} </span> </div>
+            <div class="content">
+                <section class="">
+                    <div class="">
                         <div class="tier">
                             <div>
                                 <div>
-                                    <h3>Buy me a coffee</h3>
-                                    <p>Make a one-time contribution to support my work.</p>
+                                    <h3 class="title">Buy me a coffee</h3>
+                                    <span class="price">K50/Month</span>
+                                    <p class="description">Make a one-time contribution to support my work.</p>
                                 </div>
-                                <div class="price">K50/Month</div>
+                                <input type="hidden" value="{{creator.pk}}" id="creator_id">
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <button id="send-contribution" class="btn btn-primary" type="button"
+                                            name="button">Contribute</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        {% for tier in tiers %}
+                        {% if tier.visible_to_fans %}
+                        <div class="tier">
+                            <div>
+                                <div>
+                                    <h3 class="title">{{ tier.name }}</h3>
+                                    <span class="price">K{{ tier.price }}/Month</span>
+                                    <p class="description">{{ tier.description }}</p>
+                                </div>
                                 <div class="join-status">
-                                    <a href="{% url 'patron:contribute' tier_id=creator.pk %}"
-                                        class="edit-button joined">Contribute</a>
+                                    {% if user.is_authenticated and user|is_patron_subscribed:tier.id %}
+                                    <!-- View Subscription details button -->
+                                    <a type="button" class="read-tier btn btn-sm btn-primary"
+                                        href="{% url 'patron:subscription_detail' tier_id=tier.id  %}">
+                                        <span class="fa fa-eye">View</span>
+                                    </a>
+                                    {% else %}
+
+                                    <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post"
+                                        class="tier-form">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary">Join</button>
+                                    </form>
+                                    {% endif %}
                                 </div>
                             </div>
-                            {% for tier in tiers %}
-                            {% if tier.visible_to_fans %}
-                            <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post">
-                                {% csrf_token %}
-                                <div class="tier">
-                                    <div>
-                                        <h3>{{tier.name}}</h3>
-                                        <p>{{tier.description}}</p>
-                                    </div>
-                                    <div class="price">{{tier.price}}/Month</div>
-                                    {% endif %}
-                                    <div class="edit-button-container">
-                                        <button class="edit-button">Join</button>
-                                    </div>
-                                </div>
-                            </form>
-                            {% endfor %}
                         </div>
+                        {% endif %}
+                        {% endfor %}
                     </div>
-                </section>
             </div>
+            </section>
         </div>
-        <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i
-                    class="fa fa-twitter"></i></span> <span><i class="fa fa-facebook-f"></i></span> <span><i
-                    class="fa fa-instagram"></i></span> <span><i class="fa fa-linkedin"></i></span> </div>
     </div>
+    <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i
+                class="fa fa-twitter"></i></span> <span><i class="fa fa-facebook-f"></i></span> <span><i
+                class="fa fa-instagram"></i></span> <span><i class="fa fa-linkedin"></i></span> </div>
+    <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">{{patrons}}
+            <span class="follow">Patrons</span></span> </div>
 </div>
 </div>
-{% endblock %}
+</div>
+{% endblock section %}
+{% block extrascripts %}
+<script type="text/javascript">
+    $(function () {
+        // make a contributions
+        $("#send-contribution").modalForm({
+            formURL: "{% url 'send_money_id' 'contribution' creator.pk %}"
+        });
+
+        $('form').on('submit', function () {
+            $(this).find('button[type="submit"]').prop('disabled', true);
+        });
+    });
+</script>
+{%endblock extrascripts%}

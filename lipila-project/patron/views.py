@@ -255,7 +255,7 @@ def view_tiers(request):
 
 def creator_home(request, creator):
     """
-    renders a creator home page.
+    renders a creators home page.
 
     Args:
         request: The incoming HTTP request object.
@@ -264,30 +264,17 @@ def creator_home(request, creator):
     Returns:
         A rendered response with the creator details.
     """
-    if request.user.is_authenticated:
-        patron_user = User.objects.get(username=request.user)
-        creator_user = User.objects.get(username=creator)
-        creator_obj = CreatorProfile.objects.get(user=creator_user.id)
-        tiers = Tier.objects.filter(creator=creator_obj).values()
-        patrons = get_creator_subscribers(creator_obj)
-        return render(request,
-                      'patron/admin/profile/creator_home_auth.html',
-                      {'creator': creator_obj,
-                       'tiers': tiers,
-                       'patrons': len(patrons),
-                       })
-    else:
-        creator_user = User.objects.get(username=creator)
-        creator_obj = CreatorProfile.objects.get(user=creator_user.id)
-        tiers = Tier.objects.filter(creator=creator_obj).values()
-        patrons = get_creator_subscribers(creator_obj)
-        return render(request,
+    creator_user = User.objects.get(username=creator)
+    creator_obj = CreatorProfile.objects.get(user=creator_user.id)
+    tiers = Tier.objects.filter(creator=creator_obj).values()
+    patrons = get_creator_subscribers(creator_obj)
+    
+    return render(request,
                       'patron/admin/profile/creator_home.html',
                       {'creator': creator_obj,
                        'tiers': tiers,
                        'patrons': len(patrons),
                        })
-
 
 @login_required
 def join(request, tier_id):
@@ -342,12 +329,8 @@ def list_creators(request):
     Retrieves all the User's with a CreatorProfile.
     """
     creators = CreatorProfile.objects.all()
-    context = {}
-    context['creators'] = creators
-    if request.user.is_authenticated:
-        return render(request, 'patron/admin/pages/view_creators_auth.html', context)
-    return render(request, 'patron/admin/pages/view_creators_unauth.html', context)
-
+    return render(request, 'patron/admin/pages/view_creators.html', {'creators':creators})
+    
 
 @login_required
 def subscriptions(request):

@@ -1,0 +1,45 @@
+{% load static %}
+
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+
+        <a href="{% url 'index' %}" class="logo d-flex align-items-center me-auto me-xl-4">
+            <img src="{% static 'assets/img/logo-color.png' %}" alt="">
+            <span></span>
+        </a>
+        <!-- Nav Menu -->
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                {% if user.is_authenticated %}
+                <li><a class="active" href="{% url 'dashboard' user=user %}">Dashboard</a></li>
+                {% else %}
+                <li><a href="/#hero">Home</a></li>
+                {% endif %}
+                {% with target_fragment='#creators-info' %}
+                <li><a href="{% url 'patron:index' %}?fragment={{ target_fragment }}">Creators</a></li>
+                {% endwith %}
+                {% with target_fragment='#find-creator' %}
+                <li><a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a></li>
+                {% endwith %}
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/#pricing">Pricing</a></li>
+            </ul>
+
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav><!-- End Nav Menu -->
+
+        <div>
+            {% if user.is_authenticated %}
+            <p>
+            <form id="logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" id="btn-getstarted" class="btn-getstarted">Logout</button>
+            </form>
+            </p>
+            {% else %}
+            <p><a id="btn-getstarted" class="btn-getstarted" href="{% url 'login' %}">Login</a></p>
+            {% endif %}
+        </div>
+    </div>
+</header><!-- End Header -->

@@ -32,7 +32,9 @@
 
     <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/nav.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+  
 
     <!-- =======================================================
   * Template Name: Lipila
@@ -192,34 +194,6 @@
 
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
-    <script>
-        function nextStep() {
-            const amount = document.getElementsByName('amount');
-            console.log('amount', amount.values);
-            document.getElementById('step1').style.display = 'none';
-            document.getElementById('step2').style.display = 'block';
-            document.getElementById('payee').style.display = 'none';
-        }
-
-        // Add conditional navigation
-        function prevStep(location) {
-            // Go to setp 1 if user is on step 2
-            if (location === "step1") {
-                document.getElementById('step2').style.display = 'none';
-                document.getElementById('step1').style.display = 'block';
-                document.getElementById('payee').style.display = 'block';
-            } else {
-                // Otherwise redirect the user to the index page
-                window.location.assign('http://localhost:8000/');
-            }
-
-        }
-
-        function submitPayment() {
-            // Payment submission logic here
-            alert('Send money button clicked');
-        }
-    </script>
 </body>
 
 </html>

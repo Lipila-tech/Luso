@@ -6,13 +6,13 @@
 {% block section %}
 {% include '_modal.html' %}
 
-<div class="withdraw-form">
+<div class="">
 
     {% if total_payments < 10 %} <h2>You have low balance.</h2>
         <h3>Wallet Balance: {{total_payments}}</h3>
         {% else %}
         <h3>Wallet Balance: {{total_payments}}</h3>
-        <div class="withdraw-form">
+        <div class="">
             <div class="button-container">
                 <a>
                     <button id="request-withdraw" class="btn btn-primary button" type="button"
