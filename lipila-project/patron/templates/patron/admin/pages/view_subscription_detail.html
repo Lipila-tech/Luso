@@ -3,8 +3,6 @@
 {% block title %} Subscription detail {% endblock %}
 
 {% block section %}
-{% include '_modal.html' %}
-
 <h2>Subscription Details</h2>
 {% include '_modal.html' %}
 {% include '_tier_details.html' %}
@@ -14,11 +12,21 @@
 <script type="text/javascript">
 
     $(function () {
-        // Pay to tier buttons 
-        // Login
-        $("#send-money").modalForm({
-            formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}"
-        });
+        function PayTierModalForm() {
+            $("#send-money").modalForm({
+                formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}"
+
+            }
+            );
+            var amount = $('#amount').val()
+            var tier_name = $('#tier_name').val()
+            $('#modal').on('show.bs.modal', function (event) {
+                $(this).find('.modal-title').text(`Pay subscription to: ${tier_name}`);
+                $(this).find('.modal-price').text(`K${amount}`);
+            });
+        }
+
+        PayTierModalForm();
 
         // Delete tier buttons - formURL is retrieved from the data of the element
         $("#delete-subscription").modalForm({
