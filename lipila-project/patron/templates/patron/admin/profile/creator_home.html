@@ -37,7 +37,9 @@
                                     <span class="price">K50/Month</span>
                                     <p class="description">Make a one-time contribution to support my work.</p>
                                 </div>
-                                <input type="hidden" value="{{creator.pk}}" id="creator_id">
+                                <input type="hidden" name="amount" id="amount" value=50>
+                                <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
+            
                                 <div class="row">
                                     <div class="col-12 mb-3">
                                         <button id="send-contribution" class="btn btn-primary" type="button"
@@ -52,6 +54,7 @@
                         <div class="tier">
                             <div>
                                 <div>
+
                                     <h3 class="title">{{ tier.name }}</h3>
                                     <span class="price">K{{ tier.price }}/Month</span>
                                     <p class="description">{{ tier.description }}</p>
@@ -94,13 +97,19 @@
 <script type="text/javascript">
     $(function () {
         // make a contributions
-        $("#send-contribution").modalForm({
-            formURL: "{% url 'send_money_id' 'contribution' creator.pk %}"
-        });
+        function PayTierModalForm() {
+            $("#send-contribution").modalForm({
+                formURL: "{% url 'send_money_id' 'contribution' creator.pk %}"
+            });
+            var amount = $('#amount').val()
+            var tier_name = $('#tier_name').val()
+            $('#modal').on('show.bs.modal', function (event) {
+                $(this).find('.modal-title').text(`Buy ${tier_name} a coffe.`);
+                $(this).find('.modal-price').text(`K${amount}`);
+            });
+        }
 
-        $('form').on('submit', function () {
-            $(this).find('button[type="submit"]').prop('disabled', true);
-        });
+        PayTierModalForm();
     });
 </script>
 {%endblock extrascripts%}
