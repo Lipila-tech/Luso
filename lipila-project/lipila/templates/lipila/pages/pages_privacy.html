@@ -1,6 +1,11 @@
-{% extends 'pages_layout.html' %}
-
+{% extends 'admin_layout.html' %}
+{% load static %}
 {% block title %} P.P {% endblock %}
+{% block extrastylesheets %}
+{% if not user.is_authenticated %}
+<link href="{% static 'assets/css/nav.css' %}" rel="stylesheet">
+{% endif %}
+{% endblock extrastylesheets %}
 {% block content %} <h1>Privacy policy.</h1> {% endblock %}
 {% block section %}
 <section class="section terms">

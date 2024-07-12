@@ -434,37 +434,6 @@ h6 {
   box-shadow: none;
 }
 
-/* Accordion */
-.accordion-item {
-  border: 1px solid #ebeef4;
-}
-
-.accordion-button:focus {
-  outline: 0;
-  box-shadow: none;
-}
-
-.accordion-button:not(.collapsed) {
-  color: #012970;
-  background-color: #f6f9ff;
-}
-
-.accordion-flush .accordion-button {
-  padding: 15px 0;
-  background: none;
-  border: 0;
-}
-
-.accordion-flush .accordion-button:not(.collapsed) {
-  box-shadow: none;
-  color: #4154f1;
-}
-
-.accordion-flush .accordion-body {
-  padding: 0 0 15px 0;
-  color: #3e4f6f;
-  font-size: 15px;
-}
 
 /* Breadcrumbs */
 .breadcrumb {

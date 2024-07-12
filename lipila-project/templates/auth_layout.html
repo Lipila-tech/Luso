@@ -25,45 +25,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
     <!-- Template Main CSS File -->
     <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/nav.css' %}" rel="stylesheet">
 </head>
-
 <body>
-    <!-- ======= Header ======= -->
-    <header id="header" class="header fixed-top d-flex align-items-center">
-        <div class="container-fluid d-flex align-items-center justify-content-between">
-
-            <a href="{% url 'index' %}" class="logo d-flex align-items-center me-auto me-xl-4">
-                <img src="{% static 'assets/img/logo-color.png' %}" alt="">
-                <span></span>
-            </a>
-            <!-- Nav Menu -->
-            <nav id="navmenu" class="navmenu">
-                <ul>
-                    <li><a href="/#hero" class="active">Home</a></li>
-                    <li><a href="{% url 'patron:index' %}">Creators</a></li>
-                    <li><a href="{% url 'patron:creators' %}">Find a Creator</a></li>
-                    <li><a href="/#features">Features</a></li>
-                    <li><a href="/#pricing">Pricing</a></li>
-                </ul>
-
-                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-            </nav><!-- End Nav Menu -->
-
-            <div>
-                {% if user.is_authenticated %}
-                <p>
-                <form id="logout-form" method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-link">Logout</button>
-                </form>
-                </p>
-                {% else %}
-                <p><a id="btn-getstarted" class="btn-getstarted" href="{% url 'login' %}">Login</a></p>
-                {% endif %}
-            </div>
-
-        </div>
-    </header><!-- End Header -->
+    {% include '_header_unauth.html' %}
     <section class="vh-100" style="background-color: #9A616D;">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -97,12 +62,6 @@
             </div>
         </div>
     </section>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-    <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.umd.min.js"></script>
-
 </body>
 
 </html>

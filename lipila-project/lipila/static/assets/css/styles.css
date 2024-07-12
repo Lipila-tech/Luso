@@ -1,3 +1,15 @@
+:root {
+  --background-color: #ffffff;
+  --background-color-rgb: 255, 255, 255;
+  --default-color: #212529;
+  --default-color-rgb: 33, 37, 41;
+  --accent-color: #062;
+  --accent-color-rgb: 232, 69, 69;
+  --heading-color: #32353a;
+  --heading-color-rgb: 50, 53, 58;
+  --contrast-color: #ffffff;
+  --contrast-color-rgb: 255, 255, 255;
+}
 /*
 * Form Group 
 */
@@ -156,7 +168,7 @@ hr .new1 {
 
 
 .tier .edit-button {
-  background-color: #007bff;
+  background-color: var(--accent-color);
   color: #fff;
   padding: 5px 10px;
   border: none;
@@ -166,7 +178,7 @@ hr .new1 {
 }
 
 .tier .edit-button:hover {
-  background-color: #0056b3;
+  background-color: var(--accent-color-rgb);
 }
 
 @media (min-width: 768px) {
@@ -388,4 +400,36 @@ hr .new1 {
       margin-bottom: 20px;
       /* Add bottom margin */
   }
-} 
+}
+
+/* Accordion */
+.accordion-item {
+  border: 1px solid #ebeef4;
+}
+
+.accordion-button:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #012970;
+  background-color: #f6f9ff;
+}
+
+.accordion-flush .accordion-button {
+  padding: 15px 0;
+  background: none;
+  border: 0;
+}
+
+.accordion-flush .accordion-button:not(.collapsed) {
+  box-shadow: none;
+  color: #4154f1;
+}
+
+.accordion-flush .accordion-body {
+  padding: 0 0 15px 0;
+  color: #3e4f6f;
+  font-size: 15px;
+}
