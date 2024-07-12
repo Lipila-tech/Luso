@@ -14,14 +14,18 @@
     $(function () {
         function PayTierModalForm() {
             $("#send-money").modalForm({
-                formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}"
-
+                formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}",
+                asyncUpdate: true,
+                asyncSettings: {
+                    closeOnSubmit: true,
+                    addModalFormFunction: reinstantiateModalForms
+                }
             }
             );
             var amount = $('#amount').val()
             var tier_name = $('#tier_name').val()
             $('#modal').on('show.bs.modal', function (event) {
-                $(this).find('.modal-title').text(`Pay subscription to: ${tier_name}`);
+                $(this).find('.modal-price-title').text(`Pay subscription to: ${tier_name}`);
                 $(this).find('.modal-price').text(`K${amount}`);
             });
         }
@@ -32,6 +36,14 @@
         $("#delete-subscription").modalForm({
             formURL: "{% url 'unsubscribe' tier_id=subscription.tier.id %}"
         });
+        var tier_name = $('#tier_name').val()
+        $('#modal').on('show.bs.modal', function (event) {
+            $(this).find('.delete-text').text(`Are you sure you want to unsubscribe from ${tier_name}?`);
+        });
+
+        function reinstantiateModalForms() {
+            PayTierModalForm();
+        }
     })
 </script>
 {%endblock extrascripts%}
