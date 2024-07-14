@@ -244,7 +244,7 @@ class SendMoneyView(BSModalCreateView):
         form.instance.payee = payee
         form.instance.amount = amount
 
-        if transaction_type == 'transfer':
+        if transaction_type == 'transfer' or transaction_type == 'contribution' :
             form.instance.payer = payer
 
         # Manually save the form

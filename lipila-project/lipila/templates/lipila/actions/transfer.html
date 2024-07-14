@@ -21,6 +21,11 @@
       $("#transfer").modalForm({
         formURL: "{% url 'send_money_transfer' 'transfer' %}"
       });
+      $('#modal').on('show.bs.modal', function (event) {
+        $('#id_amount').keyup(function () {
+          $(".modal-price").text(`amount: K${$(this).val()}`);
+        });
+      });
     });
   </script>
   {% endblock extrascripts %}
