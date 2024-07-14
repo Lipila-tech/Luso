@@ -112,7 +112,7 @@ class SubscriptionPayments(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"{self.subscription}"
+        return f"{self.reference_id}"
 
 
 class Contributions(models.Model):

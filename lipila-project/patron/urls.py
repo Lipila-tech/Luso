@@ -27,11 +27,6 @@ urlpatterns = [
           name='create_creator_profile'),
      path('accounts/profile/create/patron', views.create_patron_profile,
           name='create_patron_profile'),
-
-     # Authenticated User's Transaction History endpoints
-     path('history/withdrawals/', views.withdrawal_history, name='withdrawals_history'),
-     path('subscription/history/paid/', views.payments_history, name='subscriptions_history'),
-     path('history/contribute/', views.contributions_history, name='contributions_history'),
 ]
 
 

@@ -17,47 +17,6 @@ from api.models import LipilaCollection, LipilaDisbursement
 
 from patron.models import Contributions, SubscriptionPayments, Transfer
 
-def save_payment(model_class, **kwargs):
-    """
-    Saves a payment to the database options are [contribution, payment, transfer].
-
-    Args:
-        model_class(cls): The model class where a transaction should be saved.
-        kwargs(dict): The data to be saved
-
-    Returns:
-        a payment object.
-    """
-    reference_id = kwargs.get('reference_id')
-    amount = kwargs.get('amount')
-    payer_account_number = kwargs.get('payer_account_number')
-    payee_account_number=kwargs.get('payee_account_number')
-    network_operator = kwargs.get('network_operator')
-    description = kwargs.get('description')
-    patron = kwargs.get('patron')
-    payee = kwargs.get('payee')
-    payer = kwargs.get('payer')
-    
-
-    payment = model_class.objects.create(
-        reference_id=reference_id,
-        amount=amount,
-        payer_account_number=payer_account_number,
-        network_operator=network_operator,
-        description=description,
-    )
-    if model_class == Contributions:
-        payment.payer = payer
-        payment.payee = payee
-
-    if model_class == SubscriptionPayments:    
-        payment.payee = payee
-        
-    if model_class == Transfer:
-        payment.payer = payer
-        payment.payee_account_number = payee_account_number
-    return payment
-
 
 def query_collection(user, method, reference_id, data={}):
     """

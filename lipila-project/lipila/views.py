@@ -192,15 +192,14 @@ class UnsubScribeView(BSModalDeleteView):
 
 class TierReadView(BSModalReadView):
     model = Tier
-    template_name = 'lipila/modals/view_tier.html'
-
-from braces.views import CsrfExemptMixin
-
-
-class SendMoneyView(CsrfExemptMixin, BSModalCreateView):
-    template_name = 'lipila/modals/send_money.html'
-    success_url = 'transfers_history'
+    template_name = 'lipila/modals/view_tier.html'       
     
+    
+class SendMoneyView(BSModalCreateView):
+    template_name = 'lipila/modals/send_money.html'
+    success_url = 'subscriptions_history'
+    success_message = 'Success: Subscription paid'
+     
     def get_form_class(self):
         transaction_type = self.kwargs.get('type')
         if transaction_type == 'contribution':
@@ -213,7 +212,6 @@ class SendMoneyView(CsrfExemptMixin, BSModalCreateView):
 
     def form_valid(self, form):
         
-                        
         network_operator = form.cleaned_data['network_operator']
 
         if network_operator != 'mtn':
@@ -222,47 +220,39 @@ class SendMoneyView(CsrfExemptMixin, BSModalCreateView):
             # redirect user to the same page
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
+        # Define variables
         transaction_type = self.kwargs.get('type')
         amount = ''
+        payee = ''
         payer_account_number = form.cleaned_data['payer_account_number']
         description = form.cleaned_data['description']
-
         payer = User.objects.get(username=self.request.user)
-        payee = ''
-        payee_account_number = ''
-        model_class = ''
-
         reference_id = generate_reference_id()  # generate uniq transaction id
 
         if transaction_type == 'contribution':
-            model_class = Contributions
             payee = User.objects.get(pk=self.kwargs.get('id'))
             amount = form.cleaned_data['amount']
-            self.success_url = 'patron:contributions_history'
+            self.success_url = reverse_lazy('contributions_history')
         elif transaction_type == 'subscription':
-            model_class = SubscriptionPayments
             payee = TierSubscriptions.objects.get(
-                tier=self.kwargs.get('id'), patron=self.request.user)
+                tier=self.kwargs.get('id'), patron=payer)
             amount = TierSubscriptions.objects.get(tier=self.kwargs.get('id')).tier.price
-            self.success_url = 'patron:subscriptions_history'
+            self.success_url = reverse_lazy('subscriptions_history')
         elif transaction_type == 'transfer':
-            payee_account_number = form.cleaned_data['payee_account_number']
+            payee = form.cleaned_data['payee_account_number']
             amount = form.cleaned_data['amount']
-            model_class = Transfer
-            self.success_url = 'transfers_history'
+            self.success_url = reverse_lazy('transfers_history')
 
-        # Save the payment using the utility function
-        payment = save_payment(
-            model_class,
-            reference_id=reference_id,
-            amount=amount,
-            payer_account_number=payer_account_number,
-            payee_account_number=payee_account_number,
-            network_operator=network_operator,
-            description=description,
-            payer=payer,
-            payee=payee
-        )
+        # Populate fields
+        form.instance.reference_id = reference_id
+        form.instance.payee = payee
+        form.instance.amount = amount
+
+        if transaction_type == 'transfer':
+            form.instance.payer = payer
+
+        # Manually save the form
+        self.object = form.save()
 
         payload = {
             'amount': amount,
@@ -276,25 +266,24 @@ class SendMoneyView(CsrfExemptMixin, BSModalCreateView):
         response = query_collection(
             api_user.username, 'POST', reference_id, data=payload)
         if response.status_code == 202:
-            payment.status = 'accepted'
-            payment.save()
+            form.instance.status = 'accepted'
+            messages.success(
+                    self.request, f"Payment of K{amount} successful!")
             if check_payment_status(reference_id, 'col') == 'success':
-                payment.status = 'success'
-                payment.save()
-                messages.success(
-                    self.request, f"Payment of K{payment.amount} successful!")
-            return redirect(reverse_lazy(self.success_url))
+                form.instance.status = 'success'
+            self.object = form.save()
+            return HttpResponseRedirect(self.success_url)
         else:
-            failure_url = 'transfers_history'
-            payment.status = 'failed'
-            payment.save()
+            form.instance.status = 'failed'
+            # Manually save the form
+            self.object = form.save()
             messages.error(
                 self.request, 'Payment failed. Please try again later!')
-            return redirect(reverse_lazy(failure_url))
+            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
     def form_invalid(self, form):
         messages.error(self.request, f"Invalid data sent")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
 
 def tiers(request):

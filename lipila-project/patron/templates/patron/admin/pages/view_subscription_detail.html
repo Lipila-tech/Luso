@@ -14,27 +14,21 @@
     $(function () {
         function PayTierModalForm() {
             var allowSubmit = true;
-            console.log('function called');
-            console.log(allowSubmit);
-
+           
             if (allowSubmit) {
-                $('#send-money').off('click').click(() => {
-                    $("#send-money").modalForm({
-                        formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}",
-                        modalID: "#create-modal"
-                    });
 
-                    var amount = $('#amount').val();
-                    var tier_name = $('#tier_name').val();
-                    console.log(`amount ${amount}`);
-
-                    $('#create-modal').on('show.bs.modal', function (event) {
-                        $(this).find('.modal-price-title').text(`Pay subscription to: ${tier_name}`);
-                        $(this).find('.modal-price').text(`K${amount}`);
-                    });
-
+                $("#send-money").modalForm({
+                    formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}",
+                    modalID: "#create-modal"
                 });
 
+                var amount = $('#amount').val();
+                var tier_name = $('#tier_name').val();
+                
+                $('#create-modal').on('show.bs.modal', function (event) {
+                    $(this).find('.modal-price-title').text(`Pay subscription to: ${tier_name}`);
+                    $(this).find('.modal-price').text(`K${amount}`);
+                });
                 allowSubmit = false;
             } else
                 console.log(allowSubmit);

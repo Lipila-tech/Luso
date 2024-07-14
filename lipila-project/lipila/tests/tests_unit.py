@@ -50,7 +50,7 @@ class SendMoneyViewTests(TestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('patron:contributions_history'))
+        self.assertRedirects(response, reverse('contributions_history'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Payment of K1000 successful!')
         self.assertEqual(Contributions.objects.count(), 1)
