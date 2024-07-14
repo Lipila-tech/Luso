@@ -103,8 +103,8 @@
             });
             var amount = $('#amount').val()
             var tier_name = $('#tier_name').val()
-            $('#modal').on('show.bs.modal', function (event) {
-                $(this).find('.modal-title').text(`Buy ${tier_name} a coffe.`);
+            $('#create-modal').on('show.bs.modal', function (event) {
+                $(this).find('.modal-title').text(`Buy ${tier_name} a coffee.`);
                 $(this).find('.modal-price').text(`K${amount}`);
             });
         }

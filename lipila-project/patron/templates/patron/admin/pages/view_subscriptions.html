@@ -61,7 +61,7 @@
             });
             var amount = $('#amount').val()
             var tier_name = $('#tier_name').val()
-            $('#create-modal').on('show.bs.modal', function (event) {
+            $('#modal').on('show.bs.modal', function (event) {
                 $(this).find('.modal-price-title').text(`Pay subscription to: ${tier_name}`);
                 $(this).find('.modal-price').text(`K${amount}`);
             });

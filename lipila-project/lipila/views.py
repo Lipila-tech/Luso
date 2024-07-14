@@ -7,9 +7,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-import logging
-from rest_framework.response import Response
-import json
 from django.db.models import Q
 from bootstrap_modal_forms.generic import (
     BSModalLoginView,
@@ -29,14 +26,13 @@ from lipila.forms.forms import (
 )
 
 from .utils import query_collection
-from patron.models import Contributions
 from django.http import HttpResponseRedirect
 # Custom Models
 from api.utils import generate_reference_id
 from lipila.utils import (
     apology, get_lipila_contact_info,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
-    query_disbursement, check_payment_status, save_payment)
+    query_disbursement, check_payment_status)
 from accounts.models import CreatorProfile
 from patron.models import (WithdrawalRequest, SubscriptionPayments,
                            ProcessedWithdrawals, Tier, TierSubscriptions, Transfer)
