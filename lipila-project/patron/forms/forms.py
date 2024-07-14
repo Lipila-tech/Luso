@@ -29,6 +29,10 @@ class CreateCreatorProfileForm(forms.ModelForm):
             'city',
         ]
 
+        labels = {
+            'about': 'Description'
+        }
+
 
 class EditCreatorProfileForm(forms.ModelForm):
     class Meta:

@@ -49,11 +49,32 @@
 
 
 /* select profile type */
-.card-container {
+.profile-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: #000;
+  color: #0083FD;
+}
+
+.create-btn {
+  color: rgba(var(--default-color-rgb), 0.8);
+  background-color: var(--contrast-color);
+  display: inline-block;
+  padding: 10px 40px;
+  border-radius: 4px;
+  border: 1px solid rgba(var(--default-color-rgb), 0.2);
+  transition: none;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--heading-font);
+  transition: 0.3s;
+}
+
+.create-btn:hover {
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
 }
 
 .image img {

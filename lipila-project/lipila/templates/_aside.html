@@ -25,6 +25,11 @@
                         <i class="bi bi-circle"></i><span>Transfer</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{% url 'kyc' %}">
+                        <i class="bi bi-circle"></i><span>KYC</span>
+                    </a>
+                </li>
             </ul>
         </li><!-- End Forms Nav -->
         <li class="nav-item">
@@ -100,8 +105,17 @@
             </a>
             <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
                 <li>
+                    <a href="{% url 'patron:create_creator_profile' %}">
+                        <i class="bi bi-circle"></i><span>Create a Patron Profile</span>
+                    </a>
+                </li>
+                <li>
                     {% with target_fragment='#find-creator' %}
-                <li><a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a Creator</a></li>
+                <li>
+                    <a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">
+                        <i class="bi bi-circle"></i><span>Find a Creator</span>
+                    </a>
+                </li>
                 {% endwith %}
         </li>
     </ul>

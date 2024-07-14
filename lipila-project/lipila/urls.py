@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from patron import views as patron_views
 
 urlpatterns = [
+    # cretaor kyc
+    path('knowyourcustomer/', views.kyc, name='kyc'),
     # lipila public URLS
     path('', views.index, name='index'),
     path('contact', views.contact, name='contact'),

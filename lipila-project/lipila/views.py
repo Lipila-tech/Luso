@@ -434,3 +434,8 @@ def contact(request):
         form = ContactForm()
         context['form'] = form
     return render(request, 'index.html', context)
+
+
+@login_required
+def kyc(request):
+    return render(request, 'lipila/admin/kyc.html')
