@@ -209,3 +209,15 @@ else:
     EMAIL_HOST_PASSWORD = env('EMAIL_PW')
 
     DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
+
+
+# set timezone
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'Africa/Lusaka'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = False

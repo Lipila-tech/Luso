@@ -60,6 +60,7 @@ class ApproveWithdrawModalView(View):
                 network_operator = withdrawal_request.network_operator
                 payee_account_number = withdrawal_request.account_number
                 description = withdrawal_request.reason
+                request_date = withdrawal_request.request_date
                 reference_id = withdrawal_request.reference_id
                 
                 # Process withdrawal (initiate payout using lipila api)
@@ -80,6 +81,8 @@ class ApproveWithdrawModalView(View):
                     # save to processed withdrawals
                     processed_withdrawals.approved_by = request.user
                     processed_withdrawals.status = 'accepted'
+                    processed_withdrawals.reference_id = reference_id
+                    processed_withdrawals.request_date = request_date
                     processed_withdrawals.save()
                     # consider making an async function
                     if check_payment_status(reference_id, 'dis') == 'success':
@@ -191,11 +194,13 @@ class TierReadView(BSModalReadView):
     model = Tier
     template_name = 'lipila/modals/view_tier.html'
 
+from braces.views import CsrfExemptMixin
 
-class SendMoneyView(BSModalFormView):
+
+class SendMoneyView(CsrfExemptMixin, BSModalCreateView):
     template_name = 'lipila/modals/send_money.html'
     success_url = 'transfers_history'
-
+    
     def get_form_class(self):
         transaction_type = self.kwargs.get('type')
         if transaction_type == 'contribution':
@@ -207,6 +212,8 @@ class SendMoneyView(BSModalFormView):
         return super().get_form_class()
 
     def form_valid(self, form):
+        
+                        
         network_operator = form.cleaned_data['network_operator']
 
         if network_operator != 'mtn':
@@ -216,7 +223,7 @@ class SendMoneyView(BSModalFormView):
             return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
         transaction_type = self.kwargs.get('type')
-        amount = form.cleaned_data['amount']
+        amount = ''
         payer_account_number = form.cleaned_data['payer_account_number']
         description = form.cleaned_data['description']
 
@@ -230,14 +237,17 @@ class SendMoneyView(BSModalFormView):
         if transaction_type == 'contribution':
             model_class = Contributions
             payee = User.objects.get(pk=self.kwargs.get('id'))
+            amount = form.cleaned_data['amount']
             self.success_url = 'patron:contributions_history'
         elif transaction_type == 'subscription':
             model_class = SubscriptionPayments
             payee = TierSubscriptions.objects.get(
                 tier=self.kwargs.get('id'), patron=self.request.user)
+            amount = TierSubscriptions.objects.get(tier=self.kwargs.get('id')).tier.price
             self.success_url = 'patron:subscriptions_history'
         elif transaction_type == 'transfer':
             payee_account_number = form.cleaned_data['payee_account_number']
+            amount = form.cleaned_data['amount']
             model_class = Transfer
             self.success_url = 'transfers_history'
 

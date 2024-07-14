@@ -7,7 +7,7 @@ from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from patron.models import WithdrawalRequest, Tier, SubscriptionPayments, Transfer
 
 
-class BaseTransactionForm(BSModalForm):
+class BaseTransactionForm(BSModalModelForm):
     network_operator = forms.ChoiceField(choices=ISP_CHOICES)
     payer_account_number = forms.CharField(max_length=300)
     description = forms.CharField(max_length=200, required=False)
@@ -26,13 +26,11 @@ class TransferForm(BaseTransactionForm):
 class SubscriptionPaymentsForm(BaseTransactionForm):
     class Meta:
         model = SubscriptionPayments
-        fields = ['amount', 'payer_account_number',
+        fields = ['payer_account_number',
                   'network_operator', 'description']
-
-        class Meta:
-            labels = {
-                'network_operator': 'Wallet type'
-            }
+        labels = {
+            'network_operator': 'Wallet type'
+        }
 
 
 class ContributionsForm(BaseTransactionForm):
@@ -40,6 +38,8 @@ class ContributionsForm(BaseTransactionForm):
 
     class Meta:
         model = Contributions
+        fields = ['amount', 'payer_account_number',
+                  'network_operator', 'description']
 
 
 class WithdrawalModelForm(BSModalModelForm):
