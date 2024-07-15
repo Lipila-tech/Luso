@@ -191,7 +191,7 @@ def dashboard(request):
         url = get_creator_url('index', creator, domain='localhost:8000')
         context['user'] = get_user_object(creator)
         context['url'] = url
-        return render(request, 'patron/admin/index_creator.html', context)
+        return render(request, 'patron/admin/pages/index_creator.html', context)
     
 
 
