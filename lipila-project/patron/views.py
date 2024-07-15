@@ -35,9 +35,10 @@ def profile(request):
         try:
             creator = request.user.creatorprofile
             context['user'] = get_user_object(creator)
-            return render(request, 'patron/admin/profile/creator-profile.html', context)
+            return render(request, 'patron/admin/profile/profile_creator.html', context)
         except CreatorProfile.DoesNotExist:
-            return redirect(reverse('patron:creators'))
+            context['user'] = get_user_object(request.user)
+            return render(request, 'patron/admin/profile/profile_patron.html', context)
    
 
 @login_required
