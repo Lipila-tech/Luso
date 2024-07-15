@@ -1,22 +1,16 @@
-from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
-from django.http import JsonResponse
 from django.views import View
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
-import json
 # custom modules
-from api.utils import generate_reference_id
-from accounts.models import CreatorProfile, PatronProfile
-from business.models import Product
-from lipila.utils import get_user_object, apology, query_collection, check_payment_status
+from accounts.models import CreatorProfile
+from lipila.utils import get_user_object
 from patron.forms.forms import (
-    CreatePatronProfileForm, CreateCreatorProfileForm, EditTiersForm, WithdrawalRequestForm)
+    CreatePatronProfileForm, CreateCreatorProfileForm, WithdrawalRequestForm)
 from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from patron.utils import (get_creator_subscribers,
@@ -43,10 +37,8 @@ def profile(request):
             context['user'] = get_user_object(creator)
             return render(request, 'patron/admin/profile/creator-profile.html', context)
         except CreatorProfile.DoesNotExist:
-            # Access creator profile using OneToOne relation
-            context['user'] = get_user_object(request.user)
-            return render(request, 'patron/admin/profile/patron-profile.html', context)
-
+            return redirect(reverse('patron:creators'))
+   
 
 @login_required
 def create_creator_profile(request):
@@ -203,9 +195,9 @@ def dashboard(request):
 
 
 @login_required
-def patron(request):
+def view_patrons_view(request):
     """
-    Retrives a users patrons.
+    Retrives all patrons subscribed to a user.
     """
     context = {}
     creator = get_object_or_404(CreatorProfile, user=request.user)
@@ -254,8 +246,9 @@ def creator_home(request, creator):
                        'patrons': len(patrons),
                        })
 
+
 @login_required
-def join(request, tier_id):
+def subscribe_view(request, tier_id):
     """Handles user subscription to a creator.
     Args:
         request: The incoming HTTP request object.
@@ -275,31 +268,6 @@ def join(request, tier_id):
             request, f"Welcome! You Joined my {tier.name} patrons.")
     return redirect(reverse('patron:creator_home', kwargs={"creator": creator}))
 
-
-@require_POST
-@login_required
-def unsubscribe_patron(request, tier_id):
-    """
-    A view to unsubscribe a user from a tier.
-
-    Args:
-        request: The incoming HTTP request object.
-        tier_id: The ID of the Tier to unsubscribe from.
-
-    Returns:
-        A redirect response to the current page after unsubscribing (or None if not subscribed).
-    """
-    tier = get_tier(tier_id)
-    creator = tier.creator
-    try:
-        subscription = TierSubscriptions.objects.get(
-            patron=request.user, tier__pk=tier_id)
-        subscription.delete()
-        messages.success(
-            request, f"Successfully unsubscribed from {subscription.tier.name}")
-        return redirect(reverse('patron:creator_home', kwargs={"creator": creator}))
-    except TierSubscriptions.DoesNotExist:
-        pass  # User not subscribed, do nothing
 
 
 def list_creators(request):

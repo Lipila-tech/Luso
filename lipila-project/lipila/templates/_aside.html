@@ -12,36 +12,36 @@
         {% else %}
         {% include '_aside_regular.html' %}
         {% endif %}
-    </ul>
-    <li class="nav-heading">Pages</li>
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'patron:profile' %}">
-            <i class="bi bi-person"></i>
-            <span>Profile</span>
-        </a>
-    </li><!-- End Profile Page Nav -->
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'faq' %}">
-            <i class="bi bi-question-circle"></i>
-            <span>F.A.Q</span>
-        </a>
-    </li><!-- End F.A.Q Page Nav -->
+        <li class="nav-heading">Pages</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'patron:profile' %}">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+        </li><!-- End Profile Page Nav -->
 
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'index' %}">
-            <i class="bi bi-envelope"></i>
-            <span>Contact Us</span>
-        </a>
-    </li><!-- End Contact Page Nav -->
-    {% if request.user.is_authenticated %}
-    <li class="nav-item">
-        <i class="bi bi-logout"></i>
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <span><button type="submit" class="btn btn-dark">Logout</button></span>
-        </form>
-    </li><!-- End Contact Page Nav -->
-    {% endif %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'faq' %}">
+                <i class="bi bi-question-circle"></i>
+                <span>F.A.Q</span>
+            </a>
+        </li><!-- End F.A.Q Page Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'index' %}">
+                <i class="bi bi-envelope"></i>
+                <span>Contact Us</span>
+            </a>
+        </li><!-- End Contact Page Nav -->
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+            <i class="bi bi-logout"></i>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <span><button type="submit" class="btn btn-dark">Logout</button></span>
+            </form>
+        </li><!-- End Contact Page Nav -->
+        {% endif %}
     </ul>
 </aside><!-- End Sidebar-->

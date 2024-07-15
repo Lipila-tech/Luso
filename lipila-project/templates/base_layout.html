@@ -34,7 +34,7 @@
     <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/nav.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
-  
+
 
     <!-- =======================================================
   * Template Name: Lipila
@@ -58,8 +58,8 @@
             <!-- Nav Menu -->
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    {% if request.user.is_authenticated %}
-                    <li><a class="active" href="{% url 'dashboard' %}">Dashboard</a></li>
+                    {% if request.user.creatorprofile or request.user.is_staff %}
+                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                     {% else %}
                     <li><a href="/#hero">Home</a></li>
                     {% endif %}
@@ -125,7 +125,7 @@
                 <div class="col-lg-2 col-6 footer-links">
                     <h4>Quick Links</h4>
                     <ul>
-                        {% if request.user.is_authenticated %}
+                        {% if request.user.creatorprofile or request.user.is_staff %}
                         <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                         {% else %}
                         <li><a href="/#hero">Home</a></li>
