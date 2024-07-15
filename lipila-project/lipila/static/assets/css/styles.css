@@ -410,6 +410,7 @@ hr .new1 {
   border: 2px solid yellow;
   margin-left: 20px;
   margin-bottom: 20px;
+  border-radius: 5%;
 }
 
 /* Responsive adjustments */
@@ -443,8 +444,9 @@ hr .new1 {
   background-color: #000;
   border: none;
   border-radius: 5px;
-  padding: 12px 16px;
+  padding: 6px 16px;
   cursor: pointer;
+  display: block;
 }
 
 .btn-primary:hover {
@@ -455,8 +457,8 @@ hr .new1 {
 
 @media screen and (max-width: 480px) {
   .btn-primary {
-    display: block;
     font-size: 18px;
+    padding: 6px 8px;
   }
 
   h1 {
