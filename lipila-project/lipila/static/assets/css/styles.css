@@ -10,6 +10,7 @@
   --contrast-color: #ffffff;
   --contrast-color-rgb: 255, 255, 255;
 }
+
 /*
 * Form Group 
 */
@@ -91,7 +92,7 @@
   border-radius: 10%
 } */
 
-.name {
+.creator-info .title{
   font-size: 22px;
   font-weight: bold
 }
@@ -126,7 +127,7 @@
 }
 
 .text span {
-  font-size: 13px;
+  font-size: 24px;
   color: #545454;
   font-weight: 500
 }
@@ -164,7 +165,7 @@ hr .new1 {
   margin-bottom: 20px;
 }
 
-.tier {
+.tier-card {
   background-color: #f8f9fa;
   padding: 20px;
   border-radius: 10px;
@@ -176,41 +177,37 @@ hr .new1 {
   align-items: center;
 }
 
-.tier div {
+.tier-card .price {
+  text-align: left;
+  color: #000;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.tier-card div {
   flex: 1 1 100%;
   padding: 10px 0;
   box-sizing: border-box;
 }
 
-.tier p {
-  margin: 10px 0 0;
+.tier-card p {
+  margin: 0 0 8px 0;
   color: #6c757d;
+  font-size: 24px;
+  text-align: left;
 }
 
-
-.tier .edit-button {
-  background-color: var(--accent-color);
-  color: #fff;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.tier .edit-button:hover {
-  background-color: var(--accent-color-rgb);
-}
 
 @media (min-width: 768px) {
-  .tier div {
+  .tier-card div {
     flex: 1 1 45%;
     padding: 10px;
   }
 
-  .tier .price,
-  .tier .edit-button {
-    text-align: right;
+  .tier-card .price {
+    text-align: left;
+    color: #000;
+    font-weight: bold;
   }
 }
 
@@ -224,7 +221,7 @@ hr .new1 {
 }
 
 #totals {
-  color:orange
+  color: orange
 }
 
 /* Message style */
@@ -319,7 +316,15 @@ hr .new1 {
 
 .name {
   font-size: 1.5em;
-  text-transform: uppercase;
+}
+
+.about {
+  font-size: 24px;
+}
+
+.category {
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .title {
@@ -390,19 +395,21 @@ hr .new1 {
 
 .creator-container {
   background-color: rgb(255, 255, 255);
-  border-radius: 1em;
   text-align: center;
   font-family: 'Open Sans Condensed', sans-serif;
   font-size: 1em;
   display: flex;
-  padding: 15px;
-  padding-top: 40px;
+  flex-wrap: wrap;
+  padding-right: 20px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-.float-container {
-  flex: 1;
+.creator-profile {
+  flex-basis: calc(100% / 4);
   border: 2px solid yellow;
-  margin-right: 20px;
+  margin-left: 20px;
+  margin-bottom: 20px;
 }
 
 /* Responsive adjustments */
@@ -410,19 +417,72 @@ hr .new1 {
 
   /* Adjust breakpoint as needed */
   .creator-container {
-      flex-direction: column;
-      padding: 15px;
-      /* Change layout to vertical */
+    flex-direction: column;
   }
 
-  .float-container {
-      margin-right: 0;
-      /* Remove right margin */
-      margin-bottom: 20px;
-      /* Add bottom margin */
+  .creator-profile {
+    flex-basis: calc(100% / 2);
+    /* Two items per line on medium screens */
+    margin-right: 0;
+    /* Remove right margin */
+    margin-bottom: 20px;
   }
 }
 
+@media (max-width: 480px) {
+  .creator-profile {
+    flex-basis: 100%;
+    /* One item per line on small screens */
+  }
+}
+
+.btn-primary {
+  display: inline-block;
+  color: #fbfbfb;
+  font-weight: 500;
+  background-color: #000;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #468486;
+}
+
+/* Responsvie buttons */
+
+@media screen and (max-width: 480px) {
+  .btn-primary {
+    display: block;
+    font-size: 18px;
+  }
+
+  h1 {
+    font-size: 32px;
+    margin: 0 0 8px 0;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+}
+
+.h3-header {
+  font-weight: bolder;
+  font-size: 48px;
+  margin: 0 0 16px 0;
+  color: #ffa500;
+  text-align: center;
+}
+
+@media screen and (max-width: 480px){
+  .h3-header {
+    font-size: 32px;
+    margin: 0 0 8px 0;
+  }
+}
 /* Accordion */
 .accordion-item {
   border: 1px solid #ebeef4;

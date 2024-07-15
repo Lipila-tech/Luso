@@ -14,9 +14,9 @@
 
 {% include '_modal.html' %}
 <div class="subscription-container">
-    <div class="float-container">
-        <div class="user-image d-flex flex-column justify-content-center align-items-center"> <button
-                class="btn btn-secondary">
+    <div class="creator-profile">
+        <div class="user-image d-flex flex-column justify-content-center align-items-center">
+            <button class="btn btn-secondary">
                 {% if creator.profile_image %}
                 {% if creator.profile_image.url %}
                 <img src="{{ creator.profile_image.url }}" height="100" width="100">
@@ -24,62 +24,56 @@
                 {% else %}
                 <img src="{% static 'assets/img/avator.jpeg' %}" height="100" width="100">
                 {% endif %}
-            </button> <span class="name mt-3">@{{creator.patron_title}}</span> <span
-                class="usernmae">{{creator.creator_category}}</span>
-            <div class="description text mt-3"> <span>{{creator.about}} </span> </div>
+            </button>
+           
+            <span class="name mt-3">@{{creator.patron_title}}</span>
+            <span class="category">{{creator.creator_category}}</span>
+            <div class="about text mt-3"> <span>{{creator.about}} </span> </div>
             <div class="content">
                 <section class="">
-                    <div class="">
-                        <div class="tier">
-                            <div>
-                                <div>
-                                    <h3 class="title">Buy me a coffee</h3>
-                                    <span class="price">K50</span>
-                                    <p class="description">Make a one-time contribution to support my work.</p>
-                                </div>
-                                <input type="hidden" name="amount" id="amount" value=50>
-                                <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
+                    <div class="tier-card">
+                        <div>
+                            <h3 class="title">Buy me a coffee</h3>
+                            <span class="price">K50</span>
+                            <p class="description">Make a one-time contribution to support my work.</p>
+                        </div>
+                        <input type="hidden" name="amount" id="amount" value=50>
+                        <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
 
-                                <div class="row">
-                                    <div class="col-12 mb-3">
-                                        <button id="send-contribution" class="btn btn-primary" type="button"
-                                            name="button">Contribute</button>
-                                    </div>
-                                </div>
-
+                        <div class="row join-status">
+                            <div class="col-12 mb-3">
+                                <button id="send-contribution" class="btn-primary" type="button" name="button">Buy
+                                    me a Coffee</button>
                             </div>
                         </div>
-                        {% for tier in tiers %}
-                        {% if tier.visible_to_fans %}
-                        <div class="tier">
-                            <div>
-                                <div>
-
-                                    <h3 class="title">{{ tier.name }}</h3>
-                                    <span class="price">K{{ tier.price }}/Month</span>
-                                    <p class="description">{{ tier.description }}</p>
-                                </div>
-                                <div class="join-status">
-                                    {% if request.user.is_authenticated and user|is_patron_subscribed:tier.id %}
-                                    <!-- View Subscription details button -->
-                                    <a type="button" class="read-tier btn btn-sm btn-primary"
-                                        href="{% url 'patron:subscription_detail' tier_id=tier.id  %}">
-                                        <span class="fa fa-eye">View</span>
-                                    </a>
-                                    {% else %}
-
-                                    <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post"
-                                        class="tier-form">
-                                        {% csrf_token %}
-                                        <button class="btn btn-primary">Join</button>
-                                    </form>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
                     </div>
+                    <h3 class="h3-header">Subscriptions</h3>
+                    {% for tier in tiers %}
+                    {% if tier.visible_to_fans %}
+                    <div class="tier-card">
+                        <div>
+                            <h3 class="title">{{ tier.name }}</h3>
+                            <span class="price">K{{ tier.price }}/Month</span>
+                            <p class="description">{{ tier.description }}</p>
+                        </div>
+                        <div class="join-status">
+                            {% if request.user.is_authenticated and user|is_patron_subscribed:tier.id %}
+                            <!-- View Subscription details button -->
+                            <a type="button" class="read-tier btn btn-sm btn-primary"
+                                href="{% url 'patron:subscription_detail' tier_id=tier.id  %}">
+                                <span class="fa fa-eye">View</span>
+                            </a>
+                            {% else %}
+
+                            <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post" class="tier-form">
+                                {% csrf_token %}
+                                <button class="btn btn-primary">Join</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
             </div>
             </section>
         </div>
