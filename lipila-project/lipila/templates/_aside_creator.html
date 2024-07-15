@@ -1,0 +1,65 @@
+{% load static %}
+
+<li class="nav-item">
+    <a class="nav-link " href="{% url 'dashboard' %}">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+        <li>
+            <a href="{% url 'patron:withdraw_request' %}">
+                <i class="bi bi-circle"></i><span>Withdraw</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'transfer' %}">
+                <i class="bi bi-circle"></i><span>Transfer</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'kyc' %}">
+                <i class="bi bi-circle"></i><span>KYC</span>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+            <li>
+                <a href="{% url 'patron:tiers' %}">
+                    <i class="bi bi-circle"></i><span>My Tiers</span>
+                </a>
+            </li>
+        </ul>
+        <li>
+            <a href="{% url 'patron:patrons' %}">
+                <i class="bi bi-circle"></i><span>My Patrons</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'withdrawals_history' %}">
+                <i class="bi bi-circle"></i><span>My Withdrawals</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'subscriptions_history' %}">
+                <i class="bi bi-circle"></i><span>Subscriptions Received</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'contributions_history' %}">
+                <i class="bi bi-circle"></i><span>Contributions Received</span>
+            </a>
+        </li>
+    </ul>
+</li>

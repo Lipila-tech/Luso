@@ -1,0 +1,52 @@
+{% load static %}
+
+<li class="nav-item">
+    <a class="nav-link " href="{% url 'patron:creators' %}">
+        <i class="bi bi-grid"></i>
+        <span>Home</span>
+    </a>
+</li><!-- End Dashboard Nav -->
+
+<li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+        <li>
+            <a href="{% url 'patron:create_creator_profile' %}">
+                <i class="bi bi-circle"></i><span>Create a Patron Profile</span>
+            </a>
+        </li>
+        <li>
+            {% with target_fragment='#find-creator' %}
+        <li>
+            <a href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">
+                <i class="bi bi-circle"></i><span>Find a Creator</span>
+            </a>
+        </li>
+        {% endwith %}
+    </ul>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Log</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
+        <li>
+            <a href="{% url 'patron:subscriptions' %}">
+                <i class="bi bi-circle"></i><span>My Subscriptions</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'subscriptions_history' %}">
+                <i class="bi bi-circle"></i><span>My Payments</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'contributions_history' %}">
+                <i class="bi bi-circle"></i><span>My Contributions</span>
+            </a>
+        </li>
+    </ul>
+</li>

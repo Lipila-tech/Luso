@@ -43,7 +43,7 @@
     {% include '_header_unauth.html' %}
     {% endif %}
     <main id="main" class="main">
-        {% if request.user.is_authenticated %}
+        {% if request.user.creatorprofile or request.user.is_staff %}
         <div class="pagetitle">
             <h1>Dashboard</h1>
             <nav>
