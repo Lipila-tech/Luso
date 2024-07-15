@@ -13,7 +13,7 @@ urlpatterns = [
     path('contact', views.contact, name='contact'),
 
     # PatronUser defined authenticated user views
-    path('me/<str:user>', patron_views.dashboard, name='dashboard'),
+    path('dashboard/', patron_views.dashboard, name='dashboard'),
     path('me/staff/<str:user>', views.staff_users, name='staff_dashboard'),
         
     # lipila difened authenticated user views

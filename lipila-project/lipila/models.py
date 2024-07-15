@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from accounts.models import CreatorProfile
 
 # Options
 STATUS_CHOICES = (
@@ -92,3 +92,14 @@ class CustomerMessage(models.Model):
 
     class Meta:
         get_latest_by = 'timestamp'
+
+
+class KYC(models.Model):
+    customer = models.ForeignKey(
+        CreatorProfile, on_delete=models.SET_NULL, null=True, blank=True)
+    id_card = models.FileField(upload_to='kyc/', blank=True, null=True)
+    home_address = models.CharField(max_length=150, default='', null=True, blank=True)
+    mobile_number = models.CharField(max_length=20, default='', null=True, blank=True)
+    bank_account_number = models.CharField(max_length=20, default='', null=True, blank=True)
+    next_of_kin_mobile_number = models.CharField(max_length=20, default='', null=True, blank=True)
+    is_valid = models.BooleanField(default=False)

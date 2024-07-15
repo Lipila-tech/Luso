@@ -11,8 +11,8 @@
         <!-- Nav Menu -->
         <nav id="navmenu" class="navmenu">
             <ul>
-                {% if user.is_authenticated %}
-                <li><a class="active" href="{% url 'dashboard' user=user %}">Dashboard</a></li>
+                {% if request.user.is_authenticated %}
+                <li><a class="active" href="{% url 'dashboard' %}">Dashboard</a></li>
                 {% else %}
                 <li><a href="/#hero">Home</a></li>
                 {% endif %}
@@ -30,7 +30,7 @@
         </nav><!-- End Nav Menu -->
 
         <div>
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
             <p>
             <form id="logout-form" method="post" action="{% url 'logout' %}">
                 {% csrf_token %}

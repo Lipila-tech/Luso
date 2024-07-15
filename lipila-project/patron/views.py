@@ -34,14 +34,9 @@ def index(request):
 
 @login_required
 def profile(request):
+    context = {}
     if request.user.is_staff:
         return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
-    context = {}
-
-    if not request.user.last_login or request.user.last_login.date() != timezone.now().date():
-        messages.info(
-            request, 'Please Choose your profile type.')
-        return redirect('patron:choose_profile_type')
     else:
         try:
             creator = request.user.creatorprofile
@@ -161,7 +156,7 @@ class EditPersonalInfo(LoginRequiredMixin, View):
 
 
 @login_required
-def dashboard(request, user):
+def dashboard(request):
     """
     Renders the appropriate dashboard based on user type (patron or creator).
     Redirects staff users to a dedicated staff dashboard.
@@ -173,32 +168,18 @@ def dashboard(request, user):
     Returns:
         A rendered response with the dashboard template and context.
     """
-    if request.user.is_staff:
-        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
     context = {}
     now = timezone.now()
     request.session['last_login_time'] = now.strftime("%H:%M:%S")
     last_login_time = request.session.get('last_login_time')
     if last_login_time:
         context['last_login'] = last_login_time
-    user_object = get_user_object(user)
-    try:
-        # patron summary
-        subscriptions = TierSubscriptions.objects.filter(patron=user_object)
-        context['summary'] = {
-            'subscriptions': len(subscriptions),
-            'updated_at': timezone.now
-        }
-        patron = request.user.patronprofile
-        context['user'] = get_user_object(patron)
-        return render(request, 'patron/admin/index_patron.html', context)
-    except PatronProfile.DoesNotExist:
-        pass
-    try:
+    
+    if request.user.is_staff:
+        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
+    elif request.user.creatorprofile:
         # Creator summary
         creator = CreatorProfile.objects.get(user=request.user)
-        tiers = Tier.objects.filter(creator=creator)
-        patrons = get_creator_subscribers(creator)
         total_payments = calculate_total_payments(creator)
         total_contributions = calculate_total_contributions(
             User.objects.get(username=creator))
@@ -218,10 +199,7 @@ def dashboard(request, user):
         context['user'] = get_user_object(creator)
         context['url'] = url
         return render(request, 'patron/admin/index_creator.html', context)
-    except CreatorProfile.DoesNotExist:
-        messages.info(
-            request, 'Please Choose your profile type.')
-        return redirect('patron:choose_profile_type')
+    
 
 
 @login_required

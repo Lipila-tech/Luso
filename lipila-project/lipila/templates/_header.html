@@ -3,7 +3,7 @@
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center justify-content-between">
-        <a href="{% url 'dashboard' user=user %}" class="logo d-flex align-items-center">
+        <a href="{% url 'dashboard' %}" class="logo d-flex align-items-center">
             <img src="{% static 'assets/img/logo-color.png' %}" alt="">
             <span class="d-none d-lg-block">Home</span>
         </a>
@@ -13,8 +13,8 @@
         <ul class="d-flex align-items-center">
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    {% if user.profile_image %}
-                    {% if user.profile_image.url %}
+                    {% if request.user.profile_image %}
+                    {% if request.user.profile_image.url %}
                     <img src="{{user.profile_image.url}}" alt="Profile" class="rounded-circle">
                     {% endif %}
                     {% else %}
@@ -60,7 +60,7 @@
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="#">
                             <i class="bi bi-box-arrow-right"></i>
-                            {% if user.is_authenticated %}
+                            {% if request.user.is_authenticated %}
                             <p>
                                 <form id="logout-form" method="post" action="{% url 'logout' %}">
                                     {% csrf_token %}

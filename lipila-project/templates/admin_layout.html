@@ -36,19 +36,19 @@
 </head>
 
 <body>
-    {% if user.is_authenticated %}
+    {% if request.user.is_authenticated %}
     {% include '_header.html' %}
     {% include '_aside.html' %}
     {% else %}
     {% include '_header_unauth.html' %}
     {% endif %}
     <main id="main" class="main">
-        {% if user.is_authenticated %}
+        {% if request.user.is_authenticated %}
         <div class="pagetitle">
             <h1>Dashboard</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'dashboard' user=user %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
             </nav>

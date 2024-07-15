@@ -14,8 +14,8 @@
         <div class="card">
           <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-            {% if user.profile_image %}
-            {% if user.profile_image.url %}
+            {% if request.user.profile_image %}
+            {% if request.user.profile_image.url %}
 
             <img src="{{ user.profile_image.url }}" alt="Profile" class="rounded-circle">
             {% endif %}
@@ -23,7 +23,7 @@
             <img src="{% static 'assets/img/avator.jpeg' %}" alt="default Profile image" class="rounded-circle">
             {% endif %}
 
-            {% if user.creatorprofile %}
+            {% if request.user.creatorprofile %}
             <h2>{{ user.creatorprofile.patron_title }}</h2>
             <h3>{{user.patronprofile.creator_category }}</h3>
             <div class="social-links mt-2">
@@ -54,7 +54,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'patron:profile' %}">Overview</a>
               </li>
-              {% if user.creatorprofile %}
+              {% if request.user.creatorprofile %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'patron:update_profile' user=user %}">Edit Patron Info</a>
               </li>

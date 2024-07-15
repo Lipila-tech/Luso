@@ -60,7 +60,7 @@
                                     <p class="description">{{ tier.description }}</p>
                                 </div>
                                 <div class="join-status">
-                                    {% if user.is_authenticated and user|is_patron_subscribed:tier.id %}
+                                    {% if request.user.is_authenticated and user|is_patron_subscribed:tier.id %}
                                     <!-- View Subscription details button -->
                                     <a type="button" class="read-tier btn btn-sm btn-primary"
                                         href="{% url 'patron:subscription_detail' tier_id=tier.id  %}">
