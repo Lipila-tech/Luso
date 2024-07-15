@@ -37,23 +37,15 @@
 
 <body>
     {% if request.user.is_authenticated %}
-    {% include '_header.html' %}
+    {% include '_header_backend.html' %}
     {% include '_aside.html' %}
     {% else %}
-    {% include '_header_unauth.html' %}
+    {% include '_header_frontend.html' %}
     {% endif %}
     <main id="main" class="main">
-        {% if request.user.creatorprofile or request.user.is_staff %}
         <div class="pagetitle">
-            <h1>Dashboard</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard</li>
-                </ol>
-            </nav>
+            {% include '_nav_frontend.html' %}
         </div>
-        {% endif %}
         <section class="section dashboard">
             {% if messages %}
             <div class="message">

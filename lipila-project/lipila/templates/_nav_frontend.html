@@ -1,0 +1,38 @@
+{% load static %}
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #1e4a6a;">
+    <a href="{% url 'index' %}" class="navbar-brand">
+        <span class="navbar-text" style="color: aliceblue;">
+            LipilaPatron
+          </span>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <!-- COnditional links -->
+
+            <li class="nav-item active">
+                <a class="nav-link navbar-text" href="{% url 'index' %}" style="color: antiquewhite;">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <!-- End conditional links -->
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <ul class="navbar-nav">
+            
+            <li class="nav-item">
+                <form class="nav-link" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" id="btn-getstarted" class="btn-getstarted">Logout</button>
+                </form>
+            </li>
+            
+        </ul>
+    </div>
+</nav>
