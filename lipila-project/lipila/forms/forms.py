@@ -14,7 +14,7 @@ class BaseTransactionForm(BSModalModelForm):
 
     class Meta:
         labels = {
-            'payer_account_numeber': 'Account number'
+            'payer_account_number': 'Account number'
         }
 
 
