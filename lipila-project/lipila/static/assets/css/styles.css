@@ -581,6 +581,11 @@ ul.breadcrumb li a:hover {
   display: block;
 }
 
+.dropdown-menu .dropdown-divider {
+  color: #9d0ead;
+  margin: 0;
+}
+
 /* Style the buttons */
 .filter-btn {
   border: none;
