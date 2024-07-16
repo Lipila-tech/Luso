@@ -6,6 +6,8 @@
 <h2>Subscription Details</h2>
 {% include '_modal.html' %}
 {% include '_tier_details.html' %}
+{% include "lipila/modals/_confirmation_payment.html" %}
+{% include 'lipila/modals/loader.html' %}
 
 {% endblock section %}
 {% block extrascripts %}
@@ -14,9 +16,8 @@
     $(function () {
         function PayTierModalForm() {
             var allowSubmit = true;
-           
-            if (allowSubmit) {
 
+            if (allowSubmit) {
                 $("#send-money").modalForm({
                     formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}",
                     modalID: "#create-modal"
@@ -24,18 +25,36 @@
 
                 var amount = $('#amount').val();
                 var tier_name = $('#tier_name').val();
-                
+
                 $('#create-modal').on('show.bs.modal', function (event) {
                     $(this).find('.modal-price-title').text(`Pay subscription to: ${tier_name}`);
                     $(this).find('.modal-price').text(`K${amount}`);
                 });
+
+                $('#create-modal').on('click', '#submit-button', function (event) {
+                    event.preventDefault(); // Prevent default form submission
+                    $('#confirmationModal').modal('show'); // Show confirmation modal
+                });
+
+                $('#confirmationModal').on('click', '#confirm-button', function () {
+                    // hide confirmation modal
+                    $('#confirmationModal').modal('hide');
+
+                    // Show the loader modal
+                    $('#loader-modal').modal('show');
+
+                     // Submit the form after confirmation
+                     $('#create-modal form').submit();
+                });
+
                 allowSubmit = false;
-            } else
-                console.log(allowSubmit);
-            return false;
+            } else {
+                return false;
+            }
         }
-        console.log('calling function...');
+
         PayTierModalForm();
+
 
         // Delete tier buttons - formURL is retrieved from the data of the element
         $("#delete-subscription").modalForm({

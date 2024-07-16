@@ -1,10 +1,11 @@
 {% extends 'layout_admin.html' %}
 {% load static %}
 {% block title %} Subscriptions {% endblock %}
-
 {% block section %}
 
 {% include '_modal.html' %}
+{% include "lipila/modals/_confirmation_payment.html" %}
+{% include 'lipila/modals/loader.html' %}
 {% if subscriptions %}
 <h2>My Subscriptions</h2>
 <table class="table">
@@ -26,14 +27,13 @@
             <td>{{ sub.tier.price }}</td>
             <td>
                 <!-- View Subscription details button -->
-                <a type="button" class="read-tier btn btn-sm btn-primary"
-                    href="{% url 'patron:subscription_detail' tier_id=sub.tier.id  %}">
-                    <span class="fa fa-eye">View</span>
+                <a href="{% url 'patron:subscription_detail' tier_id=sub.tier.id  %}">
+                    <button type="button" class="btn btn-sm btn-primary">View</button>
                 </a>
                 <!-- Pay or unssubscribe button -->
                 <input type="hidden" name="amount" id="amount" value={{sub.tier.price}}>
                 <input type="hidden" name="tier_name" id="tier_name" value={{sub.tier.name}}>
-                <button type="button" class="pay-tier btn btn-sm btn-primary"
+                <button type="button" class="btn btn-sm btn-primary"
                     data-form-url="{% url 'send_money_id' type='subscription' id=sub.tier.id %}"
                     data-tier-name="{{ sub.tier.name }}" data-amount="{{ sub.tier.price }}">
                     <span class="fa fa-pencil">Pay</span>
