@@ -39,14 +39,19 @@
                 $('#confirmationModal').on('click', '#confirm-button', function () {
                     // hide confirmation modal
                     $('#confirmationModal').modal('hide');
+                    $('#create-modal').modal('hide');
+
+                    // Blur the background
+                    // $('body').addClass('blur-background');
 
                     // Show the loader modal
                     $('#loader-modal').modal('show');
 
-                     // Submit the form after confirmation
-                     $('#create-modal form').submit();
+                    // Submit the form after confirmation
+                    $('#create-modal form').submit();
                 });
-
+                // Remove blur when the loader modal is hidden
+                
                 allowSubmit = false;
             } else {
                 return false;

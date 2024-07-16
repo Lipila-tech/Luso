@@ -33,7 +33,7 @@
                 <!-- Pay or unssubscribe button -->
                 <input type="hidden" name="amount" id="amount" value={{sub.tier.price}}>
                 <input type="hidden" name="tier_name" id="tier_name" value={{sub.tier.name}}>
-                <button type="button" class="btn btn-sm btn-primary"
+                <button type="button" class="pay-tier btn-sm btn-primary"
                     data-form-url="{% url 'send_money_id' type='subscription' id=sub.tier.id %}"
                     data-tier-name="{{ sub.tier.name }}" data-amount="{{ sub.tier.price }}">
                     <span class="fa fa-pencil">Pay</span>
@@ -64,6 +64,26 @@
             $('#modal').on('show.bs.modal', function (event) {
                 $(this).find('.modal-price-title').text(`Pay subscription to: ${tier_name}`);
                 $(this).find('.modal-price').text(`K${amount}`);
+            });
+
+            $('#modal').on('click', '#submit-button', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                $('#confirmationModal').modal('show'); // Show confirmation modal
+            });
+
+            $('#confirmationModal').on('click', '#confirm-button', function () {
+                // hide confirmation modal
+                $('#confirmationModal').modal('hide');
+                $('#modal').modal('hide');
+
+                // Blur the background
+                // $('body').addClass('blur-background');
+
+                // Show the loader modal
+                $('#loader-modal').modal('show');
+
+                // Submit the form after confirmation
+                $('#modal form').submit();
             });
         });
     }

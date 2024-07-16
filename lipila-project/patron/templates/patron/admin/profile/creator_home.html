@@ -11,8 +11,10 @@
 {% endblock extrastylesheets %}
 
 {% block section %}
-
+{% include 'lipila/modals/loader.html' %}
 {% include '_modal.html' %}
+{% include "lipila/modals/_confirmation_payment.html" %}
+
 <div class="subscription-container">
     <div class="creator-profile">
         <div class="user-image d-flex flex-column justify-content-center align-items-center">
@@ -25,7 +27,7 @@
                 <img src="{% static 'assets/img/avator.jpeg' %}" height="100" width="100">
                 {% endif %}
             </button>
-           
+
             <span class="name mt-3">@{{creator.patron_title}}</span>
             <span class="category">{{creator.creator_category}}</span>
             <div class="about text mt-3"> <span>{{creator.about}} </span> </div>
@@ -97,11 +99,32 @@
             });
             var amount = $('#amount').val()
             var tier_name = $('#tier_name').val()
+
             $('#modal').on('show.bs.modal', function (event) {
                 $(this).find('.modal-price-title').text(`Buy ${tier_name} a coffee.`);
                 $('#id_amount').keyup(function () {
-                    $(".modal-price").text(`amount: K${$(this).val()}`);
+                    $(".modal-price").text(`K${$(this).val()}`);
                 });
+            });
+
+            $('#modal').on('click', '#submit-button', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                $('#confirmationModal').modal('show'); // Show confirmation modal
+            });
+
+            $('#confirmationModal').on('click', '#confirm-button', function () {
+                // hide confirmation modal
+                $('#confirmationModal').modal('hide');
+                $('#modal').modal('hide');
+
+                // Blur the background
+                // $('body').addClass('blur-background');
+
+                // Show the loader modal
+                $('#loader-modal').modal('show');
+
+                // Submit the form after confirmation
+                $('#modal form').submit();
             });
         }
 
