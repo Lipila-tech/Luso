@@ -84,12 +84,12 @@ class SubscriptionPaymentTest(FunctionalTest):
         amount_field = form.find_element(By.ID, 'id_amount')
         payer_account_number_field = form.find_element(By.ID, 'id_payer_account_number')
         description_field = form.find_element(By.ID, 'id_description')
-        network_operator_field = form.find_element(By.ID, 'id_network_operator')
+        wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
         amount_field.send_keys('122')
         payer_account_number_field.send_keys('0966774433')
         description_field.send_keys('test descriptions')
-        network_operator_field.send_keys('mtn')
+        wallet_type_field.send_keys('mtn')
         form.submit()
 
         
@@ -149,12 +149,12 @@ class ContributionModalTest(FunctionalTest):
         amount_field = form.find_element(By.ID, 'id_amount')
         payer_account_number_field = form.find_element(By.ID, 'id_payer_account_number')
         description_field = form.find_element(By.ID, 'id_description')
-        network_operator_field = form.find_element(By.ID, 'id_network_operator')
+        wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
         amount_field.send_keys('122')
         payer_account_number_field.send_keys('0966774433')
         description_field.send_keys('test descriptions')
-        network_operator_field.send_keys('airtel')
+        wallet_type_field.send_keys('airtel')
         form.submit()
 
         failure_msg = self.wait_for(class_name="message").text
@@ -185,12 +185,12 @@ class ContributionModalTest(FunctionalTest):
         amount_field = form.find_element(By.ID, 'id_amount')
         payer_account_number_field = form.find_element(By.ID, 'id_payer_account_number')
         description_field = form.find_element(By.ID, 'id_description')
-        network_operator_field = form.find_element(By.ID, 'id_network_operator')
+        wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
         amount_field.send_keys('122')
         payer_account_number_field.send_keys('0966774433')
         description_field.send_keys('test descriptions')
-        network_operator_field.send_keys('mtn')
+        wallet_type_field.send_keys('mtn')
         form.submit()
 
         

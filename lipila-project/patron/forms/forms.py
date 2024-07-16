@@ -16,7 +16,7 @@ class DefaultUserChangeForm(UserChangeForm):
 class WithdrawalRequestForm(forms.ModelForm):
     class Meta:
         model = WithdrawalRequest
-        fields = ['network_operator', 'amount', 'account_number']
+        fields = ['wallet_type', 'amount', 'account_number']
 
 
 class CreateCreatorProfileForm(forms.ModelForm):

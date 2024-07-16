@@ -128,6 +128,16 @@
             });
         }
 
+        // Ensure the loader is hidden and the blur is removed when the page is loaded or navigated to using the back button
+        $(window).on('pageshow', function (event) {
+            if (event.originalEvent.persisted) {
+                // Hide the loader modal if it is shown
+                $('#loader-modal').modal('hide');
+                // Remove blur effect from the background
+                $('body').removeClass('blur-background');
+            }
+        });
+
         PayTierModalForm();
     });
 </script>

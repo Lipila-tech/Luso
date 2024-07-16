@@ -36,14 +36,14 @@ class SendMoneyViewTests(TestCase):
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
         mock_save_payment.return_value = Contributions(reference_id='ref123', amount=1000, payer_account_number='12345',
-                                                       network_operator='mtn', description='Test',
+                                                       wallet_type='mtn', description='Test',
                                                        payer=self.contribution_user, payee=self.creator)
 
         url = reverse('send_money_id', kwargs={
                       'type': 'contribution', 'id': self.creator.pk})
         data = {
             'amount': 1000,
-            'network_operator': 'mtn',
+            'wallet_type': 'mtn',
             'payer_account_number': '1234556719',
             'description': 'Test'
         }
@@ -64,7 +64,7 @@ class SendMoneyViewTests(TestCase):
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
         mock_save_payment.return_value = SubscriptionPayments(reference_id='ref123', amount=1000, payer_account_number='12345',
-                                                              description='Test', network_operator='mtn',
+                                                              description='Test', wallet_type='mtn',
                                                               payee=self.tier_subscription)
 
         url = reverse('send_money_id', kwargs={
@@ -72,7 +72,7 @@ class SendMoneyViewTests(TestCase):
 
         data = {
             'amount': 1000,
-            'network_operator': 'mtn',
+            'wallet_type': 'mtn',
             'payer_account_number': '12345',
             'description': 'Test'
         }
@@ -92,13 +92,13 @@ class SendMoneyViewTests(TestCase):
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
         mock_save_payment.return_value = Transfer(reference_id='ref123', amount=1000, payer_account_number='12345',
-                                                  network_operator='mtn', description='Test',
+                                                  wallet_type='mtn', description='Test',
                                                   payer=self.contribution_user, payee_account_number='98765')
 
         url = reverse('send_money_transfer', kwargs={'type': 'transfer'})
         data = {
             'amount': 1000,
-            'network_operator': 'mtn',
+            'wallet_type': 'mtn',
             'payer_account_number': '12345',
             'payee_account_number': '98765',
             'description': 'Test'
@@ -111,12 +111,12 @@ class SendMoneyViewTests(TestCase):
         self.assertEqual(str(messages[0]), 'Payment of K1000 successful!')
         self.assertEqual(Transfer.objects.count(), 1)
 
-    def test_send_money_invalid_network_operator(self):
+    def test_send_money_invalid_wallet_type(self):
         url = reverse('send_money_id', kwargs={
                       'type': 'payment', 'id': 1})
         data = {
             'amount': 1000,
-            'network_operator': 'airtel',
+            'wallet_type': 'airtel',
             'payer_account_number': '12345',
             'description': 'Test'
         }
@@ -134,7 +134,7 @@ class SendMoneyViewTests(TestCase):
                       'type': 'contribution', 'id': self.contribution_user.id})
         data = {
             'amount': '',
-            'network_operator': 'mtn',
+            'wallet_type': 'mtn',
             'payer_account_number': '12345',
             'description': 'Test'
         }

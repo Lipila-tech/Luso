@@ -8,7 +8,7 @@ from patron.models import WithdrawalRequest, Tier, SubscriptionPayments, Transfe
 
 
 class BaseTransactionForm(BSModalModelForm):
-    network_operator = forms.ChoiceField(choices=ISP_CHOICES)
+    wallet_type = forms.ChoiceField(choices=ISP_CHOICES)
     payer_account_number = forms.CharField(max_length=300)
     description = forms.CharField(max_length=200, required=False)
 
@@ -20,16 +20,16 @@ class TransferForm(BaseTransactionForm):
     class Meta:
         model = Transfer
         fields = ['amount', 'payer_account_number', 'payee_account_number',
-                  'network_operator', 'description']
+                  'wallet_type', 'description']
 
 
 class SubscriptionPaymentsForm(BaseTransactionForm):
     class Meta:
         model = SubscriptionPayments
         fields = ['payer_account_number',
-                  'network_operator', 'description']
+                  'wallet_type', 'description']
         labels = {
-            'network_operator': 'Wallet type'
+            'wallet_type': 'Wallet type'
         }
 
 
@@ -39,7 +39,7 @@ class ContributionsForm(BaseTransactionForm):
     class Meta:
         model = Contributions
         fields = ['amount', 'payer_account_number',
-                  'network_operator', 'description']
+                  'wallet_type', 'description']
 
 
 class WithdrawalModelForm(BSModalModelForm):

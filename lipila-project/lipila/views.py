@@ -53,7 +53,7 @@ class ApproveWithdrawModalView(View):
                     withdrawal_request=withdrawal_request, status='pending')
                 
                 amount = withdrawal_request.amount
-                network_operator = withdrawal_request.network_operator
+                wallet_type = withdrawal_request.wallet_type
                 payee_account_number = withdrawal_request.account_number
                 description = withdrawal_request.reason
                 request_date = withdrawal_request.request_date
@@ -62,7 +62,7 @@ class ApproveWithdrawModalView(View):
                 # Process withdrawal (initiate payout using lipila api)
                 payload = {
                     'amount': amount,
-                    'network_operator': network_operator,
+                    'wallet_type': wallet_type,
                     'payee_account_number': payee_account_number,
                     'description': description
                 }
@@ -208,9 +208,9 @@ class SendMoneyView(BSModalCreateView):
 
     def form_valid(self, form):
         
-        network_operator = form.cleaned_data['network_operator']
+        wallet_type = form.cleaned_data['wallet_type']
 
-        if network_operator != 'mtn':
+        if wallet_type != 'mtn':
             messages.error(
                 self.request, 'Sorry only mtn is suported at the moment')
             # redirect user to the same page
@@ -252,7 +252,7 @@ class SendMoneyView(BSModalCreateView):
 
         payload = {
             'amount': amount,
-            'network_operator': network_operator,
+            'wallet_type': wallet_type,
             'payer_account_number': payer_account_number,
             'description': description
         }
@@ -346,7 +346,7 @@ def approve_withdrawals(request):
         item['amount'] = obj.amount
         item['status'] = obj.status
         item['account_number'] = obj.account_number
-        item['network_operator'] = obj.network_operator
+        item['wallet_type'] = obj.wallet_type
         item['request_date'] = obj.request_date
         item['reference_id'] = obj.reference_id
         item['balance'] = calculate_creators_balance(obj.creator)
