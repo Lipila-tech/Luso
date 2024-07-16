@@ -67,7 +67,7 @@ def query_disbursement(user, method, reference_id, data={}):
         reference_id(str): The unique uuid id that will be used to identify the transactions
         data (dict):
                 {
-                    'amount': '', 'payee_account_number': '',
+                    'amount': '', 'send_money_to': '',
                     'wallet_type': '', 'description': ''
                     }
 

@@ -40,7 +40,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class DisbursementAdmin(admin.ModelAdmin):
-    list_display = ['payee_account_number', 'processed_date', 'updated_at', 'amount',
+    list_display = ['send_money_to', 'processed_date', 'updated_at', 'amount',
                   'reference_id', 'wallet_type', 'description']
 
 

@@ -28,7 +28,7 @@ class LipilaCollectionSerializer(serializers.ModelSerializer):
 class LipilaDisbursementSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaDisbursement
-        fields = ['payee_account_number', 'amount',
+        fields = ['send_money_to', 'amount',
                   'wallet_type', 'description']
 
 

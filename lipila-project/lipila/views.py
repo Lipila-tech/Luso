@@ -54,7 +54,7 @@ class ApproveWithdrawModalView(View):
                 
                 amount = withdrawal_request.amount
                 wallet_type = withdrawal_request.wallet_type
-                payee_account_number = withdrawal_request.account_number
+                send_money_to = withdrawal_request.account_number
                 description = withdrawal_request.reason
                 request_date = withdrawal_request.request_date
                 reference_id = withdrawal_request.reference_id
@@ -63,7 +63,7 @@ class ApproveWithdrawModalView(View):
                 payload = {
                     'amount': amount,
                     'wallet_type': wallet_type,
-                    'payee_account_number': payee_account_number,
+                    'send_money_to': send_money_to,
                     'description': description
                 }
                 response = query_disbursement(
@@ -235,7 +235,7 @@ class SendMoneyView(BSModalCreateView):
             amount = TierSubscriptions.objects.get(tier=self.kwargs.get('id')).tier.price
             self.success_url = reverse_lazy('subscriptions_history')
         elif transaction_type == 'transfer':
-            payee = form.cleaned_data['payee_account_number']
+            payee = form.cleaned_data['send_money_to']
             amount = form.cleaned_data['amount']
             self.success_url = reverse_lazy('transfers_history')
 

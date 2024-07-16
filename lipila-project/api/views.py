@@ -68,7 +68,7 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
             return Response({"error": "reference id is missing"}, status=400)
         try:
             data = request.data
-            payee = str(data['payee_account_number'])
+            payee = str(data['send_money_to'])
             amount = str(data['amount'])
             serializer = LipilaDisbursementSerializer(data=data)
             provisioned_mtn_api_user = Disbursement()

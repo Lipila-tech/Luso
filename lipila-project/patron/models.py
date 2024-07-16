@@ -92,7 +92,7 @@ class Transfer(models.Model):
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tranfers')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=False)
     payer_account_number = models.CharField(max_length=300, null=True, blank=False)
-    payee_account_number = models.CharField(max_length=300, null=True, blank=False)
+    send_money_to = models.CharField(max_length=300, null=True, blank=False)
     reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
     wallet_type = models.CharField(max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)

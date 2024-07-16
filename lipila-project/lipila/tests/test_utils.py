@@ -178,7 +178,7 @@ class PostDisbursementTest(TestCase):
         User.objects.create(username='test_user')
         ref_id = generate_reference_id()
 
-        data = {'amount': '100', 'payee_account_number': '0966443322',
+        data = {'amount': '100', 'send_money_to': '0966443322',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
         
         response = query_disbursement('test_user', 'POST', ref_id, data=data)

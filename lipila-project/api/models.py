@@ -17,7 +17,7 @@ class LipilaDisbursement(models.Model):
                               related_name='disbursements',
                               on_delete=models.CASCADE,
                               null=True, blank=True)
-    payee_account_number = models.CharField(max_length=30)
+    send_money_to = models.CharField(max_length=30)
     amount = models.FloatField()
     wallet_type = models.CharField(max_length=55)
     reference_id = models.CharField(max_length=120, unique=True, blank=False, null=False)
@@ -34,7 +34,7 @@ class LipilaDisbursement(models.Model):
         return self.reference_id
 
     def __str__(self):
-        return f"Paid - {self.payee_account_number} Amount - {self.amount} Status - {self.status}"
+        return f"Paid - {self.send_money_to} Amount - {self.amount} Status - {self.status}"
 
 
 class LipilaCollection(models.Model):

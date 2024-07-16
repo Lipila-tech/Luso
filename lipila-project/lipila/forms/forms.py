@@ -12,34 +12,36 @@ class BaseTransactionForm(BSModalModelForm):
     payer_account_number = forms.CharField(max_length=300)
     description = forms.CharField(max_length=200, required=False)
 
+    class Meta:
+        labels = {
+            'payer_account_numeber': 'Account number'
+        }
+
 
 class TransferForm(BaseTransactionForm):
-    payee_account_number = forms.CharField(max_length=300)
+    send_money_to = forms.CharField(max_length=300)
     amount = forms.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = Transfer
-        fields = ['amount', 'payer_account_number', 'payee_account_number',
-                  'wallet_type', 'description']
+        fields = ['wallet_type', 'amount', 'payer_account_number', 'send_money_to',
+                   'description']
 
 
 class SubscriptionPaymentsForm(BaseTransactionForm):
     class Meta:
         model = SubscriptionPayments
-        fields = ['payer_account_number',
-                  'wallet_type', 'description']
-        labels = {
-            'wallet_type': 'Wallet type'
-        }
-
+        fields = ['wallet_type', 'payer_account_number',
+                  'description']
+        
 
 class ContributionsForm(BaseTransactionForm):
     amount = forms.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = Contributions
-        fields = ['amount', 'payer_account_number',
-                  'wallet_type', 'description']
+        fields = ['wallet_type', 'payer_account_number', 'amount',
+                  'description']
 
 
 class WithdrawalModelForm(BSModalModelForm):

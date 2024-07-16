@@ -20,7 +20,7 @@ class LipilaDisbursementViewTest(APITestCase):
     
     
     def test_make_deposit_success(self):        
-        data = {'amount': '100', 'payee_account_number': '0966443322',
+        data = {'amount': '100', 'send_money_to': '0966443322',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
 
         response = self.client.post(self.url, data, format='json')
@@ -38,7 +38,7 @@ class LipilaDisbursementViewTest(APITestCase):
             self.fail("generate_reference_id did not return a valid UUID string.")
 
     def test_deposit_lipila_fail_validation(self):
-        data = {'amount': '100', 'payee_account_number': 'invalid',
+        data = {'amount': '100', 'send_money_to': 'invalid',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -46,7 +46,7 @@ class LipilaDisbursementViewTest(APITestCase):
 
     def test_deposit_no_user_fail_payer(self):
         User.objects.all().delete()
-        data = {'amount': '100', 'payee_account_number': '0966443322',
+        data = {'amount': '100', 'send_money_to': '0966443322',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

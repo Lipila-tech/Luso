@@ -93,14 +93,14 @@ class SendMoneyViewTests(TestCase):
         mock_check_payment_status.return_value = 'success'
         mock_save_payment.return_value = Transfer(reference_id='ref123', amount=1000, payer_account_number='12345',
                                                   wallet_type='mtn', description='Test',
-                                                  payer=self.contribution_user, payee_account_number='98765')
+                                                  payer=self.contribution_user, send_money_to='98765')
 
         url = reverse('send_money_transfer', kwargs={'type': 'transfer'})
         data = {
             'amount': 1000,
             'wallet_type': 'mtn',
             'payer_account_number': '12345',
-            'payee_account_number': '98765',
+            'send_money_to': '98765',
             'description': 'Test'
         }
         response = self.client.post(url, data)
