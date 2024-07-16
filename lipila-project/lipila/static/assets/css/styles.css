@@ -92,7 +92,7 @@
   border-radius: 10%
 } */
 
-.creator-info .title{
+.creator-info .title {
   font-size: 22px;
   font-weight: bold
 }
@@ -478,12 +478,13 @@ hr .new1 {
   text-align: center;
 }
 
-@media screen and (max-width: 480px){
+@media screen and (max-width: 480px) {
   .h3-header {
     font-size: 32px;
     margin: 0 0 8px 0;
   }
 }
+
 /* Accordion */
 .accordion-item {
   border: 1px solid #ebeef4;
@@ -514,4 +515,96 @@ hr .new1 {
   padding: 0 0 15px 0;
   color: #3e4f6f;
   font-size: 15px;
+}
+
+/* Filter */
+/* Style the list */
+ul.breadcrumb {
+  padding: 10px 16px;
+  list-style: none;
+  background-color: #eee;
+}
+
+/* Display list items side by side */
+ul.breadcrumb li {
+  display: inline;
+  font-size: 18px;
+}
+
+/* Add a slash symbol (/) before/behind each list item */
+ul.breadcrumb li+li:before {
+  padding: 8px;
+  color: black;
+  content: "/\00a0";
+}
+
+/* Add a color to all links inside the list */
+ul.breadcrumb li a {
+  color: #0275d8;
+  text-decoration: none;
+}
+
+/* Add a color on mouse-over */
+ul.breadcrumb li a:hover {
+  color: #01447e;
+  text-decoration: underline;
+}
+
+/* Add padding BETWEEN each column */
+.row,
+.row>.column {
+  padding: 8px;
+}
+
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  display: none;
+  /* Hide all elements by default */
+}
+
+/* Clear floats after rows */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Content */
+.content {
+  background-color: white;
+  padding: 10px;
+}
+
+/* The "show" class is added to the filtered elements */
+.show {
+  display: block;
+}
+
+/* Style the buttons */
+.filter-btn {
+  border: none;
+  outline: none;
+  padding: 6px 12px;
+  background-color: white;
+  cursor: pointer;
+  font-weight: lighter;
+}
+
+@media (max-width: 480px) {
+  .filter-btn {
+    padding: 4px, 8px;
+    font-size: small;
+  }
+}
+
+.filter-btn:hover {
+  background-color: #e2954d;
+  opacity: 0.3;
+}
+
+.filter-btn.filter-active {
+  background-color: #1bd6d6;
+  color: black;
+  font-weight: bold;
 }
