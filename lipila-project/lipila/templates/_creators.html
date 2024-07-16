@@ -1,37 +1,44 @@
 {% load static %}
 <h1 class="title">Find Your favorite Creator</h1>
+{% include '_filter_creators.html' %}
 <div class="creator-container">
     {% for creator in creators %}
-    <div class="creator-profile">
-        <div class="user-image">
-            {% if creator.profile_image %}
-            {% if creator.profile_image.url %}
-            <img src="{{creator.profile_image.url}}" alt="profile image" class="img-fluid">
-            {% endif %}
-            {% else %}
-            <img src="{% static 'assets/img/avator.jpeg' %}" alt="profile image" class="img-fluid">
-            {% endif %}
-        </div>
+    <div class="creator-profile column {{creator.creator_category}}">
         <div class="content">
-            <h3 class="name">{{creator.patron_title}}</h3>
-            <p class="username">@{{creator.user}}</p>
-            <div class="links">
-                <a class="facebook c-a" href="{{creator.facebook_url}}" target="_blank" title="{{creator.user}}_facebook">
-                    <i class="fab fa-facebook"></i>
-                </a>
-                <a class="linkedin c-a" href="{{creator.linkedin_url}}" title="{{creator.user}}_linkedin" target="_blank">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <a class="insta c-a" href="{{creator.instagram_url}}" target="_blank" title="{{creator.user}}_instagram">
-                    <i class="fab fa-instagram-square"></i>
+            <div class="user-image">
+                {% if creator.profile_image %}
+                {% if creator.profile_image.url %}
+                <img src="{{creator.profile_image.url}}" alt="profile image" class="img-fluid">
+                {% endif %}
+                {% else %}
+                <img src="{% static 'assets/img/avator.jpeg' %}" alt="profile image" class="img-fluid">
+                {% endif %}
+            </div>
+            <div class="content">
+                <p>{{creator.creator_category}}</p>
+                <h3 class="name">{{creator.patron_title}}</h3>
+                <p class="username">@{{creator.user}}</p>
+                <div class="links">
+                    <a class="facebook c-a" href="{{creator.facebook_url}}" target="_blank"
+                        title="{{creator.user}}_facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a class="linkedin c-a" href="{{creator.linkedin_url}}" title="{{creator.user}}_linkedin"
+                        target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a class="insta c-a" href="{{creator.instagram_url}}" target="_blank"
+                        title="{{creator.user}}_instagram">
+                        <i class="fab fa-instagram-square"></i>
+                    </a>
+                </div>
+                <p class="details">
+                    {{creator.about}}
+                </p>
+                <a class="btn-primary" href="{% url 'patron:creator_home' creator=creator.user %}">
+                    View
                 </a>
             </div>
-            <p class="details">
-                {{creator.about}}
-            </p>
-            <a class="btn-primary" href="{% url 'patron:creator_home' creator=creator.user %}">
-                View
-            </a>
         </div>
     </div>
     {% endfor %}

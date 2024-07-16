@@ -5,6 +5,8 @@
 * License:
 */
 
+
+
 const closeButtons = document.querySelectorAll('.close-btn');
 
 closeButtons.forEach(closeButton => {
