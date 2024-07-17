@@ -1,63 +1,70 @@
 {% load static %}
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand"  href="{% url 'index' %}">
+    <a class="navbar-brand" href="{% url 'index' %}">
         <img src="{% static 'assets/img/luso/logo.png' %}" width="30" height="30" class="d-inline-block align-top"
-            style="border-radius: 25%;"
-            alt="">
+            style="border-radius: 25%;" alt="">
         Luso
     </a>
     <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-        </button>
+    </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
 
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'dashboard' %}">Home <span class="sr-only">(current)</span></a>
-                </li>
+            {% if request.user.is_authenticated %}
 
-                <!-- End conditional links -->
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'dashboard' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            {% else %}
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            {% endif %}
 
-                <!-- General links -->
-                {% with target_fragment='#creators-info' %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'patron:index' %}?fragment={{ target_fragment }}">I'm a Creator</a>
-                </li>
-                {% endwith %}
-                {% with target_fragment='#find-creator' %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Browse Creators</a>
-                </li>
-                {% endwith %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/#features">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/#pricing">Pricing</a>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-            <ul class="navbar-nav">
-                {% if request.user.is_authenticated %}
-                <li class="nav-item">
-                    <form class="nav-link" method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" id="btn-getstarted" class="btn-getstarted">Logout</button>
-                    </form>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Sign in</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Sign Up</a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
+            <!-- End conditional links -->
+
+            <!-- General links -->
+            {% with target_fragment='#creators-info' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'patron:index' %}?fragment={{ target_fragment }}">I'm a Creator</a>
+            </li>
+            {% endwith %}
+            {% with target_fragment='#find-creator' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Browse
+                    Creators</a>
+            </li>
+            {% endwith %}
+            <li class="nav-item">
+                <a class="nav-link" href="/#features">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/#pricing">Pricing</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <ul class="navbar-nav">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <form class="nav-link" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" id="btn-getstarted" class="btn-getstarted">Logout</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Sign in</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
 </nav>
