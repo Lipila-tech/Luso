@@ -30,6 +30,6 @@
     <a class="small" href="{% url 'password_reset' %}">Forgot password?</a>
     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'accounts:signup' %}"
             style="color: #393f81;">Register here</a></p>
-
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
 </div>
 {% endblock page %}
