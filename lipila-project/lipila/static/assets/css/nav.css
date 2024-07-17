@@ -248,7 +248,7 @@
 }
 
 /* Mobile Navigation */
-@media (max-width: 1199px) {
+@media (max-width: 340px) {
     .mobile-nav-toggle {
         color: var(--nav-color);
         font-size: 28px;

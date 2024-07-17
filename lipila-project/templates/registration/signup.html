@@ -4,20 +4,17 @@
 
 {% block title %}Signup {% endblock %}
 
-{% block section %}
-<div class="row">
-    <div class="column">
-        
-        <form action="{% url 'accounts:signup' %}" method="post" class="">
+{% block page %}
+<div class="col-md-8">
+    <form action="{% url 'accounts:signup' %}" method="post" class="">
+        {% csrf_token %}
+        <form method="post" class="signup-form">
+            <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register account</h5>
             {% csrf_token %}
-            <form method="post" class="signup-form">
-                 <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register account</h5>
-                {% csrf_token %}
-                {{form | crispy}}
-                <button type="submit" class="btn btn-dark btn-lg btn-block">Create</button>
-            </form>
-            <p class="mb-5 pb-lg-2" style="color: #393f81;">Already registered? <a href="{% url 'login' %}"
-                      style="color: #393f81;">Login</a></p>
-    </div>
+            {{form | crispy}}
+            <button type="submit" class="btn btn-dark btn-lg btn-block">Create</button>
+        </form>
+        <p class="mb-5 pb-lg-2" style="color: #393f81;">Already registered? <a href="{% url 'login' %}"
+                style="color: #393f81;">Login</a></p>
 </div>
-{% endblock %}
+{% endblock page %}
