@@ -17,7 +17,7 @@ class RedirectToLipilaTest(APITestCase):
 
    
     def test_redirect_with_user_created(self):
-        image_file = str(BASE_DIR) + 'api/static/img/logo-color.png'
+        image_file = str(BASE_DIR) + 'api/static/img/logo.png'
         user = BusinessUser.objects.create_user(username='test_user',
                                            password='pwd_123',
                                            email='pita@example.com',
@@ -36,7 +36,7 @@ class ViewsTestCaseGet(TestCase):
     # def setUp(self):
         # Endpoints
         cls.payment_url = '/api/v1/payment/'
-        image_file = str(BASE_DIR) + 'api/static/img/logo-color.png'
+        image_file = str(BASE_DIR) + 'api/static/img/logo.png'
 
         cls.profile_url = '/api/v1/profile/?user=pita'
         user0 = BusinessUser.objects.create_user(username='pita',
