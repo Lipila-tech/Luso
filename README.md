@@ -1,8 +1,8 @@
-# Lipila Patron
+# Luso
 
 ## Overview
 
-Lipila Patron is a platform that provides a user-friendly interface for receiving patron support in Zambia. Key features include:
+Luso is a platform that provides a user-friendly interface for receiving patron support in Zambia. Key features include:
 
 - **Patron profile creation:** Create and customize profiles.
 - **Mobile money Integration:** Supports MTN and Airtel mobile payments.

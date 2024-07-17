@@ -40,6 +40,9 @@
     <link href="{% static 'assets/css/nav.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
 
+    {% block extrastylesheets %}
+    {% endblock extrastylesheets %}
+
 
     <!-- =======================================================
   * Template Name: Lipila
@@ -73,7 +76,7 @@
             <div class="row gy-4">
                 <div class="col-lg-5 col-md-12 footer-about">
                     <a href="{% url 'index' %}" class="logo d-flex align-items-center">
-                        <span>Lipila Patron</span>
+                        <span>Luso</span>
                     </a>
                     <p>Made for Creators by Creators.</p>
                     <div class="social-links d-flex mt-4">

@@ -1,12 +1,11 @@
-{% extends 'layout_admin.html' %}
+{% extends 'layout_base.html' %}
 {% load static %}
 {% load pagination_tags %}
 {% block title %} Browse Creators{% endblock %}
+{% block extrastylesheets %}
 
+{% endblock extrastylesheets %}
 
 {% block section %}
 {% include '_creators.html' %}
-
 {% endblock section %}
-{% block extrascripts %}
-{% endblock extrascripts %}

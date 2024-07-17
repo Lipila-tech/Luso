@@ -21,7 +21,7 @@ from patron.utils import (get_creator_subscribers,
 
 def index(request):
     """
-    Renders the Lipila Patron home page.
+    Renders the Luso home page.
     """
     return render(request, 'patron/index.html')
 
@@ -274,12 +274,15 @@ def subscribe_view(request, tier_id):
 
 
 
-def list_creators(request):
+def browse_creators(request):
     """
     Retrieves all the User's with a CreatorProfile.
     """
     creators = CreatorProfile.objects.all()
-    return render(request, 'patron/admin/pages/view_creators.html', {'creators':creators})
+    if request.user.is_authenticated:
+        return render(request, 'patron/admin/pages/view_creators.html', {'creators':creators})
+    else:
+        return render(request, 'patron/admin/pages/view_creators_visitor.html', {'creators':creators})
     
 
 @login_required

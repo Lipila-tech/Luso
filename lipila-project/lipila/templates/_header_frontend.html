@@ -23,13 +23,12 @@
                 <!-- General links -->
                 {% with target_fragment='#creators-info' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'patron:index' %}?fragment={{ target_fragment }}">Creators</a>
+                    <a class="nav-link" href="{% url 'patron:index' %}?fragment={{ target_fragment }}">I'm a Creator</a>
                 </li>
                 {% endwith %}
                 {% with target_fragment='#find-creator' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Find a
-                        Creator</a>
+                    <a class="nav-link" href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Browse Creators</a>
                 </li>
                 {% endwith %}
                 <li class="nav-item">
