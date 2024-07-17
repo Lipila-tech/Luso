@@ -13,8 +13,48 @@ from .utils import basic_auth_encode, basic_auth_decode
 from .forms import SignUpForm
 
 
+import os
+
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
+
+def sign_in(request):
+    return render(request, 'sign_in.html')
+
+
+@csrf_exempt
+def auth_receiver(request):
+    """
+    Google calls this URL after the user has signed in with their Google account.
+    """
+    token = request.POST['credential']
+
+    try:
+        user_data = id_token.verify_oauth2_token(
+            token, requests.Request(), "679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com"
+        )
+    except ValueError:
+        return HttpResponse(status=403)
+
+    # In a real app, I'd also save any new user here to the database. See below for a real example I wrote for Photon Designer.
+    # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
+    request.session['user_data'] = user_data
+
+    return redirect('sign_in')
+
+
+def sign_out(request):
+    del request.session['user_data']
+    return redirect('sign_in')
+
+
 def activation_sent_view(request):
     return render(request, 'registration/activation_sent.html')
+
 
 def activate(request, uidb64, token):
     try:
@@ -30,8 +70,9 @@ def activate(request, uidb64, token):
     else:
         return render(request, 'registration/activation_invalid.html')
 
+
 def signup_view(request):
-    if request.method  == 'POST':
+    if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()

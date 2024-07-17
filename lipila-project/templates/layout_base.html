@@ -11,7 +11,7 @@
     <meta content="" name="keywords">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <meta name="google-signin-client_id" content="679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com">
+    
     
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/img/luso/apple-touch-icon.png' %}">
@@ -40,6 +40,9 @@
     <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/nav.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
 
     {% block extrastylesheets %}
     {% endblock extrastylesheets %}
@@ -140,7 +143,7 @@
     {% include 'lipila/modals/preloader.html' %}
 
     <!-- Vendor JS Files -->
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>

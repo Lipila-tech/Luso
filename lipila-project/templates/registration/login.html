@@ -30,6 +30,13 @@
     <a class="small" href="{% url 'password_reset' %}">Forgot password?</a>
     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'accounts:signup' %}"
             style="color: #393f81;">Register here</a></p>
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <div id="g_id_onload" data-client_id="679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com"
+        data-context="signin" data-ux_mode="redirect" data-login_uri="http://lipila.pythonanywhere.com/accounts/auth-receiver"
+        data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with"
+        data-size="large" data-logo_alignment="left">
+    </div>
 </div>
 {% endblock page %}
