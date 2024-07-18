@@ -40,7 +40,7 @@ def auth_receiver(request):
     except ValueError:
         return HttpResponse(status=403)
 
-    # In a real app, I'd also save any new user here to the database. See below for a real example I wrote for Photon Designer.
+    # save any new user here to the database
     # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
     request.session['user_data'] = user_data
 

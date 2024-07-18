@@ -16,5 +16,29 @@
         </form>
         <p class="mb-5 pb-lg-2" style="color: #393f81;">Already registered? <a href="{% url 'login' %}"
                 style="color: #393f81;">Login</a></p>
+
+                <!-- Google signup -->
+        <div class="container">
+            {% if request.session.user_data %}
+            <div>
+                <p>Hi {{ request.session.user_data.given_name }} 🙂</p>
+                <p>Your email is {{ request.session.user_data.email }}</p>
+                <img src="{{ request.session.user_data.picture }}" alt="User picture">
+                <p>Click here to <a href="{% url 'accounts:sign_out' %}">Sign out</a></p>
+            </div>
+            {% else %}
+            <div>
+                <div id="g_id_onload"
+                    data-client_id="679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com"
+                    data-context="signin" data-ux_mode="redirect" data-login_uri="{% url 'accounts:auth_receiver' %}"
+                    data-auto_select="false" data-itp_support="true">
+                </div>
+
+                <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline"
+                    data-text="signin_with" data-size="large" data-logo_alignment="left">
+                </div>
+            </div>
+            {% endif %}
+        </div>
 </div>
 {% endblock page %}
