@@ -32,7 +32,7 @@ DEBUG = env('DEBUG')
 GOOGLE_OAUTH_CLIENT_ID=env("GOOGLE_OAUTH_CLIENT_ID")
 
 LOGIN_URI_TESTING = 'http://localhost:8000/accounts/google/login/'
-LOGIN_URI_PRODUCTION = 'https:/lipila.pythonanywhere.com/accounts/google/login/'
+LOGIN_URI_PRODUCTION = 'https://lipila.pythonanywhere.com/accounts/google/login/'
 
 if DEBUG == True:
     LOGIN_URI = LOGIN_URI_TESTING
