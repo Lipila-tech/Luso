@@ -29,6 +29,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
+GOOGLE_OAUTH_CLIENT_ID=env("GOOGLE_OAUTH_CLIENT_ID")
 
 ALLOWED_HOSTS = ['lipila.pythonanywhere.com', 'localhost', '192.168.0.190']
 

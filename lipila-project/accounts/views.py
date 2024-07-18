@@ -20,10 +20,10 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token
 from google.auth.transport import requests
-
+from django.conf import settings
 
 def sign_in(request):
-    return render(request, 'sign_in.html')
+    return render(request, 'registration/signin.html')
 
 
 @csrf_exempt
@@ -35,8 +35,8 @@ def auth_receiver(request):
 
     try:
         user_data = id_token.verify_oauth2_token(
-            token, requests.Request(), "679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com"
-        )
+            token, requests.Request(), settings.GOOGLE_OAUTH_CLIENT_ID)
+        print(user_data)
     except ValueError:
         return HttpResponse(status=403)
 
@@ -44,12 +44,12 @@ def auth_receiver(request):
     # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
     request.session['user_data'] = user_data
 
-    return redirect('sign_in')
+    return redirect(reverse('dashboard'))
 
 
 def sign_out(request):
     del request.session['user_data']
-    return redirect('sign_in')
+    return redirect('login')
 
 
 def activation_sent_view(request):
