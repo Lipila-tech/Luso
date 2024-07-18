@@ -36,7 +36,6 @@ def auth_receiver(request):
     try:
         user_data = id_token.verify_oauth2_token(
             token, requests.Request(), settings.GOOGLE_OAUTH_CLIENT_ID)
-        print(user_data)
     except ValueError:
         return HttpResponse(status=403)
 

@@ -30,7 +30,7 @@
     <a class="small" href="{% url 'password_reset' %}">Forgot password?</a>
     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'accounts:signup' %}"
             style="color: #393f81;">Register here</a></p>
-
+    <p style="align-items: center;">Or</p>
     <div class="container">
         {% if request.session.user_data %}
         <div>
@@ -41,10 +41,8 @@
         </div>
         {% else %}
         <div>
-            <div id="g_id_onload"
-                data-client_id="679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com"
-                data-context="signin" data-ux_mode="redirect" data-login_uri="{% url 'accounts:auth_receiver' %}"
-                data-auto_select="false" data-itp_support="true">
+            <div id="g_id_onload" data-client_id="{{ CLIENT_ID }}" data-context="signin" data-ux_mode="redirect"
+                data-login_uri="{{ LOGIN_URI }}" data-auto_select="false" data-itp_support="true">
             </div>
 
             <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with"

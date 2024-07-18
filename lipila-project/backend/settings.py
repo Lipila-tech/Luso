@@ -31,6 +31,14 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 GOOGLE_OAUTH_CLIENT_ID=env("GOOGLE_OAUTH_CLIENT_ID")
 
+LOGIN_URI_TESTING = 'http://localhost:8000/accounts/google/login/'
+LOGIN_URI_PRODUCTION = 'https:/lipila.pythonanywhere.com/accounts/google/login/'
+
+if DEBUG:
+    LOGIN_URI = LOGIN_URI_TESTING
+else:
+    LOGIN_URI = LOGIN_URI_PRODUCTION
+
 ALLOWED_HOSTS = ['lipila.pythonanywhere.com', 'localhost', '192.168.0.190']
 
 # Application references
@@ -93,6 +101,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # Custom context processor
+                'accounts.context_processors.login_uri',
+                'accounts.context_processors.data_client_id',
             ],
         },
     },
