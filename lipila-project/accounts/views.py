@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
@@ -22,6 +23,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.conf import settings
 
+
 def sign_in(request):
     return render(request, 'registration/signin.html')
 
@@ -31,19 +33,44 @@ def auth_receiver(request):
     """
     Google calls this URL after the user has signed in with their Google account.
     """
-    token = request.POST['credential']
+    token = request.POST.get('credential')
+
+    if not token:
+        return HttpResponse(status=400)  # Bad request if no token is provided
 
     try:
         user_data = id_token.verify_oauth2_token(
             token, requests.Request(), settings.GOOGLE_OAUTH_CLIENT_ID)
     except ValueError:
-        return HttpResponse(status=403)
+        return HttpResponse(status=403)  # Forbidden if token is invalid
 
-    # save any new user here to the database
-    # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
-    request.session['user_data'] = user_data
+    email = user_data.get('email')
 
-    return redirect(reverse('dashboard'))
+    if not email:
+        return HttpResponse(status=400)  # Bad request if no email in token
+
+    # Get or create the user
+    user, created = User.objects.get_or_create(email=email, defaults={
+        'username': email.split('@')[0],  # You can modify this as needed
+        'first_name': user_data.get('given_name', ''),
+        'last_name': user_data.get('family_name', ''),
+    })
+
+    if created:
+        messages.success(request, "Account created.")
+        user.set_unusable_password()  # Set unusable password if creating a new user
+        user.save()
+
+    # Authenticate and log in the user
+    user = authenticate(request, email=email)
+    if user is not None:
+        login(request, user)
+        request.session['user_data'] = user_data
+        messages.success(request, "Logged in successfully")
+        return redirect(reverse('dashboard'))
+    else:
+        messages.error(request, "Authentication failed")
+        return redirect(reverse('accounts:signup'))
 
 
 def sign_out(request):
