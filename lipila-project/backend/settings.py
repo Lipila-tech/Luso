@@ -31,10 +31,10 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 GOOGLE_OAUTH_CLIENT_ID=env("GOOGLE_OAUTH_CLIENT_ID")
 
-LOGIN_URI_TESTING = 'http://localhost:8000/accounts/google/login/'
-LOGIN_URI_PRODUCTION = 'https://lipila.pythonanywhere.com/accounts/google/login/'
+LOGIN_URI_TESTING = 'http://localhost:8000/accounts/login/'
+LOGIN_URI_PRODUCTION = 'https://lipila.pythonanywhere.com/accounts/login/'
 
-if DEBUG == True:
+if env('ENV') == 'dev':
     LOGIN_URI = LOGIN_URI_TESTING
 else:
     LOGIN_URI = LOGIN_URI_PRODUCTION
