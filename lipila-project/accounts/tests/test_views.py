@@ -43,11 +43,8 @@ class AccountsViewTests(TestCase):
     def test_signup_view_post(self):
         data = {
             'username': 'newuser',
-            'first_name': 'New',
-            'last_name': 'User',
             'email': 'newuser@example.com',
-            'password1': 'testpassword',
-            'password2': 'testpassword'
+            'password': 'testpassword',
         }
         response = self.client.post(reverse('accounts:signup'), data)
         # Should redirect to activation_sent view

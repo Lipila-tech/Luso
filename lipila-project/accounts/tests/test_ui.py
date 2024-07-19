@@ -37,9 +37,9 @@ class AuthenticateUsersTest(FunctionalTest):
         super().setUp()
         # Create a creator user and a withdrawal request
         self.user1 = get_user_model().objects.create_user(
-            username='testuser', password='testpassword')
+            username='testuser', email='test@email.io', password='testpassword')
         self.user2 = get_user_model().objects.create_user(
-            username='testcreator', password='testpassword')
+            username='testcreator', email='test@email1.io', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
 
@@ -54,9 +54,9 @@ class AuthenticateUsersTest(FunctionalTest):
         username_field.send_keys('testcreator')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
+            By.CSS_SELECTOR, "input[type='submit'][value='signin']")
         login_button.click()
-        self.assertIn('Lipila-Profile', self.BROWSER.title)
+        self.assertIn('Choose Profile Type', self.BROWSER.title)
 
     @override_settings(DEBUG=True)
     def test_default_backend_login_ordinary_user_valid(self):
@@ -67,9 +67,9 @@ class AuthenticateUsersTest(FunctionalTest):
         username_field.send_keys('testuser')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
+            By.CSS_SELECTOR, "input[type='submit'][value='signin']")
         login_button.click()
-        self.assertIn('Lipila-Profile', self.BROWSER.title)
+        self.assertIn('Choose Profile Type', self.BROWSER.title)
 
     @override_settings(DEBUG=True)
     def test_google_sign_in_valid(self):

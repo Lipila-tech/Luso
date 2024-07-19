@@ -68,7 +68,7 @@ def auth_receiver(request):
         login(request, user)
         request.session['user_data'] = user_data
         messages.success(request, "Logged in successfully")
-        return redirect(reverse('dashboard'))
+        return redirect(reverse('patron:choose_profile_type'))
     else:
         messages.error(request, "Authentication failed")
         return redirect(reverse('accounts:signup'))
@@ -92,8 +92,10 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
-        return redirect('patron:profile')
+        # Default backend or specific one
+        backend = settings.AUTHENTICATION_BACKENDS[0]
+        login(request, user, backend=backend)
+        return redirect('patron:choose_profile_type')
     else:
         return render(request, 'registration/activation_invalid.html')
 
@@ -133,7 +135,8 @@ def custom_login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Welcome back, {user.username}!")
-                return redirect('dashboard')  # Replace with your desired redirect URL
+                # Replace with your desired redirect URL
+                return redirect('patron:choose_profile_type')
             else:
                 messages.error(request, "Invalid username or password.")
         else:
