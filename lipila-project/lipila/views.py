@@ -258,7 +258,7 @@ class SendMoneyView(BSModalCreateView):
             'description': description
         }
 
-        api_user = get_user_model().objects.get(pk=1)
+        api_user = get_user_model().objects.get(id=1)
 
         response = query_collection(
             api_user.username, 'POST', reference_id, data=payload)
