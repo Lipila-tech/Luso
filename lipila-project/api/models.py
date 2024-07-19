@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 
 # Global variables
@@ -13,7 +13,7 @@ STATUS_CHOICES = (
 
 class LipilaDisbursement(models.Model):
     """Stores disbursement data"""
-    api_user = models.ForeignKey(User,
+    api_user = models.ForeignKey(settings.AUTH_USER_MODEL,
                               related_name='disbursements',
                               on_delete=models.CASCADE,
                               null=True, blank=True)
@@ -41,7 +41,7 @@ class LipilaCollection(models.Model):
     """
     Stores collection data.
     """
-    api_user = models.ForeignKey(User, related_name='payments_received',
+    api_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='payments_received',
                               on_delete=models.CASCADE, null=True, blank=True)
     payer_account_number = models.CharField(max_length=30)
     amount = models.DecimalField(

@@ -1,24 +1,25 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.messages import get_messages
 from accounts.models import CreatorProfile
 from patron.models import Contributions, SubscriptionPayments, TierSubscriptions, Transfer, Tier
 from lipila.forms.forms import SendMoneyForm
 from lipila.views import SendMoneyView
 from unittest.mock import patch
+from django.contrib.auth import get_user_model
 
 
 class SendMoneyViewTests(TestCase):
     def setUp(self):
         self.client = Client()
-        User.objects.create(
+        get_user_model().objects.create(
             username='testuser', password='password')
-        self.creator = User.objects.create_user(
+        self.creator = get_user_model().objects.create_user(
             username='creatoruser', password='password')
         self.creator_user = CreatorProfile.objects.create(
             user=self.creator, patron_title='testpatron', about='test', creator_category='musician')
-        self.contribution_user = User.objects.create_user(
+        self.contribution_user = get_user_model().objects.create_user(
             username='contribuser', password='password')
         self.client.login(username='contribuser', password='password')
         Tier().create_default_tiers(self.creator_user)
@@ -145,7 +146,7 @@ class SendMoneyViewTests(TestCase):
         self.assertEqual(str(messages[0]), 'Invalid data sent')
 
     def tearDown(self):
-        User.objects.all().delete()
+        get_user_model().objects.all().delete()
         Contributions.objects.all().delete()
         SubscriptionPayments.objects.all().delete()
         TierSubscriptions.objects.all().delete()

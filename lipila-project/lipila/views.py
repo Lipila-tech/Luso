@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -222,11 +223,11 @@ class SendMoneyView(BSModalCreateView):
         payee = ''
         payer_account_number = form.cleaned_data['payer_account_number']
         description = form.cleaned_data['description']
-        payer = User.objects.get(username=self.request.user)
+        payer = get_user_model().objects.get(username=self.request.user)
         reference_id = generate_reference_id()  # generate uniq transaction id
 
         if transaction_type == 'contribution':
-            payee = User.objects.get(pk=self.kwargs.get('id'))
+            payee = get_user_model().objects.get(pk=self.kwargs.get('id'))
             amount = form.cleaned_data['amount']
             self.success_url = reverse_lazy('contributions_history')
         elif transaction_type == 'subscription':
@@ -257,7 +258,7 @@ class SendMoneyView(BSModalCreateView):
             'description': description
         }
 
-        api_user = User.objects.get(pk=1)
+        api_user = get_user_model().objects.get(pk=1)
 
         response = query_collection(
             api_user.username, 'POST', reference_id, data=payload)
@@ -315,7 +316,7 @@ def transfers_history(request):
 
 @login_required
 def staff_users(request, user):
-    total_users = len(User.objects.all().order_by('date_joined'))
+    total_users = len(get_user_model().objects.all())
     total_creators = len(CreatorProfile.objects.all())
     total_payments = len(SubscriptionPayments.objects.all())
     context = {

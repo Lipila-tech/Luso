@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 # custom models
 from .globals import default_socials, CITY_CHOICES, CREATOR_CATEGORY_CHOICES
 
@@ -23,7 +23,7 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, username, password, **extra_fields)
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
@@ -42,8 +42,8 @@ class CustomUser(AbstractBaseUser):
 
 
 class PatronProfile(models.Model):
-    user = models.OneToOneField(  # Relate to the User model
-        'auth.User',
+    user = models.OneToOneField(  # Relate to the user model
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         primary_key=True,
     )
@@ -56,8 +56,8 @@ class PatronProfile(models.Model):
 
 
 class CreatorProfile(models.Model):
-    user = models.OneToOneField(  # Relate to the User model
-        'auth.User',
+    user = models.OneToOneField(  # Relate to to user model
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         primary_key=True,
     )

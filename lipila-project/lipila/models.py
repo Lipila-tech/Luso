@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from accounts.models import CreatorProfile
 from accounts.globals import CITY_CHOICES
  
@@ -46,7 +46,7 @@ class AboutInfo(models.Model):
 
 class UserTestimonial(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 

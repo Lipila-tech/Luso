@@ -5,28 +5,28 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from django.urls import reverse, reverse_lazy
 from .base import FunctionalTest
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.test import override_settings
 from django.contrib.auth.hashers import make_password
 from unittest.mock import Mock, patch
 from accounts.models import CreatorProfile
 from patron.models import WithdrawalRequest, Tier, TierSubscriptions
-
+from django.contrib.auth import get_user_model
 
 class SubscriptionPaymentTest(FunctionalTest):
     @override_settings(DEBUG=True)
     def setUp(self):
         super().setUp()
         # Create a super user default api-user
-        super_user = User.objects.create_user(
+        super_user = get_user_model().objects.create_user(
             username='staff', password='testpassword', is_superuser=True, is_staff=True)
         
         # create patron user
-        self.user1 = User.objects.create_user(
+        self.user1 = get_user_model().objects.create_user(
             username='testpatron', password='testpassword')
         
         # create a user with a creatorprofile
-        self.user2 = User.objects.create_user(
+        self.user2 = get_user_model().objects.create_user(
             username='testcreator', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
@@ -104,11 +104,11 @@ class ContributionModalTest(FunctionalTest):
     def setUp(self):
         super().setUp()
         # Create a creator user and a withdrawal request
-        super_user = User.objects.create_user(
+        super_user = get_user_model().objects.create_user(
             username='staff', password='testpassword', is_superuser=True, is_staff=True)
-        self.user1 = User.objects.create_user(
+        self.user1 = get_user_model().objects.create_user(
             username='testpatron', password='testpassword')
-        self.user2 = User.objects.create_user(
+        self.user2 = get_user_model().objects.create_user(
             username='testcreator', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
@@ -224,9 +224,9 @@ class ApproveWithdrawalTest(FunctionalTest):
     def setUp(self):
         super().setUp()
         # Create a creator user and a withdrawal request
-        self.user1 = User.objects.create_user(
+        self.user1 = get_user_model().objects.create_user(
             username='testuser', password='testpassword', is_staff=True)
-        self.user2 = User.objects.create_user(
+        self.user2 = get_user_model().objects.create_user(
             username='testcreator', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
@@ -270,9 +270,9 @@ class RejectWithdrawalTest(FunctionalTest):
     def setUp(self):
         super().setUp()
         # Create a creator user and a withdrawal request
-        self.user1 = User.objects.create_user(
+        self.user1 = get_user_model().objects.create_user(
             username='testuser', password='testpassword', is_staff=True)
-        self.user2 = User.objects.create_user(
+        self.user2 = get_user_model().objects.create_user(
             username='testcreator', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')

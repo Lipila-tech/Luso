@@ -2,14 +2,14 @@
 patron app Util Functions
 """
 from accounts.models import CreatorProfile, PatronProfile
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from typing import Union, List
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from django.urls import reverse
 from django.db.models import Sum
-
+from django.contrib.auth import get_user_model
 import random
 import string
 
@@ -94,7 +94,7 @@ def calculate_creators_balance(creator):
     """
     total_payments = calculate_total_payments(creator)
     total_contributions = calculate_total_contributions(
-        User.objects.get(username=creator))
+        get_user_model().objects.get(username=creator))
     withdrawals = calculate_total_withdrawals(creator)
     balance = (total_payments + total_contributions) - withdrawals
     return balance

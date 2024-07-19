@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -176,7 +177,7 @@ def dashboard(request):
             creator = CreatorProfile.objects.get(user=request.user)
             total_payments = calculate_total_payments(creator)
             total_contributions = calculate_total_contributions(
-                User.objects.get(username=creator))
+                get_user_model().objects.get(username=creator))
             withdrawals = calculate_total_withdrawals(creator)
             balance = calculate_creators_balance(creator)
             context['summary'] = {
@@ -238,7 +239,7 @@ def creator_home(request, creator):
     Returns:
         A rendered response with the creator details.
     """
-    creator_user = User.objects.get(username=creator)
+    creator_user = get_user_model().objects.get(username=creator)
     creator_obj = CreatorProfile.objects.get(user=creator_user.id)
     tiers = Tier.objects.filter(creator=creator_obj).values()
     patrons = get_creator_subscribers(creator_obj)
@@ -290,7 +291,7 @@ def subscriptions(request):
     """
     Retrieves all tiers an authenticated User is subscribed to.
     """
-    user_object = get_object_or_404(User, username=request.user)
+    user_object = get_object_or_404(get_user_model(), username=request.user)
     subscriptions = TierSubscriptions.objects.filter(patron=user_object)
     return render(request, 'patron/admin/pages/view_subscriptions.html', {'subscriptions': subscriptions})
 
@@ -300,7 +301,7 @@ def subscription_detail(request, tier_id):
     """
     Renders a detailed view of a tier
     """
-    user_object = get_object_or_404(User, username=request.user)
+    user_object = get_object_or_404(get_user_model(), username=request.user)
     tier = Tier.objects.get(pk=tier_id)
     subscription = TierSubscriptions.objects.get(tier=tier, patron=request.user)
     return render(request, 'patron/admin/pages/view_subscription_detail.html', {'subscription': subscription, 'tier_id': tier_id})
@@ -360,7 +361,7 @@ def payments_history(request):
         context['payments'] = payments
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/payments_received.html', context)
-    except User.creatorprofile.RelatedObjectDoesNotExist:
+    except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
         # Get a patron users history
         payments = SubscriptionPayments.objects.filter(payee__patron=request.user)
         context['payments'] = payments
@@ -379,7 +380,7 @@ def contributions_history(request):
         context['contributions'] = contributions
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/contributions_received.html', context)
-    except User.creatorprofile.RelatedObjectDoesNotExist:
+    except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
         # Get a patron users history
         contributions = Contributions.objects.filter(payer=request.user, status='success')
         context['contributions'] = contributions

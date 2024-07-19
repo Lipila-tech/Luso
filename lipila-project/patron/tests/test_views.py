@@ -1,9 +1,10 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
 from unittest.mock import Mock, patch
 import json
+from django.contrib.auth import get_user_model
 # Custom models
 from accounts.models import PatronProfile, CreatorProfile
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions
@@ -14,7 +15,7 @@ class TestPatronViewsMore(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.client = Client()
-        cls.creator_user = User.objects.create(
+        cls.creator_user = get_user_model().objects.create(
             username='creatoruser', password='password')
         cls.client.force_login(cls.creator_user)
         data = {
@@ -68,12 +69,12 @@ class TestSubscription(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.client = Client()
-        staff_user = User.objects.create(username='staffuser')
-        cls.creator_user1 = User.objects.create(
+        staff_user = get_user_model().objects.create(username='staffuser')
+        cls.creator_user1 = get_user_model().objects.create(
             username='testcreator1', password='password')
-        cls.creator_user2 = User.objects.create(
+        cls.creator_user2 = get_user_model().objects.create(
             username='testcreator2', password='password')
-        cls.user1 = User.objects.create(
+        cls.user1 = get_user_model().objects.create(
             username='test_user', password='password')
         cls.creator1_obj = CreatorProfile.objects.create(
             user=cls.creator_user1, patron_title='testpatron1', about='test', creator_category='musician')
@@ -111,15 +112,15 @@ class TestSubscription(TestCase):
 
     def test_get_creator_patrons(self):
         self.client.force_login(self.creator_user1)
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser1', password='password')
-        user2 = User.objects.create(
+        user2 = get_user_model().objects.create(
             username='testuser_2', password='password')
-        user3 = User.objects.create(
+        user3 = get_user_model().objects.create(
             username='testuser3', password='password')
-        user4 = User.objects.create(
+        user4 = get_user_model().objects.create(
             username='testuser4', password='password')
-        user5 = User.objects.create(
+        user5 = get_user_model().objects.create(
             username='testuser_5', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
         tier2 = Tier.objects.get(pk=self.tiers_1[2]['id'])
@@ -138,7 +139,7 @@ class TestSubscription(TestCase):
         self.client.force_login(self.user1)
         url = reverse('patron:creator_home', kwargs={
                       'creator': self.creator1_obj})
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser6', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
         TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
@@ -153,7 +154,7 @@ class TestSubscription(TestCase):
         mock_response.status_code = 202
         mock_post.return_value = mock_response
 
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser7', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
@@ -176,7 +177,7 @@ class TestSubscription(TestCase):
         mock_response.status_code = 200
         mock_get.return_value = mock_response
 
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser8', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
@@ -197,7 +198,7 @@ class TestSubscription(TestCase):
             'data': 'request accepted, wait for client approval'}
         mock_response.status_code = 202
         mock_post.return_value = mock_response
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser5', password='password')
         self.client.force_login(user1)
         url = reverse('patron:contribute', kwargs={
@@ -220,7 +221,7 @@ class TestSubscription(TestCase):
         self.assertTemplateUsed('lipila/actions/contribute.html')
 
     def test_get_payment_history(self):
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser9', password='password')
         self.client.force_login(user1)
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
@@ -238,9 +239,9 @@ class TestPatronViews(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.client = Client()
-        cls.creatoruser1 = User.objects.create(
+        cls.creatoruser1 = get_user_model().objects.create(
             username='testuser_1', password='password')
-        cls.user2 = User.objects.create(
+        cls.user2 = get_user_model().objects.create(
             username='testuser2', password='password')
     
     @classmethod
@@ -405,11 +406,11 @@ class TestCreateDefaultTiers(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.client = Client()
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser', password='password')
-        user2 = User.objects.create(
+        user2 = get_user_model().objects.create(
             username='test_user_2', password='password')
-        cls.user3 = User.objects.create(
+        cls.user3 = get_user_model().objects.create(
             username='test_user_3', password='password')
         creator1 = CreatorProfile.objects.create(
             user=user1, patron_title='test_patron', about='test', creator_category='musician')

@@ -1,7 +1,7 @@
 from django import template
-from django.contrib.auth.models import User
+from django.conf import settings
 from accounts.models import CreatorProfile
-
+from django.contrib.auth import get_user_model
 register = template.Library()
 
 @register.filter(name="add_class")
@@ -36,7 +36,7 @@ def comma_format(value):
 
 @register.filter
 def get_users(value):
-    users = User.objects.count()
+    users = get_user_model().objects.count()
     return users
 
 @register.filter

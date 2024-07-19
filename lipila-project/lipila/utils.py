@@ -5,12 +5,12 @@ from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial, AboutInfo)
-from django.contrib.auth.models import User
+from django.conf import settings
 from rest_framework.response import Response
 import requests
 from django.urls import reverse
 from api.models import LipilaCollection, LipilaDisbursement
-
+from django.contrib.auth import get_user_model
 
 
 # utils.py
@@ -201,9 +201,9 @@ def get_user_object(user: str):
     """
     data = {}
     try:
-        user_object = User.objects.get(username=user)
+        user_object = get_user_model().objects.get(username=user)
         return user_object
-    except User.DoesNotExist:
+    except get_user_model().DoesNotExist:
         return None
 
 

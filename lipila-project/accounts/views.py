@@ -1,7 +1,7 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.forms import AuthenticationForm
@@ -51,7 +51,7 @@ def auth_receiver(request):
         return HttpResponse(status=400)  # Bad request if no email in token
 
     # Get or create the user
-    user, created = User.objects.get_or_create(email=email, defaults={
+    user, created = get_user_model().objects.get_or_create(email=email, defaults={
         'username': email.split('@')[0],  # You can modify this as needed
         'first_name': user_data.get('given_name', ''),
         'last_name': user_data.get('family_name', ''),
@@ -86,8 +86,8 @@ def activation_sent_view(request):
 def activate(request, uidb64, token):
     try:
         uid = basic_auth_decode(uidb64)
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = get_user_model().objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True

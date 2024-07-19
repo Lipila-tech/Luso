@@ -1,8 +1,9 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
 from unittest.mock import Mock, patch
+from django.contrib.auth import get_user_model
 # Custom modules
 from patron.models import WithdrawalRequest, ProcessedWithdrawals
 from lipila.models import ContactInfo, HeroInfo, UserTestimonial
@@ -23,7 +24,7 @@ class IndexViewTest(TestCase):
             message="Test message",
             slogan="Test slogan",
         )
-        UserTestimonial.objects.create(user=User.objects.create(
+        UserTestimonial.objects.create(user=get_user_model().objects.create(
             username="test_user"), message="Test testimonial")
 
     def test_index_view_success(self):
@@ -77,12 +78,12 @@ class ApproveWithdrawalsTest(TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         # Create a staff user
-        cls.staff_user = User.objects.create_user(
+        cls.staff_user = get_user_model().objects.create_user(
             username='staffuser', password='staffpassword', is_staff=True)
         cls.client = Client()
 
         # Create a creator user and a withdrawal request
-        cls.user1 = User.objects.create_user(
+        cls.user1 = get_user_model().objects.create_user(
             username='creatoruser', password='creatorpassword')
         cls.creator_user = CreatorProfile.objects.create(
             user=cls.user1, patron_title='testpatron1', about='test', creator_category='musician')
@@ -188,7 +189,7 @@ class ApproveWithdrawalsTest(TestCase):
 class ProcessedWithdrawalsTest(TestCase):
     def setUp(self):
         # Create a staff user
-        self.staff_user = User.objects.create_user(
+        self.staff_user = get_user_model().objects.create_user(
             username='staffuser', password='staffpassword', is_staff=True)
         self.client = Client()
 

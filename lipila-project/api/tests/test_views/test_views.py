@@ -1,5 +1,5 @@
 import os
-from django.contrib.auth.models import User
+from django.conf import settings
 from api.models import LipilaCollection, LipilaDisbursement
 from unittest.mock import Mock, patch
 from rest_framework import status
@@ -8,14 +8,14 @@ from rest_framework.reverse import reverse
 from uuid import UUID
 from api.utils import generate_reference_id
 from lipila.utils import check_payment_status
-
+from django.contrib.auth import get_user_model
 
 class LipilaDisbursementViewTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.user = User.objects.create(username='testuser')
+        cls.user = get_user_model().objects.create(username='testuser')
         cls.url = reverse('disburse-list')
     
     
@@ -45,7 +45,7 @@ class LipilaDisbursementViewTest(APITestCase):
         self.assertEqual(LipilaDisbursement.objects.count(), 0)
 
     def test_deposit_no_user_fail_payer(self):
-        User.objects.all().delete()
+        get_user_model().objects.all().delete()
         data = {'amount': '100', 'send_money_to': '0966443322',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
         response = self.client.post(self.url, data)
@@ -74,7 +74,7 @@ class LipilaCollectionViewTest(APITestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.ref = generate_reference_id()
-        cls.user = User.objects.create(username='test_user1')
+        cls.user = get_user_model().objects.create(username='test_user1')
         cls.url = reverse('payments-list')
         
     def test_create_payment_success(self):

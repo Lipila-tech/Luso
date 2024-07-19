@@ -1,9 +1,10 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from unittest.mock import patch
 from unittest.mock import Mock
+from django.contrib.auth import get_user_model
 # custom modules
 from api.utils import generate_reference_id
 from api.models import LipilaCollection, LipilaDisbursement
@@ -23,7 +24,7 @@ from patron.utils import generate_reference_id
 
 class TestCheckPaymentStatus(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='admin')
+        self.user = get_user_model().objects.create(username='admin')
         self.ref1 =  generate_reference_id()
         self.ref2 =  generate_reference_id()
         self.ref3 =  generate_reference_id()
@@ -52,7 +53,7 @@ class TestCheckPaymentStatus(TestCase):
 @patch('lipila.utils.requests.get')
 class GetPaymentTest(TestCase):
     def test_get_query_collection_valid(self, mock_get):
-        User.objects.create(username='test_user')
+        get_user_model().objects.create(username='test_user')
         # Mock the response object to return expected data
         mock_response = Mock()
         mock_response.status_code = 200
@@ -107,7 +108,7 @@ class PostPaymentTest(TestCase):
         mock_response.status_code = 202
         mock_post.return_value = mock_response
 
-        User.objects.create(username='test_user')
+        get_user_model().objects.create(username='test_user')
         ref_id = generate_reference_id()
 
         data = {'amount': '100', 'payer_account_number': '0966443322',
@@ -120,7 +121,7 @@ class PostPaymentTest(TestCase):
 @patch('lipila.utils.requests.get')
 class GetDisbursementTest(TestCase):
     def test_get_query_disbursement_valid(self, mock_get):
-        User.objects.create(username='test_user')
+        get_user_model().objects.create(username='test_user')
         # Mock the response object to return expected data
         mock_response = Mock()
         mock_response.status_code = 200
@@ -175,7 +176,7 @@ class PostDisbursementTest(TestCase):
         mock_response.status_code = 202
         mock_post.return_value = mock_response
 
-        User.objects.create(username='test_user')
+        get_user_model().objects.create(username='test_user')
         ref_id = generate_reference_id()
 
         data = {'amount': '100', 'send_money_to': '0966443322',
@@ -195,9 +196,9 @@ class UtilFunctionTests(TestCase):
 
     def test_get_user_object_valid(self):
         """Test get_user_object returns a User object"""
-        user = User.objects.create_user('testuser', 'user@email.com', 'testpasss')
+        user = get_user_model().objects.create_user('testuser', 'user@email.com', 'testpasss')
         user_object = get_user_object(user)
-        self.assertTrue(isinstance(user_object, User))
+        self.assertTrue(isinstance(user_object, get_user_model()))
 
     def test_get_lipila_contact_info_success(self):
         """Test get_lipila_contact_info returns contact info"""
@@ -250,7 +251,7 @@ class UtilFunctionTests(TestCase):
 
     def test_get_testimonials(self):
         """Test get_testimonials returns all testimonials"""
-        lipila_user = User.objects.create(username="test_user", password="test_password")
+        lipila_user = get_user_model().objects.create(username="test_user", password="test_password")
         UserTestimonial.objects.create(user=lipila_user
                                    ,message="Test testimonial",
         )

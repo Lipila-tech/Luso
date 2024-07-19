@@ -1,17 +1,17 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
-from django.contrib import messages
+from django.contrib.auth import get_user_model
 # custom modules
 from accounts.utils import basic_auth_encode, basic_auth_decode
 
 
 class AccountsViewTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             username='testuser', email='test@example.com', password='testpassword')
 
     
@@ -57,7 +57,7 @@ class AccountsViewTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
         # Check if user is created and not active
-        new_user = User.objects.get(username='newuser')
+        new_user = get_user_model().objects.get(username='newuser')
         self.assertFalse(new_user.is_active)
 
         # Check if the activation email contains correct activation link

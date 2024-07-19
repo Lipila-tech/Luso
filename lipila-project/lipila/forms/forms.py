@@ -1,7 +1,6 @@
 from django import forms
 from lipila.models import CustomerMessage
 from patron.models import Contributions, ISP_CHOICES
-from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from patron.models import WithdrawalRequest, Tier, SubscriptionPayments, Transfer
@@ -71,9 +70,3 @@ class ContactForm(forms.ModelForm):
             'subject': forms.TextInput(attrs={'placeholder': 'Subject'}),
             'message': forms.Textarea(attrs={'placeholder': 'Message'}),
         }
-
-
-class SignupForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ('email', 'password')

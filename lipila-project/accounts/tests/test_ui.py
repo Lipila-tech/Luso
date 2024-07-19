@@ -1,10 +1,11 @@
 from selenium.webdriver.common.by import By
 from django.urls import reverse
 from lipila.tests.base import FunctionalTest
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.test import override_settings
 from unittest.mock import Mock, patch
 from accounts.models import CreatorProfile
+from django.contrib.auth import get_user_model
 
 
 class SignupTest(FunctionalTest):
@@ -35,9 +36,9 @@ class AuthenticateUsersTest(FunctionalTest):
     def setUp(self):
         super().setUp()
         # Create a creator user and a withdrawal request
-        self.user1 = User.objects.create_user(
+        self.user1 = get_user_model().objects.create_user(
             username='testuser', password='testpassword')
-        self.user2 = User.objects.create_user(
+        self.user2 = get_user_model().objects.create_user(
             username='testcreator', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')

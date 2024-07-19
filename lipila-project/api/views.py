@@ -1,6 +1,6 @@
 import environ
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import status
@@ -81,7 +81,7 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
                 request_pay = provisioned_mtn_api_user.deposit(
                     amount=amount, payee=payee, reference_id=str(reference_id))
                 # save payment object
-                api_user = User.objects.get(pk=1)
+                api_user = get_user_model().objects.get(pk=1)
                 payment = serializer.save()
                 payment.api_user = api_user
                 payment.updated_at = timezone.now()
@@ -164,7 +164,7 @@ class LipilaCollectionView(viewsets.ModelViewSet):
                 request_pay = provisioned_mtn_api_user.request_to_pay(
                     amount=amount, payer=payer, reference_id=str(reference_id))
                 # save payment request
-                api_user = User.objects.get(pk=1)
+                api_user = get_user_model().objects.get(pk=1)
                 payment = serializer.save()
                 payment.api_user = api_user
                 payment.updated_at = timezone.now()

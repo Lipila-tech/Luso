@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from accounts.models import CreatorProfile
 from api.utils import generate_reference_id
 
@@ -51,7 +51,7 @@ class Tier(models.Model):
 
 class TierSubscriptions(models.Model):
     patron = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='subscriptions')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='subscriptions')
     tier = models.ForeignKey(
         Tier, on_delete=models.CASCADE, related_name='subscriptions')
 
@@ -61,7 +61,7 @@ class TierSubscriptions(models.Model):
 
 class Transfer(models.Model):
     payer = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tranfers')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='tranfers')
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=False)
     payer_account_number = models.CharField(
@@ -99,9 +99,9 @@ class SubscriptionPayments(models.Model):
 
 class Contributions(models.Model):
     payee = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_received')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_received')
     payer = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_sent')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_sent')
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=False)
     payer_account_number = models.CharField(
@@ -140,9 +140,9 @@ class WithdrawalRequest(models.Model):
 
 class ProcessedWithdrawals(models.Model):
     approved_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_withdrawals')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_withdrawals')
     rejected_by = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
     processed_date = models.DateTimeField(auto_now_add=True)
     request_date = models.CharField(max_length=120, blank=True, null=True)
     reference_id = models.CharField(max_length=120, blank=False, null=False)

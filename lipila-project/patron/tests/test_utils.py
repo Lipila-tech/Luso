@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
-from django.contrib.auth.models import User
+from django.conf import settings
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
-from django.urls import reverse
+from django.contrib.auth import get_user_model
 
 # custom modules
 from patron import utils
@@ -14,12 +14,12 @@ class TestUtilFunctions(TestCase):
     def setUp(self):
         self.client = Client()
         # Create creator users, their creator profiles and thir tiers
-        self.creator_user1 = User.objects.create(
+        self.creator_user1 = get_user_model().objects.create(
             username='testcreator1', password='password')
         self.creator1_obj = CreatorProfile.objects.create(
             user=self.creator_user1, patron_title='testpatron1', about='test', creator_category='musician')
 
-        self.creator_user2 = User.objects.create(
+        self.creator_user2 = get_user_model().objects.create(
             username='testcreator2', password='password')
         self.creator2_obj = CreatorProfile.objects.create(
             user=self.creator_user2, patron_title='testpatron2', about='test', creator_category='musician')
@@ -31,9 +31,9 @@ class TestUtilFunctions(TestCase):
         self.tiers_2 = Tier.objects.filter(creator=self.creator2_obj).values()
 
         # Create patron users
-        self.user1 = User.objects.create(
+        self.user1 = get_user_model().objects.create(
             username='testuser', password='password')
-        self.user2 = User.objects.create(
+        self.user2 = get_user_model().objects.create(
             username='patronusertest', password='password')
 
     def test_get_creator_url(self):
@@ -44,15 +44,15 @@ class TestUtilFunctions(TestCase):
 
     def test_get_creator_subscribers(self):
         self.client.force_login(self.creator_user1)
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser1', password='password')
-        user2 = User.objects.create(
+        user2 = get_user_model().objects.create(
             username='testuser2', password='password')
-        user3 = User.objects.create(
+        user3 = get_user_model().objects.create(
             username='testuser3', password='password')
-        user4 = User.objects.create(
+        user4 = get_user_model().objects.create(
             username='testuser4', password='password')
-        user5 = User.objects.create(
+        user5 = get_user_model().objects.create(
             username='testuser5', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
         tier2 = Tier.objects.get(pk=self.tiers_1[2]['id'])
@@ -74,15 +74,15 @@ class TestUtilFunctions(TestCase):
         Test template tag function.
         """
         self.client.force_login(self.creator_user1)
-        user1 = User.objects.create(
+        user1 = get_user_model().objects.create(
             username='testuser1', password='password')
-        user2 = User.objects.create(
+        user2 = get_user_model().objects.create(
             username='testuser2', password='password')
-        user3 = User.objects.create(
+        user3 = get_user_model().objects.create(
             username='testuser3', password='password')
-        user4 = User.objects.create(
+        user4 = get_user_model().objects.create(
             username='testuser4', password='password')
-        user5 = User.objects.create(
+        user5 = get_user_model().objects.create(
             username='testuser5', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
         tier2 = Tier.objects.get(pk=self.tiers_1[2]['id'])

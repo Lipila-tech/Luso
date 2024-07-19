@@ -1,9 +1,10 @@
 """
 Util Functions
 """
+from django.contrib.auth import get_user_model
 import requests
 from base64 import b64encode
-from django.contrib.auth.models import User
+from django.conf import settings
 from rest_framework.response import Response
 import datetime
 import random
@@ -11,7 +12,7 @@ from uuid import uuid4
 unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"  # Example: '20231125154054_7548'
 
 
-
+User = settings.AUTH_USER_MODEL
 def get_api_user(user:str)-> User:
     """
     This function reteives a user registered as a api user.
@@ -23,9 +24,9 @@ def get_api_user(user:str)-> User:
         A User obeject.
     """
     try:
-        user = User.objects.get(username=user)
+        user = get_user_model().objects.get(username=user)
         return user
-    except User.DoesNotExist:
+    except get_user_model().DoesNotExist:
         return Response({"error": "api user not found"}, status=404)
 
 

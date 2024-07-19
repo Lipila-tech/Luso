@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'widget_tweaks',
     # My apps
     'api',
-    'business',
     'patron',
     'lipila',
     'accounts',
