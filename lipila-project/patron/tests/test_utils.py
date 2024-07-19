@@ -15,12 +15,12 @@ class TestUtilFunctions(TestCase):
         self.client = Client()
         # Create creator users, their creator profiles and thir tiers
         self.creator_user1 = get_user_model().objects.create(
-            username='testcreator1', password='password')
+            username='testcreator1', email='test@bot.io', password='password')
         self.creator1_obj = CreatorProfile.objects.create(
             user=self.creator_user1, patron_title='testpatron1', about='test', creator_category='musician')
 
         self.creator_user2 = get_user_model().objects.create(
-            username='testcreator2', password='password')
+            username='testcreator2', email='test1@bot.io', password='password')
         self.creator2_obj = CreatorProfile.objects.create(
             user=self.creator_user2, patron_title='testpatron2', about='test', creator_category='musician')
 
@@ -32,9 +32,9 @@ class TestUtilFunctions(TestCase):
 
         # Create patron users
         self.user1 = get_user_model().objects.create(
-            username='testuser', password='password')
+            username='testuser', email='test2@bot.io', password='password')
         self.user2 = get_user_model().objects.create(
-            username='patronusertest', password='password')
+            username='patronusertest', email='test12@bot.io', password='password')
 
     def test_get_creator_url(self):
         domain = 'localhost:8000'
@@ -45,15 +45,15 @@ class TestUtilFunctions(TestCase):
     def test_get_creator_subscribers(self):
         self.client.force_login(self.creator_user1)
         user1 = get_user_model().objects.create(
-            username='testuser1', password='password')
+            username='testuser1', email='test4@bot.io', password='password')
         user2 = get_user_model().objects.create(
-            username='testuser2', password='password')
+            username='testuser2', email='test5@bot.io', password='password')
         user3 = get_user_model().objects.create(
-            username='testuser3', password='password')
+            username='testuser3', email='test6@bot.io', password='password')
         user4 = get_user_model().objects.create(
-            username='testuser4', password='password')
+            username='testuser4', email='test45@bot.io', password='password')
         user5 = get_user_model().objects.create(
-            username='testuser5', password='password')
+            username='testuser5', email='test67@bot.io', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
         tier2 = Tier.objects.get(pk=self.tiers_1[2]['id'])
         tier3 = Tier.objects.get(pk=self.tiers_2[0]['id'])
@@ -75,15 +75,15 @@ class TestUtilFunctions(TestCase):
         """
         self.client.force_login(self.creator_user1)
         user1 = get_user_model().objects.create(
-            username='testuser1', password='password')
+            username='testuser1', email='test4@bot.io', password='password')
         user2 = get_user_model().objects.create(
-            username='testuser2', password='password')
+            username='testuser2', email='test5@bot.io', password='password')
         user3 = get_user_model().objects.create(
-            username='testuser3', password='password')
+            username='testuser3', email='test6@bot.io', password='password')
         user4 = get_user_model().objects.create(
-            username='testuser4', password='password')
+            username='testuser4', email='test45@bot.io', password='password')
         user5 = get_user_model().objects.create(
-            username='testuser5', password='password')
+            username='testuser5', email='test67@bot.io', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[1]['id'])
         tier2 = Tier.objects.get(pk=self.tiers_1[2]['id'])
         tier3 = Tier.objects.get(pk=self.tiers_2[0]['id'])
@@ -108,9 +108,9 @@ class TestUtilFunctions(TestCase):
         subscription2 = TierSubscriptions.objects.create(
             patron=self.user2, tier=tier2)
         SubscriptionPayments.objects.create(payee=subscription1, amount=200,
-                                reference_id=generate_reference_id(), status='success')
+                                            reference_id=generate_reference_id(), status='success')
         SubscriptionPayments.objects.create(payee=subscription2, amount=200,
-                                reference_id=generate_reference_id(), status='success')
+                                            reference_id=generate_reference_id(), status='success')
         total_amounts1 = utils.calculate_total_payments(self.creator1_obj)
         total_amounts2 = utils.calculate_total_payments(self.creator2_obj)
         self.assertEqual(total_amounts1, 400)
@@ -165,7 +165,7 @@ class TestUtilFunctions(TestCase):
         subscription1 = TierSubscriptions.objects.create(
             patron=self.user1, tier=tier1)
         SubscriptionPayments.objects.create(payee=subscription1, amount=200,
-                                status='success', reference_id=generate_reference_id())
+                                            status='success', reference_id=generate_reference_id())
         WithdrawalRequest.objects.create(
             creator=self.creator1_obj, amount=100, status='success')
         WithdrawalRequest.objects.create(
