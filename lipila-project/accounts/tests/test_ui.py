@@ -14,21 +14,28 @@ class SignupTest(FunctionalTest):
         self.base_url = self.live_server_url
 
     @override_settings(DEBUG=True)
-    def test_default_backend_signup_user_valid(self):
+    def test_username_email_signup_valid(self):
         self.BROWSER.get(f'{self.base_url}/accounts/signup/')
         email_field = self.BROWSER.find_element(By.ID, 'id_email')
-        password1_field = self.BROWSER.find_element(By.ID, 'id_password1')
-        password2_field = self.BROWSER.find_element(By.ID, 'id_password2')
-        email_field.send_keys('testuser')
-        password1_field.send_keys('testpassword')
-        password2_field.send_keys('testpassword')
+        username_field = self.BROWSER.find_element(By.ID, 'id_username')
+        password_field = self.BROWSER.find_element(By.ID, 'id_password')
+        username_field.send_keys('testuser')
+        email_field.send_keys('testuser@email.com')
+        password_field.send_keys('testpassword')
         signup_btn = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "button[type='submit']")
+            By.CSS_SELECTOR, "input[type='submit'][value='signup']")
         signup_btn.click()
         # User sees success message after page redirection
         redirect_url = self.BROWSER.current_url
         self.assertRegex(redirect_url, 'accounts/sent/')
-        self.assertEqual("Activation sent", self.BROWSER.title)
+        self.assertIn("Activation sent", self.BROWSER.title)
+
+    @override_settings(DEBUG=True)
+    def test_google_sign_up_valid(self):
+        self.BROWSER.get(f'{self.base_url}/accounts/signup/')
+        google_btn = self.BROWSER.find_element(
+            By.CSS_SELECTOR, "input[type='submit'][value='signup']")
+        google_btn.click()
 
 
 class AuthenticateUsersTest(FunctionalTest):
@@ -46,7 +53,7 @@ class AuthenticateUsersTest(FunctionalTest):
         self.base_url = self.live_server_url
 
     @override_settings(DEBUG=True)
-    def test_default_backend_login_creator_user_valid(self):
+    def test_username_login_creator_user_valid(self):
         # login user
         self.BROWSER.get(f'{self.base_url}/accounts/login/')
         username_field = self.BROWSER.find_element(By.ID, 'id_username')
@@ -59,7 +66,7 @@ class AuthenticateUsersTest(FunctionalTest):
         self.assertIn('Choose Profile Type', self.BROWSER.title)
 
     @override_settings(DEBUG=True)
-    def test_default_backend_login_ordinary_user_valid(self):
+    def test_username_login_ordinary_user_valid(self):
         # login user
         self.BROWSER.get(f'{self.base_url}/accounts/login/')
         username_field = self.BROWSER.find_element(By.ID, 'id_username')
@@ -74,5 +81,8 @@ class AuthenticateUsersTest(FunctionalTest):
     @override_settings(DEBUG=True)
     def test_google_sign_in_valid(self):
         self.BROWSER.get(f'{self.base_url}/accounts/login/')
+        google_btn = self.BROWSER.find_element(
+            By.CSS_SELECTOR, "input[type='submit'][value='signup']")
+        google_btn.click()
 
 
