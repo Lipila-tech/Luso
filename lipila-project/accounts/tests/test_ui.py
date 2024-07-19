@@ -79,6 +79,19 @@ class AuthenticateUsersTest(FunctionalTest):
         self.assertIn('Choose Profile Type', self.BROWSER.title)
 
     @override_settings(DEBUG=True)
+    def test_email_login_valid(self):
+        # login user
+        self.BROWSER.get(f'{self.base_url}/accounts/login/')
+        username_field = self.BROWSER.find_element(By.ID, 'id_username')
+        password_field = self.BROWSER.find_element(By.ID, 'id_password')
+        username_field.send_keys('test@email.io')
+        password_field.send_keys('testpassword')
+        login_button = self.BROWSER.find_element(
+            By.CSS_SELECTOR, "input[type='submit'][value='signin']")
+        login_button.click()
+        self.assertIn('Choose Profile Type', self.BROWSER.title)
+
+    @override_settings(DEBUG=True)
     def test_google_sign_in_valid(self):
         self.BROWSER.get(f'{self.base_url}/accounts/login/')
         google_btn = self.BROWSER.find_element(
