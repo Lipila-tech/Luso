@@ -5,38 +5,56 @@
 {% block title %}Signup {% endblock %}
 
 {% block page %}
-<div class="col-md-8">
-    <form action="{% url 'accounts:signup' %}" method="post" class="">
-        {% csrf_token %}
-        <form method="post" class="signup-form">
-            <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register account</h5>
-            {% csrf_token %}
-            {{form | crispy}}
-            <button type="submit" class="btn btn-dark btn-lg btn-block">Create</button>
-        </form>
-        <p class="mb-5 pb-lg-2" style="color: #393f81;">Already registered? <a href="{% url 'login' %}"
-                style="color: #393f81;">Login</a></p>
-        <p style="align-items: center;">Or</p>
-        <!-- Google signup -->
-        <div class="container">
-            {% if request.session.user_data %}
-            <div>
-                <p>Hi {{ request.session.user_data.given_name }} 🙂</p>
-                <p>Your email is {{ request.session.user_data.email }}</p>
-                <img src="{{ request.session.user_data.picture }}" alt="User picture">
-                <p>Click here to <a href="{% url 'accounts:sign_out' %}">Sign out</a></p>
-            </div>
-            {% else %}
-            <div>
-                <div id="g_id_onload" data-client_id="{{CLIENT_ID}}" data-context="signin" data-ux_mode="redirect"
-                    data-login_uri="{{ LOGIN_URI }}" data-auto_select="false" data-itp_support="true">
-                </div>
+{% load widget_tweaks %}
 
-                <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline"
-                    data-text="signin_with" data-size="large" data-logo_alignment="left">
-                </div>
-            </div>
-            {% endif %}
+<form method="post" action="{% url 'accounts:signup' %}">
+    {% csrf_token %}
+
+    <div class="modal-body">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
         </div>
-</div>
-{% endblock page %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% render_field field class="form-control" placeholder=field.label %}
+            <div class="{% if field.errors %} invalid{% endif %}">
+                {% for error in field.errors %}
+                <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-dark btn-lg btn-block">Sign up</button>
+    </div>
+    <p class="mb-5 pb-lg-2" style="color: #393f81;">Already registered. <a href="{% url 'accounts:signin' %}"
+            style="color: #393f81;">Login</a></p>
+    <div class="container">
+        {% if request.session.user_data %}
+        <div>
+            <p>Hi {{ request.session.user_data.given_name }} 🙂</p>
+            <p>Your email is {{ request.session.user_data.email }}</p>
+            <img src="{{ request.session.user_data.picture }}" alt="User picture">
+            <p>Click here to <a href="{% url 'accounts:sign_out' %}">Sign out</a></p>
+        </div>
+        {% else %}
+        <div>
+            <div id="g_id_onload" data-client_id="{{ CLIENT_ID }}" data-context="signin" data-ux_mode="redirect"
+                data-login_uri="{{LOGIN_URI}}" data-auto_select="false" data-itp_support="true">
+            </div>
+
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_black"
+                data-text="signin_with" data-size="large" data-logo_alignment="left">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</form>
+{% endblock %}

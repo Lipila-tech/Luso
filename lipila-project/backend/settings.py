@@ -90,6 +90,7 @@ ROOT_URLCONF = 'backend.urls'
 
 AUTHENTICATION_BACKENDS = [
     'accounts.auth_backends.EmailBackend',
+    'accounts.auth_backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -213,7 +214,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
 STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = "patron:profile"
-LOGOUT_REDIRECT_URL = "login"
+LOGOUT_REDIRECT_URL = "accounts:signin"
 
 if env('ENV') == 'dev':
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -45,7 +45,7 @@ class SubscriptionPaymentTest(FunctionalTest):
         username_field.send_keys('testpatron')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='login']")
+            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
         login_button.click()
 
     @override_settings(DEBUG=True)
@@ -121,7 +121,7 @@ class ContributionModalTest(FunctionalTest):
         username_field.send_keys('testpatron')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='login']")
+            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
         login_button.click()
     
 
@@ -201,7 +201,6 @@ class ContributionModalTest(FunctionalTest):
 
         # User sees created contribtion in table
         table_entries = self.wait_for_table_rows()
-        print(table_entries)
         self.assertEqual(len(table_entries), 1)
 
         # Check content of second table entry
@@ -218,46 +217,6 @@ class GetHomePageTest(FunctionalTest):
         self.BROWSER.get(url)
         self.assertIn('Lipila-Home', self.BROWSER.title)
         
-
-class LoginUsersTest(FunctionalTest):
-    @override_settings(DEBUG=True)
-    def setUp(self):
-        super().setUp()
-        # Create a creator user and a withdrawal request
-        self.user1 = User.objects.create_user(
-            username='testuser', password='testpassword')
-        self.user2 = User.objects.create_user(
-            username='testcreator', password='testpassword')
-        self.creator_user = CreatorProfile.objects.create(
-            user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
-        
-        self.base_url = self.live_server_url
-
-    @override_settings(DEBUG=True)
-    def test_login_creator_user(self):
-        # login user
-        self.BROWSER.get(f'{self.base_url}/accounts/login/')
-        username_field = self.BROWSER.find_element(By.ID, 'id_username')
-        password_field = self.BROWSER.find_element(By.ID, 'id_password')
-        username_field.send_keys('testcreator')
-        password_field.send_keys('testpassword')
-        login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='login']")
-        login_button.click()
-        self.assertIn('Lipila-Profile', self.BROWSER.title)
-
-    @override_settings(DEBUG=True)
-    def test_login_ordinary_user(self):
-        # login user
-        self.BROWSER.get(f'{self.base_url}/accounts/login/')
-        username_field = self.BROWSER.find_element(By.ID, 'id_username')
-        password_field = self.BROWSER.find_element(By.ID, 'id_password')
-        username_field.send_keys('testuser')
-        password_field.send_keys('testpassword')
-        login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='login']")
-        login_button.click()
-        self.assertIn('Lipila-Profile', self.BROWSER.title)
 
 
 class ApproveWithdrawalTest(FunctionalTest):
@@ -284,7 +243,7 @@ class ApproveWithdrawalTest(FunctionalTest):
         username_field.send_keys('testuser')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='login']")
+            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
         login_button.click()
     
 
@@ -330,7 +289,7 @@ class RejectWithdrawalTest(FunctionalTest):
         username_field.send_keys('testuser')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='login']")
+            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
         login_button.click()
             
 

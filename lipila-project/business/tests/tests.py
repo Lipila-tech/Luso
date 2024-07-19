@@ -26,7 +26,7 @@ class SignupViewTest(TestCase):
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('login'))
+        self.assertRedirects(response, reverse('accounts:signin'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(messages[0].level, 25)
         self.assertEqual(messages[0].message, 'Account created successfully')

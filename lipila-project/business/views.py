@@ -215,7 +215,7 @@ class SignupView(View):
                 user.save()
                 messages.add_message(request, messages.SUCCESS,
                                      "Account created successfully")
-                return redirect('login')
+                return redirect('accounts:signin')
             else:
                 messages.add_message(
                     request, messages.ERROR, "Error during signup!")
