@@ -1,33 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import CreatorProfile
-
-# Options
-STATUS_CHOICES = (
-    ('pending', 'pending'),
-    ('success', 'success'),
-    ('failed', 'failed'),
-)
-
-USER_CATEGORY_CHOICES = (
-    ('tick', 'Entrepreneur'),
-    ('creator', 'Creator'),
-    ('patron', 'PatronProfile'),
-    ('other', 'Other'),
-)
-
-CITY_CHOICES = (
-    ('kitwe', 'Kitwe'),
-    ('lusaka', 'Lusaka'),
-    ('ndola', 'Ndola'),
-)
-
-INVOICE_STATUS_CHOICES = (
-    ('pending', 'pending'),
-    ('paid', 'paid'),
-    ('rejected', 'rejected'),
-)
-   
+from accounts.globals import CITY_CHOICES
+ 
 
 class ContactInfo(models.Model):
     street = models.CharField(max_length=200)

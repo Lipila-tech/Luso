@@ -2,39 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import CreatorProfile
 from api.utils import generate_reference_id
-# Options
-STATUS_CHOICES = (
-    ('pending', 'pending'),
-    ('success', 'success'),
-    ('failed', 'failed'),
-    ('rejected', 'rejected'),
-)
 
-CREATOR_CATEGORY_CHOICES = (
-    ('', ''),
-    ('artist', 'Artist'),
-    ('musician', 'Musician'),
-    ('videocreator', 'Video Creator'),
-    ('podcaster', 'Podcaster'),
-    ('other', 'Other'),
-)
+from accounts.globals import (
+    CITY_CHOICES, STATUS_CHOICES, CREATOR_CATEGORY_CHOICES,
+    ISP_CHOICES)
 
-CITY_CHOICES = (
-    ('kitwe', 'Kitwe'),
-    ('lusaka', 'Lusaka'),
-    ('ndola', 'Ndola'),
-)
-ISP_CHOICES = (
-    ('', ''),
-    ('mtn', 'mtn'),
-    ('airtel', 'airtel'),
-)
-
-INVOICE_STATUS_CHOICES = (
-    ('pending', 'pending'),
-    ('paid', 'paid'),
-    ('rejected', 'rejected'),
-)
 
 ONETIME_AMOUNT = 100
 FAN_AMOUNT = 25
@@ -71,7 +43,7 @@ class Tier(models.Model):
                 price=tier_data['price'],
                 creator=tier_data['creator'],
                 visible_to_fans=tier_data['visible']
-                )
+            )
 
     def __str__(self):
         return f"Subscription: {self.name} -> Creator: {self.creator}"
@@ -90,26 +62,36 @@ class TierSubscriptions(models.Model):
 class Transfer(models.Model):
     payer = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tranfers')
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=False)
-    payer_account_number = models.CharField(max_length=300, null=True, blank=False)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=False)
+    payer_account_number = models.CharField(
+        max_length=300, null=True, blank=False)
     send_money_to = models.CharField(max_length=300, null=True, blank=False)
-    reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
-    wallet_type = models.CharField(max_length=20, choices=ISP_CHOICES, default='')
+    reference_id = models.CharField(
+        max_length=40, unique=True, blank=False, null=False)
+    wallet_type = models.CharField(
+        max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
 
 
 class SubscriptionPayments(models.Model):
     payee = models.ForeignKey(
         TierSubscriptions, on_delete=models.SET_NULL, null=True, blank=True, related_name='payments')
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    payer_account_number = models.CharField(max_length=300, null=True, blank=True)
-    reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
-    wallet_type = models.CharField(max_length=20, choices=ISP_CHOICES , default='mtn')
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True)
+    payer_account_number = models.CharField(
+        max_length=300, null=True, blank=True)
+    reference_id = models.CharField(
+        max_length=40, unique=True, blank=False, null=False)
+    wallet_type = models.CharField(
+        max_length=20, choices=ISP_CHOICES, default='mtn')
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
         return f"{self.reference_id}"
@@ -120,13 +102,18 @@ class Contributions(models.Model):
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_received')
     payer = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_sent')
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=False)
-    payer_account_number = models.CharField(max_length=300, null=True, blank=False)
-    reference_id = models.CharField(max_length=40, unique=True, blank=False, null=False)
-    wallet_type = models.CharField(max_length=20, choices=ISP_CHOICES, default='')
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=False)
+    payer_account_number = models.CharField(
+        max_length=300, null=True, blank=False)
+    reference_id = models.CharField(
+        max_length=40, unique=True, blank=False, null=False)
+    wallet_type = models.CharField(
+        max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
         return f"{self.amount}"
@@ -140,8 +127,10 @@ class WithdrawalRequest(models.Model):
     account_number = models.CharField(max_length=30)
     reference_id = models.CharField(max_length=120, blank=False, null=False)
     request_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES , default='pending')
-    wallet_type = models.CharField(max_length=20, choices=ISP_CHOICES , default='')
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
+    wallet_type = models.CharField(
+        max_length=20, choices=ISP_CHOICES, default='')
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
@@ -159,8 +148,10 @@ class ProcessedWithdrawals(models.Model):
     reference_id = models.CharField(max_length=120, blank=False, null=False)
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
-    status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')
-    wallet_type = models.CharField(max_length=20, choices=ISP_CHOICES , default='mtn')
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
+    wallet_type = models.CharField(
+        max_length=20, choices=ISP_CHOICES, default='mtn')
     reason = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):

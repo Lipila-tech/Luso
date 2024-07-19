@@ -177,7 +177,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# AUTH_USER_MODEL = 'api.BusinessUser'
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -215,6 +215,7 @@ STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = "patron:profile"
 LOGOUT_REDIRECT_URL = "accounts:signin"
+
 
 if env('ENV') == 'dev':
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

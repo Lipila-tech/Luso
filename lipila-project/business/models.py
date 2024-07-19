@@ -1,31 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from accounts.globals import CITY_CHOICES, BUSINESS_CATEGORY_CHOICES, STATUS_CHOICES, INVOICE_STATUS_CHOICES
 # Options
-STATUS_CHOICES = (
-    ('pending', 'pending'),
-    ('success', 'success'),
-    ('failed', 'failed'),
-)
 
-BUSINESS_CATEGORY_CHOICES = (
-    ('school', 'School'),
-    ('grocery', 'Grocery'),
-    ('independent_online_retailers', 'Independent Online Retailers'),
-    ('other', 'Other'),
-)
-
-CITY_CHOICES = (
-    ('kitwe', 'Kitwe'),
-    ('lusaka', 'Lusaka'),
-    ('ndola', 'Ndola'),
-)
-
-INVOICE_STATUS_CHOICES = (
-    ('pending', 'pending'),
-    ('paid', 'paid'),
-    ('rejected', 'rejected'),
-)
  
     
 class BusinessUser(User):
