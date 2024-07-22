@@ -78,12 +78,14 @@ class TestSubscription(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @patch('lipila.views.query_collection')
-    def test_send_money_subscription_valid(self, mock_post):
+    @patch('lipila.views.get_api_user')
+    def test_send_money_subscription_valid(self, api_user, mock_post):
         mock_response = Mock()
         mock_response.json.return_value = {
             'data': 'request accepted, wait for client approval'}
         mock_response.status_code = 202
         mock_post.return_value = mock_response
+        api_user.return_value = self.staff_user
 
         user1 = get_user_model().objects.create(
             username='testuser7', email='user7@bot.test', password='password')
@@ -104,8 +106,10 @@ class TestSubscription(TestCase):
 
     
     @patch('lipila.views.query_collection')
-    def test_send_money_support_valid(self, mock_post):
+    @patch('lipila.views.get_api_user')
+    def test_send_money_support_valid(self, api_user, mock_post):
         mock_response = Mock()
+        api_user.return_value = self.staff_user
         mock_response.json.return_value = {
             'data': 'request accepted, wait for client approval'}
         mock_response.status_code = 202
@@ -158,19 +162,6 @@ class TestPatronViews(TestCase):
         super().tearDownClass()
         get_user_model().objects.all().delete()
 
-    def test_choose_profile_type(self):
-        url = "patron:choose_profile_type"
-        creator_data = {'profile_type': 'creator'}
-        patron_data = {'profile_type': 'patron'}
-        self.client.force_login(self.creatoruser1)
-        response = self.client.post(reverse(url), creator_data)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url, "/patron/accounts/profile/create/creator")
-        response = self.client.post(reverse(url), patron_data)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url, "/patron/accounts/profile/create/patron")
 
     def test_redirect_unauthenticated_user(self):
         """
@@ -198,8 +189,10 @@ class TestPatronViews(TestCase):
         self.client.force_login(self.creatoruser1)
         data = {
             'patron_title': 'TestPatron',
-            'about': 'test user about',
+            'location': '01',
             'creator_category': 'artist',
+            'adults_group':'True',
+            'country': 'zambia'
         }
         response = self.client.post(
             reverse('patron:create_creator_profile'), data)
@@ -213,6 +206,9 @@ class TestPatronViews(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
             str(messages[0]), "Your profile data has been saved.")
+        has_group = get_user_model().objects.get(username='testuser_1')
+        self.assertTrue(has_group.has_group)
+
 
     def test_create_default_tiers(self):
         """
@@ -220,9 +216,11 @@ class TestPatronViews(TestCase):
         """
         self.client.force_login(self.creatoruser1)
         data = {
-            'patron_title': 'TestPatron',
-            'about': 'test user about',
+            'patron_title': 'TestPatron23',
+            'location': '01',
             'creator_category': 'artist',
+            'adults_group':'True',
+            'country': 'zambia'
         }
         # create a creator profile
         self.client.post(reverse('patron:create_creator_profile'), data)
@@ -264,11 +262,12 @@ class TestPatronViews(TestCase):
         Test the creation of a default creator tiers.
         """
         data = {
-            'patron_title': 'TestPatron',
-            'about': 'test user about',
+            'patron_title': 'TestPatron12',
+            'location': '01',
             'creator_category': 'artist',
+            'adults_group':'True',
+            'country': 'zambia'
         }
-
         creator1 = CreatorProfile.objects.create(
             user=self.creatoruser1, patron_title='testpatron', about='test', creator_category='musician')
         Tier().create_default_tiers(creator1)
@@ -276,62 +275,6 @@ class TestPatronViews(TestCase):
         self.client.force_login(self.user2)
         self.client.post(reverse('patron:create_creator_profile'), data)
         creator2 = CreatorProfile.objects.get(user=self.user2)
-        response = self.client.get(reverse('patron:tiers'))
-        # get tiers
-        tiers = Tier.objects.filter(creator=creator2).values()
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
-        desc = {
-            "one": "Make a one-time Contribution to support the creator's work.",
-            "two": "Support the creator and get access to exclusive content.",
-            "three": "Enjoy additional perks and behind-the-scenes content."
-        }
-        self.assertEqual(tiers[0]['description'], desc['one'])
-        self.assertEqual(tiers[1]['description'], desc['two'])
-        self.assertEqual(tiers[2]['description'], desc['three'])
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(
-            str(messages[1]), "Default tiers created. Please edit them.")
-
-
-class TestCreateDefaultTiers(TestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-        cls.client = Client()
-        user1 = get_user_model().objects.create(
-            username='testuser', email='user@bot.test', password='password')
-        user2 = get_user_model().objects.create(
-            username='test_user_2', email='user1@bot.test', password='password')
-        cls.user3 = get_user_model().objects.create(
-            username='test_user_3', email='user2@bot.test', password='password')
-        creator1 = CreatorProfile.objects.create(
-            user=user1, patron_title='test_patron', about='test', creator_category='musician')
-        creator2 = CreatorProfile.objects.create(
-            user=user2, patron_title='testpatron3', about='test', creator_category='musician')
-        Tier().create_default_tiers(creator1)
-        Tier().create_default_tiers(creator2)
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        super().tearDownClass()
-        get_user_model().objects.all().delete()
-
-    def test_create_default_tiers_multiple_users_tiers_exists(self):
-        """
-        Test the creation of a default creator tiers.
-        """
-        data = {
-            'patron_title': 'TestPatron3',
-            'about': 'test user about',
-            'creator_category': 'artist',
-        }
-
-        # login user 2 and create tiers
-        self.client.force_login(self.user3)
-        self.client.post(reverse('patron:create_creator_profile'), data)
-        creator2 = CreatorProfile.objects.get(user=self.user3)
         response = self.client.get(reverse('patron:tiers'))
         # get tiers
         tiers = Tier.objects.filter(creator=creator2).values()

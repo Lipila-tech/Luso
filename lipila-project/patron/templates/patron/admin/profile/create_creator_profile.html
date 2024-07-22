@@ -1,7 +1,7 @@
 {% extends 'layout_dark.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %} Creator Profile Info {% endblock%}
+{% block title %} Creator Profile {% endblock%}
 
 {% block section %}
 
@@ -40,7 +40,7 @@
         <button type="submit" class="create-btn">Continue</button>
       </form>
     </div>
-    <a href="#" class="btn-primary">Not a Creator? Join as a fan.</a>
+    <a href="{% url 'patron:continue_has_fan' %}" class="btn-primary">Not a Creator? Join as a fan.</a>
   </div>
 </div>
 {% endblock section %}

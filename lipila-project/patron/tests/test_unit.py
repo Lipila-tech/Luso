@@ -44,6 +44,7 @@ class ProfileCreationTest(TestCase):
         response = self.client.get(self.url)
         self.assertRedirects(response, '/patron/accounts/profile/', 302)
 
+
         
         
 

@@ -31,6 +31,7 @@ def index(request):
 def profile(request):
     context = {}
     if request.user.is_staff:
+        messages.error('Contact Admin to update your profile')
         return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
     else:
         try:
@@ -51,6 +52,9 @@ def create_creator_profile(request):
         if form.is_valid():
             creator_profile = form.save(commit=False)  # Don't save yet
             creator_profile.user = creator  # Set the user based on the logged-in user
+            request.user.has_group = True
+            request.user.save()
+            request.user.refresh_from_db()
             creator_profile.save()
             messages.success(
                 request, "Your profile data has been saved.")
@@ -71,6 +75,15 @@ def create_creator_profile(request):
                     'patron/admin/profile/create_creator_profile.html',
                     {'form': form, 'creator': creator})
 
+
+@login_required
+def continue_has_fan(request):
+    request.user.has_group = True
+    request.user.save()
+    request.user.refresh_from_db()
+    messages.success(
+            request, "Your profile data has been saved.")
+    return redirect(reverse('patron:creators'))
 
 
 class ProfileEdit(LoginRequiredMixin, View):

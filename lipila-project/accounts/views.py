@@ -136,8 +136,9 @@ def custom_login_view(request):
                 login(request, user)
                 if user.has_group:
                     messages.success(request, f"Welcome back, {user.username}!")
-                # Replace with your desired redirect URL
-                return redirect('patron:create_creator_profile')
+                    return redirect('patron:profile')
+                else:
+                    return redirect('patron:create_creator_profile')
             else:
                 messages.error(request, "Invalid username or password.")
         else:
