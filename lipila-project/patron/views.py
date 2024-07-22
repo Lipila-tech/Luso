@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import CreatorProfile
 from lipila.utils import get_user_object
 from patron.forms.forms import (
-    CreatePatronProfileForm, CreateCreatorProfileForm, WithdrawalRequestForm)
+    CreateCreatorProfileForm, WithdrawalRequestForm)
 from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from patron.utils import (get_creator_subscribers,
@@ -61,59 +61,19 @@ def create_creator_profile(request):
             return render(request,
                           'patron/admin/profile/create_creator_profile.html',
                           {'form': form, 'creator': creator})
-    form = CreateCreatorProfileForm()
-    return render(request,
-                  'patron/admin/profile/create_creator_profile.html',
-                  {'form': form, 'creator': creator})
-
-
-@login_required
-def create_patron_profile(request):
-    patron = request.user
-    if request.method == 'POST':
-        form = CreatePatronProfileForm(
-            request.POST)
-        if form.is_valid():
-            patron_profile = form.save(commit=False)  # Don't save yet
-            patron_profile.user = patron  # Set the user based on the logged-in user
-            patron_profile.save()
-            messages.success(
-                request, "Your profile data has been saved.")
-            return redirect(reverse('patron:profile'))
-        else:
-            messages.error(
-                request, "Failed to save profile. data")
-            return render(request,
-                          'patron/admin/profile/create_creator_profile.html',
-                          {'form': form, 'patron': patron})
-    form = CreatePatronProfileForm()
-    return render(request,
-                  'patron/admin/profile/create_patron_profile.html',
-                  {'form': form, 'patron': patron})
-
-
-@login_required
-def choose_profile_type(request):
-    if request.method == 'POST':
-        profile_type = request.POST.get('profile_type')
-        if profile_type == 'creator':
-            return redirect('patron:create_creator_profile')
-        elif profile_type == 'patron':
-            return redirect('patron:create_patron_profile')
-        else:
-            messages.error(request, 'Invalid profile type selected.')
-            return render(request, 'patron/admin/profile/choose_profile_type.html')
-
     if  request.user.is_staff:
         return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
     elif request.user.has_group:
         return redirect(reverse('patron:profile'))
     else:
-        return render(request, 'patron/admin/profile/choose_profile_type.html')
-    
+        form = CreateCreatorProfileForm()
+        return render(request,
+                    'patron/admin/profile/create_creator_profile.html',
+                    {'form': form, 'creator': creator})
 
 
-class EditPatronProfile(LoginRequiredMixin, View):
+
+class ProfileEdit(LoginRequiredMixin, View):
     def get(self, request, user, *args, **kwargs):
         creator = request.user.creatorprofile
         form = EditCreatorProfileForm(instance=creator)

@@ -11,7 +11,7 @@ class ProfileCreationTest(TestCase):
         self.staff_user = User.objects.create_user(email='staff', username='teststaff', is_staff=True)
         self.creator_user = User.objects.create_user(email='creator', username='testcreator', has_group=True)
         self.regular_user = User.objects.create_user(email='regular', username='regularuser', password='test')
-        self.url = reverse('patron:choose_profile_type')
+        self.url = reverse('patron:create_creator_profile')
 
     def test_redirect_staff_user(self):
         """
@@ -35,8 +35,8 @@ class ProfileCreationTest(TestCase):
         login = self.client.login(username='regular', password='test')
         self.assertTrue(login)
         response = self.client.get(self.url)
-        self.assertContains(response, 'Please choose your profile type', status_code=200)
-        self.assertTemplateUsed(response, 'patron/admin/profile/choose_profile_type.html')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'patron/admin/profile/create_creator_profile.html')
 
         # user has group
         self.regular_user.has_group = True

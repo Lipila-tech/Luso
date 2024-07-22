@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django import forms
-from accounts.models import CreatorProfile, PatronProfile
+from accounts.models import CreatorProfile
 from patron.models import Tier, WithdrawalRequest
 from django.contrib.auth.forms import UserChangeForm
 
@@ -23,15 +23,27 @@ class CreateCreatorProfileForm(forms.ModelForm):
     class Meta:
         model = CreatorProfile
         fields = [
-            'patron_title',
-            'about',
+            'adults_group',
             'creator_category',
-            'city',
+            'patron_title',
+            'location',
+            'country',
         ]
 
         labels = {
-            'about': 'Description'
+            'adults_group':'My page is not suitable for people under 18.',
+            'patron_title':'Name your Page',
+            'creator_category': 'Choose your category',
+            'location': 'Choose your location',
         }
+
+        widgets = {
+            'patron_title': forms.TextInput(attrs={'placeholder': 'Your creator name'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['country'].widget.attrs['readonly'] = True
 
 
 class EditCreatorProfileForm(forms.ModelForm):
@@ -42,7 +54,7 @@ class EditCreatorProfileForm(forms.ModelForm):
             'patron_title',
             'about',
             'creator_category',
-            'city',
+            'location',
             'account_number',
             'facebook_url',
             'twitter_url',
@@ -52,19 +64,7 @@ class EditCreatorProfileForm(forms.ModelForm):
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
 
-class CreatePatronProfileForm(forms.ModelForm):
-    class Meta:
-        model = PatronProfile
-        fields = [
-            'account_number',
-            'city',
-        ]
-        widgets = {
-            # Restrict file types
-            'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
-        }
-
-
+        
 class EditTiersForm(forms.ModelForm):
     class Meta:
         model = Tier

@@ -13,14 +13,6 @@ ISP_CHOICES = (
     ('airtel', 'airtel'),
 )
 
-USER_CATEGORY_CHOICES = (
-    ('tick', 'Entrepreneur'),
-    ('creator', 'Creator'),
-    ('patron', 'PatronProfile'),
-    ('other', 'Other'),
-)
-
-
 CITY_CHOICES = (
     ('kitwe', 'Kitwe'),
     ('lusaka', 'Lusaka'),
@@ -53,3 +45,16 @@ INVOICE_STATUS_CHOICES = (
     ('paid', 'paid'),
     ('rejected', 'rejected'),
 )
+
+zambia_provinces = {
+    '01': 'Central',
+    '02': 'Copperbelt',
+    '03': 'Eastern',
+    '04': 'Luapula',
+    '05': 'Lusaka',
+    '06': 'Muchinga',
+    '07': 'Northern',
+    '08': 'North-Western',
+    '09': 'Southern',
+    '10': 'Western'
+}

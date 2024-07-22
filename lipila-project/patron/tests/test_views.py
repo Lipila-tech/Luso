@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import json
 from django.contrib.auth import get_user_model
 # Custom models
-from accounts.models import PatronProfile, CreatorProfile
+from accounts.models import CreatorProfile
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions
 from.factory import UserFactory, CreatorProfileFactory
 
@@ -190,23 +190,6 @@ class TestPatronViews(TestCase):
         response = self.client.get(reverse('patron:profile'))
         self.assertEqual(response.status_code, 200)
 
-    def test_create_patron_profile(self):
-        """
-        Test the creation of a new user.patron_profile
-        """
-        self.client.force_login(self.creatoruser1)
-        account_number = '77477838'
-        city = 'Kitwe'
-        data = {'account_number': account_number, 'city': city}
-        response = self.client.post(
-            reverse('patron:create_patron_profile'), data)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/patron/accounts/profile/")
-        self.assertEqual(PatronProfile.objects.count(), 1)
-        patron = PatronProfile.objects.get(user=self.creatoruser1)
-        self.assertEqual(patron.account_number, '77477838')
-        res = self.client.get(reverse('patron:profile'))
-        self.assertEqual(res.status_code, 200)
 
     def test_create_creator_profile(self):
         """

@@ -18,14 +18,10 @@ urlpatterns = [
 
      # Profile views
      path('accounts/profile/', views.profile, name='profile'),
-     path('accounts/profile/edit/<str:user>/patron', views.EditPatronProfile.as_view(), name='update_profile'),
+     path('accounts/profile/edit/<str:user>/patron', views.ProfileEdit.as_view(), name='update_profile'),
      path('accounts/profile/edit/<str:user>', views.EditPersonalInfo.as_view(), name='update_personal_info'),
-     path('accounts/profile/choose', views.choose_profile_type,
-         name='choose_profile_type'),
      path('accounts/profile/create/creator', views.create_creator_profile,
           name='create_creator_profile'),
-     path('accounts/profile/create/patron', views.create_patron_profile,
-          name='create_patron_profile'),
 ]
 
 

@@ -8,7 +8,7 @@ from lipila.models import (
     HeroInfo, UserTestimonial, AboutInfo)
 from patron.models import (Tier, SubscriptionPayments,
                            ProcessedWithdrawals, WithdrawalRequest, Contributions)
-from accounts.models import PatronProfile, CreatorProfile, CustomUser
+from accounts.models import CreatorProfile, CustomUser
 
 
 class CustomUserAdmin(BaseUserAdmin):
@@ -89,13 +89,9 @@ class UserTestimonialAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'timestamp')
 
 
-class PatronProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'profile_image', 'account_number', 'city',]
-
-
 class CreatorProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'patron_title', 'profile_image', 'account_number', 'about',
-                    'city', 'creator_category', 'facebook_url', 'twitter_url',
+                    'location', 'creator_category', 'facebook_url', 'twitter_url',
                     'instagram_url', 'linkedin_url',
                     ]
 
@@ -114,7 +110,6 @@ admin.site.register(HeroInfo, HeroInfoAdmin)
 admin.site.register(AboutInfo, AboutInfoAdmin)
 admin.site.register(UserTestimonial, UserTestimonialAdmin)
 admin.site.register(CreatorProfile, CreatorProfileAdmin)
-admin.site.register(PatronProfile, PatronProfileAdmin)
 admin.site.unregister(Group)
 admin.site.site_header = 'Lipila Adminstration'
 admin.site.site_url = '/'

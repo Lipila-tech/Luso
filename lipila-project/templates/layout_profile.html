@@ -25,7 +25,6 @@
 
             {% if request.user.creatorprofile %}
             <h2>{{ user.creatorprofile.patron_title }}</h2>
-            <h3>{{user.patronprofile.creator_category }}</h3>
             <div class="social-links mt-2">
               <a href="{{user.creatorprofile.twitter_url}}" class="twitter" target="_blank"><i
                   class="bi bi-twitter"></i></a>
@@ -39,7 +38,6 @@
             {% else %}
             <h2>{{ user.username }}</h2>
             <h3>Member</h3>
-            <h3>{{user.patronprofile.city | upper}}</h3>
             {% endif %}
           </div>
         </div>

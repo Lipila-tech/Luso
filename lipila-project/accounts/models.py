@@ -4,7 +4,8 @@ from django.core.mail import send_mail
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 # custom models
-from .globals import default_socials, CITY_CHOICES, CREATOR_CATEGORY_CHOICES
+from .globals import (
+    default_socials, CREATOR_CATEGORY_CHOICES, zambia_provinces)
 
 
 class CustomUserManager(BaseUserManager):
@@ -50,21 +51,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                   self.email], **kwargs)
 
 
-class PatronProfile(models.Model):
-    user = models.OneToOneField(  # Relate to the user model
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
-    profile_image = models.ImageField(
-        upload_to='img/creators/', blank=True, null=True)
-    account_number = models.CharField(max_length=20, blank=True, null=True)
-    city = models.CharField(max_length=50, blank=True)
-
-    def __str__(self):
-        return self.user.username
-
-
 class CreatorProfile(models.Model):
     user = models.OneToOneField(  # Relate to to user model
         settings.AUTH_USER_MODEL,
@@ -75,13 +61,14 @@ class CreatorProfile(models.Model):
         upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
     patron_title = models.CharField(max_length=150, unique=True)
-    about = models.TextField(blank=True)
-    city = models.CharField(max_length=50, blank=True, null=True)
+    about = models.TextField(max_length=300, blank=True, null=True)
+    location = models.CharField(max_length=50, choices=zambia_provinces, default=zambia_provinces['01'])
+    adults_group = models.BooleanField(default=False)
     country = models.CharField(max_length=50, blank=True, default='Zambia')
     address = models.CharField(
-        max_length=300, blank=True, default='Zambia resident')
+        max_length=300, blank=True, null=True)
     creator_category = models.CharField(
-        max_length=50, choices=CREATOR_CATEGORY_CHOICES, default='other')
+        max_length=50, choices=CREATOR_CATEGORY_CHOICES, default='')
     facebook_url = models.URLField(
         blank=True, null=True, default=default_socials['fb'])
     twitter_url = models.URLField(
