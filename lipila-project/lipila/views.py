@@ -38,6 +38,7 @@ from accounts.models import CreatorProfile
 from patron.models import (WithdrawalRequest, SubscriptionPayments,
                            ProcessedWithdrawals, Tier, TierSubscriptions, Transfer)
 from patron.utils import calculate_creators_balance
+from .utils import get_api_user
 
 
 # Django-bootstrap Modal forms views
@@ -258,8 +259,8 @@ class SendMoneyView(BSModalCreateView):
             'description': description
         }
 
-        api_user = get_user_model().objects.get(id=1)
-
+        api_user = get_api_user()
+        
         response = query_collection(
             api_user.username, 'POST', reference_id, data=payload)
         if response.status_code == 202:

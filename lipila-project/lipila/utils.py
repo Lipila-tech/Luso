@@ -18,6 +18,10 @@ from django.contrib.auth import get_user_model
 from patron.models import Contributions, SubscriptionPayments, Transfer
 
 
+
+def get_api_user():
+    return get_user_model().objects.get(username='lipila')
+
 def query_collection(user, method, reference_id, data={}):
     """
     Queries the lipila api payments endpoint for a specific api user.
