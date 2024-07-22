@@ -102,7 +102,15 @@ def choose_profile_type(request):
             return redirect('patron:create_patron_profile')
         else:
             messages.error(request, 'Invalid profile type selected.')
-    return render(request, 'patron/admin/profile/choose_profile_type.html')
+            return render(request, 'patron/admin/profile/choose_profile_type.html')
+
+    if  request.user.is_staff:
+        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
+    elif request.user.has_group:
+        return redirect(reverse('patron:profile'))
+    else:
+        return render(request, 'patron/admin/profile/choose_profile_type.html')
+    
 
 
 class EditPatronProfile(LoginRequiredMixin, View):

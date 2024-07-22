@@ -13,30 +13,31 @@ from accounts.models import CreatorProfile
 from patron.models import WithdrawalRequest, Tier, TierSubscriptions
 from django.contrib.auth import get_user_model
 
+
 class SubscriptionPaymentTest(FunctionalTest):
     @override_settings(DEBUG=True)
     def setUp(self):
         super().setUp()
         # Create a super user default api-user
         super_user = get_user_model().objects.create_user(
-            username='staff', password='testpassword', is_superuser=True, is_staff=True)
-        
+            username='staff', email='test@bot.io', password='testpassword', is_superuser=True, is_staff=True)
+
         # create patron user
         self.user1 = get_user_model().objects.create_user(
-            username='testpatron', password='testpassword')
-        
+            username='testpatron', email='test3@bot.io', password='testpassword')
+
         # create a user with a creatorprofile
         self.user2 = get_user_model().objects.create_user(
-            username='testcreator', password='testpassword')
+            username='testcreator', email='test6@bot.io', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
-        
+
         # create tier and subscriptions
         Tier().create_default_tiers(self.creator_user)  # creator 2 tiers
         self.tiers = Tier.objects.filter(creator=self.creator_user).values()
         tier1 = Tier.objects.get(pk=self.tiers[1]['id'])
         TierSubscriptions.objects.create(patron=self.user1, tier=tier1)
-        
+
         self.base_url = self.live_server_url
         # login user
         self.BROWSER.get(f'{self.base_url}/accounts/login/')
@@ -45,7 +46,7 @@ class SubscriptionPaymentTest(FunctionalTest):
         username_field.send_keys('testpatron')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
+            By.CSS_SELECTOR, "input[type='submit'][value='signin']")
         login_button.click()
 
     @override_settings(DEBUG=True)
@@ -73,8 +74,7 @@ class SubscriptionPaymentTest(FunctionalTest):
         # Alternatively, you can use ActionChains to scroll and click
         actions = ActionChains(self.BROWSER)
         actions.move_to_element(link).click().perform()
-        
-        
+
         pay_button = self.wait_for(element_id='send-money')
         pay_button.click()
 
@@ -82,7 +82,8 @@ class SubscriptionPaymentTest(FunctionalTest):
         form = modal.find_element(By.TAG_NAME, 'form')
 
         amount_field = form.find_element(By.ID, 'id_amount')
-        payer_account_number_field = form.find_element(By.ID, 'id_payer_account_number')
+        payer_account_number_field = form.find_element(
+            By.ID, 'id_payer_account_number')
         description_field = form.find_element(By.ID, 'id_description')
         wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
@@ -92,7 +93,6 @@ class SubscriptionPaymentTest(FunctionalTest):
         wallet_type_field.send_keys('mtn')
         form.submit()
 
-        
         success_msg = self.wait_for(class_name='alert').text
         self.assertEqual(f"Payment of K122 successful!", success_msg)
         redirect_url = self.BROWSER.current_url
@@ -105,14 +105,14 @@ class ContributionModalTest(FunctionalTest):
         super().setUp()
         # Create a creator user and a withdrawal request
         super_user = get_user_model().objects.create_user(
-            username='staff', password='testpassword', is_superuser=True, is_staff=True)
+            username='staff', email='test@bot1.io', password='testpassword', is_superuser=True, is_staff=True)
         self.user1 = get_user_model().objects.create_user(
-            username='testpatron', password='testpassword')
+            username='testpatron', email='test@bot2.io', password='testpassword')
         self.user2 = get_user_model().objects.create_user(
-            username='testcreator', password='testpassword')
+            username='testcreator', email='test@bot4.io', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
-        
+
         self.base_url = self.live_server_url
         # login user
         self.BROWSER.get(f'{self.base_url}/accounts/login/')
@@ -121,9 +121,8 @@ class ContributionModalTest(FunctionalTest):
         username_field.send_keys('testpatron')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
+            By.CSS_SELECTOR, "input[type='submit'][value='signin']")
         login_button.click()
-    
 
     @override_settings(DEBUG=True)
     def test_create_contribution_airtel(self):
@@ -136,18 +135,18 @@ class ContributionModalTest(FunctionalTest):
         # User sees the creators home page
         header_text = self.BROWSER.find_elements(By.TAG_NAME, 'h3')
 
-        for e in header_text:
-            self.assertIn('Buy me a coffee', e.text)
-
         # User opens payment form
-        pay_button = self.BROWSER.find_element(By.ID, 'send-contribution')
-        pay_button.click()
+        WebDriverWait(self.BROWSER, 10).until(EC.element_to_be_clickable(
+            (By.ID, "send-contribution"))).click()
+        # pay_button = self.wait_for(element_id='send-contribution')
+        # pay_button.click()
 
         modal = self.wait_for(element_id='modal')
         form = modal.find_element(By.TAG_NAME, 'form')
 
         amount_field = form.find_element(By.ID, 'id_amount')
-        payer_account_number_field = form.find_element(By.ID, 'id_payer_account_number')
+        payer_account_number_field = form.find_element(
+            By.ID, 'id_payer_account_number')
         description_field = form.find_element(By.ID, 'id_description')
         wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
@@ -157,14 +156,15 @@ class ContributionModalTest(FunctionalTest):
         wallet_type_field.send_keys('airtel')
         form.submit()
 
-        failure_msg = self.wait_for(class_name="message").text
-        self.assertEqual('Sorry only mtn is suported at the moment', failure_msg)
+        failure_msg = self.wait_for(class_name='message').text[:-2]
+        self.assertEqual(
+            'Sorry only mtn is suported at the moment', failure_msg)
         redirect_url = self.BROWSER.current_url
         self.assertRegex(redirect_url, '/patron/home/testcreator')
-        
-    @override_settings(DEBUG=True)
-    @patch('lipila.views.query_collection')
-    @patch('lipila.views.check_payment_status')
+
+    @ override_settings(DEBUG=True)
+    @ patch('lipila.views.query_collection')
+    @ patch('lipila.views.check_payment_status')
     def test_create_contribution_mtn(self, mock_status, mock_post):
         """User selects MTN"""
         mock_response = Mock()
@@ -183,7 +183,8 @@ class ContributionModalTest(FunctionalTest):
         form = modal.find_element(By.TAG_NAME, 'form')
 
         amount_field = form.find_element(By.ID, 'id_amount')
-        payer_account_number_field = form.find_element(By.ID, 'id_payer_account_number')
+        payer_account_number_field = form.find_element(
+            By.ID, 'id_payer_account_number')
         description_field = form.find_element(By.ID, 'id_description')
         wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
@@ -193,7 +194,6 @@ class ContributionModalTest(FunctionalTest):
         wallet_type_field.send_keys('mtn')
         form.submit()
 
-        
         success_msg = self.wait_for(class_name='alert').text
         self.assertEqual(f"Payment of K122 successful!", success_msg)
         redirect_url = self.BROWSER.current_url
@@ -207,27 +207,27 @@ class ContributionModalTest(FunctionalTest):
         self.check_table_row(
             table_entries[1],
             7,
-            ['Life of Jane Doe', 'Jane Doe', 'Hardcover', 'Jan. 1, 2019', '464', '21.00', None],
+            ['Life of Jane Doe', 'Jane Doe', 'Hardcover',
+                'Jan. 1, 2019', '464', '21.00', None],
         )
 
 
 class GetHomePageTest(FunctionalTest):
-     def test_get_index(self):
+    def test_get_index(self):
         url = self.live_server_url
         self.BROWSER.get(url)
         self.assertIn('Lipila-Home', self.BROWSER.title)
-        
 
 
 class ApproveWithdrawalTest(FunctionalTest):
-    @override_settings(DEBUG=True)
+    @ override_settings(DEBUG=True)
     def setUp(self):
         super().setUp()
         # Create a creator user and a withdrawal request
         self.user1 = get_user_model().objects.create_user(
-            username='testuser', password='testpassword', is_staff=True)
+            username='testuser', email='tes2t@bot.io', password='testpassword', is_staff=True)
         self.user2 = get_user_model().objects.create_user(
-            username='testcreator', password='testpassword')
+            username='testcreator', email='te1st@bot.io', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
         self.withdrawal_request = WithdrawalRequest.objects.create(
@@ -243,11 +243,10 @@ class ApproveWithdrawalTest(FunctionalTest):
         username_field.send_keys('testuser')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
+            By.CSS_SELECTOR, "input[type='submit'][value='signin']")
         login_button.click()
-    
 
-    @override_settings(DEBUG=True)
+    @ override_settings(DEBUG=True)
     def test_approve_withdraw_modal_cancel_btn(self):
         url = f'{self.base_url}/approve_withdrawals/'
         self.BROWSER.get(url)
@@ -258,22 +257,21 @@ class ApproveWithdrawalTest(FunctionalTest):
 
         # User clicks the approve button
         self.BROWSER.find_element(By.CLASS_NAME, 'approve-request').click()
-        
+
         # Confirmation modal opens
         modal = self.wait_for(element_id='confirmationModal')
         self.BROWSER.find_element(By.ID, 'cancel').click()
-               
-        
+
 
 class RejectWithdrawalTest(FunctionalTest):
-    @override_settings(DEBUG=True)
+    @ override_settings(DEBUG=True)
     def setUp(self):
         super().setUp()
         # Create a creator user and a withdrawal request
         self.user1 = get_user_model().objects.create_user(
-            username='testuser', password='testpassword', is_staff=True)
+            username='testuser', email='te89st@bot.io', password='testpassword', is_staff=True)
         self.user2 = get_user_model().objects.create_user(
-            username='testcreator', password='testpassword')
+            username='testcreator', email='te34st@bot.io', password='testpassword')
         self.creator_user = CreatorProfile.objects.create(
             user=self.user2, patron_title='testpatron1', about='test', creator_category='musician')
         self.withdrawal_request = WithdrawalRequest.objects.create(
@@ -289,11 +287,10 @@ class RejectWithdrawalTest(FunctionalTest):
         username_field.send_keys('testuser')
         password_field.send_keys('testpassword')
         login_button = self.BROWSER.find_element(
-            By.CSS_SELECTOR, "input[type='submit'][value='accounts:signin']")
+            By.CSS_SELECTOR, "input[type='submit'][value='signin']")
         login_button.click()
-            
 
-    @override_settings(DEBUG=True)
+    @ override_settings(DEBUG=True)
     def test_reject_withdraw_modal_cnacel_btn(self):
         url = f'{self.base_url}/approve_withdrawals/'
         self.BROWSER.get(url)

@@ -79,12 +79,12 @@ class ApproveWithdrawalsTest(TestCase):
         super().setUpTestData()
         # Create a staff user
         cls.staff_user = get_user_model().objects.create_user(
-            username='staffuser', password='staffpassword', is_staff=True)
+            username='staffuser', email='test@bot.io', password='staffpassword', is_staff=True)
         cls.client = Client()
 
         # Create a creator user and a withdrawal request
         cls.user1 = get_user_model().objects.create_user(
-            username='creatoruser', password='creatorpassword')
+            username='creatoruser',email='test2@bot.io', password='creatorpassword')
         cls.creator_user = CreatorProfile.objects.create(
             user=cls.user1, patron_title='testpatron1', about='test', creator_category='musician')
         cls.withdrawal_request = WithdrawalRequest.objects.create(
@@ -190,7 +190,7 @@ class ProcessedWithdrawalsTest(TestCase):
     def setUp(self):
         # Create a staff user
         self.staff_user = get_user_model().objects.create_user(
-            username='staffuser', password='staffpassword', is_staff=True)
+            username='staffuser',email='test5@bot.io', password='staffpassword', is_staff=True)
         self.client = Client()
 
     def test_staff_access_get(self):
