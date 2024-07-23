@@ -32,9 +32,10 @@
 
 <body>
   {% if messages %}
-  <div class="message">
+  <div class="alert">
     {% for message in messages %}
-    <p class="alert alert-{{ message.tag }}">{{message}}</p>
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{message}}
     {% endfor %}
   </div>
   {% endif %}
