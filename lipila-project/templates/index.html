@@ -8,26 +8,37 @@
 <main id="main">
 
   <!-- Hero Section - Home Page -->
-  <section id="hero" class="hero">
-    {% if lipila.hero_image %}
-
-    {% if lipila.hero_image.url %}
-    <img src="{{lipila.hero_image.url}}" alt="Profile" class="">
-    {% endif %}
-    {% else%}
-    <img src="{% static 'assets/img/fans.jpg' %}" alt="hero_image" data-aos="fade-in">
-    {% endif %}
-
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-10">
-          <h2 data-aos="fade-up" data-aos-delay="100">{{lipila.message}}
-          </h2>
-          <p data-aos="fade-up" data-aos-delay="200" id="slogan">{{lipila.slogan}}</p>
+  <div id="carouselExampleIndicators" class="carousel slide hero" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner container">
+      <div class="carousel-item active">
+        <img class="d-block w-100" src="{% static 'assets/img/fans.jpg' %}" alt="hero_image" data-aos="fade-in">
+        <div class="carousel-caption d-md-block">
+          <h5>Example 1</h5>
+          <p>paragraph</p>
         </div>
       </div>
-      <div class="down-arrow"></div>
-  </section><!-- End Hero Section -->
+      <div class="carousel-item">
+        <img class="d-block w-100" src="{% static 'assets/img/fan1.jpg' %}" alt="hero_image" data-aos="fade-in">
+        <div class="carousel-caption d-md-block">
+          <h5>Example 2</h5>
+          <p>paragraph</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img class="d-block w-100" src="{% static 'assets/img/artist.jpg' %}" alt="hero_image" data-aos="fade-in">
+        <div class="carousel-caption d-md-block">
+          <h5>Example 3</h5>
+          <p>paragraph</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- End hero -->
 
   <!-- About Section - Home Page -->
   <section id="about" class="about">
@@ -40,7 +51,8 @@
           <h2>Earning Made Easy</h2>
           <p>Get patrons to support your creativity. Receive donations, payments and payments from your fans
             in one place and grow your work.</p>
-          <a href="{% url 'patron:index' %}" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+          <a href="{% url 'patron:index' %}" class="read-more"><span>Read More</span><i
+              class="bi bi-arrow-right"></i></a>
         </div>
 
         <div class="col-xl-7">
@@ -50,7 +62,8 @@
               <div class="icon-box">
                 <i class="bi bi-buildings"></i>
                 <h3>Recurring Revenue</h3>
-                <p>Offer tiered memberships with exclusive content to generate a predictable income stream and build stronger fan relationships.</p>
+                <p>Offer tiered memberships with exclusive content to generate a predictable income stream and build
+                  stronger fan relationships.</p>
               </div>
             </div> <!-- End Icon Box -->
 
@@ -74,7 +87,8 @@
               <div class="icon-box">
                 <i class="bi bi-graph-up-arrow"></i>
                 <h3>Direct Sales Channel</h3>
-                <p>Sell your creations directly through your personalized online shop, keeping more of what you earn.</p>
+                <p>Sell your creations directly through your personalized online shop, keeping more of what you earn.
+                </p>
               </div>
             </div> <!-- End Icon Box -->
 
@@ -86,7 +100,7 @@
 
   </section><!-- End About Section -->
 
-  
+
   <!-- Features Section - Home Page -->
   <section id="features" class="features">
 

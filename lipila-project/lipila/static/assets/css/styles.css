@@ -1,4 +1,3 @@
-
 /* Fonts */
 :root {
   --default-font: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -58,6 +57,24 @@ h5,
 h6 {
   color: var(--heading-color);
   font-family: var(--heading-font);
+}
+
+@media only screen and (max-width: 600px) {
+  h1 {
+    font-size: 1.5rem
+  }
+
+  h2 {
+    font-size: 1.25rem
+  }
+
+  h3 {
+    font-size: 1.125rem
+  }
+
+  h4 {
+    font-size: 1rem
+  }
 }
 
 
@@ -212,7 +229,7 @@ section,
   margin: 0 15px 10px 0;
 }
 
-.section-title h2:after h3:after{
+.section-title h2:after h3:after {
   margin: 0 0 10px 15px;
 }
 
@@ -356,6 +373,32 @@ hr .new1 {
   background-color: #ccc
 }
 
+
+.creator-container {
+  background-color: var(--background-color);
+  text-align: center;
+  font-family: var(--default-font);
+  display: flex;
+  flex-wrap: wrap;
+  padding-right: 20px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.creator-profile {
+  flex-basis: calc(100% / 4);
+  border: 2px solid yellow;
+  margin-left: 20px;
+  border-radius: 5%;
+  overflow: hidden;
+}
+
+#content {
+  color: #565656;
+  padding: 2.2em;
+  border: 2px solid rebeccapurple;
+}
+
 /* Tiers */
 .tiers-container {
   max-width: 800px;
@@ -372,22 +415,22 @@ hr .new1 {
 }
 
 .tier-card {
-  background-color: #f8f9fa;
-  padding: 20px;
+  background-color: #cbcfc6;
+  padding: 10px;
   border-radius: 10px;
   margin-bottom: 10px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: center;
+  border: 2px solid midnightblue;
 }
 
 .tier-card .price {
   text-align: left;
   color: #000;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 0.95rem;
 }
 
 .tier-card div {
@@ -395,14 +438,6 @@ hr .new1 {
   padding: 10px 0;
   box-sizing: border-box;
 }
-
-.tier-card p {
-  margin: 0 0 8px 0;
-  color: #6c757d;
-  font-size: 24px;
-  text-align: left;
-}
-
 
 @media (min-width: 768px) {
   .tier-card div {
@@ -486,10 +521,6 @@ hr .new1 {
   text-indent: 0;
 }
 
-.content {
-  color: #565656;
-  padding: 2.2em;
-}
 
 .name {
   font-size: 1.5em;
@@ -570,26 +601,6 @@ hr .new1 {
   object-fit: cover;
 }
 
-.creator-container {
-  background-color: rgb(255, 255, 255);
-  text-align: center;
-  font-family: 'Open Sans Condensed', sans-serif;
-  font-size: 1em;
-  display: flex;
-  flex-wrap: wrap;
-  padding-right: 20px;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-.creator-profile {
-  flex-basis: calc(100% / 4);
-  border: 2px solid yellow;
-  margin-left: 20px;
-  margin-bottom: 20px;
-  border-radius: 5%;
-}
-
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
 
@@ -600,9 +611,7 @@ hr .new1 {
 
   .creator-profile {
     flex-basis: calc(100% / 2);
-    /* Two items per line on medium screens */
     margin-right: 0;
-    /* Remove right margin */
     margin-bottom: 20px;
   }
 }
@@ -610,13 +619,12 @@ hr .new1 {
 @media (max-width: 480px) {
   .creator-profile {
     flex-basis: 100%;
-    /* One item per line on small screens */
   }
 }
 
 .btn-primary {
   display: inline-block;
-  color: #fbfbfb;
+  color: var(--accent-color);
   font-weight: 500;
   background-color: #000;
   border: none;
@@ -626,7 +634,7 @@ hr .new1 {
 }
 
 .btn-primary:hover {
-  background-color: #468486;
+  background-color: rgba(var(--accent-color-rgb), 0.9);
 }
 
 /* Responsvie buttons */
@@ -731,12 +739,6 @@ ul.breadcrumb li a:hover {
   content: "";
   display: table;
   clear: both;
-}
-
-/* Content */
-.content {
-  background-color: white;
-  padding: 10px;
 }
 
 /* The "show" class is added to the filtered elements */
@@ -851,14 +853,14 @@ ul.breadcrumb li a:hover {
   font-size: 26px;
 }
 
-.features .features-item .btn-get-started {
+.btn-get-started {
   background-color: var(--accent-color);
   color: var(--contrast-color);
   padding: 8px 30px 10px 30px;
   border-radius: 4px;
 }
 
-.features .features-item .btn-get-started:hover {
+.btn-get-started:hover {
   background-color: rgba(var(--accent-color-rgb), 0.9);
 }
 
