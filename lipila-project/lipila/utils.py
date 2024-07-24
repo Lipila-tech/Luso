@@ -11,16 +11,48 @@ import requests
 from django.urls import reverse
 from api.models import LipilaCollection, LipilaDisbursement
 from django.contrib.auth import get_user_model
-
-
+import braintree
 # utils.py
 
 from patron.models import Contributions, SubscriptionPayments, Transfer
 
 
+def get_customer_id(user):
+    """
+    returns the id of the user.
+    """
+
+    return get_user_model().objects.get(username=user).id
+
+
+braintree_gateway = braintree.BraintreeGateway(
+    braintree.Configuration(
+        braintree.Environment.Sandbox,
+        merchant_id=settings.BRAINTREE_MERCHANT_ID,
+        public_key=settings.BRAINTREE_PUBLIC_KEY,
+        private_key=settings.BRAINTREE_PRIVATE_KEY
+    )
+)
+
+
+def get_braintree_client_token(user: str)-> dict:
+    """
+    Generates a client token that contains all authorization and configuration
+    information the client needs to initialize the client SDK to communicate with Braintree.
+
+    Args:
+        user(str): The user name of a client we are generating the token for.
+
+    Returns:
+        client_token as dict object with `customer_id` as key.
+    """
+    client_token = braintree_gateway.client_token.generate()
+    return client_token
+
 
 def get_api_user():
     return get_user_model().objects.get(username='lipila')
+
 
 def query_collection(user, method, reference_id, data={}):
     """
@@ -35,7 +67,7 @@ def query_collection(user, method, reference_id, data={}):
                     'amount': '', 'payer_account_number': '',
                     'wallet_type': '', 'description': ''
                     }
-                    
+
     Returns:
         rest_framework.response.Response: Response object.
     """
@@ -100,7 +132,7 @@ def query_disbursement(user, method, reference_id, data={}):
         return Response({'data': 'Invalid method passed'}, status=400)
 
 
-def check_payment_status(reference_id:str, transaction:str)->str:
+def check_payment_status(reference_id: str, transaction: str) -> str:
     """
     This function checks the status of the transaction in the api models.
 
@@ -113,19 +145,22 @@ def check_payment_status(reference_id:str, transaction:str)->str:
     status = ''
     if transaction == 'col':
         try:
-            status = LipilaCollection.objects.get(reference_id=reference_id).status
-            
+            status = LipilaCollection.objects.get(
+                reference_id=reference_id).status
+
         except LipilaCollection.DoesNotExist:
             status = 'transaction id not found'
     elif transaction == 'dis':
         try:
-            status = LipilaDisbursement.objects.get(reference_id=reference_id).status
-            
+            status = LipilaDisbursement.objects.get(
+                reference_id=reference_id).status
+
         except LipilaDisbursement.DoesNotExist:
             status = 'transaction id not found'
     else:
         return None
     return status
+
 
 def get_lipila_contact_info() -> dict:
     """ Gets the lipila contact info and

@@ -7,8 +7,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.http import JsonResponse
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.db.models import Q
+import json
 from bootstrap_modal_forms.generic import (
     BSModalLoginView,
     BSModalFormView,
@@ -38,13 +39,14 @@ from accounts.models import CreatorProfile
 from patron.models import (WithdrawalRequest, SubscriptionPayments,
                            ProcessedWithdrawals, Tier, TierSubscriptions, Transfer)
 from patron.utils import calculate_creators_balance
-from .utils import get_api_user
+from .utils import get_api_user, get_braintree_client_token, braintree_gateway
 
 
 # Django-bootstrap Modal forms views
 
 class ApproveWithdrawModalView(View):
     success_url = reverse_lazy('processed_withdrawals')
+
     def post(self, request, pk):
         withdrawal_request_id = request.POST.get('request_id')
         if withdrawal_request_id:
@@ -53,14 +55,14 @@ class ApproveWithdrawModalView(View):
                     pk=withdrawal_request_id)
                 processed_withdrawals = ProcessedWithdrawals.objects.create(
                     withdrawal_request=withdrawal_request, status='pending')
-                
+
                 amount = withdrawal_request.amount
                 wallet_type = withdrawal_request.wallet_type
                 send_money_to = withdrawal_request.account_number
                 description = withdrawal_request.reason
                 request_date = withdrawal_request.request_date
                 reference_id = withdrawal_request.reference_id
-                
+
                 # Process withdrawal (initiate payout using lipila api)
                 payload = {
                     'amount': amount,
@@ -190,14 +192,14 @@ class UnsubScribeView(BSModalDeleteView):
 
 class TierReadView(BSModalReadView):
     model = Tier
-    template_name = 'lipila/modals/view_tier.html'       
-    
-    
+    template_name = 'lipila/modals/view_tier.html'
+
+
 class SendMoneyView(BSModalCreateView):
     template_name = 'lipila/modals/send_money.html'
     success_url = 'subscriptions_history'
     success_message = 'Success: Subscription paid'
-     
+
     def get_form_class(self):
         transaction_type = self.kwargs.get('type')
         if transaction_type == 'contribution':
@@ -209,7 +211,7 @@ class SendMoneyView(BSModalCreateView):
         return super().get_form_class()
 
     def form_valid(self, form):
-        
+
         wallet_type = form.cleaned_data['wallet_type']
 
         if wallet_type != 'mtn':
@@ -234,7 +236,8 @@ class SendMoneyView(BSModalCreateView):
         elif transaction_type == 'subscription':
             payee = TierSubscriptions.objects.get(
                 tier=self.kwargs.get('id'), patron=payer)
-            amount = TierSubscriptions.objects.get(tier=self.kwargs.get('id')).tier.price
+            amount = TierSubscriptions.objects.get(
+                tier=self.kwargs.get('id')).tier.price
             self.success_url = reverse_lazy('subscriptions_history')
         elif transaction_type == 'transfer':
             payee = form.cleaned_data['send_money_to']
@@ -246,7 +249,7 @@ class SendMoneyView(BSModalCreateView):
         form.instance.payee = payee
         form.instance.amount = amount
 
-        if transaction_type == 'transfer' or transaction_type == 'contribution' :
+        if transaction_type == 'transfer' or transaction_type == 'contribution':
             form.instance.payer = payer
 
         # Manually save the form
@@ -260,13 +263,13 @@ class SendMoneyView(BSModalCreateView):
         }
 
         api_user = get_api_user()
-        
+
         response = query_collection(
             api_user.username, 'POST', reference_id, data=payload)
         if response.status_code == 202:
             form.instance.status = 'accepted'
             messages.success(
-                    self.request, f"Payment of K{amount} successful!")
+                self.request, f"Payment of K{amount} successful!")
             if check_payment_status(reference_id, 'col') == 'success':
                 form.instance.status = 'success'
             self.object = form.save()
@@ -296,11 +299,10 @@ def tiers(request):
         return JsonResponse(data)
 
 
-
 @login_required
 def transfer(request):
-    transfers =  Transfer.objects.filter(payer=request.user)
-    return render(request, 'lipila/actions/transfer.html', {'transfers':transfers})
+    transfers = Transfer.objects.filter(payer=request.user)
+    return render(request, 'lipila/actions/transfer.html', {'transfers': transfers})
 
 
 @login_required
@@ -441,3 +443,34 @@ def contact(request):
 @login_required
 def kyc(request):
     return render(request, 'lipila/admin/kyc.html')
+
+
+# Braintree developer api
+
+def create_purchase(request):
+    if request.method == 'POST':
+        # Parse the JSON payload
+        data = json.loads(request.body)
+
+        # Extract the nonce and deviceData
+        nonce_from_the_client = data.get('nonce')
+        device_data = data.get('deviceData')
+        
+        result = braintree_gateway.transaction.sale({
+            'amount': '45.00',
+            'payment_method_nonce': nonce_from_the_client,
+            "device_data": device_data,
+            'options': {
+                'submit_for_settlement': True
+            }
+        })
+        if result.is_success:
+            messages.success(request, "Payment completed")
+            return JsonResponse({'status': 'success', 'nonce': nonce_from_the_client, 'device_data': device_data})
+        else:
+            messages.error(request, "Payment payment failed")
+            return JsonResponse({'status': 'fail', 'message': 'Invalid request'}, status=400)
+
+    client_token = get_braintree_client_token(request.user)
+    context = {'client_token': client_token}
+    return render(request, 'lipila/checkout/paypal.html', context)

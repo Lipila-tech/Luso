@@ -26,10 +26,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
+
+# SET third party API Credentials
+MTN_COLLECTIONS_KEY=env("MTN_COLLECTIONS_KEY")
+MTN_DISBURSEMENT_KEY=env("MTN_DISBURSEMENT_KEY")
+MTN_PROVIDER_CALLBACK_HOST=env("MTN_PROVIDER_CALLBACK_HOST")
 GOOGLE_OAUTH_CLIENT_ID=env("GOOGLE_OAUTH_CLIENT_ID")
+BRAINTREE_MERCHANT_ID=env("BRAINTREE_MERCHANT_ID")
+BRAINTREE_PUBLIC_KEY=env("BRAINTREE_PUBLIC_KEY")
+BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 
 LOGIN_URI_TESTING = 'http://localhost:8000/accounts/auth-receiver/'
 LOGIN_URI_PRODUCTION = 'https://lipila.pythonanywhere.com/accounts/auth-receiver/'

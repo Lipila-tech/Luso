@@ -1,24 +1,19 @@
 """Defines classes and methods that interact with the MTN momo api"""
 import requests
 import json
+from django.conf import settings
 from rest_framework.response import Response
 from api.utils import (
     generate_reference_id, basic_auth, 
     is_payment_details_valid, is_deposit_details_valid
     )
 
-import environ
-
-env = environ.Env()
-
-environ.Env.read_env()
-
 
 class MTNBase():
     """Base class for the mtn api"""
 
     def __init__(self):
-        self.x_target_environment = env("TARGET_ENV")
+        self.x_target_environment = settings.MTN_TARGET_ENV
         self.content_type = 'application/json'
         self.api_key = ''
         self.api_token = 'Bearer '
@@ -37,7 +32,7 @@ class MTNBase():
         url = "https://sandbox.momodeveloper.mtn.com/v1_0/apiuser"
 
         payload = json.dumps({
-            "providerCallbackHost": "{}".format(env("PROVIDER_CALLBACK_HOST"))
+            "providerCallbackHost": "{}".format(settings.MTN_PROVIDER_CALLBACK_HOST)
         })
         headers = {
             'X-Reference-Id': reference_id,
@@ -178,7 +173,7 @@ class Collections(MTNBase):
 
     def __init__(self):
         super().__init__()
-        self.subscription_col_key = env("MTN_MOMO_COLLECTIONS_KEY")
+        self.subscription_col_key = settings.MTN_COLLECTIONS_KEY
 
     def request_to_pay(self, amount: str, payer: str, reference_id: str) -> Response:
         """
@@ -267,7 +262,7 @@ class Disbursement(MTNBase):
 
     def __init__(self):
         super().__init__()
-        self.subscription_dis_key = env("MTN_MOMO_DISBURSEMENT_KEY")
+        self.subscription_dis_key = settings.MTN_DISBURSEMENT_KEY
 
     def deposit(self, amount: str, payee: str, reference_id: str) -> Response:
         """

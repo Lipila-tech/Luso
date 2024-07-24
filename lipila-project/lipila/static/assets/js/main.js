@@ -6,6 +6,72 @@
 */
 
 
+// Braintree gateway
+document.addEventListener('DOMContentLoaded', function () {
+  var button = document.querySelector('#submit-button');
+
+  var clientTokenElement = document.querySelector('#clientToken');
+  var clientToken = clientTokenElement.value;
+
+  braintree.dropin.create({
+    authorization: clientToken,
+    container: '#dropin-container',
+    dataCollector: true
+  }, function (createErr, instance) {
+    if (createErr) {
+      // Handle error in Drop-in creation
+      return;
+    }
+    button.addEventListener('click', function () {
+      instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+        if (requestPaymentMethodErr) {
+          // Handle error in requesting payment method
+          return;
+        }
+
+        // Send the payload.nonce and payload.deviceData to the backend
+        var paymentData = {
+          nonce: payload.nonce,
+          deviceData: payload.deviceData
+        };
+
+        fetch('http://localhost:8000/checkout/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken') // Include CSRF token for Django
+          },
+          body: JSON.stringify(paymentData)
+        })
+          .then(function () {
+            window.location.assign("http://localhost:8000/dashboard/");
+
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      });
+    });
+  });
+
+  // Function to get the CSRF token from cookies (for Django)
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});
+
 
 const closeButtons = document.querySelectorAll('.close-btn');
 
