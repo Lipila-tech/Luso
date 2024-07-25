@@ -12,10 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var clientTokenElement = document.querySelector('#clientToken');
   var clientToken = clientTokenElement.value;
+  var container = document.getElementById("dropin-container");
 
   braintree.dropin.create({
     authorization: clientToken,
-    container: '#dropin-container',
+    container: container,
     dataCollector: true
   }, function (createErr, instance) {
     if (createErr) {
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
           deviceData: payload.deviceData
         };
 
-        fetch('http://localhost:8000/checkout/', {
+        fetch('http://192.168.0.190:8000/checkout/visa/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

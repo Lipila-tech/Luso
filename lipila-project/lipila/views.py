@@ -195,6 +195,7 @@ class TierReadView(BSModalReadView):
     template_name = 'lipila/modals/view_tier.html'
 
 
+
 class SendMoneyView(BSModalCreateView):
     template_name = 'lipila/modals/send_money.html'
     success_url = 'subscriptions_history'
@@ -474,3 +475,11 @@ def create_purchase(request):
     client_token = get_braintree_client_token(request.user)
     context = {'client_token': client_token}
     return render(request, 'lipila/checkout/paypal.html', context)
+
+
+
+def checkout(request):
+    form = SubscriptionPaymentsForm()
+    client_token = get_braintree_client_token(request.user)
+    context = {'client_token': client_token, 'form':form, 'amount':100}
+    return render(request, 'lipila/checkout/checkout.html', context)

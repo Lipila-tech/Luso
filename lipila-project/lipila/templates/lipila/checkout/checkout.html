@@ -1,0 +1,124 @@
+{% extends 'layout_admin.html' %}
+{% load static %}
+
+
+{% block title %} Checkout {% endblock title %}
+{% block extrastylesheets %}
+
+{% endblock extrastylesheets %}
+
+{% block section %}
+
+<script src="https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.js"></script>
+
+<div class="checkout-container">
+    <div class="checkout-txt">
+        <h1>Checkout</h1>
+        <p>Amount</p>
+        <p>Product</p>
+        <h3>Select Payment Method</h3>
+    </div>
+
+    <div class="logo-buttons">
+        <button class="payment-button" id="mtn-button">
+            <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN">
+        </button>
+        <button class="payment-button" id="airtel-button">
+            <img src="{% static 'assets/img/api/airtel.png' %}" alt="Airtel">
+        </button>
+        <button class="payment-button" id="visa-button">
+            <img src="{% static 'assets/img/api/visa.png' %}" alt="Visa">
+        </button>
+        <input type="hidden" value="{{client_token}}" id="clientToken">
+    </div>
+
+
+    <!-- Modals -->
+    <div id="mtn-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-mtn-modal">&times;</span>
+            <div class="checkout-header">
+                <p>Pay k{{amount}} with MTN mobile money</p>
+                <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN logo">
+            </div>
+            {% include 'lipila/modals/pay_subscription.html' %}
+        </div>
+    </div>
+
+    <div id="airtel-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-airtel-modal">&times;</span>
+            <br>
+            <div class="checkout-header">
+                <p>Pay K{{amount}} with Airtel mobile money</p>
+                <img src="{% static 'assets/img/api/airtel.png' %}" alt="airtel logo">
+            </div>
+            {% include 'lipila/modals/pay_subscription.html' %}
+
+        </div>
+    </div>
+
+    <div id="visa-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-visa-modal">&times;</span>
+            <!-- add braintree dropin UI -->
+            <div id="dropin-container"></div>
+            <button id="submit-button" class="button button--small button--green">Submit</button>
+        </div>
+    </div>
+
+</div>
+{% endblock section %}
+{% block extrascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var mtnButton = document.getElementById('mtn-button');
+        var airtelButton = document.getElementById('airtel-button');
+        var visaButton = document.getElementById('visa-button');
+
+        var mtnModal = document.getElementById('mtn-modal');
+        var airtelModal = document.getElementById('airtel-modal');
+        var visaModal = document.getElementById('visa-modal');
+
+        var closeMtnModal = document.getElementById('close-mtn-modal');
+        var closeAirtelModal = document.getElementById('close-airtel-modal');
+        var closeVisaModal = document.getElementById('close-visa-modal');
+
+        mtnButton.addEventListener('click', function () {
+            mtnModal.style.display = 'flex';
+        });
+
+        airtelButton.addEventListener('click', function () {
+            airtelModal.style.display = 'flex';
+        });
+
+        visaButton.addEventListener('click', function () {
+            visaModal.style.display = 'flex';
+        });
+
+        closeMtnModal.addEventListener('click', function () {
+            mtnModal.style.display = 'none';
+        });
+
+        closeAirtelModal.addEventListener('click', function () {
+            airtelModal.style.display = 'none';
+        });
+
+        closeVisaModal.addEventListener('click', function () {
+            visaModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target == mtnModal) {
+                mtnModal.style.display = 'none';
+            }
+            if (event.target == airtelModal) {
+                airtelModal.style.display = 'none';
+            }
+            if (event.target == visaModal) {
+                visaModal.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock extrascripts %}

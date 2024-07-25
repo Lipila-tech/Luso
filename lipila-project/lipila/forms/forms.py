@@ -24,15 +24,26 @@ class TransferForm(BaseTransactionForm):
     class Meta:
         model = Transfer
         fields = ['wallet_type', 'amount', 'payer_account_number', 'send_money_to',
-                   'description']
+                  'description']
 
 
-class SubscriptionPaymentsForm(BaseTransactionForm):
+class SubscriptionPaymentsForm(forms.ModelForm):
     class Meta:
         model = SubscriptionPayments
-        fields = ['wallet_type', 'payer_account_number',
+        fields = ['amount', 'payer_account_number',
                   'description']
-        
+
+        labels = {'payer_account_number': 'Mobile number'}
+
+        widgets = {
+            'payer_account_number': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
+            'description': forms.TextInput(attrs={'placeholder': 'Ex. Firstname lastname'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['amount'].widget.attrs['readonly'] = True
+
 
 class ContributionsForm(BaseTransactionForm):
     amount = forms.DecimalField(max_digits=10, decimal_places=2)

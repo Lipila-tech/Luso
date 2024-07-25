@@ -6,8 +6,11 @@ from django.contrib.auth.decorators import login_required
 from patron import views as patron_views
 
 urlpatterns = [
-    # Braintree checkout
-    path('checkout/', views.create_purchase, name ="checkout"),
+    # checkout urls
+    path('checkout/mtn/', views.checkout, name ="mtn_pay"),
+    path('checkout/airtel/', views.checkout, name ="airtel_pay"),
+    path('checkout/', views.checkout, name ="checkout"),
+    path('checkout/visa/', views.create_purchase, name ="create_purchase"),
     # cretaor kyc
     path('knowyourcustomer/', views.kyc, name='kyc'),
     # lipila public URLS
