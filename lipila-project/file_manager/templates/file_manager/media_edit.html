@@ -35,7 +35,25 @@
             {{form}}
             {% endif %}
             <input type="submit" value="Update">
+
         </form>
+        <a href="#" class="delete-btn">Delete</a>
     </div>
+
 </div>
-{%endblock section %}
+{% endblock section %}
+
+{% block extrascripts %}
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').click(function (e) {
+            e.preventDefault();
+            if (confirm("Are you sure you want to delete this file?")) {
+                // Perform delete action
+                alert("File deleted.");
+            }
+        });
+    });
+
+</script>
+{% endblock extrascripts%}

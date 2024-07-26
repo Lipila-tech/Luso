@@ -33,21 +33,6 @@
 		</div>
 	</div>
 	<a href="{% url 'file_manager:media_edit' filename=filename %}" class="edit-btn">Edit</a>
-    <a href="#" class="delete-btn">Delete</a>
 	{% endif %}
 </div>
 {% endblock section %}
-{% block extrascripts %}
-<script>
-	$(document).ready(function () {
-		$('.delete-btn').click(function (e) {
-			e.preventDefault();
-			if (confirm("Are you sure you want to delete this file?")) {
-				// Perform delete action
-				alert("File deleted.");
-			}
-		});
-	});
-
-</script>
-{% endblock extrascripts%}

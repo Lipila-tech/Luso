@@ -84,11 +84,24 @@
     margin-bottom: 20px;
 }
 
+
+.media-player-v,
+.media-player-a {
+    width: 100%;
+    height: 450px; /* Set a fixed height for consistency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .media-player-v video,
 .media-player-a audio {
     width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio and cover the entire area */
     border-radius: 10px;
 }
+
 
 .media-texts {
     margin-top: 15px;
@@ -119,7 +132,6 @@
 .edit-btn,
 .delete-btn {
     display: inline-block;
-    background-color: #4caf50;
     color: #fff;
     padding: 10px 15px;
     margin-right: 10px;
@@ -127,7 +139,20 @@
     text-decoration: none;
 }
 
-.edit-btn:hover,
-.delete-btn:hover {
+
+.edit-btn {
+    background-color: #4caf50;
+}
+
+.delete-btn {
+    background-color: #c70b0b;
+}
+
+.edit-btn:hover {
     background-color: #45a049;
+}
+
+.delete-btn:hover
+{
+    background-color: #c60b0b;
 }
