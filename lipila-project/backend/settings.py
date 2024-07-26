@@ -216,6 +216,7 @@ STATICFILES_STORAGE = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
+STATICFILESDIRS = os.path.join(BASE_DIR, 'file_manager')
 STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = "patron:profile"

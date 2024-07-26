@@ -3,6 +3,9 @@
 {% block title %}Edit{% endblock title%}
 {%load static%}
 
+{% block extrastylesheets %}
+<link href="{% static 'file_manager/css/style.css' %}" rel="stylesheet">
+{% endblock extrastylesheets %}
 {% block section%}
 <div class="media-container">
     <h1>Edit</h1>

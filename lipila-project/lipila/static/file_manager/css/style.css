@@ -1,0 +1,64 @@
+.media-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: auto;
+}
+
+.media-player {
+    background-color: #fff;
+    border: 2px solid #4caf50;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.media-player-v video,
+.media-player-a audio {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.media-texts {
+    margin-top: 15px;
+}
+
+.media-texts .owner {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.media-texts .upload-date {
+    color: #888;
+    font-size: 0.9em;
+}
+
+.media-texts .media-f-n {
+    color: #333;
+    font-size: 1.5em;
+    margin-top: 10px;
+}
+
+.media-texts .media-f-d {
+    color: #666;
+    font-size: 1em;
+    margin-top: 5px;
+}
+
+.edit-btn,
+.delete-btn {
+    display: inline-block;
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 15px;
+    margin-right: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+    background-color: #45a049;
+}

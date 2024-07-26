@@ -4,7 +4,7 @@
 {%load static%}
 
 {% block section%}
-<div style="width: 500px; margin: auto;" class="media-upload">
+<div class="media-upload">
 	<fieldset name="File Upload">
 		{% if msg %} {% autoescape off %} {{ msg }} {% endautoescape %} {% endif %}
 		<form method="post" action="{% url 'file_manager:media_upload' %}" enctype="multipart/form-data">
