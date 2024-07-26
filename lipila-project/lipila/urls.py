@@ -19,7 +19,7 @@ urlpatterns = [
 
     # PatronUser defined authenticated user views
     path('dashboard/', patron_views.dashboard, name='dashboard'),
-    path('dashboard/staff/<str:user>', views.staff_users, name='staff_dashboard'),
+    path('dashboard/staff/', views.staff_users, name='staff_dashboard'),
         
     # lipila difened authenticated user views
     path('approve_withdrawals/', views.approve_withdrawals, name ='approve_withdrawals'),

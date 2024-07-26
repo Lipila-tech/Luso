@@ -21,6 +21,11 @@
                 <i class="bi bi-circle"></i><span>Transfer</span>
             </a>
         </li>
+        <li>
+            <a href="{% url 'file_manager:media_upload' %}">
+                <i class="bi bi-circle"></i><span>Upload</span>
+            </a>
+        </li>
     </ul>
 </li><!-- End Forms Nav -->
 <li class="nav-item">
@@ -31,6 +36,16 @@
         <li>
             <a href="{% url 'processed_withdrawals' %}">
                 <i class="bi bi-circle"></i><span>Withdrawals Processed</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'file_manager:media_all' m_type='Video' %}">
+                <i class="bi bi-circle"></i><span>Review Videos</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'file_manager:media_all' m_type='Audio' %}">
+                <i class="bi bi-circle"></i><span>Review Audio</span>
             </a>
         </li>
     </ul>

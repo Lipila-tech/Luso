@@ -1,0 +1,48 @@
+{% extends 'layout_admin.html' %}
+{% block title %}Media {{m_type}}{% endblock title%}
+{% load static %}
+
+{% block section %}
+{% if uploads %}
+<h1>{{m_type}} files</h1>
+<table>
+    <thead>
+        <tr>
+            <tr>
+                <th>Owner</th>
+                <th>Filename</th>
+                <th>Upload Date</th>
+                <th>File Type</th>
+                <th>Short description</th>
+                <th>Long description</th>
+                <th>Tiers</th>
+                <th>file</th>
+                <th>Private</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for upload in uploads %}
+            <tr>
+                <td>{{ upload.owner }}</td>
+                <td>{{ upload.filename }}</td>
+                <td>{{ upload.upload_date }}</td>
+                <td>{{ upload.content_type }}</td>
+                <td>{{ upload.short_description }}</td>
+                <td>{{ upload.long_description }}</td>
+                <td>{{ upload.tiers }}</td>
+                <td>{{ upload.file }}</td>
+                <td>{{ upload.is_private }}</td>
+            <td>
+                <a href="{% url 'file_manager:media_play' filename=upload.filename %}"> Open</a>
+                <a href="{% url 'file_manager:media_edit' filename=upload.filename %}"> Edit</a>
+                <a href="#"> Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h1>No files found</h1>
+{% endif %}
+{% endblock section %}

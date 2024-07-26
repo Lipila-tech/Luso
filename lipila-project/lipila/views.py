@@ -319,7 +319,7 @@ def transfers_history(request):
 
 
 @login_required
-def staff_users(request, user):
+def staff_users(request):
     total_users = len(get_user_model().objects.all())
     total_creators = len(CreatorProfile.objects.all())
     total_payments = len(SubscriptionPayments.objects.all())

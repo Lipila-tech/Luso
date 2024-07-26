@@ -29,5 +29,5 @@ urlpatterns = [
     path('api/v1/', include('api.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include(('accounts.urls', 'accounts'), namespace='accounts')),
-    path('content/', include(('file_manager.urls', 'file_manager'), namespace='file_manager')),
+    path('multimedia/', include(('file_manager.urls', 'file_manager'), namespace='file_manager')),
 ]

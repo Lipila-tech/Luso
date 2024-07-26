@@ -1,0 +1,35 @@
+{% extends 'layout_admin.html' %}
+{% block title %} Play media {% endblock title %}
+{% load static %}
+
+{% block section %}
+<div class="media-container">
+	{% if file_url %}
+	<div class="media-player">
+		{% if f_type == 'video/mp4' %}
+		<div id="video-player" class="media-player-v">
+			<video autoplay="autoplay" controls="controls" preload="preload">
+				<source src="{{ file_url }}" type="video/mp4">
+				</source>
+			</video>
+		</div>
+
+		{% elif f_type == 'audio/mpeg' %}
+		<div id="audio-player" class="media-player-a">
+			<audio autoplay="autoplay" controls="controls" preload="preload">
+				<source src="{{ file_url }}" type="audio/mpeg">
+				</source>
+			</audio>
+		</div>
+		{% endif %}
+		<div class="media-texts">
+			<p class="upload-date">{{upload_date}}</p>
+			<h2 class="media-f-n">{{short_description}}</h2>
+			<p class="media-f-d">{{long_description}}</p>
+		</div>
+	</div>
+	<a href="{% url 'file_manager:media_edit' filename=filename %}">Edit</a>
+	<a href="#">Delete</a>
+	{% endif %}
+</div>
+{% endblock section %}

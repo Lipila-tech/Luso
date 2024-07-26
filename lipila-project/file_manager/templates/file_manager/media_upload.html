@@ -1,0 +1,24 @@
+{% extends 'layout_admin.html' %}
+
+{% block title %}Upload Video{% endblock title%}
+{%load static%}
+
+{% block section%}
+<div style="width: 500px; margin: auto;" class="media-upload">
+	<fieldset name="File Upload">
+		{% if msg %} {% autoescape off %} {{ msg }} {% endautoescape %} {% endif %}
+		<form method="post" action="{% url 'file_manager:media_upload' %}" enctype="multipart/form-data">
+			{% csrf_token %}
+			<dl>
+				<p>
+					<label>Browse and select a file</label>&nbsp;&nbsp;
+					<input type="file" name="file" autocomplete="off" required>
+				</p>
+			</dl>
+			<p>
+				<input type="submit" value="Upload and Display">
+			</p>
+		</form>
+	</fieldset>
+</div>
+{%endblock section %}

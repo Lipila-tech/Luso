@@ -32,7 +32,7 @@ def profile(request):
     context = {}
     if request.user.is_staff:
         messages.error('Contact Admin to update your profile')
-        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
+        return redirect(reverse('staff_dashboard'))
     else:
         try:
             creator = request.user.creatorprofile
@@ -66,7 +66,7 @@ def create_creator_profile(request):
                           'patron/admin/profile/create_creator_profile.html',
                           {'form': form, 'creator': creator})
     if  request.user.is_staff:
-        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
+        return redirect(reverse('staff_dashboard'))
     elif request.user.has_group:
         return redirect(reverse('patron:profile'))
     else:
@@ -151,7 +151,7 @@ def dashboard(request):
         context['last_login'] = last_login_time
     
     if request.user.is_staff:
-        return redirect(reverse('staff_dashboard', kwargs={'user': request.user}))
+        return redirect(reverse('staff_dashboard'))
     else:
         try:
             # Creator summary

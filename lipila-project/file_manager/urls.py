@@ -5,12 +5,10 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('video/upload', views.video_upload, name='video_upload'),
-    path('play/<str:filename>', views.play_video_file, name='play_video'),
-    path('play/<str:filename>', views.play_audio_file, name='play_audio'),
-    path('audio/upload', views.audio_upload, name='audio_upload'),
-    path('all/videos', views.list_video_uploads, name='all_videos'),
-    path('all/audios', views.list_audio_uploads, name='all_audios'),
+    path('upload/', views.media_upload, name='media_upload'),
+    path('edit/<str:filename>', views.edit_media_file, name='media_edit'),
+    path('play/<str:filename>', views.play_media_file, name='media_play'),
+    path('all/<str:m_type>', views.get_media, name='media_all'),
 ]
 
 if settings.DEBUG:

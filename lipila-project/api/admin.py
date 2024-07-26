@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
+from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from .models import (LipilaDisbursement, LipilaCollection)
 from lipila.models import (
@@ -9,13 +10,15 @@ from lipila.models import (
 from patron.models import (Tier, SubscriptionPayments,
                            ProcessedWithdrawals, WithdrawalRequest, Contributions)
 from accounts.models import CreatorProfile, CustomUser
+from file_manager.models import UploadedFile
 
 
 class CustomUserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        (_('Permissions'), {
+         'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
@@ -28,7 +31,6 @@ class CustomUserAdmin(BaseUserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('email',)
-
 
 
 class ProcessedWithdrawalAdmin(admin.ModelAdmin):
@@ -96,6 +98,12 @@ class CreatorProfileAdmin(admin.ModelAdmin):
                     ]
 
 
+class UploadedFileAdmin(admin.ModelAdmin):
+    list_display = ['owner', 'filename', 'short_description', 'file',
+                    'long_description', 'upload_date', 'content_type']
+
+
+# Register
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tier, TierAdmin)
 admin.site.register(SubscriptionPayments, PaymentAdmin)
@@ -110,9 +118,16 @@ admin.site.register(HeroInfo, HeroInfoAdmin)
 admin.site.register(AboutInfo, AboutInfoAdmin)
 admin.site.register(UserTestimonial, UserTestimonialAdmin)
 admin.site.register(CreatorProfile, CreatorProfileAdmin)
+admin.site.register(UploadedFile, UploadedFileAdmin)
+
+# Unregister
 admin.site.unregister(Group)
+
+
+url = reverse('staff_dashboard')
+# Configure site
 admin.site.site_header = 'Lipila Adminstration'
-admin.site.site_url = '/'
+admin.site.site_url = url
 admin.site.site_title = 'lipila'
 
 # superuser: pita, password: test@123
