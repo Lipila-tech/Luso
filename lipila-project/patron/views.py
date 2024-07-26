@@ -224,6 +224,10 @@ def creator_home(request, creator):
     creator_obj = CreatorProfile.objects.get(user=creator_user.id)
     tiers = Tier.objects.filter(creator=creator_obj).values()
     patrons = get_creator_subscribers(creator_obj)
+
+    if creator == request.user.username:
+        
+        messages.info(request, "Viewing page as Visitor")
     
     return render(request,
                       'patron/admin/profile/creator_home.html',

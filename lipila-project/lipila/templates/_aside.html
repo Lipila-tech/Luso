@@ -14,6 +14,14 @@
         {% endif %}
 
         <li class="nav-heading">Pages</li>
+        {% if request.user.creatorprofile %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{% url 'patron:creator_home' creator=request.user %}">
+                <i class="bi bi-person"></i>
+                <span>Preview my Page</span>
+            </a>
+        </li>
+        {% endif %}
         <li class="nav-item">
             <a class="nav-link collapsed" href="{% url 'patron:profile' %}">
                 <i class="bi bi-person"></i>

@@ -38,7 +38,7 @@ def delete_media_file(request, filename):
     pass
 
 
-def play_media_file(request, filename):
+def media_play(request, filename):
     fs = FileSystemStorage()
     file_url = fs.url(filename)
     media_file = get_object_or_404(UploadedFile, filename=filename)
@@ -47,8 +47,10 @@ def play_media_file(request, filename):
     description = media_file.long_description
     title = media_file.short_description
     upload_date = media_file.upload_date
+    owner = media_file.owner
 
     context = {'file_url': file_url,
+               'owner':owner,
                'filename': filename,
                'short_description': title,
                'f_type': content_type,
