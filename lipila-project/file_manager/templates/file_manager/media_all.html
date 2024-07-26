@@ -44,5 +44,8 @@
 </table>
 {% else %}
 <h1>No files found</h1>
+{% if request.user.creatorprofile %}
+<a href="{% url 'file_manager:media_upload' %}">Add content</a>
+{% endif %}
 {% endif %}
 {% endblock section %}

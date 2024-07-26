@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.urls import reverse
+from django.http import Http404
 from .forms import UploadFileForm, EditMediaFileForm
 from django.conf import settings
 from django.contrib import messages
@@ -81,10 +82,33 @@ def media_upload(request):
 
 def get_media(request, m_type):
     context = {'m_type': m_type}
-    if m_type == 'Video':
-        context['uploads'] = get_list_or_404(
-            UploadedFile, content_type='video/mp4')
-    elif m_type == 'Audio':
-        context['uploads'] = get_list_or_404(
-            UploadedFile, content_type='audio/mpeg')
+    try:
+        if m_type == 'Video':
+            files = get_list_or_404(
+                UploadedFile, content_type='video/mp4')
+            context['uploads'] = files
+        elif m_type == 'Audio':
+            files = get_list_or_404(
+                UploadedFile, content_type='audio/mpeg')
+            context['uploads'] = files
+    except Http404:
+        return render(request, 'file_manager/media_all.html', context)
+
+    return render(request, 'file_manager/media_all.html', context)
+
+
+def get_user_media(request, m_type):
+    context = {'m_type': m_type}
+    try:
+        if m_type == 'Video':
+            files = get_list_or_404(
+                UploadedFile, owner=request.user, content_type='video/mp4')
+            context['uploads'] = files
+        elif m_type == 'Audio':
+            files = get_list_or_404(
+                UploadedFile, owner=request.user, content_type='audio/mpeg')
+            context['uploads'] = files
+    except Http404:
+        return render(request, 'file_manager/media_all.html', context)
+
     return render(request, 'file_manager/media_all.html', context)

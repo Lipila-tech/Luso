@@ -14,11 +14,10 @@
             Upload
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="{% url 'file_manager:media_upload' %}">Video</a>
+            <a class="dropdown-item" href="{% url 'file_manager:media_upload' %}">Upload</a>
             <hr class="dropdown-divider">
-            <a class="dropdown-item" href="{% url 'file_manager:audio_upload' %}">Audio</a>
-            <hr class="dropdown-divider">
-            <a class="dropdown-item" href="{% url 'file_manager:audio_upload' %}">File</a>
+
+            <a class="dropdown-item" href="{% url 'file_manager:media_upload' %}">File</a>
         </div>
     </div>
     <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
@@ -72,6 +71,16 @@
         <li>
             <a href="{% url 'contributions_history' %}">
                 <i class="bi bi-circle"></i><span>Contributions Received</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'file_manager:user_media_all' m_type='Video' %}">
+                <i class="bi bi-circle"></i><span>My videos</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'file_manager:user_media_all' m_type='Audio' %}">
+                <i class="bi bi-circle"></i><span>My audio</span>
             </a>
         </li>
     </ul>
