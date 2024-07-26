@@ -1,3 +1,72 @@
+/* Media Form */
+
+/* Form Styles */
+.media-edit-form {
+    background-color: #fff;
+    padding: 20px;
+    border: 2px solid #4caf50;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.media-edit-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.media-edit-form form input[type="text"],
+.media-edit-form form textarea,
+.media-edit-form form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.media-edit-form form input[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.media-edit-form form input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Headings and Text */
+.media-container h1 {
+    color: #4caf50;
+    margin-bottom: 20px;
+}
+
+.media-container .media-player h4.owner {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.media-container .media-player p.upload-date {
+    color: #888;
+    font-size: 0.9em;
+}
+
+.media-container .media-player h2.media-f-n {
+    color: #333;
+    font-size: 1.5em;
+    margin-top: 10px;
+}
+
+.media-container .media-player p.media-f-d {
+    color: #666;
+    font-size: 1em;
+    margin-top: 5px;
+}
+
+/* Media player */
 .media-container {
     background-color: #f9f9f9;
     padding: 20px;
