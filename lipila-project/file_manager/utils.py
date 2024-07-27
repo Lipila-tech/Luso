@@ -9,11 +9,12 @@ def get_user_files(user, content_type)->list:
 
     Args:
         user(CustomUserObjetc): The  creator of the file
-        content_type(str): The type of files to retrive (video/mp4 or audio/mpeg)
+        content_type(str): The type of files to retrive (video/mp4 or audio/mpeg or all)
 
     Returns:
         List object.
     """
-    files = get_list_or_404(
-                UploadedFile, owner=user, content_type=content_type)
-    return files
+    if content_type == "all":
+        return get_list_or_404(UploadedFile, owner=user)
+    else:
+        return get_list_or_404(UploadedFile, owner=user, content_type=content_type)

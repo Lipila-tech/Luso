@@ -1,38 +1,30 @@
 {% load custom_filters %}
-<ul class="media-list">
-    {% for file in media %}
-    <li class="media-item">
-        <div class="media-player">
-            {% if file.content_type == 'video/mp4' %}
-            <video width="320" height="240" controls="controls">
-                <source src="{{ file.filename | get_file_url }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            {% elif file.content_type == 'audio/mpeg' %}
-            <audio controls>
-                <source src="{{ file.filename | get_file_url }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-            {% endif %}
-            
-            <div class="media-texts">
-                <h4 class="owner">{{file.owner}}</h4>
-                <p class="upload-date">{{file.upload_date}}</p>
-                <h2 class="media-f-n">{{file.short_description}}</h2>
-                <p class="media-f-d">{{file.long_description}}</p>
-            </div>
-            
-            <div class="action-btns">
-                {% if request.user == file.owner  and request.user.creatorprofile %}
-                <a href="{% url 'file_manager:media_edit' filename=file.filename %}" class="edit-btn">Settings</a>
-                {% elif request.user.is_staff %}
-                <a href="{% url 'file_manager:media_edit' filename=file.filename %}" class="edit-btn">Settings</a>
-                <a href="#"> Disable</a>
-                <a href="#"> Delete</a>
+<div class="media-items-preview">
+    <ul class="media-list-preview">
+        {% for file in media %}
+        <li class="media-item-preview">
+            <div class="media-player-preview">
+                {% if file.content_type == 'video/mp4' %}
+                <video width="220" height="140" controls="">
+                    <source src="{{ file.filename | get_file_url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                {% elif file.content_type == 'audio/mpeg' %}
+                <audio controls>
+                    <source src="{{ file.filename | get_file_url }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
                 {% endif %}
-            </div>
 
-        </div>
-    </li>
-    {% endfor %}
-</ul>
+                <div class="media-texts-preview">
+                    <p class="media-f-d-preview">{{file.short_description}}</p>
+                </div>
+
+                <div class="action-btns-preview">
+                    <a href="{% url 'file_manager:media_play' file.filename %}" class="edit-btn">Open</a>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

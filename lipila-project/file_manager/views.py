@@ -9,18 +9,18 @@ from django.core.files.storage import FileSystemStorage
 from .models import UploadedFile
 from .utils import get_user_files
 
-def edit_media_file(request, filename):
+def media_edit(request, filename):
     media_file = get_object_or_404(UploadedFile, filename=filename)
 
     if request.method == 'POST':
         form = EditMediaFileForm(
-            request.POST, request.FILES, instance=media_file)
+            request.POST, request.FILES, instance=media_file, user=request.user.creatorprofile)
         if form.is_valid():
             form.save()
             messages.success(request, "Updated successfully")
             return redirect(reverse('file_manager:media_play', kwargs={'filename': filename}))
     else:
-        form = EditMediaFileForm(instance=media_file)
+        form = EditMediaFileForm(instance=media_file, user=request.user.creatorprofile)
 
     fs = FileSystemStorage()
     file_url = fs.url(filename)
@@ -35,7 +35,7 @@ def edit_media_file(request, filename):
     return render(request, 'file_manager/media_edit.html', context)
 
 
-def delete_media_file(request, filename):
+def media_delete(request, filename):
     pass
 
 

@@ -19,6 +19,8 @@ from patron.utils import (get_creator_subscribers,
                           calculate_total_contributions, calculate_total_withdrawals,
                           calculate_creators_balance)
 
+from file_manager.utils import get_user_files
+
 
 def index(request):
     """
@@ -41,7 +43,7 @@ def profile(request):
         except CreatorProfile.DoesNotExist:
             context['user'] = get_user_object(request.user)
             return render(request, 'patron/admin/profile/profile_patron.html', context)
-   
+
 
 @login_required
 def create_creator_profile(request):
@@ -53,6 +55,7 @@ def create_creator_profile(request):
             creator_profile = form.save(commit=False)  # Don't save yet
             creator_profile.user = creator  # Set the user based on the logged-in user
             request.user.has_group = True
+            request.user.is_creator = True
             request.user.save()
             request.user.refresh_from_db()
             creator_profile.save()
@@ -65,15 +68,15 @@ def create_creator_profile(request):
             return render(request,
                           'patron/admin/profile/create_creator_profile.html',
                           {'form': form, 'creator': creator})
-    if  request.user.is_staff:
+    if request.user.is_staff:
         return redirect(reverse('staff_dashboard'))
     elif request.user.has_group:
         return redirect(reverse('patron:profile'))
     else:
         form = CreateCreatorProfileForm()
         return render(request,
-                    'patron/admin/profile/create_creator_profile.html',
-                    {'form': form, 'creator': creator})
+                      'patron/admin/profile/create_creator_profile.html',
+                      {'form': form, 'creator': creator})
 
 
 @login_required
@@ -82,7 +85,7 @@ def continue_has_fan(request):
     request.user.save()
     request.user.refresh_from_db()
     messages.success(
-            request, "Your profile data has been saved.")
+        request, "Your profile data has been saved.")
     return redirect(reverse('patron:creators'))
 
 
@@ -149,7 +152,7 @@ def dashboard(request):
     last_login_time = request.session.get('last_login_time')
     if last_login_time:
         context['last_login'] = last_login_time
-    
+
     if request.user.is_staff:
         return redirect(reverse('staff_dashboard'))
     else:
@@ -177,7 +180,6 @@ def dashboard(request):
             return render(request, 'patron/admin/pages/index_creator.html', context)
         except CreatorProfile.DoesNotExist:
             return redirect(reverse('patron:creators'))
-    
 
 
 @login_required
@@ -225,16 +227,18 @@ def creator_home(request, creator):
     tiers = Tier.objects.filter(creator=creator_obj).values()
     patrons = get_creator_subscribers(creator_obj)
 
+    files = get_user_files(creator_user, 'all')
+
     if creator == request.user.username:
-        
+
         messages.info(request, "Viewing page as Visitor")
-    
-    return render(request,
-                      'patron/admin/profile/creator_home.html',
-                      {'creator': creator_obj,
-                       'tiers': tiers,
-                       'patrons': len(patrons),
-                       })
+
+    context = {'creator': creator_obj,
+               'tiers': tiers,
+               'patrons': len(patrons),
+               'media': files,
+               }
+    return render(request, 'patron/admin/profile/creator_home.html', context)
 
 
 @login_required
@@ -259,17 +263,16 @@ def subscribe_view(request, tier_id):
     return redirect(reverse('patron:creator_home', kwargs={"creator": creator}))
 
 
-
 def browse_creators(request):
     """
     Retrieves all the User's with a CreatorProfile.
     """
     creators = CreatorProfile.objects.all()
     if request.user.is_authenticated:
-        return render(request, 'patron/admin/pages/view_creators.html', {'creators':creators})
+        return render(request, 'patron/admin/pages/view_creators.html', {'creators': creators})
     else:
-        return render(request, 'patron/admin/pages/view_creators_visitor.html', {'creators':creators})
-    
+        return render(request, 'patron/admin/pages/view_creators_visitor.html', {'creators': creators})
+
 
 @login_required
 def subscriptions(request):
@@ -288,7 +291,8 @@ def subscription_detail(request, tier_id):
     """
     user_object = get_object_or_404(get_user_model(), username=request.user)
     tier = Tier.objects.get(pk=tier_id)
-    subscription = TierSubscriptions.objects.get(tier=tier, patron=request.user)
+    subscription = TierSubscriptions.objects.get(
+        tier=tier, patron=request.user)
     return render(request, 'patron/admin/pages/view_subscription_detail.html', {'subscription': subscription, 'tier_id': tier_id})
 
 
@@ -301,7 +305,6 @@ def withdrawal_request(request):
     pending_requests = WithdrawalRequest.objects.filter(
         creator=request.user.creatorprofile, status='pending')
     total_withdrawn = calculate_total_withdrawals(request.user.creatorprofile)
-    
 
     context = {'form': form, 'pending_requests': pending_requests,
                'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
@@ -342,13 +345,15 @@ def payments_history(request):
     context = {}
     try:
         creator = request.user.creatorprofile
-        payments = SubscriptionPayments.objects.filter(payee__tier__creator=creator)
+        payments = SubscriptionPayments.objects.filter(
+            payee__tier__creator=creator)
         context['payments'] = payments
         # Retrive history for a user with a CreatorProfile
         return render(request, 'patron/admin/pages/payments_received.html', context)
     except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
         # Get a patron users history
-        payments = SubscriptionPayments.objects.filter(payee__patron=request.user)
+        payments = SubscriptionPayments.objects.filter(
+            payee__patron=request.user)
         context['payments'] = payments
         return render(request, 'patron/admin/pages/payments_made.html', context)
 
@@ -367,6 +372,7 @@ def contributions_history(request):
         return render(request, 'patron/admin/pages/contributions_received.html', context)
     except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
         # Get a patron users history
-        contributions = Contributions.objects.filter(payer=request.user, status='success')
+        contributions = Contributions.objects.filter(
+            payer=request.user, status='success')
         context['contributions'] = contributions
         return render(request, 'patron/admin/pages/contributions_made.html', context)

@@ -12,7 +12,7 @@
 		{% if m_type == 'video/mp4' %}
 		<div id="video-player" class="media-player-v">
 			
-			<video autoplay="autoplay" controls="controls" preload="preload">
+			<video autoplay="autoplay" controls="controls" preload="preload" muted="true">
 				<source src="{{ file_url }}" type="video/mp4">
 				</source>
 			</video>
@@ -20,7 +20,7 @@
 
 		{% elif m_type == 'audio/mpeg' %}
 		<div id="audio-player" class="media-player-a">
-			<audio autoplay="autoplay" controls="controls" preload="preload">
+			<audio controls="controls" preload="preload">
 				<source src="{{ file_url }}" type="audio/mpeg">
 				</source>
 			</audio>

@@ -1,6 +1,6 @@
 from django import forms
 from .models import UploadedFile
-
+from patron.models import Tier
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -9,10 +9,16 @@ class UploadFileForm(forms.Form):
 class EditMediaFileForm(forms.ModelForm):
     class Meta:
         model = UploadedFile
-        fields = ['short_description', 'long_description', 'is_private', 'tiers']
+        fields = ['short_description',
+                  'long_description', 'is_private', 'tiers']
 
         labels = {
             'short_description': 'Title',
             'long_description': 'Description',
-            'is_private':'Private'
+            'is_private': 'Private',
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['tiers'].queryset = Tier.objects.filter(creator=user)
