@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from .models import UploadedFile
-
+from .utils import get_user_files
 
 def edit_media_file(request, filename):
     media_file = get_object_or_404(UploadedFile, filename=filename)
@@ -102,7 +102,6 @@ def get_media(request, m_type):
     try:
         if m_type == 'Video':
             media = get_list_or_404(UploadedFile, content_type='video/mp4')
-            print(media)
         elif m_type == 'Audio':
             media = get_list_or_404(UploadedFile, content_type='audio/mpeg')
     except Http404:
@@ -113,20 +112,15 @@ def get_media(request, m_type):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
 @user_passes_test(lambda u: u.is_creator)
 def get_user_media(request, m_type):
     context = {'m_type': m_type}
     try:
         if m_type == 'Video':
-            # files = get_list_or_404(
-            #     UploadedFile, owner=request.user, content_type='video/mp4')
-            files = UploadedFile.objects.filter(owner=request.user, content_type='video/mp4')
+            files = get_user_files(request.user, 'video/mp4')
             context['media'] = files
         elif m_type == 'Audio':
-            # files = get_list_or_404(
-            #     UploadedFile, owner=request.user, content_type='audio/mpeg')
-            files = UploadedFile.objects.filter(owner=request.user, content_type='audio/mpeg')
+            files = get_user_files(request.user, 'audio/mpeg')
             context['media'] = files
     except Http404:
         return render(request, 'file_manager/media_all.html', context)
