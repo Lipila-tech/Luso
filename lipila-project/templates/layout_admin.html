@@ -50,9 +50,7 @@
     {% endif %}
     <main id="main" class="main">
         {% if request.user.is_authenticated %}
-        <div class="pagetitle">
-            {% include '_nav_frontend.html' %}
-        </div>
+        
         {% endif %}
         <section class="section dashboard">
             {% if messages %}

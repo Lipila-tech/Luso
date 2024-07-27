@@ -32,6 +32,13 @@
                     <a class="dropdown-item" href="{% url 'patron:profile' %}"><i class="bi bi-person"></i>Profile</a>
                     <a class="dropdown-item" href="{% url 'patron:profile' %}"><i class="bi bi-gear"></i>Settings</a>
                     <a class="dropdown-item" href="{% url 'faq' %}"><i class="bi bi-question-circle"></i>Need Help?</a>
+                    <a class="dropdown-item">
+                        <i class="bi bi-logout"></i>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <span><button type="submit" class="btn btn-dark">Logout</button></span>
+                        </form>
+                    </a>
                 </div>
             </li>
         </ul>
