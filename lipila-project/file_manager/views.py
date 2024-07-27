@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.urls import reverse
 from django.http import Http404
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UploadFileForm, EditMediaFileForm
 from django.conf import settings
 from django.contrib import messages
@@ -27,7 +28,7 @@ def edit_media_file(request, filename):
     context = {
         'filename': filename,
         'file_url': file_url,
-        'f_type': content_type,
+        'm_type': content_type,
         'form': form
     }
 
@@ -50,10 +51,10 @@ def media_play(request, filename):
     owner = media_file.owner
 
     context = {'file_url': file_url,
-               'owner':owner,
+               'owner': owner,
                'filename': filename,
                'short_description': title,
-               'f_type': content_type,
+               'm_type': content_type,
                'long_description': description,
                'upload_date': upload_date}
     return render(request, 'file_manager/media_play.html', context)
@@ -82,34 +83,51 @@ def media_upload(request):
         return render(request, 'file_manager/media_upload.html', {'form': form})
 
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
 def get_media(request, m_type):
+    """
+    Gets all media files on the system
+
+    Args:
+        request: The incoming HTTP request
+        m_type(str): The type of media to retrieve. Options are (Video, Audio)
+
+    Returns:
+        Renders HTML template showing all video/audio files.
+    """
     context = {'m_type': m_type}
+    media = []
+
     try:
         if m_type == 'Video':
-            files = get_list_or_404(
-                UploadedFile, content_type='video/mp4')
-            context['uploads'] = files
+            media = get_list_or_404(UploadedFile, content_type='video/mp4')
+            print(media)
         elif m_type == 'Audio':
-            files = get_list_or_404(
-                UploadedFile, content_type='audio/mpeg')
-            context['uploads'] = files
+            media = get_list_or_404(UploadedFile, content_type='audio/mpeg')
     except Http404:
         return render(request, 'file_manager/media_all.html', context)
 
+    context['media'] = media
     return render(request, 'file_manager/media_all.html', context)
 
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: u.is_creator)
 def get_user_media(request, m_type):
     context = {'m_type': m_type}
     try:
         if m_type == 'Video':
-            files = get_list_or_404(
-                UploadedFile, owner=request.user, content_type='video/mp4')
-            context['uploads'] = files
+            # files = get_list_or_404(
+            #     UploadedFile, owner=request.user, content_type='video/mp4')
+            files = UploadedFile.objects.filter(owner=request.user, content_type='video/mp4')
+            context['media'] = files
         elif m_type == 'Audio':
-            files = get_list_or_404(
-                UploadedFile, owner=request.user, content_type='audio/mpeg')
-            context['uploads'] = files
+            # files = get_list_or_404(
+            #     UploadedFile, owner=request.user, content_type='audio/mpeg')
+            files = UploadedFile.objects.filter(owner=request.user, content_type='audio/mpeg')
+            context['media'] = files
     except Http404:
         return render(request, 'file_manager/media_all.html', context)
 

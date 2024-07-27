@@ -2,6 +2,8 @@ from django import template
 from django.conf import settings
 from accounts.models import CreatorProfile
 from django.contrib.auth import get_user_model
+from django.core.files.storage import FileSystemStorage
+
 register = template.Library()
 
 @register.filter(name="add_class")
@@ -106,3 +108,10 @@ def notification_counter(value, id):
         return id
     else:
         return 0
+
+
+@register.filter
+def get_file_url(filename):
+    fs = FileSystemStorage()
+    file_url = fs.url(filename)
+    return file_url
