@@ -17,8 +17,6 @@ from api.momo.mtn import Collections, Disbursement
 from .utils import get_api_user
 
 # Define global variables
-env = environ.Env()
-environ.Env.read_env()
 User = get_user_model()
 
 
