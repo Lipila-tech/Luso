@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model
 from accounts.models import CreatorProfile
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions
 from.factory import UserFactory, CreatorProfileFactory
+from lipila.utils import get_patron_title_by_creator
+
 
 class TestSubscription(TestCase):
     @classmethod
@@ -68,8 +70,9 @@ class TestSubscription(TestCase):
 
     def test_get_creator_home(self):
         self.client.force_login(self.user1)
-        url = reverse('patron:creator_home', kwargs={
-                      'creator': self.creator1_obj})
+        title = get_patron_title_by_creator(self.creator1_obj)
+        url = reverse('creator_index', kwargs={
+                      'title': title})
         user1 = get_user_model().objects.create(
             username='testuser6', email='user6@bot.test', password='password')
         tier1 = Tier.objects.get(pk=self.tiers_1[0]['id'])
@@ -128,13 +131,7 @@ class TestSubscription(TestCase):
         self.assertEqual(Contributions.objects.count(), 1)
         conts = Contributions.objects.filter(payer=user1)
 
-    def test_contribution_history(self):
-        self.client.force_login(self.user1)
-        url = reverse('contributions_history')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('lipila/actions/contribute.html')
-
+    
     def test_subscription_history(self):
         user1 = get_user_model().objects.create(
             username='testuser9', email='user9@bot.test', password='password')

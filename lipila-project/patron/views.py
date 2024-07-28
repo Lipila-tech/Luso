@@ -20,6 +20,7 @@ from patron.utils import (get_creator_subscribers,
                           calculate_creators_balance)
 
 from file_manager.utils import get_user_files
+from lipila.utils import apology
 
 
 def index(request):
@@ -211,38 +212,6 @@ def view_tiers(request):
                   {'user': request.user, 'tiers': tiers})
 
 
-def creator_home(request, creator):
-    """
-    renders a creators home page.
-
-    Args:
-        request: The incoming HTTP request object.
-        creator: The username of the creator the user wants to view.
-
-    Returns:
-        A rendered response with the creator details.
-    """
-    creator_user = get_user_model().objects.get(username=creator)
-    creator_obj = CreatorProfile.objects.get(user=creator_user.id)
-    tiers = Tier.objects.filter(creator=creator_obj).values()
-    patrons = get_creator_subscribers(creator_obj)
-
-    url = get_creator_url('index', creator_obj.patron_title, domain='localhost:8000')
-
-    files = get_user_files(creator_user, 'all')
-
-    if creator == request.user.username:
-
-        messages.info(request, "Viewing page as Visitor")
-
-    context = {'creator': creator_obj,
-               'tiers': tiers,
-               'patrons': len(patrons),
-               'media': files,
-               'url': url,
-               }
-    return render(request, 'patron/admin/profile/creator_home.html', context)
-
 
 @login_required
 def subscribe_view(request, tier_id):
@@ -258,12 +227,13 @@ def subscribe_view(request, tier_id):
     tier = get_tier(tier_id)
     creator = tier.creator
 
+    patron_title = CreatorProfile.objects.get(user=creator)
     if request.method == 'POST':
         patron = request.user
         TierSubscriptions.objects.get_or_create(patron=patron, tier=tier)
         messages.success(
             request, f"Welcome! You Joined my {tier.name} patrons.")
-    return redirect(reverse('patron:creator_home', kwargs={"creator": creator}))
+    return redirect(reverse('creator_index', kwargs={"title": patron_title}))
 
 
 def browse_creators(request):

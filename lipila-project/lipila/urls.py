@@ -13,8 +13,10 @@ urlpatterns = [
     path('checkout/visa/', views.create_purchase, name ="create_purchase"),
     # cretaor kyc
     path('knowyourcustomer/', views.kyc, name='kyc'),
+
     # lipila public URLS
     path('', views.index, name='index'),
+    path('<str:title>/', views.creator_index, name='creator_index'),
     path('contact', views.contact, name='contact'),
 
     # PatronUser defined authenticated user views

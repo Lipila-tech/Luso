@@ -8,7 +8,6 @@ urlpatterns = [
      path('', views.index, name='index'),
 
      path('creators/list', views.browse_creators, name='creators'),
-     path('home/<str:creator>/', views.creator_home, name='creator_home'),
      path('my-tiers', views.view_tiers, name='tiers'),
      path('join/<int:tier_id>', views.subscribe_view, name='join_tier'),
      path('patron/all/', views.view_patrons_view, name='patrons'),

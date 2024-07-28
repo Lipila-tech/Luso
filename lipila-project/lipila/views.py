@@ -41,6 +41,67 @@ from patron.models import (WithdrawalRequest, SubscriptionPayments,
 from patron.utils import calculate_creators_balance
 from .utils import get_api_user, get_braintree_client_token, braintree_gateway
 
+from .utils import is_patron_title_valid, get_creator_by_patron_title
+
+
+def index(request):
+    context = {}
+    form = ContactForm()
+    contact_info = get_lipila_contact_info()
+    lipila_index = get_lipila_index_page_info()
+    testimonial = get_testimonials()
+    about = get_lipila_about_info()
+    context['form'] = form
+    context['contact'] = contact_info['contact']
+    context['lipila'] = lipila_index['lipila']
+    context['about'] = about['about']
+    context['testimony'] = testimonial
+
+    return render(request, 'index.html', context)
+
+
+
+def creator_index(request, title):
+    """
+    renders a creators home page.
+
+    Args:
+        request: The incoming HTTP request object.
+        creator: The username of the creator the user wants to view.
+
+    Returns:
+        A rendered response with the creator details.
+    """
+    is_valid = is_patron_title_valid(title)
+
+    if is_valid:
+        from lipila.utils import get_creator_by_patron_title, get_patron_profile_by_patron_title
+        from patron.utils import get_creator_subscribers, get_creator_url
+        from file_manager.utils import get_user_files
+
+        creator = get_creator_by_patron_title(title)
+        profile = get_patron_profile_by_patron_title(title)
+        tiers = Tier.objects.filter(creator=creator.creatorprofile).values()
+        patrons = get_creator_subscribers(creator.creatorprofile)
+
+        url = get_creator_url('index', title, domain='localhost:8000')
+
+        files = get_user_files(creator, 'all')
+
+        if creator.username == request.user.username:
+
+            messages.info(request, "Viewing page as Visitor")
+
+        context = {'creator': creator.creatorprofile,
+                'tiers': tiers,
+                'patrons': len(patrons),
+                'media': files,
+                'url': url,
+                }
+        return render(request, 'patron/admin/profile/creator_home.html', context)
+    data = {'message':'Sorry! no Patron matched that name.', 'status':404 }
+    return apology(request, data)
+    
 
 # Django-bootstrap Modal forms views
 
@@ -233,7 +294,7 @@ class SendMoneyView(BSModalCreateView):
         if transaction_type == 'contribution':
             payee = get_user_model().objects.get(pk=self.kwargs.get('id'))
             amount = form.cleaned_data['amount']
-            self.success_url = reverse_lazy('contributions_history')
+            self.success_url = reverse_lazy('subscriptions_history')
         elif transaction_type == 'subscription':
             payee = TierSubscriptions.objects.get(
                 tier=self.kwargs.get('id'), patron=payer)
@@ -386,22 +447,6 @@ def processed_withdrawals(request):
     context['processed_withdrawals'] = data
     return render(request, 'lipila/staff/processed_withdrawals.html', context)
 
-
-# Lipila informational public views
-def index(request):
-    context = {}
-    form = ContactForm()
-    contact_info = get_lipila_contact_info()
-    lipila_index = get_lipila_index_page_info()
-    testimonial = get_testimonials()
-    about = get_lipila_about_info()
-    context['form'] = form
-    context['contact'] = contact_info['contact']
-    context['lipila'] = lipila_index['lipila']
-    context['about'] = about['about']
-    context['testimony'] = testimonial
-
-    return render(request, 'index.html', context)
 
 
 def service_details(request):

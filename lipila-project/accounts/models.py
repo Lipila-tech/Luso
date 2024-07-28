@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.validators import RegexValidator
 # custom models
 from .globals import (
     default_socials, CREATOR_CATEGORY_CHOICES, zambia_provinces)
@@ -59,12 +60,24 @@ class CreatorProfile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
+    patron_title = models.CharField(
+        max_length=150,
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex=r'^[a-zA-Z0-9\-]+$',
+                message='Patron title must be alphanumeric or contain dashes(-) only.',
+                code='invalid_patron_title'
+            ),
+        ]
+    )
+
     profile_image = models.ImageField(
         upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
-    patron_title = models.CharField(max_length=150, unique=True)
     about = models.TextField(max_length=300, blank=True, null=True)
-    location = models.CharField(max_length=50, choices=zambia_provinces, default=zambia_provinces['01'])
+    location = models.CharField(
+        max_length=50, choices=zambia_provinces, default=zambia_provinces['01'])
     adults_group = models.BooleanField(default=False)
     country = models.CharField(max_length=50, blank=True, default='Zambia')
     address = models.CharField(

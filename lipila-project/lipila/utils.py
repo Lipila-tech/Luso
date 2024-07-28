@@ -12,9 +12,43 @@ from django.urls import reverse
 from api.models import LipilaCollection, LipilaDisbursement
 from django.contrib.auth import get_user_model
 import braintree
-# utils.py
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from django.http import Http404
+from accounts.models import CreatorProfile
 
-from patron.models import Contributions, SubscriptionPayments, Transfer
+
+
+def get_creator_by_patron_title(patron_title):
+    creator_profile = get_object_or_404(CreatorProfile, patron_title=patron_title)
+    return creator_profile.user
+
+
+def get_patron_profile_by_patron_title(patron_title):
+    profile = get_object_or_404(CreatorProfile, patron_title=patron_title)
+    return profile
+
+
+def get_patron_title_by_creator(creator):
+    patron_title = get_object_or_404(CreatorProfile, user=creator)
+    return patron_title
+
+def is_patron_title_valid(title: str)-> bool:
+    """
+    Looks up a provide string in the database.
+
+    Args:
+        title(str): The name of a Patron title to search for.
+
+    Returns:
+        True if found, else False.
+    """
+
+    try:
+        get_object_or_404(CreatorProfile, patron_title=title)
+        return True
+    except Http404:
+        return False
 
 
 def get_customer_id(user):
@@ -252,6 +286,7 @@ def apology(request, data=None, user=None):
 
     Args:
         request: The Django request object.
+        
         data: A dictionary of data variables to pass to the template.
 
     Returns:

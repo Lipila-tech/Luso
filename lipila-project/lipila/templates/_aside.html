@@ -16,7 +16,7 @@
         <li class="nav-heading">Pages</li>
         {% if request.user.creatorprofile %}
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{% url 'patron:creator_home' creator=request.user %}">
+            <a class="nav-link collapsed" href="{% url 'creator_index' request.user.creatorprofile.patron_title %}">
                 <i class="bi bi-person"></i>
                 <span>Preview my Page</span>
             </a>

@@ -37,7 +37,7 @@
                 <p class="details">
                     {{creator.about}}
                 </p>
-                <a class="btn-get-started" href="{% url 'patron:creator_home' creator=creator.user %}">
+                <a class="btn-get-started" href="{% url 'creator_index' creator.user.creatorprofile.patron_title %}">
                     View
                 </a>
             </div>
