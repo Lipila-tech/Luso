@@ -227,6 +227,8 @@ def creator_home(request, creator):
     tiers = Tier.objects.filter(creator=creator_obj).values()
     patrons = get_creator_subscribers(creator_obj)
 
+    url = get_creator_url('index', creator_obj.patron_title, domain='localhost:8000')
+
     files = get_user_files(creator_user, 'all')
 
     if creator == request.user.username:
@@ -237,6 +239,7 @@ def creator_home(request, creator):
                'tiers': tiers,
                'patrons': len(patrons),
                'media': files,
+               'url': url,
                }
     return render(request, 'patron/admin/profile/creator_home.html', context)
 

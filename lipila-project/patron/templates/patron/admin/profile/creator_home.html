@@ -32,14 +32,24 @@
         </div>
 
         <span class="name mt-3">@{{creator.patron_title}}</span>
+        <div class="creator-footer">
+            <p class="tier-url">{{ url }}</p>
+            <span class="tier-url" data-url="{{ url }}">
+                <button class="copy-btn creator-items" data-clipboard-text="{{ url }}">
+                    <i>Copy</i>
+                </button>
+            </span>
+        </div>
         <span class="category">{{creator.creator_category}}</span>
         {% if creator.about %}
         <div class="details"> <span>{{creator.about}} </span> </div>
         {% endif %}
         <div class="content">
+            <h3 class="creator-items">Media</h3>
             <div class="tiers-card">
                 {% include 'file_manager/_media_list.html' %}
             </div>
+            
             <div class="tier-card">
                 <div>
                     <h5 class="title">Buy me a coffee</h5>
@@ -108,6 +118,7 @@
             if (creator === user) {
                 $(".join-btns").prop("disabled", true);
                 $("#support").prop("disabled", true);
+                $(".creator-items").css('display', 'block');
             }
         });
 

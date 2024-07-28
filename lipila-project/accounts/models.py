@@ -81,4 +81,4 @@ class CreatorProfile(models.Model):
         blank=True, null=True, default=default_socials['lk'])
 
     def __str__(self):
-        return self.user.username
+        return self.patron_title

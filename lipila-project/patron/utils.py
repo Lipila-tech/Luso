@@ -10,8 +10,27 @@ from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contrib
 from django.urls import reverse
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
-import random
-import string
+import random, re , string
+
+
+def remove_white_spaces(patron_title: str)-> str:
+    """
+    Replaces all whitespace with an empty string
+
+    Args:
+        patron_title(str): The string to replace whitespaces if any.
+
+    Return:
+        String with no white spaces.
+    """
+    
+    # Regular expression pattern to match any whitespace
+    pattern = r'\s+'
+
+    # Replace all whitespace with an empty string
+    output_string = re.sub(pattern, '', patron_title)
+    return output_string
+
 
 def generate_reference_id():
   """Generates a random 10-character reference ID with digits and letters."""
@@ -125,13 +144,13 @@ def get_creator_subscribers(creator: CreatorProfile) -> List:
     return patrons
 
 
-def get_creator_url(view_name, creator, domain=None):
+def get_creator_url(view_name, patron_title, domain=None):
     """
     This function generates an absolute URL for a Django view given the view name and arguments.
 
     Args:
         view_name (str): The name of the Django view as defined in your urlpatterns.
-        creator (str): a creators patron name.
+        title (str): a creators patron name.
         domain (str, optional): The specific domain to use for the absolute URL.
             Defaults to None, which uses the current request's domain if available 
             or settings.ALLOWED_HOSTS otherwise.
@@ -140,19 +159,20 @@ def get_creator_url(view_name, creator, domain=None):
         str: The absolute URL for the specified view and arguments.
     """
     relative_url = reverse(view_name)
+    title = remove_white_spaces(patron_title)
     if domain:
         # Use the provided domain
-        absolute_url = f"{domain}{relative_url}{creator}"
+        absolute_url = f"{domain}{relative_url}{title}"
     else:
         # Try to get domain from request (if context) or settings
         try:
             from django.contrib.sites.shortcuts import get_current_site
             current_site = get_current_site(None)
-            absolute_url = f"{current_site.domain}{relative_url}{creator}"
+            absolute_url = f"{current_site.domain}{relative_url}{title}"
         except:
             # Fallback to ALLOWED_HOSTS if request not available
             from django.conf import settings
             # Assuming single allowed host for simplicity
             allowed_hosts = settings.ALLOWED_HOSTS[0]
-            absolute_url = f"{allowed_hosts}{relative_url}{creator}"
+            absolute_url = f"{allowed_hosts}{relative_url}{title}"
     return absolute_url
