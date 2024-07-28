@@ -33,14 +33,16 @@
 
         <span class="name mt-3">@{{creator.patron_title}}</span>
         <span class="category">{{creator.creator_category}}</span>
+        {% if creator.about %}
         <div class="details"> <span>{{creator.about}} </span> </div>
+        {% endif %}
         <div class="content">
             <div class="tiers-card">
                 {% include 'file_manager/_media_list.html' %}
             </div>
             <div class="tier-card">
                 <div>
-                    <h3 class="title">Buy me a coffee</h3>
+                    <h5 class="title">Buy me a coffee</h5>
                     <span class="price">K50</span>
                     <p class="description">Support me with a one-time contribution</p>
                 </div>
@@ -64,7 +66,7 @@
 
             <div class="tier-card">
                 <div>
-                    <h3 class="title">{{ tier.name }}</h3>
+                    <h5 class="title">{{ tier.name }}</h5>
                     <span class="price">K{{ tier.price }}/Month</span>
                     <p class="description">{{ tier.description }}</p>
                 </div>

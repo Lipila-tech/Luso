@@ -9,29 +9,29 @@
 
 <li class="nav-item">
     <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle edit-btn" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Upload
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="{% url 'file_manager:media_upload' %}">Upload</a>
+            <a class="dropdown-item" href="{% url 'file_manager:media_upload' %}">Video</a>
             <hr class="dropdown-divider">
 
-            <a class="dropdown-item" href="{% url 'file_manager:media_upload' %}">File</a>
+            <a class="dropdown-item" href="{% url 'file_manager:media_upload' %}">Audio</a>
         </div>
     </div>
     <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-journal-text"></i><span>Wallet </span><i class="bi bi-chevron-down ms-auto"></i>
+        <i class="bi bi-journal-text"></i><span>Actions </span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
     <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
         <li>
             <a href="{% url 'patron:withdraw_request' %}">
-                <i class="bi bi-circle"></i><span>Withdraw</span>
+                <i class="bi bi-circle"></i><span>Cashout</span>
             </a>
         </li>
         <li>
-            <a href="{% url 'transfer' %}">
-                <i class="bi bi-circle"></i><span>Transfer</span>
+            <a href="{% url 'patron:tiers' %}">
+                <i class="bi bi-circle"></i><span>Tiers</span>
             </a>
         </li>
         <li>
@@ -47,40 +47,31 @@
     </a>
     <ul id="tables-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
         <ul id="forms-nav" class="nav-content collapsed " data-bs-parent="#sidebar-nav">
-            <li>
-                <a href="{% url 'patron:tiers' %}">
-                    <i class="bi bi-circle"></i><span>My Tiers</span>
-                </a>
-            </li>
+
         </ul>
         <li>
             <a href="{% url 'patron:patrons' %}">
-                <i class="bi bi-circle"></i><span>My Patrons</span>
+                <i class="bi bi-circle"></i><span>Patrons</span>
             </a>
         </li>
         <li>
             <a href="{% url 'withdrawals_history' %}">
-                <i class="bi bi-circle"></i><span>Payouts</span>
+                <i class="bi bi-circle"></i><span>Cashouts</span>
             </a>
         </li>
         <li>
             <a href="{% url 'subscriptions_history' %}">
-                <i class="bi bi-circle"></i><span>Subscriptions Received</span>
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'contributions_history' %}">
-                <i class="bi bi-circle"></i><span>Contributions Received</span>
+                <i class="bi bi-circle"></i><span>Receipts</span>
             </a>
         </li>
         <li>
             <a href="{% url 'file_manager:user_media_all' m_type='Video' %}">
-                <i class="bi bi-circle"></i><span>My videos</span>
+                <i class="bi bi-circle"></i><span>Videos</span>
             </a>
         </li>
         <li>
             <a href="{% url 'file_manager:user_media_all' m_type='Audio' %}">
-                <i class="bi bi-circle"></i><span>My audio</span>
+                <i class="bi bi-circle"></i><span>Audio</span>
             </a>
         </li>
     </ul>

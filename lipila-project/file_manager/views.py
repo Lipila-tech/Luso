@@ -115,14 +115,11 @@ def get_media(request, m_type):
 @user_passes_test(lambda u: u.is_creator)
 def get_user_media(request, m_type):
     context = {'m_type': m_type}
-    try:
-        if m_type == 'Video':
-            files = get_user_files(request.user, 'video/mp4')
-            context['media'] = files
-        elif m_type == 'Audio':
-            files = get_user_files(request.user, 'audio/mpeg')
-            context['media'] = files
-    except Http404:
-        return render(request, 'file_manager/media_all.html', context)
-
+    if m_type == 'Video':
+        files = get_user_files(request.user, 'video/mp4')
+        context['media'] = files
+    elif m_type == 'Audio':
+        files = get_user_files(request.user, 'audio/mpeg')
+        context['media'] = files
+  
     return render(request, 'file_manager/media_all.html', context)

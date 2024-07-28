@@ -1,7 +1,7 @@
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import get_list_or_404
 from .models import UploadedFile
-
+from django.http import Http404
 
 def get_user_files(user, content_type)->list:
     """
@@ -14,7 +14,10 @@ def get_user_files(user, content_type)->list:
     Returns:
         List object.
     """
-    if content_type == "all":
-        return get_list_or_404(UploadedFile, owner=user)
-    else:
-        return get_list_or_404(UploadedFile, owner=user, content_type=content_type)
+    try:
+        if content_type == "all":
+            return get_list_or_404(UploadedFile, owner=user)
+        else:
+            return get_list_or_404(UploadedFile, owner=user, content_type=content_type)
+    except Http404:
+        return []
