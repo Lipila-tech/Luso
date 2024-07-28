@@ -340,39 +340,24 @@ def withdrawal_history(request):
 @login_required
 def payments_history(request):
     """
-    Retrieves an authenticated User's payment history.
+    Retrieves an authenticated User's payment/contribution history history.
     """
     context = {}
     try:
         creator = request.user.creatorprofile
         payments = SubscriptionPayments.objects.filter(
             payee__tier__creator=creator)
-        context['payments'] = payments
-        # Retrive history for a user with a CreatorProfile
-        return render(request, 'patron/admin/pages/payments_received.html', context)
-    except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
-        # Get a patron users history
-        payments = SubscriptionPayments.objects.filter(
-            payee__patron=request.user)
-        context['payments'] = payments
-        return render(request, 'patron/admin/pages/payments_made.html', context)
-
-
-@login_required
-def contributions_history(request):
-    """
-    Retrieves an authenticated User's payment history.
-    """
-    context = {}
-    try:
-        creator = request.user.creatorprofile
+        
         contributions = Contributions.objects.filter(payee=request.user)
         context['contributions'] = contributions
-        # Retrive history for a user with a CreatorProfile
-        return render(request, 'patron/admin/pages/contributions_received.html', context)
+        context['payments'] = payments
+        return render(request, 'patron/admin/pages/payments_received.html', context)
+    
     except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
-        # Get a patron users history
+        payments = SubscriptionPayments.objects.filter(
+            payee__patron=request.user)
         contributions = Contributions.objects.filter(
             payer=request.user, status='success')
         context['contributions'] = contributions
-        return render(request, 'patron/admin/pages/contributions_made.html', context)
+        context['payments'] = payments
+        return render(request, 'patron/admin/pages/payments_made.html', context)

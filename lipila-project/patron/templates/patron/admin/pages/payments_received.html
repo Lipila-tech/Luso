@@ -3,8 +3,9 @@
 {% block title %} Subscription Payments {% endblock %}
 
 {% block section %}
-<h4>Subscription Payments</h4>
-{% if payments %}
+<h3>Payments Received</h3>
+
+<h5>Subscriptions Payments</h5>
 <table class="table">
     <thead>
         <tr>
@@ -29,7 +30,30 @@
         {% endfor %}
     </tbody>
 </table>
-{% else %}
-    <p>You have not received any payments yet.</p>
-{% endif %}
+
+<h5>Contributions</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Patron</th>
+            <th>Message</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contribution in contributions %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ contribution.amount }}</td>
+            <td>{{ contribution.timestamp }}</td>
+            <td>{{ contribution.payer }}</td>
+            <td>{{ contribution.description }}</td>
+            <td>{{ contribution.status |upper }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock section %}

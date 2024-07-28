@@ -3,8 +3,8 @@
 {% block title %} Payment History {% endblock %}
 
 {% block section %}
-<h2>Payment History</h2>
-{% if payments %}
+<h3>Transaction History</h3>
+<h5>Subscriptions</h5>
 <table class="table" id="contributions-table">
     <thead>
         <tr>
@@ -33,7 +33,34 @@
         {% endfor %}
     </tbody>
 </table>
-{% else %}
-<p>You have not made any payments yet.</p>
-{% endif %}
-{% endblock %}
+
+<h5>Contributions</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Contributed to</th>
+            <th>Wallet Type</th>
+            <th>Account</th>
+            <th>Status</th>
+            <th>Reference_id</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contribution in contributions %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ contribution.amount }}</td>
+            <td>{{ contribution.timestamp }}</td>
+            <td>{{ contribution.payee }}</td>
+            <td>{{ contribution.wallet_type }}</td>
+            <td>{{ contribution.payer_account_number }}</td>
+            <td>{{ contribution.status |upper }}</td>
+            <td>{{ contribution.reference_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock section %}

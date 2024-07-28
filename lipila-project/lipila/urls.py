@@ -32,8 +32,7 @@ urlpatterns = [
     # Authenticated User's Transaction History endpoints
     path('history/withdrawals/', patron_views.withdrawal_history, name='withdrawals_history'),
     path('subscription/history/paid/', patron_views.payments_history, name='subscriptions_history'),
-    path('history/contribute/', patron_views.contributions_history, name='contributions_history'),
-
+    
     # Modal-forms urls
     path('transfers', views.transfer, name ='transfer'),
     path('withdrawals/request', views.CreateWithdrawalRequest.as_view(), name ='withdrawals'),
