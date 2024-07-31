@@ -522,9 +522,27 @@ def create_purchase(request):
     return render(request, 'lipila/checkout/paypal.html', context)
 
 
-
+@login_required
 def checkout(request):
-    form = SubscriptionPaymentsForm()
+    amount = 123
+    product = "Test subcription"
+    if request.method == 'POST':
+        form = SubscriptionPaymentsForm(request.POST, amount=amount)
+                
+        if form.is_valid():
+            isp = form.cleaned_data['wallet_type']
+            client_token = get_braintree_client_token(request.user)
+            context = {'client_token': client_token, 'form':form, 'amount':100}
+            messages.success(request, f"Payment Success: Account : { form.cleaned_data['payer_account_number']} amount: {amount} Wallet:{isp}")
+            return render(request, 'lipila/checkout/checkout.html', context)
+        else:
+            form = SubscriptionPaymentsForm(amount=amount)
+            client_token = get_braintree_client_token(request.user)
+            context = {'client_token': client_token, 'form':form, 'amount':100}
+            messages.error(request, "Field errors!")
+            return render(request, 'lipila/checkout/checkout.html', context)
+        
+    form = SubscriptionPaymentsForm(amount=amount)
     client_token = get_braintree_client_token(request.user)
-    context = {'client_token': client_token, 'form':form, 'amount':100}
+    context = {'client_token': client_token, 'form':form, 'amount':amount, "product":product}
     return render(request, 'lipila/checkout/checkout.html', context)

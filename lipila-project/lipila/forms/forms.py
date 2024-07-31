@@ -31,7 +31,7 @@ class SubscriptionPaymentsForm(forms.ModelForm):
     class Meta:
         model = SubscriptionPayments
         fields = ['amount', 'payer_account_number',
-                  'description']
+                  'description', "wallet_type"]
 
         labels = {'payer_account_number': 'Mobile number'}
 
@@ -41,8 +41,13 @@ class SubscriptionPaymentsForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        amount = kwargs.pop('amount', None)
         super().__init__(*args, **kwargs)
-        self.fields['amount'].widget.attrs['readonly'] = True
+        self.fields['amount'].widget.attrs['hidden'] = True
+        self.fields['wallet_type'].widget.attrs['hidden'] = True
+        # Set the initial value for the amount field
+        if amount is not None:
+            self.fields['amount'].initial = amount
 
 
 class ContributionsForm(BaseTransactionForm):

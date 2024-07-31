@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
      # Public URLS
-     path('', views.index, name='index'),
+     path('pn/', views.index, name='index'),
 
      path('creators/list', views.browse_creators, name='creators'),
      path('my-tiers', views.view_tiers, name='tiers'),

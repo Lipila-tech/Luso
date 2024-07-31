@@ -7,28 +7,29 @@ from patron import views as patron_views
 
 urlpatterns = [
     # checkout urls
+    path('checkout/lpa/', views.checkout, name ="checkout"),
     path('checkout/mtn/', views.checkout, name ="mtn_pay"),
     path('checkout/airtel/', views.checkout, name ="airtel_pay"),
-    path('checkout/', views.checkout, name ="checkout"),
     path('checkout/visa/', views.create_purchase, name ="create_purchase"),
-    # cretaor kyc
-    path('knowyourcustomer/', views.kyc, name='kyc'),
 
-    # lipila public URLS
+    # cretaor kyc
+    path('kyc/overview', views.kyc, name='kyc'),
+
+    # Luso public urls
     path('', views.index, name='index'),
     path('<str:title>/', views.creator_index, name='creator_index'),
-    path('contact', views.contact, name='contact'),
+    path('contact/lpa/', views.contact, name='contact'),
 
     # PatronUser defined authenticated user views
-    path('dashboard/', patron_views.dashboard, name='dashboard'),
+    path('dashboard/me/', patron_views.dashboard, name='dashboard'),
     path('dashboard/staff/', views.staff_users, name='staff_dashboard'),
         
     # lipila difened authenticated user views
-    path('approve_withdrawals/', views.approve_withdrawals, name ='approve_withdrawals'),
-    path('processed_withdrawals/', views.processed_withdrawals, name ='processed_withdrawals'),
-    path('faq/', views.pages_faq, name='faq'),
-    path('terms-of-use/', views.pages_terms, name='terms'),
-    path('privacy-policy/', views.pages_privacy, name='privacy'),
+    path('approve_withdrawals/lpa/', views.approve_withdrawals, name ='approve_withdrawals'),
+    path('processed_withdrawals/lpa/', views.processed_withdrawals, name ='processed_withdrawals'),
+    path('faq/ls/', views.pages_faq, name='faq'),
+    path('terms-of-use/ls/', views.pages_terms, name='terms'),
+    path('privacy-policy/ls', views.pages_privacy, name='privacy'),
 
     path('history/transfers/', views.transfers_history, name='transfers_history'),
     # Authenticated User's Transaction History endpoints
@@ -36,7 +37,7 @@ urlpatterns = [
     path('subscription/history/paid/', patron_views.payments_history, name='subscriptions_history'),
     
     # Modal-forms urls
-    path('transfers', views.transfer, name ='transfer'),
+    path('transfers/lpa/', views.transfer, name ='transfer'),
     path('withdrawals/request', views.CreateWithdrawalRequest.as_view(), name ='withdrawals'),
     path('update/<int:pk>', views.TierUpdateView.as_view(), name ='update_tier'),
     path('view/<int:pk>', views.TierReadView.as_view(), name ='view_tier'),
@@ -45,7 +46,7 @@ urlpatterns = [
     path('payments/sendmoney/<str:type>/<int:id>', views.SendMoneyView.as_view(), name='send_money_id'),
     path('payments/sendmoney/<str:type>', views.SendMoneyView.as_view(), name='send_money_transfer'),
     path('unsubscribe/<int:tier_id>', views.UnsubScribeView.as_view(), name='unsubscribe'),
-    path('tiers/', views.tiers, name = 'tiers'),
+    path('tiers/ls', views.tiers, name = 'tiers'),
 
     path('approve/<int:pk>', views.ApproveWithdrawModalView.as_view(), name='approve_withdraw'),
     path('reject/<int:pk>', views.RejectWithdrawModalView.as_view(), name='reject_withdraw'),

@@ -1,7 +1,10 @@
+{% load custom_filters %}
 <form method="post" class="">
   {% csrf_token %}
   <div class="form-group">
     <div class="modal-border">
+
+      {{ form.wallet_type|add_class:"wallet_type" }}
 
       {{ form.payer_account_number.label_tag }}
       {{ form.payer_account_number }}
@@ -9,7 +12,8 @@
       {{ form.description.label_tag }}
       {{ form.description }}
 
-
+      {{ form.amount }}
+      
       <a class="small" href="#">By paying with my mobile money account, I agree to the Luso Privacy Statement.</a>
     </div>
   </div>

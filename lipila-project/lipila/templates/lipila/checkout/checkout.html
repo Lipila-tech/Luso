@@ -2,7 +2,7 @@
 {% load static %}
 
 
-{% block title %} Checkout {% endblock title %}
+{% block title %}Checkout {% endblock title %}
 {% block extrastylesheets %}
 
 {% endblock extrastylesheets %}
@@ -14,8 +14,8 @@
 <div class="checkout-container">
     <div class="checkout-txt">
         <h1>Checkout</h1>
-        <p>Amount</p>
-        <p>Product</p>
+        <p>Amount: K{{amount}}</p>
+        <p>Description: {{product}}</p>
         <h3>Select Payment Method</h3>
     </div>
 
@@ -38,7 +38,7 @@
         <div class="modal-content">
             <span class="close" id="close-mtn-modal">&times;</span>
             <div class="checkout-header">
-                <p>Pay k{{amount}} with MTN mobile money</p>
+                <p>Pay k{{amount}} with MTN</p>
                 <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN logo">
             </div>
             {% include 'lipila/modals/pay_subscription.html' %}
@@ -50,7 +50,7 @@
             <span class="close" id="close-airtel-modal">&times;</span>
             <br>
             <div class="checkout-header">
-                <p>Pay K{{amount}} with Airtel mobile money</p>
+                <p>Pay K{{amount}} with Airtel</p>
                 <img src="{% static 'assets/img/api/airtel.png' %}" alt="airtel logo">
             </div>
             {% include 'lipila/modals/pay_subscription.html' %}
@@ -72,6 +72,7 @@
 {% block extrascripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
         var mtnButton = document.getElementById('mtn-button');
         var airtelButton = document.getElementById('airtel-button');
         var visaButton = document.getElementById('visa-button');
@@ -83,13 +84,16 @@
         var closeMtnModal = document.getElementById('close-mtn-modal');
         var closeAirtelModal = document.getElementById('close-airtel-modal');
         var closeVisaModal = document.getElementById('close-visa-modal');
+        
 
         mtnButton.addEventListener('click', function () {
             mtnModal.style.display = 'flex';
+            $(".wallet_type").val("mtn");
         });
 
         airtelButton.addEventListener('click', function () {
             airtelModal.style.display = 'flex';
+            $(".wallet_type").val("airtel");
         });
 
         visaButton.addEventListener('click', function () {

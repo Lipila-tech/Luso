@@ -81,13 +81,13 @@ class SubscriptionPayments(models.Model):
     payee = models.ForeignKey(
         TierSubscriptions, on_delete=models.SET_NULL, null=True, blank=True, related_name='payments')
     amount = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=True)
+        max_digits=10, decimal_places=2, blank=False, null=True)
     payer_account_number = models.CharField(
-        max_length=300, null=True, blank=True)
+        max_length=300, blank=False, null=False)
     reference_id = models.CharField(
         max_length=40, unique=True, blank=False, null=False)
     wallet_type = models.CharField(
-        max_length=20, choices=ISP_CHOICES, default='mtn')
+        max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(
