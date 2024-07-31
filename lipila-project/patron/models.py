@@ -46,7 +46,7 @@ class Tier(models.Model):
             )
 
     def __str__(self):
-        return f"{self.name} subscribers"
+        return f"{self.name}"
 
 
 class TierSubscriptions(models.Model):

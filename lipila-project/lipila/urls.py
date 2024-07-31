@@ -7,9 +7,8 @@ from patron import views as patron_views
 
 urlpatterns = [
     # checkout urls
-    path('checkout/lpa/', views.checkout, name ="checkout"),
-    path('checkout/mtn/', views.checkout, name ="mtn_pay"),
-    path('checkout/airtel/', views.checkout, name ="airtel_pay"),
+    path('checkout/<int:id>', views.checkout_subscription, name ="checkout_subscription"),
+    path('checkout/<str:payee>/', views.checkout_support, name ="checkout_support"),
     path('checkout/visa/', views.create_purchase, name ="create_purchase"),
 
     # cretaor kyc

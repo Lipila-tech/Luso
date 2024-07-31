@@ -31,13 +31,11 @@
                     <button type="button" class="btn btn-sm btn-primary">View</button>
                 </a>
                 <!-- Pay or unssubscribe button -->
-                <input type="hidden" name="amount" id="amount" value={{sub.tier.price}}>
-                <input type="hidden" name="tier_name" id="tier_name" value={{sub.tier.name}}>
-                <button type="button" class="pay-tier btn-sm btn-primary"
-                    data-form-url="{% url 'send_money_id' type='subscription' id=sub.tier.id %}"
-                    data-tier-name="{{ sub.tier.name }}" data-amount="{{ sub.tier.price }}">
-                    <span class="fa fa-pencil">Pay</span>
-                </button>
+                <form action="{% url 'checkout_subscription' sub.tier.id %}" method="get">
+                    <input type="hidden" name="amount" id="amount" value={{sub.tier.price}}>
+                    <input type="hidden" name="tier_name" id="tier_name" value={{sub.tier.name}}>
+                    <button type="submit" class="pay-tier btn-sm btn-primary">Pay</button>
+                </form>
             </td>
         </tr>
         {% endfor %}
@@ -53,7 +51,7 @@
 
 {% endblock section %}
 {% block extrascripts %}
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     function PayTierModalForm() {
         $(".pay-tier").each(function () {
             $(this).modalForm({
@@ -90,5 +88,5 @@
 
     PayTierModalForm();
 
-</script>
+</script> -->
 {%endblock extrascripts%}

@@ -121,6 +121,7 @@ def signup_view(request):
             user.email_user(subject, message)
             return redirect('accounts:activation_sent')
     else:
+        messages.error("Invalid form fields.")
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
 

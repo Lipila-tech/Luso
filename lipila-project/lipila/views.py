@@ -22,12 +22,12 @@ from lipila.forms.forms import (
     ContactForm,
     WithdrawalModelForm,
     TierModelForm,
-    ContributionsForm,
+    SupportPaymentForm,
     TransferForm,
-    SubscriptionPaymentsForm
+    SubscriptionPaymentsForm,
 )
 
-from .utils import query_collection
+from .utils import query_collection, process_mtn_payment
 from django.http import HttpResponseRedirect
 # Custom Models
 from api.utils import generate_reference_id
@@ -41,7 +41,8 @@ from patron.models import (WithdrawalRequest, SubscriptionPayments,
 from patron.utils import calculate_creators_balance
 from .utils import get_api_user, get_braintree_client_token, braintree_gateway
 
-from .utils import is_patron_title_valid, get_creator_by_patron_title
+from .utils import (
+    is_patron_title_valid, get_creator_by_patron_title, get_tier_subscription_by_id_patron)
 
 
 def index(request):
@@ -58,7 +59,6 @@ def index(request):
     context['testimony'] = testimonial
 
     return render(request, 'index.html', context)
-
 
 
 def creator_index(request, title):
@@ -93,15 +93,15 @@ def creator_index(request, title):
             messages.info(request, "Viewing page as Visitor")
 
         context = {'creator': creator.creatorprofile,
-                'tiers': tiers,
-                'patrons': len(patrons),
-                'media': files,
-                'url': url,
-                }
+                   'tiers': tiers,
+                   'patrons': len(patrons),
+                   'media': files,
+                   'url': url,
+                   }
         return render(request, 'patron/admin/profile/creator_home.html', context)
-    data = {'message':'Sorry! no Patron matched that name.', 'status':404 }
+    data = {'message': 'Sorry! no Patron matched that name.', 'status': 404}
     return apology(request, data)
-    
+
 
 # Django-bootstrap Modal forms views
 
@@ -256,7 +256,6 @@ class TierReadView(BSModalReadView):
     template_name = 'lipila/modals/view_tier.html'
 
 
-
 class SendMoneyView(BSModalCreateView):
     template_name = 'lipila/modals/send_money.html'
     success_url = 'subscriptions_history'
@@ -265,7 +264,7 @@ class SendMoneyView(BSModalCreateView):
     def get_form_class(self):
         transaction_type = self.kwargs.get('type')
         if transaction_type == 'contribution':
-            return ContributionsForm
+            return SupportPaymentForm
         elif transaction_type == 'subscription':
             return SubscriptionPaymentsForm
         elif transaction_type == 'transfer':
@@ -448,7 +447,6 @@ def processed_withdrawals(request):
     return render(request, 'lipila/staff/processed_withdrawals.html', context)
 
 
-
 def service_details(request):
     return render(request, 'UI/services-details.html')
 
@@ -501,7 +499,7 @@ def create_purchase(request):
         # Extract the nonce and deviceData
         nonce_from_the_client = data.get('nonce')
         device_data = data.get('deviceData')
-        
+
         result = braintree_gateway.transaction.sale({
             'amount': '45.00',
             'payment_method_nonce': nonce_from_the_client,
@@ -522,27 +520,132 @@ def create_purchase(request):
     return render(request, 'lipila/checkout/paypal.html', context)
 
 
-@login_required
-def checkout(request):
-    amount = 123
-    product = "Test subcription"
+# @login_required
+def checkout_subscription(request, id):
+    url = reverse('subscriptions_history')
+    patron = request.user
+    tier = get_tier_subscription_by_id_patron(id, patron)
+
+    amount = tier.tier.price
+    product = tier.tier.name
     if request.method == 'POST':
-        form = SubscriptionPaymentsForm(request.POST, amount=amount)
-                
+        form = SubscriptionPaymentsForm(request.POST, amount=amount, payee=tier)
+
         if form.is_valid():
             isp = form.cleaned_data['wallet_type']
-            client_token = get_braintree_client_token(request.user)
-            context = {'client_token': client_token, 'form':form, 'amount':100}
-            messages.success(request, f"Payment Success: Account : { form.cleaned_data['payer_account_number']} amount: {amount} Wallet:{isp}")
-            return render(request, 'lipila/checkout/checkout.html', context)
+            reference_id = generate_reference_id()
+            amount = form.cleaned_data['amount']
+            payer_account_number = form.cleaned_data['payer_account_number']
+            description = form.cleaned_data['description']
+           
+            if isp == 'mtn':               
+                form.instance.reference_id = reference_id
+                form.amount = amount
+                form.save()
+                # process mtn payment
+                payment_data = {
+                    'payer': request.user,
+                    'amount': amount,
+                    'transaction': 'subscription',
+                    'reference_id': reference_id,
+                    'payer_account_number': payer_account_number,
+                    'description': description
+                }
+                response = process_mtn_payment(**payment_data)
+                if response.status_code == 200:
+                    form.instance.status = 'success'
+                    form.save()
+                    messages.success(
+                        request, f"Payment Success: Account : { form.cleaned_data['payer_account_number']} amount: {amount} Wallet:{isp}")
+                    return redirect(url)
+                else:
+                    form.instance.status = 'failed'
+                    form.save()
+                    messages.error(request, "Error: Payment failed try again later!")
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+            elif isp == 'airtel':
+                # process airtel payment
+                payment_data = {}
+                messages.error(
+                    request, 'Sorry only mtn is suported at the moment')
+                # redirect user to the same page
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            else:
+                client_token = get_braintree_client_token(request.user)
+                context = {'client_token': client_token,
+                           'form': form, 'amount': amount}
         else:
-            form = SubscriptionPaymentsForm(amount=amount)
+            form = SubscriptionPaymentsForm(amount=amount, payee=tier)
             client_token = get_braintree_client_token(request.user)
-            context = {'client_token': client_token, 'form':form, 'amount':100}
+            context = {'client_token': client_token,
+                       'form': form, 'amount': amount}
             messages.error(request, "Field errors!")
-            return render(request, 'lipila/checkout/checkout.html', context)
-        
-    form = SubscriptionPaymentsForm(amount=amount)
+            return render(request, 'lipila/checkout/checkout_subscription.html', context)
+
+    form = SubscriptionPaymentsForm(amount=amount, payee=tier)
     client_token = get_braintree_client_token(request.user)
-    context = {'client_token': client_token, 'form':form, 'amount':amount, "product":product}
-    return render(request, 'lipila/checkout/checkout.html', context)
+    context = {'client_token': client_token, 'form': form,
+               'amount': amount, "product": product}
+    return render(request, 'lipila/checkout/checkout_subscription.html', context)
+
+
+def checkout_support(request, payee):
+    url = reverse('subscriptions_history')
+    if request.method == 'POST':
+        form = SupportPaymentForm(request.POST, payee=payee, payer=request.user)
+
+        if form.is_valid():
+            isp = form.cleaned_data['wallet_type']
+            desc = form.cleaned_data['description']
+            amount = form.cleaned_data['amount']
+            reference_id = generate_reference_id()
+            payer_account_number = form.cleaned_data['payer_account_number']
+           
+            if isp == 'mtn':
+                form.instance.reference_id = reference_id
+                # process mtn payment
+                payment_data = {
+                    'payer': request.user,
+                    'amount': amount,
+                    'transaction': 'support',
+                    'description': desc,
+                    'reference_id': reference_id,
+                    'payer_account_number': payer_account_number
+                }
+                response = process_mtn_payment(**payment_data)
+                if response.status_code == 200:
+                    form.instance.status = 'success'
+                    form.save()
+                    messages.success(
+                        request, f"Payment Success: Account : { form.cleaned_data['payer_account_number']} amount: {amount} Wallet:{isp}")
+                    return redirect(url)
+                else:
+                    form.instance.status = 'failed'
+                    form.save()
+                    messages.error(request, "Error: Duplicate reference id")
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+            elif isp == 'airtel':
+                # process airtel payment
+                payment_data = {}
+                messages.error(
+                    request, 'Sorry only mtn is suported at the moment')
+                # redirect user to the same page
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            else:
+                client_token = get_braintree_client_token(request.user)
+                context = {'client_token': client_token,
+                           'form': form, 'amount': amount}
+        else:
+            form = SupportPaymentForm(payee=payee,  payer=request.user)
+            client_token = get_braintree_client_token(request.user)
+            context = {'client_token': client_token,
+                       'form': form}
+            messages.error(request, "Field errors!")
+            return render(request, 'lipila/checkout/checkout_support.html', context)
+
+    form = SupportPaymentForm(payee=payee,  payer=request.user)
+    client_token = get_braintree_client_token(request.user)
+    context = {'client_token': client_token, 'form': form, "payee": payee}
+    return render(request, 'lipila/checkout/checkout_support.html', context)

@@ -14,9 +14,17 @@ from django.contrib.auth import get_user_model
 import braintree
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from accounts.models import CreatorProfile
+from patron.models import TierSubscriptions
+from api.utils import generate_reference_id
+from django.contrib import messages
+from django.db.utils import IntegrityError
+from django.http import HttpResponseRedirect
 
+def get_tier_subscription_by_id_patron(id, patron):
+    subscription = get_object_or_404(TierSubscriptions, tier=id, patron=patron)
+    return subscription
 
 
 def get_creator_by_patron_title(patron_title):
@@ -32,6 +40,7 @@ def get_patron_profile_by_patron_title(patron_title):
 def get_patron_title_by_creator(creator):
     patron_title = get_object_or_404(CreatorProfile, user=creator)
     return patron_title
+
 
 def is_patron_title_valid(title: str)-> bool:
     """
@@ -306,3 +315,34 @@ def apology(request, data=None, user=None):
         return HttpResponseBadRequest(
             render(request, template_name, data)
         )
+
+
+# Process payment
+# Define variables
+def process_mtn_payment(*args, **kwargs):
+    amount = kwargs.pop('amount')
+    payer_account_number = kwargs.pop('payer_account_number')
+    description = kwargs.pop('description')
+    reference_id = kwargs.pop('reference_id')
+
+    # Populate fields
+    
+    payload = {
+        'amount': amount,
+        'wallet_type': 'mtn',
+        'payer_account_number': payer_account_number,
+        'description': description
+    }
+
+    api_user = get_api_user()
+
+    response = query_collection(
+        api_user.username, 'POST', reference_id, data=payload)
+    if response.status_code == 202:
+        if check_payment_status(reference_id, 'col') == 'success':
+                return JsonResponse({'message': 'success'}, status=200)
+        else:
+            return JsonResponse({'message': 'waiting user for user response'}, status=202)
+    else:
+        return JsonResponse({'message': 'Bad request', 'status':'failed'}, status=400)
+        

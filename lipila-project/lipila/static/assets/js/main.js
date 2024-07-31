@@ -6,6 +6,41 @@
 */
 
 
+// checkout
+
+document.addEventListener('DOMContentLoaded', function () {
+  var supportBtn = document.querySelector('#support');
+
+  supportBtn.addEventListener('click', function () {
+
+    var tierId = document.querySelector("#creator").value;
+    // const formData = new FormData();
+    // formData.append('tier_id', tierId);  // Example form data
+    // formData.append('payer_account_number', '123456789');  // Example form data
+
+
+    var paymentData = {
+      tier_id: tierId
+    }
+
+    fetch('http://192.168.0.190:8000/checkout/lpa/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken') // Include CSRF token for Django
+      },
+      body: JSON.stringify(paymentData)
+    })
+      .then(function () {
+        console.log('success');
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+});
+
+
 // Braintree gateway
 document.addEventListener('DOMContentLoaded', function () {
   var button = document.querySelector('#submit-button');
@@ -36,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
           deviceData: payload.deviceData
         };
 
-        fetch('http://192.168.0.190:8000/checkout/visa/', {
+        fetch('http://localhost/checkout/visa/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -55,24 +90,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Function to get the CSRF token from cookies (for Django)
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        // Does this cookie string begin with the name we want?
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
 });
 
+
+ // Function to get the CSRF token from cookies (for Django)
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith(name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
 
 const closeButtons = document.querySelectorAll('.close-btn');
 

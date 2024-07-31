@@ -34,7 +34,10 @@
                 {{subscription.tier.about}}
             </p>
             <div class="row">
-                <button id="send-money" class="btn btn-sm btn-primary" type="button" name="button">Pay</button><span>  </span>
+                <form action="{% url 'checkout_subscription' subscription.tier.id %}" method="get">
+                    <button class="btn btn-sm btn-primary" type="submit" name="button">Pay</button>
+                </form>
+        
                 <button id="delete-subscription" class="btn btn-sm btn-danger" type="button"
                     name="button">Unsubscribe</button>
                 <div class="d-flex justify-content-center">

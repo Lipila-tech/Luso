@@ -29,6 +29,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 # SET third party API Credentials
+MTN_TARGET_ENV=env("MTN_TARGET_ENV")
 MTN_COLLECTIONS_KEY=env("MTN_COLLECTIONS_KEY")
 MTN_DISBURSEMENT_KEY=env("MTN_DISBURSEMENT_KEY")
 MTN_PROVIDER_CALLBACK_HOST=env("MTN_PROVIDER_CALLBACK_HOST")
@@ -190,6 +191,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # server will be running is safe to receive requests
 # from
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
 
 # Bootstrap
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"

@@ -49,20 +49,23 @@
             <div class="tiers-card">
                 {% include 'file_manager/_media_list.html' %}
             </div>
-            
+
             <div class="tier-card">
                 <div>
                     <h5 class="title">Buy me a coffee</h5>
                     <span class="price">K50</span>
                     <p class="description">Support me with a one-time contribution</p>
                 </div>
-                <input type="hidden" name="amount" id="amount" value=50>
-                <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
+                <form action="{% url 'checkout_support' creator.user %}" method="get">
+                    {% csrf_token %}
+                    <input type="hidden" name="amount" id="amount" value=50>
+                    <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
 
-                <input type="hidden" value="{{creator.user}}" id="creator">
-                <input type="hidden" value="{{request.user}}" id="user">
+                    <input type="hidden" value="{{creator.user}}" id="creator">
+                    <input type="hidden" value="{{request.user}}" id="user">
 
-                <button id="support" class="btn-get-started" type="button" name="button">Support</button>
+                    <button id="support" class="btn-get-started" type="submit" name="button">Support</button>
+                </form>
 
             </div>
             {% if tiers %}
@@ -109,66 +112,5 @@
 </div>
 {% endblock section %}
 {% block extrascripts %}
-<script type="text/javascript">
-    $(function () {
-        // disbale buttons if preview
-        $(document).ready(function () {
-            var creator = $("#creator").val()
-            var user = $("#user").val()
-            if (creator === user) {
-                $(".join-btns").prop("disabled", true);
-                $("#support").prop("disabled", true);
-                $(".creator-items").css('display', 'block');
-            }
-        });
 
-        // make a contributions
-        function PayTierModalForm() {
-            $("#support").modalForm({
-                formURL: "{% url 'send_money_id' 'contribution' creator.pk %}"
-            });
-            var amount = $('#amount').val();
-            var tier_name = $('#tier_name').val();
-
-            $('#modal').on('show.bs.modal', function (event) {
-                $(this).find('.modal-price-title').text(`Buy ${tier_name} a coffee.`);
-                $('#id_amount').keyup(function () {
-                    $(".modal-price").text(`K${$(this).val()}`);
-                });
-            });
-
-            $('#modal').on('click', '#submit-button', function (event) {
-                event.preventDefault(); // Prevent default form submission
-                $('#confirmationModal').modal('show'); // Show confirmation modal
-            });
-
-            $('#confirmationModal').on('click', '#confirm-button', function () {
-                // hide confirmation modal
-                $('#confirmationModal').modal('hide');
-                $('#modal').modal('hide');
-
-                // Blur the background
-                // $('body').addClass('blur-background');
-
-                // Show the loader modal
-                $('#loader-modal').modal('hide');
-
-                // Submit the form after confirmation
-                $('#modal form').submit();
-            });
-        }
-
-        // Ensure the loader is hidden and the blur is removed when the page is loaded or navigated to using the back button
-        $(window).on('pageshow', function (event) {
-            if (event.originalEvent.persisted) {
-                // Hide the loader modal if it is shown
-                $('#loader-modal').modal('hide');
-                // Remove blur effect from the background
-                $('body').removeClass('blur-background');
-            }
-        });
-
-        PayTierModalForm();
-    });
-</script>
 {%endblock extrascripts%}
