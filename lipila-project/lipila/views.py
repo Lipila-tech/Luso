@@ -256,98 +256,6 @@ class TierReadView(BSModalReadView):
     template_name = 'lipila/modals/view_tier.html'
 
 
-class SendMoneyView(BSModalCreateView):
-    template_name = 'lipila/modals/send_money.html'
-    success_url = 'subscriptions_history'
-    success_message = 'Success: Subscription paid'
-
-    def get_form_class(self):
-        transaction_type = self.kwargs.get('type')
-        if transaction_type == 'contribution':
-            return SupportPaymentForm
-        elif transaction_type == 'subscription':
-            return SubscriptionPaymentsForm
-        elif transaction_type == 'transfer':
-            return TransferForm
-        return super().get_form_class()
-
-    def form_valid(self, form):
-
-        wallet_type = form.cleaned_data['wallet_type']
-
-        if wallet_type != 'mtn':
-            messages.error(
-                self.request, 'Sorry only mtn is suported at the moment')
-            # redirect user to the same page
-            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
-
-        # Define variables
-        transaction_type = self.kwargs.get('type')
-        amount = ''
-        payee = ''
-        payer_account_number = form.cleaned_data['payer_account_number']
-        description = form.cleaned_data['description']
-        payer = get_user_model().objects.get(username=self.request.user)
-        reference_id = generate_reference_id()  # generate uniq transaction id
-
-        if transaction_type == 'contribution':
-            payee = get_user_model().objects.get(pk=self.kwargs.get('id'))
-            amount = form.cleaned_data['amount']
-            self.success_url = reverse_lazy('subscriptions_history')
-        elif transaction_type == 'subscription':
-            payee = TierSubscriptions.objects.get(
-                tier=self.kwargs.get('id'), patron=payer)
-            amount = TierSubscriptions.objects.get(
-                tier=self.kwargs.get('id')).tier.price
-            self.success_url = reverse_lazy('subscriptions_history')
-        elif transaction_type == 'transfer':
-            payee = form.cleaned_data['send_money_to']
-            amount = form.cleaned_data['amount']
-            self.success_url = reverse_lazy('transfers_history')
-
-        # Populate fields
-        form.instance.reference_id = reference_id
-        form.instance.payee = payee
-        form.instance.amount = amount
-
-        if transaction_type == 'transfer' or transaction_type == 'contribution':
-            form.instance.payer = payer
-
-        # Manually save the form
-        self.object = form.save()
-
-        payload = {
-            'amount': amount,
-            'wallet_type': wallet_type,
-            'payer_account_number': payer_account_number,
-            'description': description
-        }
-
-        api_user = get_api_user()
-
-        response = query_collection(
-            api_user.username, 'POST', reference_id, data=payload)
-        if response.status_code == 202:
-            form.instance.status = 'accepted'
-            messages.success(
-                self.request, f"Payment of K{amount} successful!")
-            if check_payment_status(reference_id, 'col') == 'success':
-                form.instance.status = 'success'
-            self.object = form.save()
-            return HttpResponseRedirect(self.success_url)
-        else:
-            form.instance.status = 'failed'
-            # Manually save the form
-            self.object = form.save()
-            messages.error(
-                self.request, 'Payment failed. Please try again later!')
-            return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
-
-    def form_invalid(self, form):
-        messages.error(self.request, f"Invalid data sent")
-        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
-
-
 def tiers(request):
     data = {}
     if request.method == 'GET':
@@ -489,37 +397,6 @@ def kyc(request):
     return render(request, 'lipila/admin/kyc.html')
 
 
-# Braintree developer api
-
-def create_purchase(request):
-    if request.method == 'POST':
-        # Parse the JSON payload
-        data = json.loads(request.body)
-
-        # Extract the nonce and deviceData
-        nonce_from_the_client = data.get('nonce')
-        device_data = data.get('deviceData')
-
-        result = braintree_gateway.transaction.sale({
-            'amount': '45.00',
-            'payment_method_nonce': nonce_from_the_client,
-            "device_data": device_data,
-            'options': {
-                'submit_for_settlement': True
-            }
-        })
-        if result.is_success:
-            messages.success(request, "Payment completed")
-            return JsonResponse({'status': 'success', 'nonce': nonce_from_the_client, 'device_data': device_data})
-        else:
-            messages.error(request, "Payment payment failed")
-            return JsonResponse({'status': 'fail', 'message': 'Invalid request'}, status=400)
-
-    client_token = get_braintree_client_token(request.user)
-    context = {'client_token': client_token}
-    return render(request, 'lipila/checkout/paypal.html', context)
-
-
 # @login_required
 def checkout_subscription(request, id):
     url = reverse('subscriptions_history')
@@ -649,3 +526,34 @@ def checkout_support(request, payee):
     client_token = get_braintree_client_token(request.user)
     context = {'client_token': client_token, 'form': form, "payee": payee}
     return render(request, 'lipila/checkout/checkout_support.html', context)
+
+
+
+
+# Braintree developer api
+
+def create_purchase(request):
+    if request.method == 'POST':
+        # Parse the JSON payload
+        data = json.loads(request.body)
+
+        # Extract the nonce and deviceData
+        nonce_from_the_client = data.get('nonce')
+        device_data = data.get('deviceData')
+
+        result = braintree_gateway.transaction.sale({
+            'amount': '45.00',
+            'payment_method_nonce': nonce_from_the_client,
+            "device_data": device_data,
+            'options': {
+                'submit_for_settlement': True
+            }
+        })
+        if result.is_success:
+            print('success')
+            messages.success(request, "Payment completed")
+            return JsonResponse({'status': 'success', 'nonce': nonce_from_the_client, 'device_data': device_data})
+        else:
+            print('fail')
+            messages.error(request, "Payment payment failed")
+            return JsonResponse({'status': 'fail', 'message': 'Invalid request'}, status=400)
