@@ -1,0 +1,7 @@
+{% extends "layout_admin.html" %}
+{% block title %} Reply success {% endblock title %}
+{% block section %}
+<h1>Reply Sent</h1>
+<p>Your reply to {{ message.name }} ({{ message.email }}) regarding "{{ message.subject }}" has been sent successfully.</p>
+<p><a href="{% url 'customer_messages' %}">Back to messages</a></p>
+{% endblock %}

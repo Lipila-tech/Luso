@@ -75,7 +75,7 @@ class ContactInfoAdmin(admin.ModelAdmin):
 
 
 class CustomerMessageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'phone',
+    list_display = ('name', 'email', 'phone', 'is_seen', 'handler',
                     'subject', 'message', 'timestamp')
 
 

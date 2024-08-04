@@ -112,8 +112,9 @@ def calculate_creators_balance(creator):
         A decimal value representing the total amount of withdrawals.
     """
     total_payments = calculate_total_payments(creator)
+    user_pro = CreatorProfile.objects.get(user=creator).user
     total_contributions = calculate_total_contributions(
-        get_user_model().objects.get(username=creator))
+        user_pro)
     withdrawals = calculate_total_withdrawals(creator)
     balance = (total_payments + total_contributions) - withdrawals
     return balance

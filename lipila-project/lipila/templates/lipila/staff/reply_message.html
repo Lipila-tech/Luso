@@ -1,0 +1,18 @@
+{% extends "layout_admin.html" %}
+
+{% block title %} Reply Message {% endblock title %}
+{% block section %}
+<h2>Reply to: {{ message.email }}</h2>
+<p>Message: {{message.message}}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="reply_message">Your Reply:</label><br>
+        <textarea id="reply_message" name="reply_message" rows="5" cols="50" required></textarea>
+    </div>
+    <button type="submit">Send Reply</button>
+</form>
+
+<p><a href="{% url 'customer_messages' %}">Back to messages</a></p>
+{% endblock %}

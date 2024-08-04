@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.views.generic import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -27,6 +27,8 @@ from lipila.forms.forms import (
     SubscriptionPaymentsForm,
 )
 
+from django.core.mail import send_mail
+
 from .utils import query_collection, process_mtn_payment
 from django.http import HttpResponseRedirect
 # Custom Models
@@ -40,7 +42,7 @@ from patron.models import (WithdrawalRequest, SubscriptionPayments,
                            ProcessedWithdrawals, Tier, TierSubscriptions, Transfer)
 from patron.utils import calculate_creators_balance
 from .utils import get_api_user, get_braintree_client_token, braintree_gateway
-
+from .models import CustomerMessage
 from .utils import (
     is_patron_title_valid, get_creator_by_patron_title, get_tier_subscription_by_id_patron)
 
@@ -268,12 +270,14 @@ def tiers(request):
         return JsonResponse(data)
 
 
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
 @login_required
 def transfer(request):
     transfers = Transfer.objects.filter(payer=request.user)
     return render(request, 'lipila/actions/transfer.html', {'transfers': transfers})
 
 
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
 @login_required
 def transfers_history(request):
     """
@@ -286,22 +290,63 @@ def transfers_history(request):
     return render(request, 'lipila/pages/transfers_made.html', context)
 
 
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
 @login_required
 def staff_users(request):
     total_users = len(get_user_model().objects.all())
     total_creators = len(CreatorProfile.objects.all())
-    total_payments = len(SubscriptionPayments.objects.all())
+    pending_withdrawals = len(WithdrawalRequest.objects.filter(
+        Q(status='pending') | Q(status='failed')))
+    messages = len(CustomerMessage.objects.filter(is_seen=False))
     context = {
         'all_users': total_users,
         'all_creators': total_creators,
-        'total_payments': total_payments,
-        'updated_at': timezone.now()
+        'pending_withdrawals': pending_withdrawals,
+        'updated_at': timezone.now(),
+        'c_messages': messages,
     }
     return render(request, 'lipila/staff/home.html', context)
 
 
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
 @login_required
-# @user_passes_test(lambda u: u.is_staff)
+def customer_messages_view(request):
+    messages = CustomerMessage.objects.filter(is_seen=False).order_by(
+        '-timestamp')  # Fetch all messages ordered by timestamp
+    return render(request, 'lipila/staff/customer_messages.html', {'c_messages': messages})
+
+
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
+@login_required
+def reply_to_message_view(request, message_id):
+    message = get_object_or_404(CustomerMessage, id=message_id)
+
+    if request.method == 'POST':
+        reply_subject = f"Re: {message.subject}"
+        reply_message = request.POST.get('reply_message')
+        sender_email = settings.DEFAULT_FROM_EMAIL
+
+        # Send email
+        send_mail(
+            reply_subject,
+            reply_message,
+            sender_email,
+            [message.email],
+            fail_silently=False,
+        )
+        message.is_seen = True
+        message.handler = request.user
+        message.save()
+        messages.success(request, 'Reply sent')
+
+        # Redirect or show a success message after replying
+        return render(request, 'lipila/staff/reply_success.html', {'message': message})
+
+    return render(request, 'lipila/staff/reply_message.html', {'message': message})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
 def approve_withdrawals(request):
     """
     Renders a table that lists all withdraw (pending or failed) requests.
@@ -313,8 +358,10 @@ def approve_withdrawals(request):
         Q(status='pending') | Q(status='failed'))
     data = []
     for obj in pending_requests:
+        is_verified = CreatorProfile.objects.get(user=obj.creator).is_verified
         item = {}
         item['pk'] = obj.pk
+        item['is_verified'] = is_verified
         item['creator'] = obj.creator
         item['amount'] = obj.amount
         item['status'] = obj.status
@@ -406,7 +453,8 @@ def checkout_subscription(request, id):
     amount = tier.tier.price
     product = tier.tier.name
     if request.method == 'POST':
-        form = SubscriptionPaymentsForm(request.POST, amount=amount, payee=tier)
+        form = SubscriptionPaymentsForm(
+            request.POST, amount=amount, payee=tier)
 
         if form.is_valid():
             isp = form.cleaned_data['wallet_type']
@@ -414,8 +462,8 @@ def checkout_subscription(request, id):
             amount = form.cleaned_data['amount']
             payer_account_number = form.cleaned_data['payer_account_number']
             description = form.cleaned_data['description']
-           
-            if isp == 'mtn':               
+
+            if isp == 'mtn':
                 form.instance.reference_id = reference_id
                 form.amount = amount
                 form.save()
@@ -438,7 +486,8 @@ def checkout_subscription(request, id):
                 else:
                     form.instance.status = 'failed'
                     form.save()
-                    messages.error(request, "Error: Payment failed try again later!")
+                    messages.error(
+                        request, "Error: Payment failed try again later!")
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
             elif isp == 'airtel':
@@ -470,7 +519,8 @@ def checkout_subscription(request, id):
 def checkout_support(request, payee):
     url = reverse('subscriptions_history')
     if request.method == 'POST':
-        form = SupportPaymentForm(request.POST, payee=payee, payer=request.user)
+        form = SupportPaymentForm(
+            request.POST, payee=payee, payer=request.user)
 
         if form.is_valid():
             isp = form.cleaned_data['wallet_type']
@@ -478,7 +528,7 @@ def checkout_support(request, payee):
             amount = form.cleaned_data['amount']
             reference_id = generate_reference_id()
             payer_account_number = form.cleaned_data['payer_account_number']
-           
+
             if isp == 'mtn':
                 form.instance.reference_id = reference_id
                 # process mtn payment
@@ -528,8 +578,6 @@ def checkout_support(request, payee):
     return render(request, 'lipila/checkout/checkout_support.html', context)
 
 
-
-
 # Braintree developer api
 
 def create_purchase(request):
@@ -554,6 +602,5 @@ def create_purchase(request):
             messages.success(request, "Payment completed")
             return JsonResponse({'status': 'success', 'nonce': nonce_from_the_client, 'device_data': device_data})
         else:
-            print('fail')
             messages.error(request, "Payment payment failed")
             return JsonResponse({'status': 'fail', 'message': 'Invalid request'}, status=400)

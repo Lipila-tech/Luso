@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from patron import views as patron_views
 
 urlpatterns = [
+    # message
+    path('messages/', views.customer_messages_view, name='customer_messages'),
+    path('messages/reply/<int:message_id>/', views.reply_to_message_view, name='reply_to_message'),
     # checkout urls
     path('checkout/<int:id>', views.checkout_subscription, name ="checkout_subscription"),
     path('checkout/<str:payee>/', views.checkout_support, name ="checkout_support"),

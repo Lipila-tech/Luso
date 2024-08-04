@@ -17,6 +17,7 @@
             <th>Amount Requested</th>
             <th>Account Balance</th>
             <th>Status</th>
+            <th>Verified</th>
             <th>Request Date</th>
             <th>Reference ID</th>
             <th>Action</th>
@@ -28,8 +29,9 @@
             <td>{{ forloop.counter }}</td>
             <td>{{ request.creator.user.username }}</td>
             <td>{{ request.amount }}</td>
-            <td>{{ request.status }}</td>
             <td>{{ request.balance }}</td>
+            <td>{{ request.status }}</td>
+            <td>{{ request.is_verified }}</td>
             <td>{{ request.request_date }}</td>
             <td>{{ request.reference_id }}</td>
             <td>

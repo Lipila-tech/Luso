@@ -13,11 +13,15 @@
       </div>
       <div class="creator-stat">
         <h3><span id="withdrawn-total">{{all_creators}}</span></h3>
-        <p>Creators</p>
+        <a href="{% url 'patron:creators' %}">Creators</a>
       </div>
       <div class="creator-stat">
-        <h3><span id="num-patrons">{{total_payments}}</span></h3>
-        <p>payments</p>
+        <h3><span id="num-patrons">{{pending_withdrawals}}</span></h3>
+        <a href="{% url 'approve_withdrawals' %}">Pending Withdrawals</a>
+      </div>
+      <div class="creator-stat">
+        <h3><span id="num-patrons">{{c_messages}}</span></h3>
+        <a href="{% url 'customer_messages' %}">Pending Messages</a>
       </div>
     </div>
     <div class="creator-footer">

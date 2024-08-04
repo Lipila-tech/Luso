@@ -1,0 +1,33 @@
+{% extends "layout_admin.html" %}
+
+{% block title %} Messages {% endblock title %}
+{% block section %}
+<h1>Customer Messages</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Received At</th>
+            <th>Reply</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for msg in c_messages %}
+        <tr>
+            <td>{{ msg.name }}</td>
+            <td>{{ msg.email }}</td>
+            <td>{{ msg.subject }}</td>
+            <td>{{ msg.message }}</td>
+            <td>{{ msg.timestamp }}</td>
+            <td>
+                <a href="{% url 'reply_to_message' msg.id %}">Reply</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock section %}

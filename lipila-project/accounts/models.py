@@ -4,6 +4,8 @@ from django.core.mail import send_mail
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
+from django.core.validators import FileExtensionValidator
+from django.utils.translation import gettext_lazy as _
 # custom models
 from .globals import (
     default_socials, CREATOR_CATEGORY_CHOICES, zambia_provinces)
@@ -71,7 +73,14 @@ class CreatorProfile(models.Model):
             ),
         ]
     )
-
+    is_verified =  models.BooleanField(default=False)
+    creator_id_file = models.FileField(
+        upload_to='creator_ids/',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])],
+        verbose_name=_('Creator ID')
+    )
     profile_image = models.ImageField(
         upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
