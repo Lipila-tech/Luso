@@ -382,7 +382,7 @@ def contact(request):
         if form.is_valid():
             form.save()  # Save contact information to the database
             messages.success(
-                request, "Your message has been sent successfully")
+                request, "We have received your message. We will be in touch soon.")
             return redirect('index')  # Redirect to a success page (optional)
     else:
         messages.error(

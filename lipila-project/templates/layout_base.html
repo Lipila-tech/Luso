@@ -84,13 +84,8 @@
                 <div class="col-lg-2 col-6 footer-links">
                     <h4>Quick Links</h4>
                     <ul>
-                        {% if request.user.creatorprofile or request.user.is_staff %}
-                        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                        {% else %}
-                        <li><a href="/#hero">Home</a></li>
-                        {% endif %}
                         <li><a href="/#about">About us</a></li>
-                        <li><a href="/#services">Services</a></li>
+                        <li><a href="/#contact">Contact</a></li>
                         <li><a href="{% url 'terms' %}">Terms of use</a></li>
                         <li><a href="{% url 'privacy' %}">Privacy policy.</a></li>
                         <li><a href="{% url 'faq' %}">FAQ</a></li>
