@@ -969,16 +969,31 @@ ul.breadcrumb li a:hover {
   font-size: 26px;
 }
 
+/* Get started buttons
+--------------------------- */
 .btn-get-started {
-  background-color: var(--accent-color);
-  color: var(--contrast-color);
-  padding: 8px 30px 10px 30px;
-  border-radius: 4px;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #ff6f61;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
 }
 
 .btn-get-started:hover {
-  background-color: rgba(var(--accent-color-rgb), 0.9);
+  background-color: #ff5a4c;
 }
+
+/* Responsive buttons styles */
+@media (max-width: 768px) {
+  .btn-get-started {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
 
 .features .features-item ul {
   list-style: none;
