@@ -762,9 +762,6 @@ hr .new1 {
 
 
 /* Accordion */
-.accordion-item {
-  border: 1px solid #ebeef4;
-}
 
 .accordion-button:focus {
   outline: 0;
@@ -785,12 +782,6 @@ hr .new1 {
 .accordion-flush .accordion-button:not(.collapsed) {
   box-shadow: none;
   color: #4154f1;
-}
-
-.accordion-flush .accordion-body {
-  padding: 0 0 15px 0;
-  color: #3e4f6f;
-  font-size: 15px;
 }
 
 /* Filter */
