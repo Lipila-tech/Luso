@@ -4,6 +4,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
 from patron import views as patron_views
+from .views import custom_404_view
+
+handler404 = custom_404_view
 
 urlpatterns = [
     # message

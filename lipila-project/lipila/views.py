@@ -47,6 +47,12 @@ from .utils import (
     is_patron_title_valid, get_creator_by_patron_title, get_tier_subscription_by_id_patron)
 
 
+
+def custom_404_view(request, exception):
+    data = {'message': 'That page was not found', 'status': 404}
+    return apology(request, data)
+
+
 def index(request):
     context = {}
     form = ContactForm()
