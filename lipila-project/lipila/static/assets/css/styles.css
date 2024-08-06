@@ -7,7 +7,8 @@
 
 /* Global Colors */
 :root {
-  --background-color: #ffffff;
+  --background-color-green: #b8f9bb;
+  --background-color: #f8f9fa;
   --background-color-rgb: 255, 255, 255;
   --default-color: #212529;
   --default-color-rgb: 33, 37, 41;
@@ -190,6 +191,17 @@ h6 {
   opacity: 1;
 }
 
+/*--------------------------------------------------------------
+# T.O.U Page
+--------------------------------------------------------------*/
+.terms {
+  padding: 20px;
+}
+
+.terms h3 {
+  font-weight: 600;
+}
+
 
 /*--------------------------------------------------------------
 # Sections
@@ -207,34 +219,11 @@ section,
 --------------------------------------------------------------*/
 .section-title {
   text-align: center;
-  padding-bottom: 60px;
 }
 
-.section-title h2 h3 {
+.section-title h2 {
   font-size: 32px;
   font-weight: 700;
-  position: relative;
-}
-
-.section-title h2:before h3:before,
-.section-title h2:after h3:after {
-  content: "";
-  width: 50px;
-  height: 2px;
-  background: var(--accent-color);
-  display: inline-block;
-}
-
-.section-title h2:before h3:before {
-  margin: 0 15px 10px 0;
-}
-
-.section-title h2:after h3:after {
-  margin: 0 0 10px 15px;
-}
-
-.section-title p {
-  margin-bottom: 0;
 }
 
 /* ********************************

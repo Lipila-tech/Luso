@@ -1,6 +1,6 @@
 {% extends 'layout_base.html' %}
 {% load static %}
-{% block title %} F.A.Q {% endblock %}
+{% block title %}F.A.Q {% endblock %}
 {% block extrastylesheets %}
 {% if not user.is_authenticated %}
 <link href="{% static 'assets/css/header.css' %}" rel="stylesheet">
@@ -29,29 +29,30 @@
 
                     <div class="pt-2">
                         <h6>How do fans become patrons?</h6>
-                        <p>Your fans can become patrons by signing up as a patron and simply click join on your profile.</p>
+                        <p>Your fans can become patrons by signing up as a patron and simply click join on your profile.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
-
+       
         <div class="col-lg-6">
             <!-- F.A.Q Group 1 -->
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Fees & Transactions</h5>
-
                     <div class="accordion accordion-flush" id="faq-group-1">
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-1" type="button"
-                                    data-bs-toggle="collapse">
+                        <div class="card-header" id="headingOne">
+                            <h2 class="mb-0">
+                                <button class="btn-link collapsed accordion-button" type="button"
+                                    data-toggle="collapse" data-target="#collapseOne" aria-expanded="false"
+                                    aria-controls="collapseOne">
                                     Does Luso charge any fees?
                                 </button>
                             </h2>
-                            <div id="faqsOne-1" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
-                                <div class="accordion-body">
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
                                     We do charge a small commission fee on each transaction processed through Lipila
                                     Patron. This fee helps us maintain and improve the platform to better serve both
                                     creators and patrons.
@@ -59,45 +60,51 @@
                             </div>
                         </div>
 
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-2" type="button"
-                                    data-bs-toggle="collapse">
+                        <div class="card-header" id="headingTwo">
+                            <h2 class="mb-0">
+                                <button class=" btn-link collapsed accordion-button" type="button"
+                                    data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                    aria-controls="collapseTwo">
                                     What currency is supported by Luso?
                                 </button>
                             </h2>
-                            <div id="faqsOne-2" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
-                                <div class="accordion-body">
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
                                     Currently, Luso supports Zambian Kwacha (ZMW) transactions. We are
                                     constantly working on expanding our supported currencies in the future.
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-3" type="button"
-                                    data-bs-toggle="collapse">
+                        <div class="card-header" id="headingThree">
+                            <h2 class="mb-0">
+                                <button class="btn-link collapsed accordion-button" type="button"
+                                    data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
+                                    aria-controls="collapseThree">
                                     What payment method is supported by Luso?
                                 </button>
                             </h2>
-                            <div id="faqsOne-3" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
-                                <div class="accordion-body">
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
                                     Currently, Luso suports MTN mobile money. We are
                                     constantly working on expanding our supported payment gateways in the future.
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" data-bs-target="#faqsOne-4" type="button"
-                                    data-bs-toggle="collapse">
+                        <div class="card-header" id="headingFour">
+                            <h2 class="mb-0">
+                                <button class="btn-link collapsed accordion-button" type="button"
+                                    data-toggle="collapse" data-target="#collapseFour" aria-expanded="false"
+                                    aria-controls="collapseFour">
                                     Who initiates the transaction?
                                 </button>
                             </h2>
-                            <div id="faqsOne-4" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
-                                <div class="accordion-body">
+                            <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
                                     The patron selects to make a payment or contribution to a creator, Luso
                                     sends the initiator a message for them to confirm with a pin.
                                 </div>
@@ -114,15 +121,17 @@
 
                     <div class="accordion accordion-flush" id="faq-group-2">
 
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" data-bs-target="#faqsTwo-1" type="button"
-                                    data-bs-toggle="collapse">
+                        <div class="card-header" id="headingFive">
+                            <h2 class="mb-0">
+                                <button class="btn-link collapsed accordion-button" type="button"
+                                    data-toggle="collapse" data-target="#collapseFive" aria-expanded="false"
+                                    aria-controls="collapseFive">
                                     How can I withdraw my earnings from Luso?
                                 </button>
                             </h2>
-                            <div id="faqsTwo-1" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
-                                <div class="accordion-body">
+                            <div id="collapseFive" class="collapse" aria-labelledby="headingFive"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
                                     You can easily withdraw your earnings directly to your mobile money account or your
                                     linked bank account (if available).
                                     We offer a smooth and secure withdrawal process.
@@ -130,15 +139,17 @@
                             </div>
                         </div>
 
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" data-bs-target="#faqsTwo-2" type="button"
-                                    data-bs-toggle="collapse">
+                        <div class="card-header" id="headingSix">
+                            <h2 class="mb-0">
+                                <button class="btn-link collapsed accordion-button" type="button"
+                                    data-toggle="collapse" data-target="#collapseSix" aria-expanded="false"
+                                    aria-controls="collapseSix">
                                     Is there a minimum withdrawal amount?
                                 </button>
                             </h2>
-                            <div id="faqsTwo-2" class="accordion-collapse collapse" data-bs-parent="#faq-group-2">
-                                <div class="accordion-body">
+                            <div id="collapseSix" class="collapse" aria-labelledby="headingSix"
+                                data-parent="#accordionExample">
+                                <div class="card-body">
                                     Yes, there is a minimum withdrawal amount to ensure efficient processing.
                                     You can find the current minimum withdrawal amount in your Luso account
                                     settings.

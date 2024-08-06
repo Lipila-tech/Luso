@@ -21,7 +21,8 @@
 
 /* Global Colors */
 :root {
-  --background-color: #ffffff;
+  --background-color-green: #b8f9bb;
+  --background-color: #f8f9fa;
   --background-color-rgb: 255, 255, 255;
   --default-color: #212529;
   --default-color-rgb: 33, 37, 41;
@@ -57,8 +58,9 @@
 
 .hero {
   position: relative;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
+  border: dashed 1px #008000;
 }
 
 .carousel-inner {
@@ -323,6 +325,10 @@ section {
 }
 
 .benefits-text ul li strong {
+  color: #ff6f61;
+}
+
+.benefits-text ol li strong {
   color: #ff6f61;
 }
 

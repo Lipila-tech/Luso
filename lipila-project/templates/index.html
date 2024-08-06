@@ -76,10 +76,9 @@
 
   <!-- Get started Section - Home Page -->
   <section id="features" class="features">
-    <!--  Section Title -->
-    <div class="container section-title" data-aos="fade-up">
+    <div class="section-title" data-aos="fade-up">
       <h2>Get Started in 3 Simple Steps</h2>
-    </div><!-- End Section Title -->
+    </div>
     <div class="container">
       <div class="row gy-4 align-items-center features-item">
         <div class="col-lg-5 order-2 order-lg-1 benefits-text" data-aos="fade-up" data-aos-delay="120">
@@ -174,8 +173,7 @@
         </div>
 
         <div class="col-lg-6">
-          <form action="{% url 'contact' %}" method="post" class="" data-aos="fade-up"
-            data-aos-delay="200">
+          <form action="{% url 'contact' %}" method="post" class="" data-aos="fade-up" data-aos-delay="200">
             {% csrf_token %}
             <div class="row gy-4 form-group">
 
