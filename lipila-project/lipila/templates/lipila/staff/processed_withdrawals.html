@@ -21,13 +21,13 @@
         <tbody>
             {% for drawl in processed_withdrawals %}
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ drawl.creator }}</td>
-                <td>{{ drawl.amount }}</td>
-                <td>{{ drawl.status }}</td>
-                <td>{{ drawl.request_date }}</td>
-                <td>{{ drawl.processed_date }}</td>
-                <td>{{ drawl.reference_id }}</td>
+                <td data-label="#">{{ forloop.counter }}</td>
+                <td data-label="Creator">{{ drawl.creator }}</td>
+                <td data-label="Amount">{{ drawl.amount }}</td>
+                <td data-label="Status">{{ drawl.status }}</td>
+                <td data-label="R. Date">{{ drawl.request_date }}</td>
+                <td data-label="P. Date">{{ drawl.processed_date }}</td>
+                <td data-label="Id">{{ drawl.reference_id }}</td>
                 <td>
                     <a href="#">View</a>
                 </td>

@@ -19,11 +19,10 @@
     <tbody>
         {% for patron in patrons %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ patron.username }}</td>
-            <td>{{ patron.subscriptions }}</td>
-            <td>{{ patron.contributions_sent }}</td>
-            <td>{{ patron.email }}</td>
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="Username">{{ patron.username }}</td>
+            <td data-label="Subscrition">{{ patron.subscriptions }}</td>
+            <td data-label="email">{{ patron.email }}</td>
         </tr>
         {% endfor %}
     </tbody>

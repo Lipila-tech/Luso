@@ -18,12 +18,12 @@
     <tbody>
         {% for msg in c_messages %}
         <tr>
-            <td>{{ msg.name }}</td>
-            <td>{{ msg.email }}</td>
-            <td>{{ msg.subject }}</td>
-            <td>{{ msg.message }}</td>
-            <td>{{ msg.timestamp }}</td>
-            <td>
+            <td data-label="Name">{{ msg.name }}</td>
+            <td data-label="Email">{{ msg.email }}</td>
+            <td data-label="Subject">{{ msg.subject }}</td>
+            <td data-label="Message">{{ msg.message }}</td>
+            <td data-label="Received At">{{ msg.timestamp }}</td>
+            <td data-label="Reply">
                 <a href="{% url 'reply_to_message' msg.id %}">Reply</a>
             </td>
         </tr>

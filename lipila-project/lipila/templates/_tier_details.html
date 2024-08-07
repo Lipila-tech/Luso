@@ -20,32 +20,30 @@
                 {{subscription.tier.description}}
             </p>
             <div class="links">
-                <a class="facetier c-a" href="{{subscription.tier.facetier_url}}" target="_blank" title="GFG_facetier">
-                    <i class="fab fa-facetier"></i>
+                <a class="facebook c-a" href="{{subscription.tier.facebook_url}}" target="{{subscription.tier.name}}_blank" title="{{subscription.tier.name}}_facebook">
+                    <i class="fab fa-facebook"></i>
                 </a>
-                <a class="linkedin c-a" href="{{subscription.linkedin_url}}" title="GFG_linkedin" target="_blank">
+                <a class="linkedin c-a" href="{{subscription.linkedin_url}}" title="{{subscription.tier.name}}_linkedin" target="_blank">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a class="insta c-a" href="{{subscription.instagram_url}}" target="_blank" title="GFG_instagram">
+                <a class="insta c-a" href="{{subscription.instagram_url}}" target="_blank" title="{{subscription.tier.name}}_instagram">
                     <i class="fab fa-instagram-square"></i>
                 </a>
             </div>
             <p class="details">
                 {{subscription.tier.about}}
             </p>
+            
             <div class="row">
-                <form action="{% url 'checkout_subscription' subscription.tier.id %}" method="get">
-                    <button class="btn btn-sm btn-primary" type="submit" name="button">Pay</button>
-                </form>
-        
-                <button id="delete-subscription" class="btn btn-sm btn-danger" type="button"
+                <button id="subscribe-btn" data-url="{% url 'checkout_subscription' subscription.tier.id %}" class="m-btn btn-sm m-btn-primary"
+                    type="submit" name="button">Pay</button>
+
+                <button data-url="{% url 'unsubscribe' subscription.tier.id %}" id="unsubscribe-btn" class="m-btn btn-sm btn-danger" type="button"
                     name="button">Unsubscribe</button>
                 <div class="d-flex justify-content-center">
                     <div class="col-12 mb-3">
-
                     </div>
                     <div class="col-12 mb-3">
-
                     </div>
                 </div>
             </div>

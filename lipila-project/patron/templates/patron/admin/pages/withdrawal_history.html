@@ -14,20 +14,18 @@
             <th>Account Number</th>
             <th>Status</th>
             <th>Reference ID</th>
-            <th>Initiated By</th>
         </tr>
     </thead>
     <tbody>
         {% for item in history %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ item.amount }}</td>
-            <td>{{ item.transaction_date }}</td>
-            <td>{{ item.transaction_type }}</td>
-            <td>{{ item.account_number }}</td>
-            <td>{{ item.status |upper }}</td>
-            <td>{{ item.reference_id }}</td>
-            <tb></tb>
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="amount">{{ item.amount }}</td>
+            <td data-label="date">{{ item.transaction_date }}</td>
+            <td data-label="Type">{{ item.transaction_type }}</td>
+            <td data-label="Account number">{{ item.account_number }}</td>
+            <td data-label="Status">{{ item.status |upper }}</td>
+            <td data-label="Ref">{{ item.reference_id }}</td>
         </tr>
         {% endfor %}
     </tbody>

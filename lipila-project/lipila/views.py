@@ -250,7 +250,7 @@ class UnsubScribeView(BSModalDeleteView):
     model = TierSubscriptions
     template_name = 'lipila/modals/unsubscribe_tier.html'
     success_message = 'Success: You have unsubscribed.'
-    success_url = reverse_lazy('patron:profile')
+    success_url = reverse_lazy('patron:subscriptions')
 
     def get_object(self, queryset=None):
         tier_id = self.kwargs.get('tier_id')

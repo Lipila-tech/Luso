@@ -21,14 +21,14 @@
     <tbody>
         {% for payment in payments %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ payment.amount }}</td>
-            <td>{{ payment.timestamp }}</td>
-            <td>{{ payment.payee }}</td>
-            <td>{{ payment.wallet_type }}</td>
-            <td>{{ payment.payer_account_number }}</td>
-            <td>{{ payment.status |upper }}</td>
-            <td>{{ payment.reference_id }}</td>
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="amount">{{ payment.amount }}</td>
+            <td data-label="date">{{ payment.timestamp }}</td>
+            <td data-label="receiver">{{ payment.payee }}</td>
+            <td data-label="wallter type">{{ payment.wallet_type }}</td>
+            <td data-label="account number">{{ payment.payer_account_number }}</td>
+            <td data-label="status">{{ payment.status |upper }}</td>
+            <td data-label="ref">{{ payment.reference_id }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -51,14 +51,14 @@
     <tbody>
         {% for contribution in contributions %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ contribution.amount }}</td>
-            <td>{{ contribution.timestamp }}</td>
-            <td>{{ contribution.payee }}</td>
-            <td>{{ contribution.wallet_type }}</td>
-            <td>{{ contribution.payer_account_number }}</td>
-            <td>{{ contribution.status |upper }}</td>
-            <td>{{ contribution.reference_id }}</td>
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="amount">{{ contribution.amount }}</td>
+            <td data-label="date">{{ contribution.timestamp }}</td>
+            <td data-label="receiver">{{ contribution.payee }}</td>
+            <td data-label="wallet type">{{ contribution.wallet_type }}</td>
+            <td data-label="account number">{{ contribution.payer_account_number }}</td>
+            <td data-label="status">{{ contribution.status |upper }}</td>
+            <td data-label="ref">{{ contribution.reference_id }}</td>
         </tr>
         {% endfor %}
     </tbody>

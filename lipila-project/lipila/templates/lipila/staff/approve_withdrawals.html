@@ -18,30 +18,26 @@
             <th>Account Balance</th>
             <th>Status</th>
             <th>Verified</th>
-            <th>Request Date</th>
-            <th>Reference ID</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
         {% for request in pending_requests %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ request.creator.user.username }}</td>
-            <td>{{ request.amount }}</td>
-            <td>{{ request.balance }}</td>
-            <td>{{ request.status }}</td>
-            <td>{{ request.is_verified }}</td>
-            <td>{{ request.request_date }}</td>
-            <td>{{ request.reference_id }}</td>
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="Creator">{{ request.creator.user.username }}</td>
+            <td data-label="Requested">{{ request.amount }}</td>
+            <td data-label="Balance">{{ request.balance }}</td>
+            <td data-label="Status">{{ request.status }}</td>
+            <td data-label="Verified">{{ request.is_verified }}</td>
             <td>
                 <!-- Approve request buttons -->
-                <button class="approve-request btn btn-md btn-primary"
+                <button class="approve-request m-btn btn-md"
                     data-form-url="{% url 'approve_withdraw' request.pk %}">
                     Approve
                 </button>
                 <!-- Reject request buttons -->
-                <button class="reject-request btn btn-md btn-primary"
+                <button class="reject-request m-btn btn-md"
                     data-form-url="{% url 'reject_withdraw' request.pk %}">
                     Reject
                 </button>

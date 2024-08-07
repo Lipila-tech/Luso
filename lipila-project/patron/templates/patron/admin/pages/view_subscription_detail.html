@@ -11,68 +11,16 @@
 
 {% endblock section %}
 {% block extrascripts %}
-<!-- <script type="text/javascript">
+<script>
+    document.getElementById("subscribe-btn").addEventListener("click", function () {
+        const url = this.getAttribute("data-url");
+        window.location.href = url;
+    });
 
-    $(function () {
-        function PayTierModalForm() {
-            var allowSubmit = true;
+    document.getElementById("unsubscribe-btn").addEventListener("click", function () {
+        const url = this.getAttribute("data-url");
+        window.location.href = url;
+    });
 
-            if (allowSubmit) {
-                $("#send-money").modalForm({
-                    formURL: "{% url 'send_money_id' type='subscription' id=subscription.tier.id %}",
-                    modalID: "#create-modal"
-                });
-
-                var amount = $('#amount').val();
-                var tier_name = $('#tier_name').val();
-
-                $('#create-modal').on('show.bs.modal', function (event) {
-                    $(this).find('.modal-price-title').text(`Pay subscription to: ${tier_name}`);
-                    $(this).find('.modal-price').text(`K${amount}`);
-                });
-
-                $('#create-modal').on('click', '#submit-button', function (event) {
-                    event.preventDefault(); // Prevent default form submission
-                    $('#confirmationModal').modal('show'); // Show confirmation modal
-                });
-
-                $('#confirmationModal').on('click', '#confirm-button', function () {
-                    // hide confirmation modal
-                    $('#confirmationModal').modal('hide');
-                    $('#create-modal').modal('hide');
-
-                    // Blur the background
-                    // $('body').addClass('blur-background');
-
-                    // Show the loader modal
-                    $('#loader-modal').modal('show');
-
-                    // Submit the form after confirmation
-                    $('#create-modal form').submit();
-                });
-                // Remove blur when the loader modal is hidden
-                
-                allowSubmit = false;
-            } else {
-                return false;
-            }
-        }
-
-        PayTierModalForm();
-
-
-        // Delete tier buttons - formURL is retrieved from the data of the element
-        $("#delete-subscription").modalForm({
-            formURL: "{% url 'unsubscribe' tier_id=subscription.tier.id %}"
-        });
-        var tier_name = $('#tier_name').val()
-        $('#modal').on('show.bs.modal', function (event) {
-            $(this).find('.delete-text').text(`Are you sure you want to unsubscribe from ${tier_name}?`);
-        });
-
-        function reinstantiateModalForms() {
-            PayTierModalForm();
-        }
-    })
-</script> -->
+</script>
 {%endblock extrascripts%}

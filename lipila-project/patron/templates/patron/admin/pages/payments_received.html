@@ -3,7 +3,6 @@
 {% block title %} Subscription Payments {% endblock %}
 
 {% block section %}
-<h3>Payments Received</h3>
 
 <h5>Subscriptions Payments</h5>
 <table class="table">
@@ -20,12 +19,12 @@
     <tbody>
         {% for payment in payments %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ payment.amount }}</td>
-            <td>{{ payment.timestamp }}</td>
-            <td>{{ payment.subscription }}</td>
-            <td>{{ payment.description }}</td>
-            <td>{{ payment.status |upper }}</td>
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="amount">{{ payment.amount }}</td>
+            <td data-label="date">{{ payment.timestamp }}</td>
+            <td data-label="tier">{{ payment.subscription }}</td>
+            <td data-label="message">{{ payment.description }}</td>
+            <td data-label="status">{{ payment.status |upper }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -46,12 +45,12 @@
     <tbody>
         {% for contribution in contributions %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ contribution.amount }}</td>
-            <td>{{ contribution.timestamp }}</td>
-            <td>{{ contribution.payer }}</td>
-            <td>{{ contribution.description }}</td>
-            <td>{{ contribution.status |upper }}</td>
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="amount">{{ contribution.amount }}</td>
+            <td data-label="date">{{ contribution.timestamp }}</td>
+            <td data-label="patron">{{ contribution.payer }}</td>
+            <td data-label="message`">{{ contribution.description }}</td>
+            <td data-label="status">{{ contribution.status |upper }}</td>
         </tr>
         {% endfor %}
     </tbody>

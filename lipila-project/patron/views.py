@@ -71,7 +71,7 @@ def create_creator_profile(request):
                           {'form': form, 'creator': creator})
     if request.user.is_staff:
         return redirect(reverse('staff_dashboard'))
-    elif request.user.has_group:
+    elif request.user.is_creator:
         return redirect(reverse('patron:profile'))
     else:
         form = CreateCreatorProfileForm()
@@ -233,7 +233,7 @@ def subscribe_view(request, tier_id):
         TierSubscriptions.objects.get_or_create(patron=patron, tier=tier)
         messages.success(
             request, f"Welcome! You Joined my {tier.name} patrons.")
-    return redirect(reverse('creator_index', kwargs={"title": patron_title}))
+    return redirect(reverse('patron:subscription_detail', kwargs={"tier_id": tier_id}))
 
 
 def browse_creators(request):
