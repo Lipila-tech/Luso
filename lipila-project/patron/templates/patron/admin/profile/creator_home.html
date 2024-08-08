@@ -16,97 +16,102 @@
 {% include '_modal.html' %}
 {% include "lipila/modals/_confirmation_payment.html" %}
 
-
-<div class="creator-profile">
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <div class="user-image">
-            <button class="btn btn-secondary">
-                {% if creator.profile_image %}
-                {% if creator.profile_image.url %}
-                <img src="{{ creator.profile_image.url }}" height="100" width="100">
-                {% endif %}
-                {% else %}
-                <img src="{% static 'assets/img/avator.jpeg' %}" height="100" width="100">
-                {% endif %}
-            </button>
-        </div>
-
-        <span class="name mt-3">@{{creator.patron_title}}</span>
-        <div class="creator-footer">
-            <p class="tier-url">{{ url }}</p>
-            <span class="tier-url" data-url="{{ url }}">
-                <button class="copy-btn creator-items" data-clipboard-text="{{ url }}">
-                    <i>Copy</i>
-                </button>
-            </span>
-        </div>
-        <span class="category">{{creator.creator_category}}</span>
-        {% if creator.about %}
-        <div class="details"> <span>{{creator.about}} </span> </div>
-        {% endif %}
-        <div class="content">
-            <h3 class="creator-items">Media</h3>
-            <div class="tiers-card">
-                {% include 'file_manager/_media_list.html' %}
-            </div>
-
-            <div class="tier-card">
-                <div>
-                    <h5 class="title">Buy me a coffee</h5>
-                    <span class="price">K50</span>
-                    <p class="description">Support me with a one-time contribution</p>
-                </div>
-                <form action="{% url 'checkout_support' creator.user %}" method="get">
-                    {% csrf_token %}
-                    <input type="hidden" name="amount" id="amount" value=50>
-                    <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
-
-                    <input type="hidden" value="{{creator.user}}" id="creator">
-                    <input type="hidden" value="{{request.user}}" id="user">
-
-                    <button id="support" class="btn-get-started" type="submit" name="button">Support</button>
-                </form>
-
-            </div>
-            {% if tiers %}
-            <!--  Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Subscriptions</h2>
-            </div><!-- End Section Title -->
-            {% endif %}
-            {% for tier in tiers %}
-            {% if tier.visible_to_fans %}
-
-            <div class="tier-card">
-                <div>
-                    <h5 class="title">{{ tier.name }}</h5>
-                    <span class="price">K{{ tier.price }}/Month</span>
-                    <p class="description">{{ tier.description }}</p>
-                </div>
-                <div class="join-status">
-                    {% if request.user.is_authenticated and user|is_patron_subscribed:tier.id %}
-                    <!-- View Subscription details button -->
-                    <a type="button" class="btn-primary" href="{% url 'patron:subscription_detail' tier_id=tier.id  %}">
-                        <span class="fa fa-eye">View</span>
-                    </a>
-                    {% else %}
-
-                    <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post" class="tier-form">
-                        {% csrf_token %}
-                        <button class="btn-get-started join-btns">Join</button>
-                    </form>
+<div class="creator-container-home">
+    <div class="creator-profile column-ctr">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <div class="user-image">
+                <button class="btn btn-secondary">
+                    {% if creator.profile_image %}
+                    {% if creator.profile_image.url %}
+                    <img src="{{ creator.profile_image.url }}" height="100" width="100">
                     {% endif %}
-                </div>
+                    {% else %}
+                    <img src="{% static 'assets/img/avator.jpeg' %}" height="100" width="100">
+                    {% endif %}
+                </button>
             </div>
+            <span class="category">{{creator.creator_category}}</span>
+            <span class="name mt-3">@{{creator.patron_title}}</span>
+            <div class="creator-footer">
+                <p class="tier-url">{{ url }}</p>
+                <span class="tier-url" data-url="{{ url }}">
+                    <button class="copy-btn creator-items" data-clipboard-text="{{ url }}">
+                        <i>Copy</i>
+                    </button>
+                </span>
+            </div>
+            {% if creator.about %}
+            <div class="details"> <span>{{creator.about}} </span> </div>
             {% endif %}
-            {% endfor %}
+            <div class="content">
+                <h3 class="creator-items">Media</h3>
+                {% if media %}
+                <div class="tiers-card">
+                    {% include 'file_manager/_media_list.html' %}
+                </div>
+                {% endif %}
+
+                <div class="tier-card">
+                    <div>
+                        <h5 class="title">Buy me a coffee</h5>
+                        <span class="price">K50</span>
+                        <p class="description">Support me with a one-time contribution</p>
+                    </div>
+                    <form action="{% url 'checkout_support' creator.user %}" method="get">
+                        {% csrf_token %}
+                        <input type="hidden" name="amount" id="amount" value=50>
+                        <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
+
+                        <input type="hidden" value="{{creator.user}}" id="creator">
+                        <input type="hidden" value="{{request.user}}" id="user">
+
+                        <button id="support" class="btn-get-started" type="submit" name="button">Support</button>
+                    </form>
+
+                </div>
+                {% if tiers %}
+                <!--  Section Title -->
+                <div class="container section-title" data-aos="fade-up">
+                    <h2>Subscriptions</h2>
+                </div><!-- End Section Title -->
+                {% endif %}
+                {% for tier in tiers %}
+                {% if tier.visible_to_fans %}
+
+                <div class="tier-card">
+                    <div>
+                        <h5 class="title">{{ tier.name }}</h5>
+                        <span class="price">K{{ tier.price }}/Month</span>
+                        <p class="description">{{ tier.description }}</p>
+                    </div>
+                    <div class="join-status">
+                        {% if request.user.is_authenticated and user|is_patron_subscribed:tier.id %}
+                        <!-- View Subscription details button -->
+                        <a type="button" class="btn-primary"
+                            href="{% url 'patron:subscription_detail' tier_id=tier.id  %}">
+                            <span class="fa fa-eye">View</span>
+                        </a>
+                        {% else %}
+
+                        <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post" class="tier-form">
+                            {% csrf_token %}
+                            <button class="btn-get-started join-btns">Join</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
+    <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i
+                class="fa fa-twitter"></i></span> <span><i class="fa fa-facebook-f"></i></span> <span><i
+                class="fa fa-instagram"></i></span> <span><i class="fa fa-linkedin"></i></span>
+    </div>
+
 </div>
-<div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i
-            class="fa fa-twitter"></i></span> <span><i class="fa fa-facebook-f"></i></span> <span><i
-            class="fa fa-instagram"></i></span> <span><i class="fa fa-linkedin"></i></span>
-</div>
+
 <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">{{patrons}}
         <span class="follow">Patrons</span></span>
 </div>

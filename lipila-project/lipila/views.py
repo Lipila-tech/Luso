@@ -88,7 +88,6 @@ def creator_index(request, title):
         from file_manager.utils import get_user_files
 
         creator = get_creator_by_patron_title(title)
-        profile = get_patron_profile_by_patron_title(title)
         tiers = Tier.objects.filter(creator=creator.creatorprofile).values()
         patrons = get_creator_subscribers(creator.creatorprofile)
 

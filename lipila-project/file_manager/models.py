@@ -19,7 +19,7 @@ class UploadedFile(models.Model):
         upload_to=fs.path,
         storage=fs,
          validators=[FileExtensionValidator(
-             allowed_extensions=['mp3', 'wav', 'mp4', 'avi', 'mov'])])
+             allowed_extensions=['mp3', 'wav', 'mp4', 'avi', 'mov', 'pdf', 'png', 'jpg', 'jpeg'])])
 
     def __str__(self):
         return self.filename

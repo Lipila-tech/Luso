@@ -71,7 +71,7 @@ def create_creator_profile(request):
                           {'form': form, 'creator': creator})
     if request.user.is_staff:
         return redirect(reverse('staff_dashboard'))
-    elif request.user.is_creator:
+    elif request.user.is_creator or request.user.has_group:
         return redirect(reverse('patron:profile'))
     else:
         form = CreateCreatorProfileForm()

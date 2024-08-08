@@ -2,8 +2,10 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import get_list_or_404
 from .models import UploadedFile
 from django.http import Http404
+from django.db.models import Q
 
-def get_user_files(user, content_type)->list:
+
+def get_user_files(user, content_type) -> list:
     """
     Retrives all files belonging to a user.
 

@@ -2,29 +2,37 @@
 <div class="media-items-preview">
     <ul class="media-list-preview">
         {% for file in media %}
-        <li class="media-item-preview">
-            <div class="media-player-preview">
-                {% if file.content_type == 'video/mp4' %}
-                <video width="220" height="140" controls="">
-                    <source src="{{ file.filename | get_file_url }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                {% elif file.content_type == 'audio/mpeg' %}
-                <audio controls>
-                    <source src="{{ file.filename | get_file_url }}" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-                {% endif %}
+        <a href="{% url 'file_manager:media_play' file.filename %}" class="btn-sm m-btn">
+            <li class="media-item-preview">
+                <div class="media-player-preview">
+                    {% if file.content_type == 'video/mp4' %}
+                    <video width="40" height="100" controls="">
+                        <source src="{{ file.filename | get_file_url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% elif file.content_type == 'audio/mpeg' %}
+                    <div id="audio-player" class="media-player-a">
+                        <audio controls="controls" preload="preload">
+                            <source src="{{ file.filename | get_file_url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    {% elif file.content_type == 'application/pdf' %}
+                    {{file.filename}}
+                    {% elif file.content_type == 'image/png' %}
+                    <img src="{{ file.filename | get_file_url }}">
+                    {% endif %}
 
-                <div class="media-texts-preview">
-                    <p class="media-f-d-preview">{{file.short_description}}</p>
-                </div>
+                    <div class="media-texts-preview">
+                        <p class="media-f-d-preview">{{file.short_description}}</p>
+                    </div>
 
-                <div class="action-btns-preview">
-                    <a href="{% url 'file_manager:media_play' file.filename %}" class="edit-btn">Open</a>
+                    <div class="action-btns-preview">
+
+                    </div>
                 </div>
-            </div>
-        </li>
+            </li>
+        </a>
         {% endfor %}
     </ul>
 </div>
