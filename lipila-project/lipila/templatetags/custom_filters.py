@@ -7,6 +7,21 @@ from django.core.files.storage import FileSystemStorage
 register = template.Library()
 
 
+@register.filter(name='add_class_from_mime')
+def add_class_from_mime(value):
+    """
+    Takes a MIME type string (e.g., 'video/mp4') and returns the first part
+    (e.g., 'video') as a class.
+    """
+    if not isinstance(value, str):
+        return ''
+    try:
+        class_name = value.split('/')[0]
+        return class_name
+    except IndexError:
+        return ''
+
+
 @register.filter(name="add_class")
 def add_class(value, arg):
     return value.as_widget(attrs={"class": arg})

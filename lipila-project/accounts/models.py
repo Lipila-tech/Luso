@@ -84,7 +84,7 @@ class CreatorProfile(models.Model):
     profile_image = models.ImageField(
         upload_to='img/creators/', blank=True, null=True)
     account_number = models.CharField(max_length=20, blank=True, null=True)
-    about = models.TextField(max_length=300, blank=True, null=True)
+    about = models.TextField(max_length=150, blank=True, null=True)
     location = models.CharField(
         max_length=50, choices=zambia_provinces, default=zambia_provinces['01'])
     adults_group = models.BooleanField(default=False)

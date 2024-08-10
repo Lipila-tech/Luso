@@ -202,6 +202,56 @@ h6 {
   font-weight: 600;
 }
 
+/* Filter navigation */
+#myBtnContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+#myBtnContainer .filter-btn {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s ease;
+
+}
+
+#myBtnContainer .filter-btn:hover {
+  background-color: #0056b3;
+}
+
+#myBtnContainer .filter-active {
+  background-color: #28a745;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #myBtnContainer .filter-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    flex: 1 1 calc(50% - 10px);
+    /* Two buttons per row */
+  }
+}
+
+@media (max-width: 480px) {
+  #myBtnContainer .filter-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex: 1 1 100%;
+    /* One button per row */
+  }
+}
+
 
 /*--------------------------------------------------------------
 # Sections
@@ -491,14 +541,15 @@ hr .new1 {
   padding-bottom: 10px;
   padding-top: 10px;
   overflow-x: hidden;
-  margin: auto;
+  margin-top: -50px;
+  margin-bottom: -90px;
 }
 
 .creator-profile {
   flex-basis: calc(100% / 4);
   margin-left: 20px;
-  border-radius:  0.5%;
-  padding: 10px;
+  border-radius: 0.5%;
+  padding: 30px;
   overflow: hidden;
   background-color: var(--background-color);
   height: fit-content;
@@ -587,33 +638,33 @@ hr .new1 {
 /* Responsive Design */
 @media (max-width: 768px) {
   .tier-texts .title {
-      font-size: 1.3em;
+    font-size: 1.3em;
   }
-  
+
   .tier-texts .price {
-      font-size: 1.1em;
+    font-size: 1.1em;
   }
-  
+
   .tier-texts .description {
-      font-size: 0.9em;
+    font-size: 0.9em;
   }
 }
 
 @media (max-width: 480px) {
   .tier-card {
-      padding: 10px;
+    padding: 10px;
   }
-  
+
   .tier-texts .title {
-      font-size: 1.1em;
+    font-size: 1.1em;
   }
-  
+
   .tier-texts .price {
-      font-size: 1em;
+    font-size: 1em;
   }
-  
+
   .tier-texts .description {
-      font-size: 0.8em;
+    font-size: 0.8em;
   }
 }
 
@@ -704,6 +755,7 @@ hr .new1 {
 .category {
   font-size: 24px;
   font-weight: bold;
+  margin-bottom: -25px;
 }
 
 .title {
@@ -756,12 +808,17 @@ hr .new1 {
 }
 
 .details {
-  margin-bottom: 1.8em;
+  padding-bottom: 0px;
+  margin-bottom: 0;
 }
 
+.btn-creators {
+  position: relative;
+  top: 15px;
+}
 .user-image {
   padding: 3em 0;
-  
+  margin-bottom: -40px;
 }
 
 .user-image img {

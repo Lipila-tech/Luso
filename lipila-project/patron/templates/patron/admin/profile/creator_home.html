@@ -2,6 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load patron_tags %}
+{% load custom_filters %}
 {% block title %}Home{% endblock %}
 
 {% block extrastylesheets %}
@@ -16,7 +17,7 @@
 {% include '_modal.html' %}
 {% include "lipila/modals/_confirmation_payment.html" %}
 {% include "_header_frontend.html" %}
-<div class="creator-container-home">
+<div id="creator-container-home" class="creator-container-home">
     <div class="creator-profile column-ctr">
         <div class="d-flex flex-column justify-content-center align-items-center">
             <div class="user-image">
@@ -44,15 +45,7 @@
             <div class="details"> <span>{{creator.about}} </span> </div>
             {% endif %}
             {% include '_filter_nav.html' %}
-            <div class="content column {{media.content_type}}">
-                <h3 class="creator-items">Media</h3>
-                {% if media %}
-                <div class="tiers-card">
-                    <div class="container section-title" data-aos="fade-up">
-                    </div><!-- End Section Title -->
-                    {% include 'file_manager/_media_list.html' %}
-                </div>
-                {% endif %}
+            <div class="tier-content column">
                 <div class="tier-card">
                     <div class="tier-texts">
                         <h5 class="title">Buy me a coffee</h5>
@@ -103,6 +96,14 @@
                 {% endif %}
                 {% endfor %}
             </div>
+            <h3 class="creator-items">Media</h3>
+            {% if media %}
+            <div class="tiers-card">
+                <div class="container section-title" data-aos="fade-up">
+                </div><!-- End Section Title -->
+                {% include 'file_manager/_media_list.html' %}
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i

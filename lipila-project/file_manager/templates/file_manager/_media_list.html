@@ -3,7 +3,7 @@
     <ul class="media-list-preview">
         {% for file in media %}
         <a href="{% url 'file_manager:media_play' file.filename %}" class="btn-sm m-btn">
-            <li class="media-item-preview">
+            <li class="media-item-preview column {{file.content_type | add_class_from_mime}}">
                 <div class="media-player-preview">
                     {% if file.content_type == 'video/mp4' %}
                     <video width="40" height="100" controls="">
