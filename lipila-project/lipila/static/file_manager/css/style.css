@@ -1,10 +1,25 @@
-/* Media Form */
+/* Variables */
+
+/* Global Colors */
+:root {
+    --background-color-green: #b8f9bb;
+    --background-color: #f8f9fa;
+    --background-color-rgb: 255, 255, 255;
+    --default-color: #212529;
+    --default-color-rgb: 33, 37, 41;
+    --accent-color: #062;
+    --accent-color-rgb: 232, 69, 69;
+    --heading-color: #32353a;
+    --heading-color-rgb: 50, 53, 58;
+    --contrast-color: #ffffff;
+    --contrast-color-rgb: 255, 255, 255;
+}
+
 
 /* Form Styles */
 .media-edit-form {
     background-color: #fff;
     padding: 20px;
-    border: 2px solid #4caf50;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -25,7 +40,6 @@
 }
 
 .media-edit-form form input[type="submit"] {
-    background-color: #4caf50;
     color: #fff;
     padding: 10px 15px;
     border: none;
@@ -45,7 +59,7 @@
 }
 
 .media-container .media-player h4.owner {
-    color: #4caf50;
+    color: var(--accent-color);
     font-weight: bold;
 }
 
@@ -74,12 +88,10 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     margin: auto;
-    border: 1px dashed brown;
 }
 
 .media-player {
     background-color: #fff;
-    border: 2px solid purple;
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
@@ -90,14 +102,17 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    border: 2px solid gold;
 }
 
 .media-player-preview {
     background-color: #fff;
     border-radius: 10px;
     padding: 15px;
-    margin-bottom: 20px;
+    margin: 10px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 ul.media-list {
@@ -106,14 +121,12 @@ ul.media-list {
     margin: 0;
 }
 
-.media-player-v,
-.media-player-a {
+.media-player-v video {
     width: 100%;
-    height: 100px;
-    /* Set a fixed height for consistency */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%;
+    object-fit: cover;
+    /* Maintain aspect ratio and cover the entire area */
+    border-radius: 10px;
 }
 
 .media-player-a audio {
@@ -189,6 +202,10 @@ ul.media-list {
     padding: 20px;
 }
 
+.media-item-preview {
+    margin-bottom: 10px;
+}
+
 /* Media list preview styles */
 .media-list-preview {
     display: flex;
@@ -203,20 +220,18 @@ ul.media-list {
 /* Media player preview styles */
 .media-player-preview {
     padding: 10px;
-    border: 2px solid #fffff0;
+    width: 240px;
+    height: 240px;
 }
 
 /* Video player styles */
-.media-player-preview video {
-    width: 50%;
-    height: 50%;
+.media-player-preview video,
+.media-player-preview audio,
+.media-player-preview img {
+    width: 100%;
+    height: 100%;
 }
 
-/* Audio player styles */
-.media-player-preview audio {
-    width: 100%;
-    height: auto;
-}
 
 /* Responsive media preview */
 
@@ -237,6 +252,7 @@ ul.media-list {
     margin: 0;
     font-size: 14px;
     color: #333;
+    text-align: left;
 }
 
 /* Action buttons preview styles */

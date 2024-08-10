@@ -1,4 +1,4 @@
-{% extends 'layout_admin.html' %}
+{% extends 'layout_dark.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% load patron_tags %}
@@ -15,7 +15,7 @@
 {% include 'lipila/modals/loader.html' %}
 {% include '_modal.html' %}
 {% include "lipila/modals/_confirmation_payment.html" %}
-
+{% include "_header_frontend.html" %}
 <div class="creator-container-home">
     <div class="creator-profile column-ctr">
         <div class="d-flex flex-column justify-content-center align-items-center">
@@ -32,7 +32,7 @@
             </div>
             <span class="category">{{creator.creator_category}}</span>
             <span class="name mt-3">@{{creator.patron_title}}</span>
-            <div class="creator-footer">
+            <div class="creator-footer creator-items">
                 <p class="tier-url">{{ url }}</p>
                 <span class="tier-url" data-url="{{ url }}">
                     <button class="copy-btn creator-items" data-clipboard-text="{{ url }}">
@@ -43,59 +43,59 @@
             {% if creator.about %}
             <div class="details"> <span>{{creator.about}} </span> </div>
             {% endif %}
-            <div class="content">
+            {% include '_filter_nav.html' %}
+            <div class="content column {{media.content_type}}">
                 <h3 class="creator-items">Media</h3>
                 {% if media %}
                 <div class="tiers-card">
+                    <div class="container section-title" data-aos="fade-up">
+                    </div><!-- End Section Title -->
                     {% include 'file_manager/_media_list.html' %}
                 </div>
                 {% endif %}
-
                 <div class="tier-card">
-                    <div>
+                    <div class="tier-texts">
                         <h5 class="title">Buy me a coffee</h5>
                         <span class="price">K50</span>
                         <p class="description">Support me with a one-time contribution</p>
                     </div>
-                    <form action="{% url 'checkout_support' creator.user %}" method="get">
-                        {% csrf_token %}
-                        <input type="hidden" name="amount" id="amount" value=50>
-                        <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
+                    <div>
+                        <form action="{% url 'checkout_support' creator.user %}" method="get">
+                            {% csrf_token %}
+                            <input type="hidden" name="amount" id="amount" value=50>
+                            <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
 
-                        <input type="hidden" value="{{creator.user}}" id="creator">
-                        <input type="hidden" value="{{request.user}}" id="user">
+                            <input type="hidden" value="{{creator.user}}" id="creator">
+                            <input type="hidden" value="{{request.user}}" id="user">
 
-                        <button id="support" class="btn-get-started" type="submit" name="button">Support</button>
-                    </form>
-
+                            <button id="support" class="btn-get-started" name="button">Support</button>
+                        </form>
+                    </div>
                 </div>
                 {% if tiers %}
                 <!--  Section Title -->
-                <div class="container section-title" data-aos="fade-up">
-                    <h2>Subscriptions</h2>
-                </div><!-- End Section Title -->
                 {% endif %}
                 {% for tier in tiers %}
                 {% if tier.visible_to_fans %}
 
                 <div class="tier-card">
-                    <div>
+                    <div class="tier-texts">
                         <h5 class="title">{{ tier.name }}</h5>
                         <span class="price">K{{ tier.price }}/Month</span>
                         <p class="description">{{ tier.description }}</p>
                     </div>
-                    <div class="join-status">
+                    <div class="">
                         {% if request.user.is_authenticated and user|is_patron_subscribed:tier.id %}
                         <!-- View Subscription details button -->
-                        <a type="button" class="btn-primary"
+                        <a type="button" class="m-btn m-btn-primary"
                             href="{% url 'patron:subscription_detail' tier_id=tier.id  %}">
                             <span class="fa fa-eye">View</span>
                         </a>
                         {% else %}
 
-                        <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post" class="tier-form">
+                        <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post" class="">
                             {% csrf_token %}
-                            <button class="btn-get-started join-btns">Join</button>
+                            <button class="btn-get-started">Join</button>
                         </form>
                         {% endif %}
                     </div>
@@ -115,6 +115,10 @@
 <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">{{patrons}}
         <span class="follow">Patrons</span></span>
 </div>
+{% include '_footer.html' %}
+<!-- Scroll Top Button -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 {% endblock section %}
 {% block extrascripts %}
 

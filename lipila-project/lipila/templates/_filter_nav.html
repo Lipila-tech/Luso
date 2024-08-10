@@ -1,14 +1,15 @@
 <div id="myBtnContainer" class="breadcrumb">
-    <button class="filter-btn filter-active" onclick="filterSelection('all')"> Show all</button>
-    <button class="filter-btn" onclick="filterSelection('podcaster')"> Podcasters</button>
-    <button class="filter-btn" onclick="filterSelection('videocreator')"> Video Creators</button>
-    <button class="filter-btn" onclick="filterSelection('musician')"> Musician</button>
-    <button class="filter-btn" onclick="filterSelection('artist')"> Artists </button>
+    <button class="filter-btn filter-active" onclick="filterSelection('home')"> Home</button>
+    <button class="filter-btn" onclick="filterSelection('video')"> Videos</button>
+    <button class="filter-btn" onclick="filterSelection('audio')"> Audio</button>
+    <button class="filter-btn" onclick="filterSelection('application')"> Documents</button>
+    <button class="filter-btn" onclick="filterSelection('image')"> Images </button>
+    <button class="filter-btn" onclick="filterSelection('blog')"> Blog </button>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        filterSelection("all");
+        filterSelection("home");
     })
     function filterSelection(c) {
         var x, i;

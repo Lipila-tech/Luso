@@ -221,7 +221,7 @@ section,
   text-align: center;
 }
 
-.section-title h2 {
+.section-title h3 {
   font-size: 32px;
   font-weight: 700;
 }
@@ -409,11 +409,6 @@ section,
   transform: scale(1.5)
 }
 
-/* .btn {
-  height: 35px;
-  width: 190px;
-  border-radius: 10%
-} */
 
 .creator-info .title {
   font-size: 22px;
@@ -496,6 +491,7 @@ hr .new1 {
   padding-bottom: 10px;
   padding-top: 10px;
   overflow-x: hidden;
+  margin: auto;
 }
 
 .creator-profile {
@@ -504,7 +500,6 @@ hr .new1 {
   border-radius:  0.5%;
   padding: 10px;
   overflow: hidden;
-  border: 8px solid #fffff0;
   background-color: var(--background-color);
   height: fit-content;
 }
@@ -552,43 +547,76 @@ hr .new1 {
   margin-bottom: 20px;
 }
 
+/* Tier card */
 .tier-card {
-  background-color: #cbcfc6;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  border: 2px solid midnightblue;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  max-width: 400px;
+  margin: 10px auto;
 }
 
-.tier-card .price {
-  text-align: left;
-  color: #000;
+.tier-texts {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tier-texts .title {
+  font-size: 1.5em;
+  margin: 0.5em 0;
+}
+
+.tier-texts .price {
+  font-size: 1.2em;
   font-weight: bold;
-  font-size: 0.95rem;
+  color: #2c3e50;
+  margin: 0.5em 0;
 }
 
-.tier-card div {
-  flex: 1 1 100%;
-  padding: 10px 0;
-  box-sizing: border-box;
+.tier-texts .description {
+  font-size: 1em;
+  color: #7f8c8d;
+  margin: 0.5em 0;
 }
 
-@media (min-width: 768px) {
-  .tier-card div {
-    flex: 1 1 45%;
-    padding: 10px;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tier-texts .title {
+      font-size: 1.3em;
   }
-
-  .tier-card .price {
-    text-align: left;
-    color: #000;
-    font-weight: bold;
+  
+  .tier-texts .price {
+      font-size: 1.1em;
+  }
+  
+  .tier-texts .description {
+      font-size: 0.9em;
   }
 }
+
+@media (max-width: 480px) {
+  .tier-card {
+      padding: 10px;
+  }
+  
+  .tier-texts .title {
+      font-size: 1.1em;
+  }
+  
+  .tier-texts .price {
+      font-size: 1em;
+  }
+  
+  .tier-texts .description {
+      font-size: 0.8em;
+  }
+}
+
 
 /* creator summary */
 #withdrawn-total {
