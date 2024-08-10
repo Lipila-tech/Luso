@@ -51,7 +51,7 @@ class ContributionsAdmin(admin.ModelAdmin):
 
 class TierAdmin(admin.ModelAdmin):
     list_display = ('name', 'creator', 'price', 'description',
-                    'visible_to_fans', 'updated_at')
+                    'visible_to_fans', 'updated_at', 'is_editable')
 
 
 class PaymentAdmin(admin.ModelAdmin):

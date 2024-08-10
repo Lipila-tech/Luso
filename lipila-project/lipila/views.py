@@ -521,6 +521,7 @@ def checkout_subscription(request, id):
     return render(request, 'lipila/checkout/checkout_subscription.html', context)
 
 
+@login_required
 def checkout_support(request, payee):
     url = reverse('subscriptions_history')
     if request.method == 'POST':

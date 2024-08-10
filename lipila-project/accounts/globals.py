@@ -1,3 +1,9 @@
+DEFAULT_PRICES = {
+    '01': 20,
+    '02': 35,
+    '03': 50
+}
+
 CREATOR_CATEGORY_CHOICES = (
     ('', ''),
     ('artist', 'Artist'),

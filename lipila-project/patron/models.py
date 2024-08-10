@@ -4,37 +4,31 @@ from accounts.models import CreatorProfile
 from api.utils import generate_reference_id
 
 from accounts.globals import (
-    CITY_CHOICES, STATUS_CHOICES, CREATOR_CATEGORY_CHOICES,
-    ISP_CHOICES)
+    STATUS_CHOICES,
+    ISP_CHOICES, DEFAULT_PRICES)
 
-
-ONETIME_AMOUNT = 100
-FAN_AMOUNT = 25
-SUPERFAN_AMOUNT = 50
 
 
 class Tier(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=300)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.IntegerField()
     creator = models.ForeignKey(
         CreatorProfile, on_delete=models.CASCADE, related_name='tiers')
     updated_at = models.DateTimeField(auto_now=True)
     visible_to_fans = models.BooleanField(default=True)
+    is_editable = models.BooleanField(default=False)
 
     @classmethod
     def create_default_tiers(cls, creator):
         # Create default tiers if they don't exist
         defaults = [
-            {"name": "Onetime", "price": ONETIME_AMOUNT,
-                "desc": "Make a one-time Contribution to support the creator's work.",
-                'creator': creator, 'visible': True},
-            {"name": "Fan", "price": FAN_AMOUNT,
-                "desc": "Support the creator and get access to exclusive content.",
-                'creator': creator, 'visible': True},
-            {"name": "Superfan", "price": SUPERFAN_AMOUNT,
-                "desc": "Enjoy additional perks and behind-the-scenes content.",
-                'creator': creator, 'visible': True}
+            {"name": "Buy me a coffee", "price": DEFAULT_PRICES['03'],
+                "desc": "Make a one-time Contribution to support my work",
+                'creator': creator, 'visible_to_fans': True, 'editable': False},
+            {"name": "Custom Tier", "price": DEFAULT_PRICES['01'],
+                "desc": "Support my work and get access to exclusive content.",
+                'creator': creator, 'visible_to_fans': False, 'editable': True},
         ]
         for tier_data in defaults:
             Tier.objects.create(
@@ -42,7 +36,8 @@ class Tier(models.Model):
                 description=tier_data["desc"],
                 price=tier_data['price'],
                 creator=tier_data['creator'],
-                visible_to_fans=tier_data['visible']
+                visible_to_fans=tier_data['visible_to_fans'],
+                is_editable=tier_data['editable'],
             )
 
     def __str__(self):

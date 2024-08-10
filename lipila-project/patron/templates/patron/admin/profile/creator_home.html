@@ -46,25 +46,6 @@
             {% endif %}
             {% include '_filter_nav.html' %}
             <div class="tier-content column">
-                <div class="tier-card">
-                    <div class="tier-texts">
-                        <h5 class="title">Buy me a coffee</h5>
-                        <span class="price">K50</span>
-                        <p class="description">Support me with a one-time contribution</p>
-                    </div>
-                    <div>
-                        <form action="{% url 'checkout_support' creator.user %}" method="get">
-                            {% csrf_token %}
-                            <input type="hidden" name="amount" id="amount" value=50>
-                            <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
-
-                            <input type="hidden" value="{{creator.user}}" id="creator">
-                            <input type="hidden" value="{{request.user}}" id="user">
-
-                            <button id="support" class="btn-get-started" name="button">Support</button>
-                        </form>
-                    </div>
-                </div>
                 {% if tiers %}
                 <!--  Section Title -->
                 {% endif %}
@@ -78,6 +59,20 @@
                         <p class="description">{{ tier.description }}</p>
                     </div>
                     <div class="">
+                        {% if not tier.is_editable %}
+                        <div>
+                            <form action="{% url 'checkout_support' creator.user %}" method="get">
+                                {% csrf_token %}
+                                <input type="hidden" name="amount" id="amount" value=50>
+                                <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>
+
+                                <input type="hidden" value="{{creator.user}}" id="creator">
+                                <input type="hidden" value="{{request.user}}" id="user">
+
+                                <button id="support" class="btn-get-started" name="button">Support</button>
+                            </form>
+                        </div>
+                        {% else %}
                         {% if request.user.is_authenticated and user|is_patron_subscribed:tier.id %}
                         <!-- View Subscription details button -->
                         <a type="button" class="m-btn m-btn-primary"
@@ -85,11 +80,11 @@
                             <span class="fa fa-eye">View</span>
                         </a>
                         {% else %}
-
                         <form action="{% url 'patron:join_tier' tier_id=tier.id %}" method="post" class="">
                             {% csrf_token %}
                             <button class="btn-get-started">Join</button>
                         </form>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>

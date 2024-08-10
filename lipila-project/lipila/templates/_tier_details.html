@@ -35,11 +35,13 @@
             </p>
             
             <div class="row">
+                {% if subscription.tier.id %}
                 <button id="subscribe-btn" data-url="{% url 'checkout_subscription' subscription.tier.id %}" class="m-btn btn-sm m-btn-primary"
                     type="submit" name="button">Pay</button>
 
                 <button data-url="{% url 'unsubscribe' subscription.tier.id %}" id="unsubscribe-btn" class="m-btn btn-sm btn-danger" type="button"
                     name="button">Unsubscribe</button>
+                {% endif %}
                 <div class="d-flex justify-content-center">
                     <div class="col-12 mb-3">
                     </div>

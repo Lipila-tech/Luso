@@ -67,8 +67,7 @@ def auth_receiver(request):
     if user is not None:
         login(request, user)
         request.session['user_data'] = user_data
-        messages.success(request, "Logged in successfully")
-        return redirect(reverse('patron:create_creator_profile'))
+        return redirect(reverse('patron:profile'))
     else:
         messages.error(request, "Authentication failed")
         return redirect(reverse('accounts:signup'))
@@ -138,9 +137,10 @@ def custom_login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                if user.has_group:
+                next_url = request.POST.get('next', 'profile')
+                if user.has_group or user.is_staff:
                     messages.success(request, f"Welcome back, {user.username}!")
-                    return redirect('patron:profile')
+                    return redirect(next_url)
                 else:
                     return redirect('patron:create_creator_profile')
             else:
@@ -148,5 +148,6 @@ def custom_login_view(request):
         else:
             messages.error(request, "Invalid username or password.")
     else:
+        next_url = request.GET.get('next', '')
         form = AuthenticationForm()
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'registration/login.html', {'form': form, 'next': next_url})

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views import View
+from django.http import Http404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 # custom modules
@@ -62,7 +63,7 @@ def create_creator_profile(request):
             creator_profile.save()
             messages.success(
                 request, "Your profile data has been saved.")
-            return redirect(reverse('patron:profile'))
+            return redirect(reverse('patron:tiers'))
         else:
             messages.error(
                 request, "Failed to save profile. data")
@@ -71,7 +72,7 @@ def create_creator_profile(request):
                           {'form': form, 'creator': creator})
     if request.user.is_staff:
         return redirect(reverse('staff_dashboard'))
-    elif request.user.is_creator or request.user.has_group:
+    elif request.user.is_creator:
         return redirect(reverse('patron:profile'))
     else:
         form = CreateCreatorProfileForm()
@@ -262,11 +263,15 @@ def subscription_detail(request, tier_id):
     """
     Renders a detailed view of a tier
     """
-    user_object = get_object_or_404(get_user_model(), username=request.user)
+    context = {}
     tier = Tier.objects.get(pk=tier_id)
-    subscription = TierSubscriptions.objects.get(
-        tier=tier, patron=request.user)
-    return render(request, 'patron/admin/pages/view_subscription_detail.html', {'subscription': subscription, 'tier_id': tier_id})
+    try:
+        context['tier_id'] = tier_id
+        context['subscription'] = get_object_or_404(TierSubscriptions,
+            tier=tier, patron=request.user)
+    except Http404:
+        pass
+    return render(request, 'patron/admin/pages/view_subscription_detail.html', context)
 
 
 # PAYMENT HANDLING VIEWS
