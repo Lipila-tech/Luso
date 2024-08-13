@@ -444,11 +444,6 @@ def contact(request):
     return render(request, 'index.html', context)
 
 
-@login_required
-def kyc(request):
-    return render(request, 'lipila/admin/kyc.html')
-
-
 # @login_required
 def checkout_subscription(request, id):
     url = reverse('subscriptions_history')

@@ -48,17 +48,16 @@
         <div class="card">
           <div class="card-body pt-3">
             <ul class="nav nav-tabs nav-tabs-bordered">
-
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'patron:profile' %}">Overview</a>
-              </li>
               {% if request.user.creatorprofile %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'patron:update_profile' user=user %}">Edit Patron Info</a>
+                <a class="nav-link" href="{% url 'patron:kyc' %}">Overview</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'patron:update_profile' user=user %}">Patron Patron</a>
               </li>
               {% endif %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'patron:update_personal_info' user=user %}">Edit Personal Info</a>
+                <a class="nav-link" href="{% url 'patron:update_personal_info' user=user %}">Personal Info</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'password_change' %}">Change Password</a>

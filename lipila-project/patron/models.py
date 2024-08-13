@@ -12,7 +12,7 @@ from accounts.globals import (
 class Tier(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=300)
-    price = models.IntegerField()
+    price = models.IntegerField(choices=DEFAULT_PRICES)
     creator = models.ForeignKey(
         CreatorProfile, on_delete=models.CASCADE, related_name='tiers')
     updated_at = models.DateTimeField(auto_now=True)

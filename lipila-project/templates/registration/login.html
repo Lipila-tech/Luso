@@ -29,6 +29,7 @@
     <a class="small" href="{% url 'password_reset' %}">Forgot password?</a>
     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'accounts:signup' %}"
             style="color: #393f81;">Register here</a></p>
+    <!-- Google signin -->
     <div class="container">
         {% if request.session.user_data %}
         <div>
@@ -43,11 +44,60 @@
                 data-login_uri="{{LOGIN_URI}}" data-auto_select="false" data-itp_support="true">
             </div>
 
-            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_black" data-text="signin_with"
-                data-size="large" data-logo_alignment="left">
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_black"
+                data-text="signin_with" data-size="large" data-logo_alignment="left">
             </div>
         </div>
         {% endif %}
     </div>
+    <!-- FB Signin -->
+    <div class="fb-login-button" data-width="800" data-size="" data-button-type="" data-layout="" data-auto-logout-link="true" data-use-continue-as="true"></div>
 </div>
-{% endblock page %}
+
+<!-- Set the element id for the JSON response -->
+
+<p id="profile"></p>
+<script>
+    // FB Signin code
+
+
+    // < !--Add the Facebook SDK for Javascript-- >
+
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) { return; }
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk')
+    );
+
+
+    window.fbAsyncInit = function () {
+        // < !--Initialize the SDK with your app and the Graph API version for your app-- >
+        FB.init({
+            appId: '988995782712101',
+            xfbml: true,
+            version: 'v20.0'
+        });
+        // < !--If you are logged in, automatically get your name and email adress, your public profile information-- >
+        FB.login(function (response) {
+            if (response.authResponse) {
+                console.log('Welcome! Fetching your information.... ');
+                FB.api('/me', { fields: 'name, email' }, function (response) {
+                    document.getElementById("profile").innerHTML = "Good to see you, " + response.name + ". i see your email address is " +
+                        response.email
+                });
+            } else {
+                // < !--If you are not logged in, the login dialog will open for you to login asking for permission to get your public profile and email-- >
+                console.log('User cancelled login or did not fully authorize.');
+            }
+        });
+    };
+
+</script>
+
+{% endblock %}
+{% block extrascripts %}
+
+{%endblock extrascripts%}

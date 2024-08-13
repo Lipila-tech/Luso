@@ -6,8 +6,7 @@
 */
 
 
-// checkout
-
+// Checkout js code
 document.addEventListener('DOMContentLoaded', function () {
   var supportBtn = document.querySelector('#support');
 
@@ -93,18 +92,18 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
- // Function to get the CSRF token from cookies (for Django)
+// Function to get the CSRF token from cookies (for Django)
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.startsWith(name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-          }
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
+    }
   }
   return cookieValue;
 }

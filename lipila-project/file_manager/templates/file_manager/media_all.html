@@ -39,7 +39,7 @@
                     <p>{{file.tiers}}</p>
                 </div>
                 
-                <div class="action-btns">
+                <div class="action-btns media-texts-preview">
                     {% if request.user == file.owner  and request.user.creatorprofile %}
                     <a href="{% url 'file_manager:media_edit' filename=file.filename %}" class="edit-btn">Settings</a>
                     <a href="{% url 'file_manager:media_upload'%}" class="edit-btn">Add media</a>

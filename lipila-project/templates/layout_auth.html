@@ -2,17 +2,14 @@
 {% load static %}
 {% load custom_filters %}
 {% block section %}
-
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v20.0&appId=988995782712101" nonce="MwwNMO1h"></script>
 <section class="vh-100" style="background-color: #9A616D;">
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-xl-10">
                 <div class="card" style="border-radius: 1rem;">
                     <div class="row g-0">
-                        <div class="col-md-6 col-lg-5 d-none d-md-block">
-                            <img src="{% static 'assets/img/ai1.jpeg' %}" alt="auth image" class="img-fluid"
-                                style="border-radius: 1rem 0 0 1rem;" />
-                        </div>
                         <div class="col-md-6 col-lg-7 d-flex align-items-center">
                             <div class="card-body p-4 p-lg-5 text-black">
                                 {% if messages %}

@@ -41,10 +41,67 @@ def profile(request):
         try:
             creator = request.user.creatorprofile
             context['user'] = get_user_object(creator)
-            return render(request, 'patron/admin/profile/profile_creator.html', context)
+            return render(request, 'patron/admin/profile/kyc.html', context)
         except CreatorProfile.DoesNotExist:
             context['user'] = get_user_object(request.user)
             return render(request, 'patron/admin/profile/profile_patron.html', context)
+
+
+
+@login_required
+def kyc(request):
+    return render(request, 'patron/admin/profile/kyc.html')
+
+
+class ProfileEdit(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        creator = request.user.creatorprofile
+        form1 = EditCreatorProfileForm(instance=creator, prefix='form1')
+        form2 = DefaultUserChangeForm(instance=request.user, prefix='form2')
+        context = {'form1': form1, 'form2': form2, 'user': request.user}
+        return render(request,
+                      'patron/admin/profile/edit_patron_info.html',
+                      context)
+
+    def post(self, request, *args, **kwargs):
+        creator = request.user.creatorprofile
+        form1 = EditCreatorProfileForm(
+            request.POST, request.FILES, instance=creator, prefix='form1')
+        form2 = DefaultUserChangeForm(
+            request.POST, request.FILES, instance=request.user, prefix='form2')
+        if form1.is_valid() or form2.is_valid:
+            form1.save()
+            form2.save()
+            messages.success(
+                request, "Your profile has been updated.")
+            return redirect(reverse('patron:profile'))
+        else:
+            messages.error(
+                request, "Failed to update profile.")
+            return redirect(reverse('patron:profile'))
+
+
+class EditPersonalInfo(LoginRequiredMixin, View):
+    def get(self, request, user, *args, **kwargs):
+        form = DefaultUserChangeForm(instance=request.user)
+        return render(request,
+                      'patron/admin/profile/edit_personal_info.html',
+                      {'form': form, 'user': request.user})
+
+    def post(self, request, user, *args, **kwargs):
+        form = DefaultUserChangeForm(
+            request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Your profile has been updated.")
+            return redirect(reverse('patron:profile'))
+        else:
+            messages.error(
+                request, "Failed to update profile.")
+            return redirect(reverse('patron:profile'))
+
+
 
 
 @login_required
@@ -89,50 +146,6 @@ def continue_has_fan(request):
     messages.success(
         request, "Your profile data has been saved.")
     return redirect(reverse('patron:creators'))
-
-
-class ProfileEdit(LoginRequiredMixin, View):
-    def get(self, request, user, *args, **kwargs):
-        creator = request.user.creatorprofile
-        form = EditCreatorProfileForm(instance=creator)
-        return render(request,
-                      'patron/admin/profile/edit_patron_info.html',
-                      {'form': form, 'user': request.user})
-
-    def post(self, request, user, *args, **kwargs):
-        creator = request.user.creatorprofile
-        form = EditCreatorProfileForm(
-            request.POST, request.FILES, instance=creator)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                request, "Your profile has been updated.")
-            return redirect(reverse('patron:profile'))
-        else:
-            messages.error(
-                request, "Failed to update profile.")
-            return redirect(reverse('patron:profile'))
-
-
-class EditPersonalInfo(LoginRequiredMixin, View):
-    def get(self, request, user, *args, **kwargs):
-        form = DefaultUserChangeForm(instance=request.user)
-        return render(request,
-                      'patron/admin/profile/edit_personal_info.html',
-                      {'form': form, 'user': request.user})
-
-    def post(self, request, user, *args, **kwargs):
-        form = DefaultUserChangeForm(
-            request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                request, "Your profile has been updated.")
-            return redirect(reverse('patron:profile'))
-        else:
-            messages.error(
-                request, "Failed to update profile.")
-            return redirect(reverse('patron:profile'))
 
 
 @login_required
@@ -213,7 +226,6 @@ def view_tiers(request):
                   {'user': request.user, 'tiers': tiers})
 
 
-
 @login_required
 def subscribe_view(request, tier_id):
     """Handles user subscription to a creator.
@@ -268,7 +280,7 @@ def subscription_detail(request, tier_id):
     try:
         context['tier_id'] = tier_id
         context['subscription'] = get_object_or_404(TierSubscriptions,
-            tier=tier, patron=request.user)
+                                                    tier=tier, patron=request.user)
     except Http404:
         pass
     return render(request, 'patron/admin/pages/view_subscription_detail.html', context)
@@ -325,12 +337,12 @@ def payments_history(request):
         creator = request.user.creatorprofile
         payments = SubscriptionPayments.objects.filter(
             payee__tier__creator=creator)
-        
+
         contributions = Contributions.objects.filter(payee=request.user)
         context['contributions'] = contributions
         context['payments'] = payments
         return render(request, 'patron/admin/pages/payments_received.html', context)
-    
+
     except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
         payments = SubscriptionPayments.objects.filter(
             payee__patron=request.user)

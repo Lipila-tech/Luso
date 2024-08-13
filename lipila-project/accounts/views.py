@@ -148,6 +148,6 @@ def custom_login_view(request):
         else:
             messages.error(request, "Invalid username or password.")
     else:
-        next_url = request.GET.get('next', '')
+        next_url = request.GET.get('next', 'patron:profile')
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form, 'next': next_url})

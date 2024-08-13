@@ -21,10 +21,17 @@
       {% endif %}
       <td>
         <!-- Update tier buttons -->
+        {% if not tier.is_editable %}
         <button type="button" class="update-tier m-btn btn-sm m-btn-primary"
           data-form-url="{% url 'update_tier' tier.id %}">
           Edit
         </button>
+        {% else %}
+        <button type="button" class="update-tier m-btn btn-sm m-btn-primary"
+          data-form-url="{% url 'update_tier' tier.id %}">
+          Edit
+        </button>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

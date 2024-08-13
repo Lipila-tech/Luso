@@ -1,30 +1,39 @@
-{% extends 'layout_profile.html' %}
+{% extends 'layout_admin.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}Edit Patron {% endblock %}
-{% block content %}
+{% block section %}
 
-<div class="col-xl-8">
-  <div class="card">
-    <div class="card-body pt-3">
-      <!-- Bordered Tabs -->
-      <div class="tab-content pt-2">
-        <!-- Profile Edit Form -->
-        <form action="{% url 'patron:update_profile' user=user %}" , method="post" enctype="multipart/form-data">
-          <div class="row mb-3">
-            {% csrf_token %}
-            {{form | crispy}}
-          </div>
-          <div class="text-center">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-          </div>
-        </form>
-      </div>
-      <!-- End Profile Edit Form -->
+
+<div class="profile">
+  <div class="user-profile-image">
+    <h3 class="profile-title">Profile Image</h3>
+    <div class="profile-card">
+      {% if request.user.creatorprofile.profile_image %}
+      {% if request.user.creatorprofile.profile_image.url %}
+      <img src="{{ request.user.creatorprofile.profile_image.url }}" alt="Profile" class="rounded-circle">
+      {% endif %}
+      {% else %}
+      <img src="{% static 'assets/img/avator.jpeg' %}" alt="default Profile image" class="rounded-circle">
+      {% endif %}
     </div>
-  </div><!-- End Bordered Tabs -->
-</div>
+  </div>
+  <div class="profile-body">
+    <!-- Profile Edit Forms -->
+    <form action="{% url 'patron:update_profile' user=user %}" , method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        {% csrf_token %}
+        <h3 class="profile-title">Person Info</h3>
+        {{form2 }}
+        <h3 class="profile-title">Patron Info</h3>
+        {{form1 }}
+      </div>
+      <div class="profile-save-btn">
+        <button type="submit" class="m-btn m-btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+  <!-- End Profile Edit Forms -->
 </div>
 
-
-{% endblock %}
+{% endblock section %}

@@ -19,9 +19,6 @@ urlpatterns = [
     path('checkout/<str:payee>/', views.checkout_support, name ="checkout_support"),
     path('checkout/visa/', views.create_purchase, name ="create_purchase"),
 
-    # cretaor kyc
-    path('kyc/overview', views.kyc, name='kyc'),
-
     # Luso public urls
     path('', views.index, name='index'),
     path('<str:title>/', views.creator_index, name='creator_index'),

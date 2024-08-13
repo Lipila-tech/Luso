@@ -10,7 +10,8 @@ class DefaultUserChangeForm(UserChangeForm):
         model = get_user_model()
         # Specify fields to exclude
         exclude = ('username', 'email', 'last_login', 'date_joined', 'groups',
-                   'user_permissions', 'is_staff', 'password', 'is_superuser', 'is_active')
+                   'user_permissions', 'is_staff', 'password', 'is_superuser',
+                   'is_active', 'has_group', 'is_creator')
 
 
 class WithdrawalRequestForm(forms.ModelForm):
@@ -31,8 +32,8 @@ class CreateCreatorProfileForm(forms.ModelForm):
         ]
 
         labels = {
-            'adults_group':'My page is not suitable for people under 18.',
-            'patron_title':'Name your Page',
+            'adults_group': 'My page is not suitable for people under 18.',
+            'patron_title': 'Name your Page',
             'creator_category': 'Choose your category',
             'location': 'Choose your location',
         }
@@ -54,17 +55,22 @@ class EditCreatorProfileForm(forms.ModelForm):
             'patron_title',
             'about',
             'creator_category',
+            'creator_id_file',
             'location',
             'account_number',
             'facebook_url',
             'twitter_url',
         ]
+
+        labels = {
+            'creator_id_file': 'Upload ID*'
+        }
         widgets = {
             # Restrict file types
             'profile_image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
 
-        
+
 class EditTiersForm(forms.ModelForm):
     class Meta:
         model = Tier
