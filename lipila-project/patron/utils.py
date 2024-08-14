@@ -160,20 +160,20 @@ def get_creator_url(view_name, patron_title, domain=None):
         str: The absolute URL for the specified view and arguments.
     """
     relative_url = reverse(view_name)
-    title = remove_white_spaces(patron_title)
+    # title = remove_white_spaces(patron_title)
     if domain:
         # Use the provided domain
-        absolute_url = f"{domain}{relative_url}{title}"
+        absolute_url = f"{domain}{relative_url}{patron_title}"
     else:
         # Try to get domain from request (if context) or settings
         try:
             from django.contrib.sites.shortcuts import get_current_site
             current_site = get_current_site(None)
-            absolute_url = f"{current_site.domain}{relative_url}{title}"
+            absolute_url = f"{current_site.domain}{relative_url}{patron_title}"
         except:
             # Fallback to ALLOWED_HOSTS if request not available
             from django.conf import settings
             # Assuming single allowed host for simplicity
             allowed_hosts = settings.ALLOWED_HOSTS[0]
-            absolute_url = f"{allowed_hosts}{relative_url}{title}"
+            absolute_url = f"{allowed_hosts}{relative_url}{patron_title}"
     return absolute_url

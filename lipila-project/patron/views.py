@@ -50,7 +50,8 @@ def profile(request):
 
 @login_required
 def kyc(request):
-    return render(request, 'patron/admin/profile/kyc.html')
+    context = {'is_verified': False}
+    return render(request, 'patron/admin/profile/kyc.html', context)
 
 
 class ProfileEdit(LoginRequiredMixin, View):
@@ -173,10 +174,10 @@ def dashboard(request):
     else:
         try:
             # Creator summary
-            creator = CreatorProfile.objects.get(user=request.user)
+            creator = request.user.creatorprofile
             total_payments = calculate_total_payments(creator)
             total_contributions = calculate_total_contributions(
-                get_user_model().objects.get(username=creator))
+                get_user_model().objects.get(username=request.user))
             withdrawals = calculate_total_withdrawals(creator)
             balance = calculate_creators_balance(creator)
             context['summary'] = {
@@ -188,7 +189,7 @@ def dashboard(request):
                 'updated_at': timezone.now,
                 'last_login_time': last_login_time
             }
-            creator = request.user.creatorprofile
+           
             url = get_creator_url('index', creator, domain='localhost:8000')
             context['user'] = get_user_object(creator)
             context['url'] = url

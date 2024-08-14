@@ -31,6 +31,9 @@
                     {% endif %}
                 </button>
             </div>
+            {% if creator.is_verified %}
+            <span class="badge badge-success">Verified</span>
+            {% endif %}
             <span class="category">{{creator.creator_category}}</span>
             <span class="name mt-3">@{{creator.patron_title}}</span>
             <div class="creator-footer creator-items">

@@ -78,6 +78,20 @@ h6 {
   }
 }
 
+/* 
+--------------------------
+# Badge
+--------------------------
+ */
+.badge-success {
+  background-color: #28a745;
+  color: white;
+  padding: 3px 6px;
+  border-radius: 12px;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
 
 /*
   ---------------------------------

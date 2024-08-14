@@ -191,12 +191,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # server will be running is safe to receive requests
 # from
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.0.190']
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SAMESITE = 'None'
 
 # Bootstrap
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"

@@ -37,6 +37,9 @@
         <li>
             <a href="{% url 'patron:kyc' %}">
                 <i class="bi bi-circle"></i><span>KYC</span>
+                {% if request.user.creatorprofile.is_verified %}
+                <span class="badge badge-success">Verified</span>
+                {% endif %}
             </a>
         </li>
     </ul>
@@ -56,7 +59,7 @@
         </li>
         <li>
             <a href="{% url 'withdrawals_history' %}">
-                <i class="bi bi-circle"></i><span>Cashouts</span>
+                <i class="bi bi-circle"></i><span>Payouts</span>
             </a>
         </li>
         <li>
