@@ -35,7 +35,7 @@ def index(request):
 def profile(request):
     context = {}
     if request.user.is_staff:
-        messages.error('Contact Admin to update your profile')
+        messages.error(request, 'Contact Admin to update your profile')
         return redirect(reverse('staff_dashboard'))
     else:
         try:

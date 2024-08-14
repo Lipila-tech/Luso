@@ -90,7 +90,7 @@ class WithdrawalModelForm(BSModalModelForm):
 class TierModelForm(BSModalModelForm):
     class Meta:
         model = Tier
-        exclude = ['updated_at', 'creator']
+        exclude = ['updated_at', 'creator', 'is_editable']
 
 
 class ContactForm(forms.ModelForm):

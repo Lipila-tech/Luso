@@ -1,8 +1,8 @@
-DEFAULT_PRICES = {
-    '01': 20,
-    '02': 35,
-    '03': 50
-}
+DEFAULT_PRICES = [
+    (10, 'K10'),
+    (20, 'K20'),
+    (50, 'K50'),
+]
 
 CREATOR_CATEGORY_CHOICES = (
     ('', ''),

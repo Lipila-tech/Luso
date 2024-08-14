@@ -8,7 +8,6 @@ from accounts.globals import (
     ISP_CHOICES, DEFAULT_PRICES)
 
 
-
 class Tier(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=300)
@@ -41,7 +40,7 @@ class Tier(models.Model):
             )
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} - {self.get_price_display()}"
 
 
 class TierSubscriptions(models.Model):

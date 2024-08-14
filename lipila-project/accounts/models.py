@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import RegexValidator
 from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext_lazy as _
+import mimetypes
 # custom models
 from .globals import (
     default_socials, CREATOR_CATEGORY_CHOICES, zambia_provinces)
@@ -104,3 +105,11 @@ class CreatorProfile(models.Model):
 
     def __str__(self):
         return self.patron_title
+
+    @property
+    def file_type(self):
+        if self.creator_id_file:
+            file_path = self.creator_id_file.path
+            file_type, _ = mimetypes.guess_type(file_path)
+            return file_type
+        return None
