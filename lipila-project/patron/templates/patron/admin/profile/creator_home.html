@@ -117,5 +117,39 @@
         class="bi bi-arrow-up-short"></i></a>
 {% endblock section %}
 {% block extrascripts %}
+<script>
+    // Checkout js code
+    document.addEventListener('DOMContentLoaded', function () {
+        var supportBtn = document.querySelector('#support');
+
+        supportBtn.addEventListener('click', function () {
+
+            var tierId = document.querySelector("#creator").value;
+            // const formData = new FormData();
+            // formData.append('tier_id', tierId);  // Example form data
+            // formData.append('payer_account_number', '123456789');  // Example form data
+
+
+            var paymentData = {
+                tier_id: tierId
+            }
+
+            fetch('http://192.168.0.190:8000/checkout/lpa/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') // Include CSRF token for Django
+                },
+                body: JSON.stringify(paymentData)
+            })
+                .then(function () {
+                    console.log('success');
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+</script>
 
 {%endblock extrascripts%}

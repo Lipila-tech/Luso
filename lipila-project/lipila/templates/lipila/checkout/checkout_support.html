@@ -82,7 +82,7 @@
         var closeMtnModal = document.getElementById('close-mtn-modal');
         var closeAirtelModal = document.getElementById('close-airtel-modal');
         var closeVisaModal = document.getElementById('close-visa-modal');
-        
+
 
         mtnButton.addEventListener('click', function () {
             mtnModal.style.display = 'flex';
@@ -120,6 +120,57 @@
             if (event.target == visaModal) {
                 visaModal.style.display = 'none';
             }
+        });
+    });
+</script>
+<script>
+    // Braintree gateway
+    document.addEventListener('DOMContentLoaded', function () {
+        var button = document.querySelector('#submit-button');
+
+        var clientTokenElement = document.querySelector('#clientToken');
+        var clientToken = clientTokenElement.value;
+        var container = document.getElementById("dropin-container");
+
+        braintree.dropin.create({
+            authorization: clientToken,
+            container: container,
+            dataCollector: true
+        }, function (createErr, instance) {
+            if (createErr) {
+                // Handle error in Drop-in creation
+                return;
+            }
+            button.addEventListener('click', function () {
+                instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+                    if (requestPaymentMethodErr) {
+                        // Handle error in requesting payment method
+                        return;
+                    }
+
+                    // Send the payload.nonce and payload.deviceData to the backend
+                    var paymentData = {
+                        nonce: payload.nonce,
+                        deviceData: payload.deviceData
+                    };
+
+                    fetch('http://localhost/checkout/visa/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken') // Include CSRF token for Django
+                        },
+                        body: JSON.stringify(paymentData)
+                    })
+                        .then(function () {
+                            window.location.assign("http://localhost:8000/dashboard/");
+
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
         });
     });
 </script>

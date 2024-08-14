@@ -6,91 +6,6 @@
 */
 
 
-// Checkout js code
-document.addEventListener('DOMContentLoaded', function () {
-  var supportBtn = document.querySelector('#support');
-
-  supportBtn.addEventListener('click', function () {
-
-    var tierId = document.querySelector("#creator").value;
-    // const formData = new FormData();
-    // formData.append('tier_id', tierId);  // Example form data
-    // formData.append('payer_account_number', '123456789');  // Example form data
-
-
-    var paymentData = {
-      tier_id: tierId
-    }
-
-    fetch('http://192.168.0.190:8000/checkout/lpa/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken') // Include CSRF token for Django
-      },
-      body: JSON.stringify(paymentData)
-    })
-      .then(function () {
-        console.log('success');
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  });
-});
-
-
-// Braintree gateway
-document.addEventListener('DOMContentLoaded', function () {
-  var button = document.querySelector('#submit-button');
-
-  var clientTokenElement = document.querySelector('#clientToken');
-  var clientToken = clientTokenElement.value;
-  var container = document.getElementById("dropin-container");
-
-  braintree.dropin.create({
-    authorization: clientToken,
-    container: container,
-    dataCollector: true
-  }, function (createErr, instance) {
-    if (createErr) {
-      // Handle error in Drop-in creation
-      return;
-    }
-    button.addEventListener('click', function () {
-      instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
-        if (requestPaymentMethodErr) {
-          // Handle error in requesting payment method
-          return;
-        }
-
-        // Send the payload.nonce and payload.deviceData to the backend
-        var paymentData = {
-          nonce: payload.nonce,
-          deviceData: payload.deviceData
-        };
-
-        fetch('http://localhost/checkout/visa/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken') // Include CSRF token for Django
-          },
-          body: JSON.stringify(paymentData)
-        })
-          .then(function () {
-            window.location.assign("http://localhost:8000/dashboard/");
-
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      });
-    });
-  });
-
-});
-
 
 // Function to get the CSRF token from cookies (for Django)
 function getCookie(name) {
@@ -177,39 +92,43 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Apply .scrolled class to the body as the page is scrolled down
    */
-  function toggleScrolled() {
-    const selectBody = document.querySelector('body');
-    const selectHeader = document.querySelector('#header');
-    if (!selectHeader.classList.contains('scroll-up-sticky') && !selectHeader.classList.contains('sticky-top') && !selectHeader.classList.contains('fixed-top')) return;
-    window.scrollY > 100 ? selectBody.classList.add('scrolled') : selectBody.classList.remove('scrolled');
-  }
+  document.addEventListener('DOMContentLoaded', () => {
+    function toggleScrolled() {
+      const selectBody = document.querySelector('body');
+      const selectHeader = document.querySelector('#header');
+      if (!selectHeader.classList.contains('scroll-up-sticky') && !selectHeader.classList.contains('sticky-top') && !selectHeader.classList.contains('fixed-top')) return;
+      window.scrollY > 100 ? selectBody.classList.add('scrolled') : selectBody.classList.remove('scrolled');
+    }
+    document.addEventListener('scroll', toggleScrolled);
+    window.addEventListener('load', toggleScrolled);
+  });
 
-  document.addEventListener('scroll', toggleScrolled);
-  window.addEventListener('load', toggleScrolled);
+
 
   /**
    * Scroll up sticky header to headers with .scroll-up-sticky class
    */
-  let lastScrollTop = 0;
-  window.addEventListener('scroll', function () {
-    const selectHeader = document.querySelector('#header');
-    if (!selectHeader.classList.contains('scroll-up-sticky')) return;
+  document.addEventListener('DOMContentLoaded', () => {
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', function () {
+      const selectHeader = document.querySelector('#header');
+      if (!selectHeader.classList.contains('scroll-up-sticky')) return;
 
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-    if (scrollTop > lastScrollTop && scrollTop > selectHeader.offsetHeight) {
-      selectHeader.style.setProperty('position', 'sticky', 'important');
-      selectHeader.style.top = `-${header.offsetHeight + 50}px`;
-    } else if (scrollTop > selectHeader.offsetHeight) {
-      selectHeader.style.setProperty('position', 'sticky', 'important');
-      selectHeader.style.top = "0";
-    } else {
-      selectHeader.style.removeProperty('top');
-      selectHeader.style.removeProperty('position');
-    }
-    lastScrollTop = scrollTop;
+      if (scrollTop > lastScrollTop && scrollTop > selectHeader.offsetHeight) {
+        selectHeader.style.setProperty('position', 'sticky', 'important');
+        selectHeader.style.top = `-${header.offsetHeight + 50}px`;
+      } else if (scrollTop > selectHeader.offsetHeight) {
+        selectHeader.style.setProperty('position', 'sticky', 'important');
+        selectHeader.style.top = "0";
+      } else {
+        selectHeader.style.removeProperty('top');
+        selectHeader.style.removeProperty('position');
+      }
+      lastScrollTop = scrollTop;
+    });
   });
-
   /**
    * Mobile nav toggle
    */
