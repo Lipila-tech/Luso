@@ -17,7 +17,7 @@
     <ul class="media-list">
         {% for file in media %}
         <li class="media-item-preview">
-            <div class="media-player-preview">
+            <div class="media-player-previe">
                 {% if file.content_type == 'video/mp4' %}
                 <video width="320" height="240" controls="controls">
                     <source src="{{ file.filename | get_file_url }}" type="video/mp4">
@@ -30,7 +30,7 @@
                 </audio>
                 {% endif %}
                 
-                <div class="media-texts-preview">
+                <div class="media-texts">
                     <h4 class="owner">{{file.owner}}</h4>
                     <p class="upload-date">{{file.upload_date}}</p>
                     <h2 class="media-f-n">{{file.short_description}}</h2>
@@ -39,12 +39,12 @@
                     <p>{{file.tiers}}</p>
                 </div>
                 
-                <div class="action-btns media-texts-preview">
+                <div class="media-texts">
                     {% if request.user == file.owner  and request.user.creatorprofile %}
-                    <a href="{% url 'file_manager:media_edit' filename=file.filename %}" class="edit-btn">Settings</a>
-                    <a href="{% url 'file_manager:media_upload'%}" class="edit-btn">Add media</a>
+                    <a href="{% url 'file_manager:media_edit' filename=file.filename %}" class="edit-btn btn-sm">Settings</a>
+                    <a href="{% url 'file_manager:media_upload'%}" class="edit-btn btn-sm">Add media</a>
                     {% elif request.user.is_staff %}
-                    <a href="{% url 'file_manager:media_edit' filename=file.filename %}" class="edit-btn">Settings</a>
+                    <a href="{% url 'file_manager:media_edit' filename=file.filename %}" class="edit-btn btn-sm">Settings</a>
                     <a href="#"> Disable</a>
                     <a href="#"> Delete</a>
                     {% endif %}
