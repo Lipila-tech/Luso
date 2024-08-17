@@ -5,29 +5,28 @@
 {% block section %}
 
 <h4>My Patrons</h4>
-{% if patrons %}
+{% if contributions %}
 <table class="table">
     <thead>
         <tr>
             <th>#</th>
             <th>username</th>
-            <th>Subscription</th>
-            <th>Contributions</th>
+            <th>Amount</th>
             <th>Email</th>
         </tr>
     </thead>
     <tbody>
-        {% for patron in patrons %}
+        {% for contribution in contributions %}
         <tr>
             <td data-label="#">{{ forloop.counter }}</td>
-            <td data-label="Username">{{ patron.username }}</td>
-            <td data-label="Subscrition">{{ patron.subscriptions }}</td>
-            <td data-label="email">{{ patron.email }}</td>
+            <td data-label="Username">{{ contribution.payer }}</td>
+            <td data-label="Subscrition">{{ contribution.amount }}</td>
+            <td data-label="email">{{ contribution.payer.email }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 {% else %}
-    <p>You do not have any patrons yet.</p>
+    <p>You do not have any contributions yet.</p>
 {% endif %}
 {% endblock section %}

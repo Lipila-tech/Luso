@@ -9,7 +9,8 @@ from django.utils.translation import gettext_lazy as _
 import mimetypes
 # custom models
 from .globals import (
-    default_socials, CREATOR_CATEGORY_CHOICES, zambia_provinces)
+    default_socials, CREATOR_CATEGORY_CHOICES, zambia_provinces,
+    WALLET_TYPES)
 
 
 class CustomUserManager(BaseUserManager):
@@ -74,17 +75,18 @@ class CreatorProfile(models.Model):
             ),
         ]
     )
-    is_verified =  models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
     creator_id_file = models.FileField(
         upload_to='creator_ids/',
         blank=True,
         null=True,
-        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])],
+        validators=[FileExtensionValidator(
+            allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])],
         verbose_name=_('Creator ID')
     )
     profile_image = models.ImageField(
         upload_to='img/creators/', blank=True, null=True)
-    account_number = models.CharField(max_length=20, blank=True, null=True)
+    
     about = models.TextField(max_length=150, blank=True, null=True)
     location = models.CharField(
         max_length=50, choices=zambia_provinces, default=zambia_provinces['01'])
@@ -113,3 +115,32 @@ class CreatorProfile(models.Model):
             file_type, _ = mimetypes.guess_type(file_path)
             return file_type
         return None
+
+
+
+class PayoutAccount(models.Model):
+    user_id = models.ForeignKey(  # Relate to to user model
+        CreatorProfile,
+        on_delete=models.SET_NULL, null=True, blank=True, related_name='bank'
+    )
+    wallet_type = models.CharField(max_length=50, choices=WALLET_TYPES, blank=True, null=True)
+    wallet_provider = models.CharField(max_length=50, blank=True, null=True)
+    account_name = models.CharField(max_length=50, blank=True, null=True)
+    account_number = models.CharField(max_length=20, blank=True, null=True)
+    account_currency = models.CharField(max_length=50, blank=True, null=True, default="ZMW")
+
+    def __str__(self):
+        return f"{self.wallet_provider} - {self.account_number}"
+
+    @classmethod
+    def create_default_bankaccount(cls, creator):
+        # Create default tiers if they don't exist
+        defaults = [
+            {"wallet_type": WALLET_TYPES[0][0],
+                'user': creator}
+        ]
+        for data in defaults:
+            PayoutAccount.objects.create(
+                user_id=data["user"],
+                wallet_type=data["wallet_type"],
+            )

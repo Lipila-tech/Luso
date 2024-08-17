@@ -4,35 +4,6 @@
 
 {% block section %}
 <h3>Transaction History</h3>
-<h5>Subscriptions</h5>
-<table class="table" id="contributions-table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Subscription</th>
-            <th>Payment method</th>
-            <th>Account</th>
-            <th>Status</th>
-            <th>Transaction ID</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for payment in payments %}
-        <tr>
-            <td data-label="#">{{ forloop.counter }}</td>
-            <td data-label="amount">{{ payment.amount }}</td>
-            <td data-label="date">{{ payment.timestamp }}</td>
-            <td data-label="receiver">{{ payment.payee }}</td>
-            <td data-label="wallter type">{{ payment.wallet_type }}</td>
-            <td data-label="account number">{{ payment.payer_account_number }}</td>
-            <td data-label="status">{{ payment.status |upper }}</td>
-            <td data-label="ref">{{ payment.reference_id }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
 <h5>Contributions</h5>
 <table class="table">

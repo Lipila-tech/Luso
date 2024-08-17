@@ -19,6 +19,10 @@ ISP_CHOICES = (
     ('airtel', 'airtel'),
 )
 
+WALLET_TYPES = [
+    ('momo', 'Mobile Money'), ('bank', 'Bank')]
+
+
 CITY_CHOICES = (
     ('kitwe', 'Kitwe'),
     ('lusaka', 'Lusaka'),

@@ -52,11 +52,6 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-3 col-md-4 label">Phone:</div>
-            <div class="col-lg-9 col-md-8">{{request.user.creatorprofile.account_number}}</div>
-        </div>
-
-        <div class="row">
             <div class="col-lg-3 col-md-4 label">Email:</div>
             <div class="col-lg-9 col-md-8">{{request.user.email}}</div>
         </div>
@@ -71,7 +66,6 @@
                     data-url="{{ request.user.creatorprofile.creator_id_file.url }}">
                     Preview
                 </a>
-
                 {% endif %}
                 {% else %}
                 <p>None</p>
@@ -99,6 +93,30 @@
                 </div>
             </div>
         </div>
+
+        <h3 class="card-title">Bank /MoMo Account Details</h3>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Wallet Type:</div>
+            <div class="col-lg-9 col-md-8">{{bank.wallet_type}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Wallet Provider:</div>
+            <div class="col-lg-9 col-md-8">{{bank.wallet_provider}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Account Name:</div>
+            <div class="col-lg-9 col-md-8">{{bank.account_name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Account Number:</div>
+            <div class="col-lg-9 col-md-8">{{bank.account_number}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Account Currency:</div>
+            <div class="col-lg-9 col-md-8">{{bank.account_currency}}</div>
+        </div>
+
 
         <!-- Script to Handle Modal Content -->
         <script>

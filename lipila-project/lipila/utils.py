@@ -1,7 +1,7 @@
 """
 lipila app Util Functions
 """
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponseServerError
 from django.shortcuts import render
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial, AboutInfo)
@@ -313,6 +313,10 @@ def apology(request, data=None, user=None):
         )
     elif data['status'] == 400:
         return HttpResponseBadRequest(
+            render(request, template_name, data)
+        )
+    elif data['status'] == 500:
+        return HttpResponseServerError(
             render(request, template_name, data)
         )
 

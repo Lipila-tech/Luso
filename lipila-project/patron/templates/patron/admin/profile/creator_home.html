@@ -47,8 +47,7 @@
             {% if creator.about %}
             <div class="details"> <span>{{creator.about}} </span> </div>
             {% endif %}
-            {% include '_filter_nav.html' %}
-            <div class="tier-content column">
+            <div class="tier-content">
                 {% if tiers %}
                 <!--  Section Title -->
                 {% endif %}
@@ -62,7 +61,7 @@
                         <p class="description">{{ tier.description }}</p>
                     </div>
                     <div class="">
-                        {% if not tier.is_editable %}
+                        {% if tier.is_editable %}
                         <div>
                             <form action="{% url 'checkout_support' creator.user %}" method="get">
                                 {% csrf_token %}
@@ -94,14 +93,6 @@
                 {% endif %}
                 {% endfor %}
             </div>
-            <h3 class="creator-items">Media</h3>
-            {% if media %}
-            <div class="tiers-card">
-                <div class="container section-title" data-aos="fade-up">
-                </div><!-- End Section Title -->
-                {% include 'file_manager/_media_list.html' %}
-            </div>
-            {% endif %}
         </div>
     </div>
     <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"> <span><i

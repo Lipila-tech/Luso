@@ -8,7 +8,7 @@
   <div class="creator-dashboard">
 
     <div class="creator-footer">
-      Last Login: <span id="last-updated">{{summary.last_login_time}}</span>
+      Summary
     </div>
     <div class="creator-stats">
       <div class="creator-stat">
@@ -17,11 +17,11 @@
       </div>
       <div class="creator-stat">
         <h3>K<span id="total-payments">{{summary.total_payments | comma_format }}</span></h3>
-        <p>Total Payments Received</p>
+        <p>Receipts</p>
       </div>
       <div class="creator-stat">
         <h3>K<span id="withdrawn-total">{{summary.withdrawals | comma_format }}</span></h3>
-        <p>Withdrawn</p>
+        <p>Cashouts</p>
       </div>
       <div class="creator-stat">
         <h3><span id="totals">{{summary.patrons}}</span></h3>

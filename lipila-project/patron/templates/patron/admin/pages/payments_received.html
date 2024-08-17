@@ -4,33 +4,7 @@
 
 {% block section %}
 
-<h5>Subscriptions Payments</h5>
-<table class="table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Patron</th>
-            <th>Message</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for payment in payments %}
-        <tr>
-            <td data-label="#">{{ forloop.counter }}</td>
-            <td data-label="amount">{{ payment.amount }}</td>
-            <td data-label="date">{{ payment.timestamp }}</td>
-            <td data-label="tier">{{ payment.subscription }}</td>
-            <td data-label="message">{{ payment.description }}</td>
-            <td data-label="status">{{ payment.status |upper }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<h5>Contributions</h5>
+<h5>Total Contributions</h5>
 <table class="table">
     <thead>
         <tr>

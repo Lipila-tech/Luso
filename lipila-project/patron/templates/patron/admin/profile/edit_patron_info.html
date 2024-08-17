@@ -23,10 +23,12 @@
     <form action="{% url 'patron:update_profile' user=user %}" , method="post" enctype="multipart/form-data">
       <div class="form-group">
         {% csrf_token %}
-        <h3 class="profile-title">Person Info</h3>
+        <h3 class="profile-title">Personal Info</h3>
         {{form2 }}
         <h3 class="profile-title">Patron Info</h3>
         {{form1 }}
+        <h3 class="profile-title">Payout Account Info</h3>
+        {{form3}}
       </div>
       <div class="profile-save-btn">
         <button type="submit" class="m-btn m-btn-primary">Save Changes</button>

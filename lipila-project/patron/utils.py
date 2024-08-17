@@ -3,7 +3,7 @@ patron app Util Functions
 """
 from accounts.models import CreatorProfile
 from django.conf import settings
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from typing import Union, List
@@ -11,7 +11,7 @@ from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contrib
 from django.urls import reverse
 from django.db.models import Sum
 import random, re , string
-
+from django.http import Http404
 
 def remove_white_spaces(patron_title: str)-> str:
     """
@@ -81,12 +81,12 @@ def calculate_total_payments(creator):
         return 0.0
 
 
-def calculate_total_contributions(creator):
+def calculate_total_contributions(creator: CreatorProfile)-> int:
     """
-    This functions calculates the total amoutn of contributions received by a creator.
+    This functions calculates the total amount of contributions received by a creator.
 
     Args:
-        Creator: A CretaorProfile model instance representing the creator.
+        Creator: A User with a CreatorProfile instance.
 
     Returns:
         A decimal value representing the total amount of contributions.
@@ -112,9 +112,8 @@ def calculate_creators_balance(creator):
         A decimal value representing the total amount of withdrawals.
     """
     total_payments = calculate_total_payments(creator)
-    user_pro = CreatorProfile.objects.get(user=creator).user
     total_contributions = calculate_total_contributions(
-        user_pro)
+        creator)
     withdrawals = calculate_total_withdrawals(creator)
     balance = (total_payments + total_contributions) - withdrawals
     return balance
@@ -124,6 +123,22 @@ def get_tier(id):
     tier = Tier.objects.get(pk=id)
     return tier
 
+
+def get_patrons(creator: CreatorProfile) -> List:
+    """
+    Retrieves all patrons contributing to a creator.
+
+    Args:
+        creator: A User object representing the creator.
+
+    Returns:
+        A queryset of User objects representing the creator's patrons.
+    """
+    try:
+        contributions = get_list_or_404(Contributions, payee=creator)
+        return contributions
+    except Http404:
+        return []
 
 def get_creator_subscribers(creator: CreatorProfile) -> List:
     """

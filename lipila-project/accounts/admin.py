@@ -92,7 +92,7 @@ class UserTestimonialAdmin(admin.ModelAdmin):
 
 
 class CreatorProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'patron_title', 'profile_image', 'account_number', 'about',
+    list_display = ['user', 'patron_title', 'profile_image', 'about',
                     'location', 'creator_category', 'facebook_url', 'twitter_url',
                     'instagram_url', 'linkedin_url',
                     ]

@@ -9,19 +9,17 @@ from django.http import Http404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 # custom modules
-from accounts.models import CreatorProfile
+from lipila.utils import apology
+from accounts.models import CreatorProfile, PayoutAccount
 from lipila.utils import get_user_object
 from patron.forms.forms import (
     CreateCreatorProfileForm, WithdrawalRequestForm)
-from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm
+from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm, PayoutAccountEditFrom
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
-from patron.utils import (get_creator_subscribers,
+from patron.utils import (get_creator_subscribers, get_patrons,
                           get_creator_url, get_tier, calculate_total_payments,
                           calculate_total_contributions, calculate_total_withdrawals,
                           calculate_creators_balance)
-
-from file_manager.utils import get_user_files
-from lipila.utils import apology
 
 
 def index(request):
@@ -47,34 +45,56 @@ def profile(request):
             return render(request, 'patron/admin/profile/profile_patron.html', context)
 
 
-
 @login_required
 def kyc(request):
-    context = {'is_verified': False}
+    bank = get_object_or_404(PayoutAccount, user_id=request.user.creatorprofile)
+    context = {'is_verified': False, 'bank':bank}
+
     return render(request, 'patron/admin/profile/kyc.html', context)
 
 
 class ProfileEdit(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         creator = request.user.creatorprofile
+        bank = ''
+        try:
+            bank = get_object_or_404(PayoutAccount, user_id=creator)
+        except Http404:
+            messages.info(request, "Update your bank details.")
+            PayoutAccount().create_default_bankaccount(creator)
+            PayoutAccount().refresh_from_db()
+
+        creator = request.user.creatorprofile
         form1 = EditCreatorProfileForm(instance=creator, prefix='form1')
         form2 = DefaultUserChangeForm(instance=request.user, prefix='form2')
-        context = {'form1': form1, 'form2': form2, 'user': request.user}
+        form3 = PayoutAccountEditFrom(instance=bank, prefix='form3')
+        context = {'form1': form1, 'form2': form2, 'form3': form3}
         return render(request,
                       'patron/admin/profile/edit_patron_info.html',
                       context)
 
     def post(self, request, *args, **kwargs):
         creator = request.user.creatorprofile
+        bank = get_object_or_404(PayoutAccount, user_id=creator)
         form1 = EditCreatorProfileForm(
             request.POST, request.FILES, instance=creator, prefix='form1')
         form2 = DefaultUserChangeForm(
             request.POST, request.FILES, instance=request.user, prefix='form2')
-        if form1.is_valid() or form2.is_valid:
+        form3 = PayoutAccountEditFrom(
+            request.POST, request.FILES, instance=bank, prefix='form3')
+        if form1.is_valid():
             form1.save()
+            messages.success(
+                request, "Patron profile saved.")
+        if form2.is_valid():
             form2.save()
             messages.success(
-                request, "Your profile has been updated.")
+                request, "Personal details saved.")
+        if form3.is_valid():
+            form3.instance.user_id = creator
+            form3.save()
+            messages.success(
+                request, "Bank details saved.")
             return redirect(reverse('patron:profile'))
         else:
             messages.error(
@@ -103,8 +123,6 @@ class EditPersonalInfo(LoginRequiredMixin, View):
             return redirect(reverse('patron:profile'))
 
 
-
-
 @login_required
 def create_creator_profile(request):
     creator = request.user
@@ -117,8 +135,9 @@ def create_creator_profile(request):
             request.user.has_group = True
             request.user.is_creator = True
             request.user.save()
-            request.user.refresh_from_db()
             creator_profile.save()
+            request.user.refresh_from_db()
+            creator_profile.refresh_from_db()
             messages.success(
                 request, "Your profile data has been saved.")
             return redirect(reverse('patron:tiers'))
@@ -177,25 +196,30 @@ def dashboard(request):
             creator = request.user.creatorprofile
             total_payments = calculate_total_payments(creator)
             total_contributions = calculate_total_contributions(
-                get_user_model().objects.get(username=request.user))
+                request.user.creatorprofile)
             withdrawals = calculate_total_withdrawals(creator)
-            balance = calculate_creators_balance(creator)
+            balance = total_contributions - withdrawals
             context['summary'] = {
                 'balance': balance,
                 'total_payments': total_payments + total_contributions,
                 'withdrawals': withdrawals,
-                'patrons': len(get_creator_subscribers(creator)),
+                'patrons': len(get_patrons(creator)),
                 'tiers': len(Tier.objects.filter(creator=creator)),
                 'updated_at': timezone.now,
                 'last_login_time': last_login_time
             }
-           
+
             url = get_creator_url('index', creator, domain='localhost:8000')
             context['user'] = get_user_object(creator)
             context['url'] = url
             return render(request, 'patron/admin/pages/index_creator.html', context)
         except CreatorProfile.DoesNotExist:
             return redirect(reverse('patron:creators'))
+        except (ValueError, TypeError) as e:
+            # print(e)
+            msg = {
+                'message': "Sorry! An Error occured. It's not your fault but ours.", 'status': 500}
+            return apology(request, data=msg)
 
 
 @login_required
@@ -204,9 +228,8 @@ def view_patrons_view(request):
     Retrives all patrons subscribed to a user.
     """
     context = {}
-    creator = get_object_or_404(CreatorProfile, user=request.user)
-    patrons = get_creator_subscribers(creator)
-    context['patrons'] = patrons
+    contributions = get_patrons(request.user.creatorprofile)
+    context['contributions'] = contributions
     return render(request, 'patron/admin/pages/view_patrons.html', context)
 
 
@@ -221,7 +244,8 @@ def view_tiers(request):
     # Ensure defaults exist
     if not tiers.exists():
         Tier().create_default_tiers(creator)
-        messages.info(request, "Default tiers created. Please edit them.")
+        messages.info(
+            request, "Default tier created. You can update the details.")
     return render(request,
                   'patron/admin/pages/view_tiers.html',
                   {'user': request.user, 'tiers': tiers})
@@ -339,7 +363,7 @@ def payments_history(request):
         payments = SubscriptionPayments.objects.filter(
             payee__tier__creator=creator)
 
-        contributions = Contributions.objects.filter(payee=request.user)
+        contributions = get_patrons(request.user.creatorprofile)
         context['contributions'] = contributions
         context['payments'] = payments
         return render(request, 'patron/admin/pages/payments_received.html', context)

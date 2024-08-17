@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django import forms
-from accounts.models import CreatorProfile
+from accounts.models import CreatorProfile, PayoutAccount
 from patron.models import Tier, WithdrawalRequest
 from django.contrib.auth.forms import UserChangeForm
 
@@ -57,7 +57,6 @@ class EditCreatorProfileForm(forms.ModelForm):
             'creator_category',
             'creator_id_file',
             'location',
-            'account_number',
             'facebook_url',
             'twitter_url',
         ]
@@ -71,6 +70,13 @@ class EditCreatorProfileForm(forms.ModelForm):
         }
 
 
+class PayoutAccountEditFrom(forms.ModelForm):
+    class Meta:
+        model = PayoutAccount
+        fields = ['wallet_type', 'wallet_provider', 'account_name', 'account_number']
+
+
+
 class EditTiersForm(forms.ModelForm):
     class Meta:
         model = Tier
@@ -80,3 +86,7 @@ class EditTiersForm(forms.ModelForm):
             'price',
             'visible_to_fans',
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['readonly'] = True

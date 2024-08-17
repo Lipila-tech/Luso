@@ -22,12 +22,9 @@ class Tier(models.Model):
     def create_default_tiers(cls, creator):
         # Create default tiers if they don't exist
         defaults = [
-            {"name": "Buy me a coffee", "price": DEFAULT_PRICES['03'],
+            {"name": "Buy me a coffee", "price": DEFAULT_PRICES[0][0],
                 "desc": "Make a one-time Contribution to support my work",
-                'creator': creator, 'visible_to_fans': True, 'editable': False},
-            {"name": "Custom Tier", "price": DEFAULT_PRICES['01'],
-                "desc": "Support my work and get access to exclusive content.",
-                'creator': creator, 'visible_to_fans': False, 'editable': True},
+                'creator': creator, 'visible_to_fans': True, 'editable': True},
         ]
         for tier_data in defaults:
             Tier.objects.create(
@@ -93,7 +90,7 @@ class SubscriptionPayments(models.Model):
 
 class Contributions(models.Model):
     payee = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_received')
+        CreatorProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_received')
     payer = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_sent')
     amount = models.DecimalField(
