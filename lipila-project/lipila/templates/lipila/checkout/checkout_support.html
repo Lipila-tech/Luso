@@ -13,9 +13,8 @@
 
 <div class="checkout-container">
     <div class="checkout-txt">
-        <h1>Checkout</h1>
-        <p>Description: {{payee}}</p>
-        <h3>Select Payment Method</h3>
+        <h5>Support {{payee}} with K{{amount}}</h5>
+        <h3>Select Payment Method:</h3>
     </div>
 
     <div class="logo-buttons">
@@ -37,7 +36,7 @@
         <div class="modal-content">
             <span class="close" id="close-mtn-modal">&times;</span>
             <div class="checkout-header">
-                <p>Pay with MTN</p>
+                <p>Pay K{{amount}} with MTN</p>
                 <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN logo">
             </div>
             {% include 'lipila/modals/pay_support.html' %}
@@ -49,7 +48,7 @@
             <span class="close" id="close-airtel-modal">&times;</span>
             <br>
             <div class="checkout-header">
-                <p>Pay with Airtel</p>
+                <p>Pay K{{amount}} with Airtel</p>
                 <img src="{% static 'assets/img/api/airtel.png' %}" alt="airtel logo">
             </div>
             {% include 'lipila/modals/pay_support.html' %}

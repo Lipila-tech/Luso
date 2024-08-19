@@ -44,7 +44,7 @@ from patron.utils import calculate_creators_balance
 from .utils import get_api_user, get_braintree_client_token, braintree_gateway
 from .models import CustomerMessage
 from .utils import (
-    is_patron_title_valid, get_creator_by_patron_title, get_tier_subscription_by_id_patron)
+    is_patron_title_valid, get_tier_by_patron_title, get_tier_subscription_by_id_patron)
 
 
 
@@ -519,9 +519,11 @@ def checkout_subscription(request, id):
 @login_required
 def checkout_support(request, payee):
     url = reverse('subscriptions_history')
+    tier = get_tier_by_patron_title(payee)
+    amount = tier.price
     if request.method == 'POST':
         form = SupportPaymentForm(
-            request.POST, payee=payee, payer=request.user)
+            request.POST, payee=payee, payer=request.user, amount=amount)
 
         if form.is_valid():
             isp = form.cleaned_data['wallet_type']
@@ -573,9 +575,9 @@ def checkout_support(request, payee):
             messages.error(request, "Field errors!")
             return render(request, 'lipila/checkout/checkout_support.html', context)
 
-    form = SupportPaymentForm(payee=payee,  payer=request.user)
+    form = SupportPaymentForm(payee=payee,  payer=request.user, amount=amount)
     client_token = get_braintree_client_token(request.user)
-    context = {'client_token': client_token, 'form': form, "payee": payee}
+    context = {'client_token': client_token, 'form': form, "payee": payee, "amount":amount}
     return render(request, 'lipila/checkout/checkout_support.html', context)
 
 

@@ -3,6 +3,7 @@
     <tr>
       <th class="text-center" scope="col">#</th>
       <th class="text-center" scope="col">Title</th>
+      <th class="text-center" scope="col">Description</th>
       <th class="text-center" scope="col">Price</th>
       <th class="text-center" scope="col">Visible to Fans</th>
       <th class="text-center" scope="col">Actions</th>
@@ -13,6 +14,7 @@
     <tr>
       <td data-label="#" scope="row">{{ forloop.counter }}</td>
       <td data-label="Name"> {{ tier.name }}</td>
+      <td data-label="Description"> {{ tier.description }}</td>
       <td data-label="Price">{{ tier.price }}</td>
       {% if tier.visible_to_fans %}
       <td data-label="Visible to Fans">Yes</td>

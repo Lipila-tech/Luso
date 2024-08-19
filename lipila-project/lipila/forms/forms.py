@@ -5,6 +5,8 @@ from django.core.validators import MinValueValidator
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from patron.models import WithdrawalRequest, Tier, SubscriptionPayments, Transfer
 from django.contrib.auth import get_user_model
+from accounts.models import CreatorProfile
+from django.shortcuts import get_object_or_404
 
 
 class BaseTransactionForm(BSModalModelForm):
@@ -67,14 +69,17 @@ class SupportPaymentForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        amount = kwargs.pop('amount', None)
         payee = kwargs.pop('payee')
         payer = kwargs.pop('payer')
         super().__init__(*args, **kwargs)
         self.fields['wallet_type'].widget.attrs['hidden'] = True
         self.fields['payee'].widget.attrs['hidden'] = True
         self.fields['payer'].widget.attrs['hidden'] = True
-        self.fields['payee'].initial = get_user_model().objects.get(username=payee)
+        self.fields['payee'].initial = get_object_or_404(CreatorProfile, patron_title=payee)
         self.fields['payer'].initial = get_user_model().objects.get(username=payer)
+        if amount is not None:
+            self.fields['amount'].initial = amount
 
 
 class WithdrawalModelForm(BSModalModelForm):

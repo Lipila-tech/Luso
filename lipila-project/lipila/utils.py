@@ -16,16 +16,31 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.http import Http404, JsonResponse
 from accounts.models import CreatorProfile
-from patron.models import TierSubscriptions
+from patron.models import TierSubscriptions, Tier
 from api.utils import generate_reference_id
 from django.contrib import messages
 from django.db.utils import IntegrityError
 from django.http import HttpResponseRedirect
 
+
 def get_tier_subscription_by_id_patron(id, patron):
     subscription = get_object_or_404(TierSubscriptions, tier=id, patron=patron)
     return subscription
 
+
+def get_tier_by_patron_title(title: str)-> Tier:
+    """
+    Retrives a tier matching a creator.
+
+    Args:
+        title(str): A Creators patron_title
+
+    Returns:
+        A Tier Object.
+    """
+    creator = get_object_or_404(CreatorProfile, patron_title=title)
+    tier = get_object_or_404(Tier, creator=creator )
+    return tier
 
 def get_creator_by_patron_title(patron_title):
     creator_profile = get_object_or_404(CreatorProfile, patron_title=patron_title)

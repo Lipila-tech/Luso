@@ -16,7 +16,7 @@ urlpatterns = [
     path('messages/reply/<int:message_id>/', views.reply_to_message_view, name='reply_to_message'),
     # checkout urls
     path('checkout/<int:id>', views.checkout_subscription, name ="checkout_subscription"),
-    path('checkout/<str:payee>/', views.checkout_support, name ="checkout_support"),
+    path('support/<str:payee>/', views.checkout_support, name ="checkout_support"),
     path('checkout/visa/', views.create_purchase, name ="create_purchase"),
 
     # Luso public urls
