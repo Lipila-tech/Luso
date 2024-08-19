@@ -4,6 +4,15 @@
 {% block title %}Home{% endblock %}
 
 {% block section %}
+{% block extrastylesheets %}
+<style>
+  .p-section-content {
+    background-color: rgba(0, 0, 0, 0.6);
+    height: fit-content;
+    padding: 20px;
+  }
+</style>
+{% endblock %}
 
 <main id="main">
 
@@ -16,24 +25,27 @@
     </ol>
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img class="d-block w-100" src="{% static 'assets/img/fans.jpg' %}" alt="hero_image" data-aos="fade-in">
-        <div class="carousel-caption d-md-block">
+        <img class="d-block w-100" src="{% static 'assets/img/posters/poster0.jpeg' %}" alt="hero_image"
+          data-aos="fade-in">
+        <div class="carousel-caption d-md-block p-section-content">
           <h5>Empower Your art with Luso</h5>
-          <p>Unlock the power of fan support and membership.</p>
+          <p>Unlock the power of fan support</p>
           <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
         </div>
       </div>
       <div class="carousel-item">
-        <img class="d-block w-100" src="{% static 'assets/img/fan1.jpg' %}" alt="hero_image" data-aos="fade-in">
-        <div class="carousel-caption d-md-block">
-          <h5>Raise a glass to creativity</h5>
-          <p>Join Luso – The ultimate platform for creators and artists to receive support from their fans.</p>
+        <img class="d-block w-100" src="{% static 'assets/img/posters/poster1.jpeg' %}" alt="hero_image"
+          data-aos="fade-in">
+          <div class="carousel-caption d-md-block p-section-content">
+          <h5>Raising a glass to creativity</h5>
+          <p>The ultimate platform for Zambian creators to receive support from their fans.</p>
           <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
         </div>
       </div>
       <div class="carousel-item">
-        <img class="d-block w-100" src="{% static 'assets/img/artist.jpg' %}" alt="hero_image" data-aos="fade-in">
-        <div class="carousel-caption d-md-block">
+        <img class="d-block w-100" src="{% static 'assets/img/posters/poster2.jpeg' %}" alt="hero_image"
+          data-aos="fade-in">
+          <div class="carousel-caption d-md-block p-section-content">
           <h5>Cheers to your creative future</h5>
           <p>Luso makes it effortless for creators to receive funding and grow their artistic endeavors.</p>
           <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
@@ -55,7 +67,7 @@
         <div class="col-lg-6 col-md-12">
           <div class="benefits-text">
             <ul>
-              <li><strong>Easy Monetization:</strong> Start receiving support in just a few clicks.</li>
+              <li><strong>Easy Monetization:</strong> Fans send you support in Zambian Currency via Momo.</li>
               <li><strong>Fan Engagement:</strong> Build stronger connections with your audience through personalized
                 memberships.</li>
               <li><strong>No Hidden Fees:</strong> Keep more of what you earn, with transparent pricing.</li>
@@ -83,9 +95,9 @@
       <div class="row gy-4 align-items-center features-item">
         <div class="col-lg-5 order-2 order-lg-1 benefits-text" data-aos="fade-up" data-aos-delay="120">
           <ol>
-            <li><strong>Sign up:</strong> Create your Luso account in minutes</li>
-            <li><strong>Set Up Your Profile:</strong> Create your membership tiers</li>
-            <li><strong>Start Receiving Support:</strong> Share your Luso link and start earning</li>
+            <li><strong>Sign up:</strong> Create your Luso account in minutes.</li>
+            <li><strong>Set Up Your Profile:</strong> Create your Patron Page.</li>
+            <li><strong>Start Receiving Support:</strong> Share your Luso Patron Page link and start getting funded.</li>
           </ol>
           <a href="{% url 'accounts:signup' %}" class="btn btn-get-started">Get Started</a>
         </div>
@@ -103,10 +115,10 @@
 
       <div class="row gy-4 align-items-stretch justify-content-between features-item" id="pricing">
         <div class="col-lg-6 d-flex align-items-center features-img-bg" data-aos="zoom-out">
-          <img src="{% static 'assets/img/fans.jpg' %}" class="img-fluid" alt="">
+          <img src="{% static 'assets/img/posters/poster2.jpeg' %}" class="img-fluid" alt="">
         </div>
         <div class="col-lg-5 d-flex justify-content-center flex-column benefits-text" data-aos="fade-up">
-          <p>Join Luso today and start receiving support from your fans.</p>
+          <p>Join Luso today and start receiving financial support from your fans.</p>
           <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started for Free</a>
         </div>
       </div><!-- Features Item -->
@@ -171,7 +183,7 @@
           </div>
 
         </div>
-        
+
         <div class="col-lg-6">
           <form action="{% url 'contact' %}" method="post" class="" data-aos="fade-up" data-aos-delay="200">
             {% csrf_token %}
