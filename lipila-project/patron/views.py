@@ -24,9 +24,9 @@ from patron.utils import (get_creator_subscribers, get_patrons,
 
 def index(request):
     """
-    Renders the Luso home page.
+    Renders the page that displays benefits for different creators
     """
-    return render(request, 'patron/index.html')
+    return render(request, 'patron/categories/creators_info.html')
 
 
 @login_required
