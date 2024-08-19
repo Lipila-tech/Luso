@@ -14,7 +14,7 @@ from accounts.models import CreatorProfile, PayoutAccount
 from lipila.utils import get_user_object
 from patron.forms.forms import (
     CreateCreatorProfileForm, WithdrawalRequestForm)
-from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm, PayoutAccountEditFrom
+from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm, PayoutAccountEditFrom, VerifyForm
 from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
 from patron.utils import (get_creator_subscribers, get_patrons,
                           get_creator_url, get_tier, calculate_total_payments,
@@ -47,10 +47,36 @@ def profile(request):
 
 @login_required
 def kyc(request):
-    bank = get_object_or_404(PayoutAccount, user_id=request.user.creatorprofile)
-    context = {'is_verified': False, 'bank':bank}
+    bank = get_object_or_404(
+        PayoutAccount, user_id=request.user.creatorprofile)
+    context = {'bank': bank}
 
     return render(request, 'patron/admin/profile/kyc.html', context)
+
+
+@login_required
+def kyc_review(request, pk):
+    creator = get_user_model().objects.get(pk=pk)
+    creator_profile = get_object_or_404(CreatorProfile, user__pk=pk)
+    if request.method == 'POST':
+        form = VerifyForm(request.POST, request.FILES)
+        if form.is_valid():
+            creator_profile.is_verified = True
+            creator_profile.save()
+            messages.success(request, f"{creator_profile.user.username} has been successfully verified.")
+            return redirect(reverse('patron:kyc_review', kwargs={'pk':pk}))
+
+    form = VerifyForm()
+    creator = get_user_model().objects.get(pk=pk)        
+    context = {'creator': creator, 'form':form}
+    try:
+        bank = get_object_or_404(
+        PayoutAccount, user_id=creator.creatorprofile)
+        context['bank'] = bank
+    except Http404:
+        bank = []
+        context['bank'] = bank
+    return render(request, 'patron/admin/profile/kyc_review.html', context)
 
 
 class ProfileEdit(LoginRequiredMixin, View):

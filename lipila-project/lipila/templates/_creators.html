@@ -39,6 +39,14 @@
                     {{creator.about}}
                     {% endif %}
                 </p>
+                {% if request.user.is_staff %}
+                {% if not creator.is_verified %}
+                <a href="{% url 'patron:kyc_review' creator.pk %}" class="btn btn-sm">Review</a>
+                {% else %}
+                <span class="badge badge-success">Verified</span>
+                <a href="{% url 'patron:kyc_review' creator.pk %}" class="btn btn-sm">Review</a>
+                {% endif %}
+                {% endif%}
                 <a class="btn-get-started" href="{% url 'creator_index' creator.user.creatorprofile.patron_title %}">
                     View
                 </a>

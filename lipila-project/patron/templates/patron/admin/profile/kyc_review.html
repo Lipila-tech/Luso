@@ -1,0 +1,148 @@
+{% extends 'layout_admin.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}KYC {% endblock %}
+{% block section %}
+
+<div class="profile">
+    <h3>
+        KYC REVIEW
+        {% if creator.creatorprofile.is_verified %}
+        <span class="badge badge-success">Verified</span>
+        {% else %}
+        <form method="post">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" class="btn btn-sm">submit</button>
+        </form>
+        {% endif %}
+    </h3>
+
+    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+        <h3 class="card-title">Patron Summary</h3>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label">Patron Name:</div>
+            <div class="col-lg-9 col-md-8">{{creator.creatorprofile.patron_title}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label">Description:</div>
+            <div class="col-lg-9 col-md-8">{{creator.creatorprofile.about}}</div>
+        </div>
+
+        <h3 class="card-title">Personal Details</h3>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">First Name:</div>
+            <div class="col-lg-9 col-md-8">{{creator.first_name}}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Last Name:</div>
+            <div class="col-lg-9 col-md-8">{{creator.last_name}}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label">Country:</div>
+            <div class="col-lg-9 col-md-8">{{creator.creatorprofile.country}}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label">Address:</div>
+            <div class="col-lg-9 col-md-8">{{creator.creatorprofile.address}}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label">Email:</div>
+            <div class="col-lg-9 col-md-8">{{creator.email}}</div>
+        </div>
+        <!-- Identification Section -->
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label">ID:</div>
+            <div class="col-lg-9 col-md-8">
+                {% if creator.creatorprofile.creator_id_file %}
+                {% if creator.creatorprofile.creator_id_file.url %}
+                <a href="#" id="viewIdFile" data-toggle="modal" data-target="#idFileModal"
+                    data-filetype="{{ creator.creatorprofile.file_type }}"
+                    data-url="{{ creator.creatorprofile.creator_id_file.url }}">
+                    Preview
+                </a>
+                {% endif %}
+                {% else %}
+                <p>None</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Modal Structure -->
+        <div class="modal fade" id="idFileModal" tabindex="-1" role="dialog" aria-labelledby="idFileModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="idFileModalLabel">Identification Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="idFileImage" src="" alt="Identification Image" class="img-fluid d-none" width="100%"
+                            height="150px" />
+                        <iframe id="idFilePDF" src="" style="width: 100%; height: 500px;" class="d-none"
+                            allow=""></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="card-title">Bank /MoMo Account Details</h3>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Wallet Type:</div>
+            <div class="col-lg-9 col-md-8">{{bank.wallet_type}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Wallet Provider:</div>
+            <div class="col-lg-9 col-md-8">{{bank.wallet_provider}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Account Name:</div>
+            <div class="col-lg-9 col-md-8">{{bank.account_name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Account Number:</div>
+            <div class="col-lg-9 col-md-8">{{bank.account_number}}</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 label ">Account Currency:</div>
+            <div class="col-lg-9 col-md-8">{{bank.account_currency}}</div>
+        </div>
+
+
+        <!-- Script to Handle Modal Content -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const viewIdFile = document.getElementById('viewIdFile');
+                const idFileImage = document.getElementById('idFileImage');
+                const idFilePDF = document.getElementById('idFilePDF');
+
+                viewIdFile.addEventListener('click', function () {
+                    const fileType = this.getAttribute('data-filetype');
+                    const fileURL = this.getAttribute('data-url');
+
+                    if (fileType.startsWith('image')) {
+                        idFileImage.src = fileURL;
+                        idFileImage.classList.remove('d-none');
+                        idFilePDF.classList.add('d-none');
+                    } else if (fileType === 'application/pdf') {
+                        idFilePDF.src = fileURL;
+                        idFilePDF.classList.remove('d-none');
+                        idFileImage.classList.add('d-none');
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>
+{% endblock %}

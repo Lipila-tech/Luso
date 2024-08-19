@@ -18,6 +18,7 @@ urlpatterns = [
      # Profile views
      # cretaor kyc
      path('accounts/profile/kyc/overview', views.kyc, name='kyc'),
+     path('accounts/profile/kyc/<int:pk>', views.kyc_review, name='kyc_review'),
      path('accounts/profile/continue/fans', views.continue_has_fan, name="continue_has_fan"),
      path('accounts/profile/', views.profile, name='profile'),
      path('accounts/profile/edit/<str:user>/patron', views.ProfileEdit.as_view(), name='update_profile'),

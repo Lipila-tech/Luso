@@ -4,8 +4,7 @@
 
 {% block section %}
 <h3>Transaction History</h3>
-
-<h5>Contributions</h5>
+{% if contributions %}
 <table class="table">
     <thead>
         <tr>
@@ -34,4 +33,10 @@
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+<p>You have not yet sent support a creator</p>
+<div class="patrons-container">
+    <a class="btn btn-primary" href="{% url 'patron:creators' %}?fragment={{ target_fragment }}">Browse creators</a>
+</div>
+{% endif %}
 {% endblock section %}

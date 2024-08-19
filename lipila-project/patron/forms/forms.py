@@ -20,6 +20,12 @@ class WithdrawalRequestForm(forms.ModelForm):
         fields = ['wallet_type', 'amount', 'account_number']
 
 
+class VerifyForm(forms.ModelForm):
+    class Meta:
+        model = CreatorProfile
+        fields = ['is_verified']
+
+        
 class CreateCreatorProfileForm(forms.ModelForm):
     class Meta:
         model = CreatorProfile
