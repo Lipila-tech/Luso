@@ -91,8 +91,16 @@ h6 {
   font-size: 0.6rem;
   font-weight: bold;
 }
+/* Dropdown */
 
+.dropdown-menu .dropdown-divider {
+  color: #9d0ead;
+  margin: 0;
+}
 
+.nav-link {
+  color: var(--contrast-color);
+}
 /*
   ---------------------------------
 # Form Group 
@@ -999,11 +1007,6 @@ ul.breadcrumb li a:hover {
 /* The "show" class is added to the filtered elements */
 .show {
   display: block;
-}
-
-.dropdown-menu .dropdown-divider {
-  color: #9d0ead;
-  margin: 0;
 }
 
 /* Style the buttons */

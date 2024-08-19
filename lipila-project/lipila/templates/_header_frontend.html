@@ -11,16 +11,16 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <ul class="nav nav-tabs">
 
             {% if request.user.is_authenticated %}
 
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'dashboard' %}">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'dashboard' %}">Home <span class="sr-only">(current)</span></a>
             </li>
             {% else %}
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
             </li>
             {% endif %}
 
@@ -28,8 +28,20 @@
 
             <!-- General links -->
             {% with target_fragment='#creators-info' %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'patron:index' %}?fragment={{ target_fragment }}">I'm a Creator</a>
+            <li class="nav-item dropdown">
+                <div class="dropdown dropright">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                    aria-expanded="false">I'm a Creator</a>
+                    <div id="dropdown-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Video Creators</a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item" href="#">Musicians</a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item" href="#">Podcasters</a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item" href="#">Artists</a>
+                    </div>
+                </div>
             </li>
             {% endwith %}
             {% with target_fragment='#find-creator' %}
