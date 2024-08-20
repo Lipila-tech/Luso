@@ -12,15 +12,7 @@
                     <div class="row g-0">
                         <div class="col-md-6 col-lg-7 d-flex align-items-center">
                             <div class="card-body p-4 p-lg-5 text-black">
-                                {% if messages %}
-                                <div class="alert">
-                                    {% for message in messages %}
-                                    <span class="closebtn"
-                                        onclick="this.parentElement.style.display='none';">&times;</span>
-                                    {{message}}
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
+                               
                                 {% block page %}{% endblock page%}
                                 <p class="small">By signing in, I agree to the <a href="{% url 'terms' %}"
                                         class="small">Lipila's Terms of use.</a> and

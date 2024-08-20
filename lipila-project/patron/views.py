@@ -47,10 +47,16 @@ def profile(request):
 
 @login_required
 def kyc(request):
-    bank = get_object_or_404(
-        PayoutAccount, user_id=request.user.creatorprofile)
-    context = {'bank': bank}
-
+    context = {}
+    creator = request.user.creatorprofile
+    try:
+        bank = get_object_or_404(PayoutAccount, user_id=creator)
+        context['bank'] = bank
+    except Http404:
+        messages.info(request, "Update your bank details.")
+        PayoutAccount().create_default_bankaccount(creator)
+        PayoutAccount().refresh_from_db()
+    
     return render(request, 'patron/admin/profile/kyc.html', context)
 
 
@@ -82,9 +88,10 @@ def kyc_review(request, pk):
 class ProfileEdit(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         creator = request.user.creatorprofile
-        bank = ''
+        context = {}
         try:
             bank = get_object_or_404(PayoutAccount, user_id=creator)
+            context['bank'] = bank
         except Http404:
             messages.info(request, "Update your bank details.")
             PayoutAccount().create_default_bankaccount(creator)
@@ -94,7 +101,9 @@ class ProfileEdit(LoginRequiredMixin, View):
         form1 = EditCreatorProfileForm(instance=creator, prefix='form1')
         form2 = DefaultUserChangeForm(instance=request.user, prefix='form2')
         form3 = PayoutAccountEditFrom(instance=bank, prefix='form3')
-        context = {'form1': form1, 'form2': form2, 'form3': form3}
+        context['form1'] = form1
+        context['form2'] = form2
+        context['form3'] = form3
         return render(request,
                       'patron/admin/profile/edit_patron_info.html',
                       context)

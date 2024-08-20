@@ -130,6 +130,7 @@ def signup_view(request):
 
 def custom_login_view(request):
     if request.method == 'POST':
+        next_url = request.GET.get('next', 'patron:profile')
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -137,17 +138,18 @@ def custom_login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                next_url = request.POST.get('next', 'profile')
                 if user.has_group or user.is_staff:
                     messages.success(request, f"Welcome back, {user.username}!")
                     return redirect(next_url)
                 else:
                     return redirect('patron:create_creator_profile')
             else:
-                messages.error(request, "Invalid username or password.")
+                form = AuthenticationForm()
+                return render(request, 'registration/login.html', {'form': form})
         else:
             messages.error(request, "Invalid username or password.")
+            form = AuthenticationForm()
+            return render(request, 'registration/login.html', {'form': form})
     else:
-        next_url = request.GET.get('next', 'patron:profile')
         form = AuthenticationForm()
-    return render(request, 'registration/login.html', {'form': form, 'next': next_url})
+        return render(request, 'registration/login.html', {'form': form})
