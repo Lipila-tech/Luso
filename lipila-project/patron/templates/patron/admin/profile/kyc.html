@@ -13,9 +13,8 @@
         {% endif %}
     </h3>
 
-    <div class="nav-item">
-        <a class="nav-link" href="{% url 'patron:update_profile' request.user %}">Edit</a>
-    </div>
+        <a class="btn btn-sm btn-primary" href="{% url 'patron:update_profile' request.user %}">Edit</a>
+    
 
     <div class="tab-pane fade show active profile-overview" id="profile-overview">
         <h3 class="card-title">Patron Summary</h3>

@@ -1,0 +1,96 @@
+{% extends 'layout_admin.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} Cashout Information {% endblock %}
+
+{% block extrastylesheets %}
+<style>
+    .cashout-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .cashout-title {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .cashout-info {
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .cashout-info p {
+        margin-bottom: 15px;
+    }
+
+    .cashout-requirements {
+        font-size: 1.1em;
+        margin-top: 30px;
+        color: #444;
+        text-align: left;
+    }
+
+    .cashout-requirements ul {
+        margin-top: 10px;
+        padding-left: 20px;
+        list-style-type: disc;
+    }
+
+    .cashout-requirements ul li {
+        margin-bottom: 10px;
+    }
+
+    .cashout-btn {
+        display: inline-block;
+        margin-top: 30px;
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        transition: background-color 0.3s ease;
+    }
+
+    .cashout-btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock extrastylesheets %}
+{% block section %}
+
+<div class="">
+    <h3>Wallet Balance: K{{total_payments}}</h3>
+</div>
+
+    <div class="cashout-container">
+        <h1 class="cashout-title">Payout Information</h1>
+        <div class="cashout-info">
+            <p>Payouts are made every Wednesday.</p>
+            <p>To receive your first payout, your profile must be verified after you reach your first K150.</p>
+            <p>Once your profile is verified and you have reached the payout threshold, your funds will be disbursed in
+                the next payout cycle.</p>
+        </div>
+        <div class="cashout-requirements">
+            <h3>Important Requirements:</h3>
+            <ul>
+                <li>Your profile must be fully completed with accurate information.</li>
+                <li>Verification is required after reaching K150 to ensure security and compliance.</li>
+                <li>Payouts will only be processed if the verification is successfully completed.</li>
+            </ul>
+        </div>
+        <a href="{% url 'patron:kyc' %}" class="cashout-btn">Verify Your Profile</a>
+    </div>
+{% endblock section %}
+{% block extrascripts %}
+{% endblock extrascripts %}

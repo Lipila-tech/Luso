@@ -358,7 +358,7 @@ def withdrawal_request(request):
 
     context = {'form': form, 'pending_requests': pending_requests,
                'total_withdrawn': total_withdrawn, 'total_payments': total_payments}
-    return render(request, 'patron/admin/actions/withdrawal_request.html', context)
+    return render(request, 'patron/admin/actions/cashout.html', context)
 
 
 # ACCOUNT HISTORY VIEWS
