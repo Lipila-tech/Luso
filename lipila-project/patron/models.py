@@ -37,7 +37,7 @@ class Tier(models.Model):
             )
 
     def __str__(self):
-        return f"{self.name} - {self.get_price_display()}"
+        return f"{self.creator}-{self.name} - {self.get_price_display()}"
 
 
 class TierSubscriptions(models.Model):

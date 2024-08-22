@@ -18,7 +18,7 @@ class CustomUserAdmin(BaseUserAdmin):
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {
-         'fields': ('is_active', 'is_staff', 'is_superuser', 'is_creator')}),
+         'fields': ('is_active', 'is_staff', 'is_superuser', 'is_creator', 'has_group')}),
         (_('Important dates'), {'fields': ('last_login',)}),
     )
     add_fieldsets = (
@@ -28,7 +28,7 @@ class CustomUserAdmin(BaseUserAdmin):
         }),
     )
 
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_creator')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_creator', 'has_group')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('email',)
 

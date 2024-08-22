@@ -1,7 +1,8 @@
 import factory
 from factory.django import DjangoModelFactory
 from .models import CustomUser, CreatorProfile, PayoutAccount
-from .globals import zambia_provinces, CREATOR_CATEGORY_CHOICES, WALLET_TYPES
+from patron.models import Tier
+from .globals import zambia_provinces, CREATOR_CATEGORY_CHOICES, WALLET_TYPES, DEFAULT_PRICES
 
 
 # Factory for CustomUser
@@ -49,3 +50,30 @@ class PayoutAccountFactory(DjangoModelFactory):
     account_name = factory.Faker('name')
     account_number = factory.Faker('numerify', text='#############')
     account_currency = 'ZMW'
+
+
+# Factory for Tier
+class TierFactory(DjangoModelFactory):
+    class Meta:
+        model = Tier
+
+    name = factory.Faker('sentence', nb_words=4)
+    description = factory.Faker('paragraph', nb_sentences=3)
+    price = factory.Faker('random_element', elements=[choice[0] for choice in DEFAULT_PRICES])
+    creator = None
+    visible_to_fans = factory.Faker('boolean')
+    is_editable = factory.Faker('boolean')
+
+
+# Create a single user with related profile and payout account
+# user = CustomUserFactory()
+# profile = CreatorProfileFactory(user=user)
+# payout_account = PayoutAccountFactory(user_id=profile)
+# tier = TierFactory(creator=profile)
+
+# Or create multiple instances
+# users = CustomUserFactory.create_batch(3)
+# profiles = CreatorProfileFactory.create_batch(3, user=factory.Iterator(users))
+# payout_accounts = PayoutAccountFactory.create_batch(3, user_id=factory.Iterator(profiles))
+# tiers = TierFactory.create_batch(3, creator=factory.Iterator(profiles))
+

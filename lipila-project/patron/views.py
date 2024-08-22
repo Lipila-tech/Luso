@@ -308,7 +308,7 @@ def browse_creators(request):
     """
     creators = CreatorProfile.objects.all()
     if request.user.is_authenticated:
-        return render(request, 'patron/admin/pages/viewreusables/_creators.html', {'creators': creators})
+        return render(request, 'patron/admin/pages/view_creators.html', {'creators': creators})
     else:
         return render(request, 'patron/admin/pages/view_creators_visitor.html', {'creators': creators})
 
