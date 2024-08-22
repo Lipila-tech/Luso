@@ -4,13 +4,13 @@
     <ul class="sidebar-nav" id="sidebar-nav">
         <!-- Creator user -->
         {% if request.user.creatorprofile %}
-        {% include '_aside_creator.html' %}
+        {% include 'reusables/_aside_creator.html' %}
         <!-- Staff User -->
         {% elif request.user.is_staff %}
-        {% include '_aside_staff.html' %}
+        {% include 'reusables/_aside_staff.html' %}
         <!-- Regular User -->
         {% else %}
-        {% include '_aside_regular.html' %}
+        {% include 'reusables/_aside_regular.html' %}
         {% endif %}
 
         <li class="nav-heading">Pages</li>

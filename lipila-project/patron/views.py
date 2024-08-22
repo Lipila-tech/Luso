@@ -117,20 +117,13 @@ class ProfileEdit(LoginRequiredMixin, View):
             request.POST, request.FILES, instance=request.user, prefix='form2')
         form3 = PayoutAccountEditFrom(
             request.POST, request.FILES, instance=bank, prefix='form3')
-        if form1.is_valid():
+        if form1.is_valid() or form2.is_valid() or form3.is_valid():
             form1.save()
-            messages.success(
-                request, "Patron profile saved.")
-        if form2.is_valid():
             form2.save()
-            messages.success(
-                request, "Personal details saved.")
-        if form3.is_valid():
             form3.instance.user_id = creator
             form3.save()
             messages.success(
-                request, "Bank details saved.")
-            return redirect(reverse('patron:profile'))
+                request, "Profile Updated Successfully.")
         else:
             messages.error(
                 request, "Failed to update profile.")
@@ -315,7 +308,7 @@ def browse_creators(request):
     """
     creators = CreatorProfile.objects.all()
     if request.user.is_authenticated:
-        return render(request, 'patron/admin/pages/view_creators.html', {'creators': creators})
+        return render(request, 'patron/admin/pages/viewreusables/_creators.html', {'creators': creators})
     else:
         return render(request, 'patron/admin/pages/view_creators_visitor.html', {'creators': creators})
 

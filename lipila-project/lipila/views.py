@@ -25,6 +25,7 @@ from lipila.forms.forms import (
     SupportPaymentForm,
     TransferForm,
     SubscriptionPaymentsForm,
+    UnUthSupportPaymentForm,
 )
 
 from django.core.mail import send_mail
@@ -268,7 +269,7 @@ def tiers(request):
     if request.method == 'GET':
         tiers = Tier.objects.filter(creator=request.user.creatorprofile)
         data['table'] = render_to_string(
-            '_tiers_table.html',
+            'reusables/_tiers_table.html',
             {'tiers': tiers},
             request=request
         )
@@ -522,8 +523,12 @@ def checkout_support(request, payee):
     tier = get_tier_by_patron_title(payee)
     amount = tier.price
     if request.method == 'POST':
-        form = SupportPaymentForm(
-            request.POST, payee=payee, payer=request.user, amount=amount)
+        if request.user.is_authenticated:
+            form = SupportPaymentForm(
+                request.POST, payee=payee, payer=request.user, amount=amount)
+        else:
+            form = UnUthSupportPaymentForm(
+                request.POST, payee=payee, amount=amount)
 
         if form.is_valid():
             isp = form.cleaned_data['wallet_type']
@@ -574,8 +579,11 @@ def checkout_support(request, payee):
                        'form': form}
             messages.error(request, "Field errors!")
             return render(request, 'lipila/checkout/checkout_support.html', context)
-
-    form = SupportPaymentForm(payee=payee,  payer=request.user, amount=amount)
+    if request.user.is_authenticated:
+        form = SupportPaymentForm(payee=payee,  payer=request.user, amount=amount)
+    else:
+        form = UnUthSupportPaymentForm(payee=payee, amount=amount)
+        
     client_token = get_braintree_client_token(request.user)
     context = {'client_token': client_token, 'form': form, "payee": payee, "amount":amount}
     return render(request, 'lipila/checkout/checkout_support.html', context)

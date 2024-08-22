@@ -14,9 +14,9 @@
 
 {% block section %}
 {% include 'lipila/modals/loader.html' %}
-{% include '_modal.html' %}
+{% include 'reusables/_modal.html' %}
 {% include "lipila/modals/_confirmation_payment.html" %}
-{% include "_header_frontend.html" %}
+{% include "reusables/_header_frontend.html" %}
 <div id="creator-container-home" class="creator-container-home">
     <div class="creator-profile column-ctr">
         <div class="d-flex flex-column justify-content-center align-items-center">
@@ -87,7 +87,7 @@
 <div class="d-flex flex-row justify-content-center align-items-center mt-3"> <span class="number">{{patrons}}
         <span class="follow">Patrons</span></span>
 </div>
-{% include '_footer.html' %}
+{% include 'reusables/_footer.html' %}
 <!-- Scroll Top Button -->
 <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>

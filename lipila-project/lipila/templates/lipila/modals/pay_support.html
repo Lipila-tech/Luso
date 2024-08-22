@@ -2,7 +2,7 @@
 <form method="post" class="">
     {% csrf_token %}
     <div class="form-group">
-        {% include "_checkout.html" %}
+        {% include "reusables/_checkout.html" %}
         <div class="modal-border donation-container">
             {{ form.wallet_type|add_class:"wallet_type" }}
 

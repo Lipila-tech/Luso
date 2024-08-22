@@ -43,10 +43,10 @@
 
 <body>
     {% if request.user.is_authenticated %}
-    {% include '_header_backend.html' %}
-    {% include '_aside.html' %}
+    {% include 'reusables/_header_backend.html' %}
+    {% include 'reusables/_aside.html' %}
     {% else %}
-    {% include '_header_frontend.html' %}
+    {% include 'reusables/_header_frontend.html' %}
     {% endif %}
     <main id="main" class="main">
         {% if request.user.is_authenticated %}
@@ -67,7 +67,7 @@
         </section>
     </main><!-- End #main -->
 
-    {% include '_footer.html' %}
+    {% include 'reusables/_footer.html' %}
 
 
     <!-- Scroll Top Button -->

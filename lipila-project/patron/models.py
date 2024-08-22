@@ -92,7 +92,7 @@ class Contributions(models.Model):
     payee = models.ForeignKey(
         CreatorProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_received')
     payer = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='contributions_sent')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=False, related_name='contributions_sent')
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=False)
     payer_account_number = models.CharField(
@@ -109,6 +109,26 @@ class Contributions(models.Model):
     def __str__(self):
         return f"{self.amount}"
 
+
+class ContributionsUnauth(models.Model):
+    payee = models.ForeignKey(
+        CreatorProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name='donations_received')
+    payer = models.CharField(max_length=15, null=True, blank=False)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=False)
+    payer_account_number = models.CharField(
+        max_length=300, null=True, blank=False)
+    reference_id = models.CharField(
+        max_length=40, unique=True, blank=False, null=False)
+    wallet_type = models.CharField(
+        max_length=20, choices=ISP_CHOICES, default='')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=200, null=True, blank=True)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending')
+
+    def __str__(self):
+        return f"{self.amount}"
 
 class WithdrawalRequest(models.Model):
     processed_date = models.DateTimeField(blank=True, null=True)

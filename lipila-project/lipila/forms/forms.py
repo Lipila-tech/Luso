@@ -1,12 +1,14 @@
 from django import forms
 from lipila.models import CustomerMessage
-from patron.models import Contributions, ISP_CHOICES
+from patron.models import Contributions, ContributionsUnauth
 from django.core.validators import MinValueValidator
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from patron.models import WithdrawalRequest, Tier, SubscriptionPayments, Transfer
 from django.contrib.auth import get_user_model
 from accounts.models import CreatorProfile
 from django.shortcuts import get_object_or_404
+from accounts.globals import ISP_CHOICES
+
 
 
 class BaseTransactionForm(BSModalModelForm):
@@ -80,6 +82,31 @@ class SupportPaymentForm(forms.ModelForm):
             CreatorProfile, patron_title=payee)
         self.fields['payer'].initial = get_user_model(
         ).objects.get(username=payer)
+        if amount is not None:
+            self.fields['amount'].initial = amount
+
+
+class UnUthSupportPaymentForm(forms.ModelForm):
+    class Meta:
+        model = ContributionsUnauth
+        fields = ['wallet_type', 'payer_account_number', 'amount',
+                  'description', 'payee', 'payer']
+        labels = {'payer_account_number': 'Pay using:', "description": 'Message'}
+
+        widgets = {
+            'payer_account_number': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
+            'description': forms.TextInput(attrs={'placeholder': 'Ex. I would love to chat with you.'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        amount = kwargs.pop('amount', None)
+        payee = kwargs.pop('payee')
+        super().__init__(*args, **kwargs)
+        self.fields['wallet_type'].widget.attrs['hidden'] = True
+        self.fields['payee'].widget.attrs['hidden'] = True
+        self.fields['payer'].widget.attrs['hidden'] = True
+        self.fields['payee'].initial = get_object_or_404(
+            CreatorProfile, patron_title=payee)
         if amount is not None:
             self.fields['amount'].initial = amount
 
