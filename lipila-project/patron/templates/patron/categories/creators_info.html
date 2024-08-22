@@ -38,27 +38,27 @@
     }
 
     .musicians {
-        background-image: url('/static/assets/img/posters/img-0.jpg');
+        background-image: url('/static/assets/img/posters/musician.jpeg');
     }
 
     .visual-artists {
-        background-image: url('/static/assets/img/posters/img-1.jpg');
+        background-image: url('/static/assets/img/posters/artist.jpeg');
     }
 
     .writers-poets {
-        background-image: url('/static/assets/img/posters/img-2.jpg');
+        background-image: url('/static/assets/img/posters/writer.jpeg');
     }
 
     .filmmakers-videographers {
-        background-image: url('/static/assets/img/posters/img-3.jpg');
+        background-image: url('/static/assets/img/posters/photographer.jpeg');
     }
 
     .photographers {
-        background-image: url('/static/assets/img/posters/img-4.jpg');
+        background-image: url('/static/assets/img/posters/photographer0.jpeg');
     }
 
     .craft-makers-designers {
-        background-image: url('/static/assets/img/posters/img-5.jpg');
+        background-image: url('/static/assets/img/posters/craft.jpeg');
     }
 
     @media (min-width: 1200px) {
@@ -85,6 +85,33 @@
 {% endblock extrastylesheets %}
 {% block section %}
 
+<div id="visual-artists" class="p-section visual-artists">
+    <div class="p-section-content">
+        <h2>Visual Artists</h2>
+        <p>
+            For visual artists, Luso provides a unique way to monetize your art. Whether you're a painter, illustrator,
+            or digital artist, you can share your creative process, offer exclusive prints, or give behind-the-scenes
+            looks at your work. Your supporters can directly fund your projects, helping you purchase supplies, host
+            exhibitions, or simply continue creating.
+        </p>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+    </div>
+</div>
+
+
+<div id="craft-makers-designers" class="p-section craft-makers-designers">
+    <div class="p-section-content">
+        <h2>Craft Makers & Designers</h2>
+        <p>
+            Craft makers and designers can use Luso to showcase their handmade creations and build a dedicated
+            following. Offer custom designs, limited edition items, or tutorials in exchange for support. Your patrons
+            can help fund your materials, studio space, or new projects, allowing you to continue producing unique and
+            beautiful crafts.
+        </p>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+    </div>
+</div>
+
 <div id="musicians" class="p-section musicians">
     <div class="p-section-content">
         <h2>Musicians</h2>
@@ -98,18 +125,6 @@
     </div>
 </div>
 
-<div id="visual-artists" class="p-section visual-artists">
-    <div class="p-section-content">
-        <h2>Visual Artists</h2>
-        <p>
-            For visual artists, Luso provides a unique way to monetize your art. Whether you're a painter, illustrator,
-            or digital artist, you can share your creative process, offer exclusive prints, or give behind-the-scenes
-            looks at your work. Your supporters can directly fund your projects, helping you purchase supplies, host
-            exhibitions, or simply continue creating.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
-    </div>
-</div>
 
 <div id="writers-poets" class="p-section writers-poets">
     <div class="p-section-content">
@@ -132,19 +147,6 @@
             film, documentary, or a video series, your supporters can contribute to your budget. In return, offer them
             early screenings, exclusive behind-the-scenes content, or even credits in your film. Luso makes it easier to
             turn your vision into reality.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
-    </div>
-</div>
-
-<div id="craft-makers-designers" class="p-section craft-makers-designers">
-    <div class="p-section-content">
-        <h2>Craft Makers & Designers</h2>
-        <p>
-            Craft makers and designers can use Luso to showcase their handmade creations and build a dedicated
-            following. Offer custom designs, limited edition items, or tutorials in exchange for support. Your patrons
-            can help fund your materials, studio space, or new projects, allowing you to continue producing unique and
-            beautiful crafts.
         </p>
         <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
     </div>
