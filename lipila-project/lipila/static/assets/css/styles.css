@@ -793,21 +793,21 @@ hr .new1 {
   margin-bottom: 10px;
 }
 
+/* Get started button */
+
 .btn-get-started {
-  align-self: flex-start;
+  display: inline-block;
+  background-color: #009688;
+  color: #fff;
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1em;
-  cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 20px;
 }
 
 .btn-get-started:hover {
-  background-color: #0056b3;
+  background-color: #00796b;
 }
 
 /* Responsive Design */

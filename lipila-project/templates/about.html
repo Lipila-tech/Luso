@@ -1,0 +1,108 @@
+{% extends 'layout_base.html' %}
+{% load static %}
+
+{% block extrastylesheets %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+    }
+
+    .about-section {
+        background-color: #f5f5f5;
+        padding: 50px 0;
+    }
+
+    .container {
+        width: 80%;
+        margin: auto;
+        overflow: hidden;
+    }
+
+    .hero-text {
+        text-align: center;
+        padding-bottom: 30px;
+    }
+
+    .hero-text h1 {
+        font-size: 2.5em;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .hero-text p {
+        font-size: 1.2em;
+        color: #666;
+    }
+
+    .content-block {
+        background-color: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-block h2 {
+        font-size: 1.8em;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .content-block p {
+        font-size: 1em;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block section %}
+<div class="about-section">
+    <div class="container">
+        <div class="hero-text">
+            <h1>Empowering Zambian Creators to Shine</h1>
+            <p>At Luso, we believe in the power of creativity and the strength of community. You, the creators, are the
+                heart and soul of our platform. Your passion, talent, and hard work deserve recognition and reward, and
+                we are here to help you achieve just that.</p>
+        </div>
+
+        <div class="content-block">
+            <h2>Your Story is Our Mission</h2>
+            <p>You have a unique talent, a vision, and a message that the world needs to see. Whether you are a
+                musician, artist, writer, filmmaker, photographer, or craft maker, your creations have the power to
+                inspire, entertain, and connect people. We understand the challenges you face in monetizing your passion
+                and gaining the recognition you deserve. That’s where we come in.</p>
+                {% include "reusables/_get_started_free_btn.html" %}
+        </div>
+
+        <div class="content-block">
+            <h2>Luso - Your Partner in Success</h2>
+            <p>Luso is more than just a platform; it’s a partner in your creative journey. We offer the tools and
+                support you need to turn your passion into a stable income. By connecting you directly with your fans,
+                we ensure you get paid for your work. Our platform enables you to offer exclusive content, personalized
+                experiences, and early access to your fans who believe in your art. With Luso, you have the freedom to
+                create while we handle the logistics, payments, and support.</p>
+                {% include "reusables/_get_started_free_btn.html" %}
+        </div>
+
+        <div class="content-block">
+            <h2>Your Fans, Your Community, Your Success</h2>
+            <p>At the heart of Luso is the connection between you and your fans. We provide a space where you can build
+                and grow your community, engage with your supporters, and offer them a front-row seat to your creative
+                process. Every fan who joins your journey through Luso is not just a supporter; they are a partner in
+                your success.</p>
+                {% include "reusables/_get_started_free_btn.html" %}
+        </div>
+
+        <div class="content-block">
+            <h2>Join Us and Turn Your Passion into Income</h2>
+            <p>Your dreams deserve a stage, and Luso is here to provide it. Join our community of Zambian creators who
+                are already turning their passion into a sustainable livelihood. Let us help you share your talent with
+                the world and receive the recognition and support you’ve worked so hard for.</p>
+            {% include "reusables/_get_started_free_btn.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

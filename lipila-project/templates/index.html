@@ -22,7 +22,7 @@
         <div class="carousel-caption d-md-block p-section-content">
           <h5>Empower Your Creativity, Earn Your Worth.</h5>
           <p>Unlock the power of fan financial support</p>
-          <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+          {% include "reusables/_get_started_btn.html" %}
         </div>
       </div>
       <div class="carousel-item">
@@ -70,7 +70,7 @@
         <div class="col-lg-6 col-md-12">
           <img src="{% static 'assets/img/posters/p2.jpeg' %}" alt="Creators Collage" class="benefits-image">
         </div>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started">Get Started</a>
+        {% include "reusables/_get_started_free_btn.html" %}
       </div>
     </div>
   </section>
@@ -90,13 +90,13 @@
           <li><strong>Start getting paid:</strong> Receive financial support directly from fans.
           </li>
         </ol>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started">Get Started</a>
+        {% include "reusables/_get_started_free_btn.html" %}
       </div>
       <div class="col-lg-7 order-1 order-lg-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
         <div class="image-stack">
-          <img src="{% static 'assets/img/artist.jpg' %}" alt="" class="stack-front">
-          <img src="{% static 'assets/img/posters/poster1.jpeg' %}" alt="" class="stack-middle">
-          <img src="{% static 'assets/img/fan1.jpg' %}" alt="" class="stack-back">
+          <img src="{% static 'assets/img/posters/sign-up.jpeg' %}" alt="sign up" class="stack-front">
+          <img src="{% static 'assets/img/posters/share-link.jpeg' %}" alt="share link" class="stack-middle">
+          <img src="{% static 'assets/img/posters/get-paid.jpeg' %}" alt="get paid" class="stack-back">
         </div>
       </div>
     </div>

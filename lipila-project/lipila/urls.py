@@ -21,6 +21,7 @@ urlpatterns = [
 
     # Luso public urls
     path('', views.index, name='index'),
+    path('about/luso', views.about, name='about'),
     path('<str:title>/', views.creator_index, name='creator_index'),
     path('contact/lpa/', views.contact, name='contact'),
 

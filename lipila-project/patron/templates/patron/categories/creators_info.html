@@ -69,15 +69,15 @@
     }
 
     @media (max-width: 768px) {
-        .section h2 {
+        .p-section h2 {
             font-size: 2em;
         }
 
-        .section p {
+        .p-section p {
             font-size: 1em;
         }
 
-        .section-content {
+        .p-section-content {
             padding: 20px;
         }
     }
@@ -85,84 +85,100 @@
 {% endblock extrastylesheets %}
 {% block section %}
 
-<div id="visual-artists" class="p-section visual-artists">
-    <div class="p-section-content">
-        <h2>Visual Artists</h2>
-        <p>
-            For visual artists, Luso provides a unique way to monetize your art. Whether you're a painter, illustrator,
-            or digital artist, you can share your creative process, offer exclusive prints, or give behind-the-scenes
-            looks at your work. Your supporters can directly fund your projects, helping you purchase supplies, host
-            exhibitions, or simply continue creating.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+<div class="creators-info">
+    <div id="visual-artists" class="p-section visual-artists">
+        <div class="p-section-content">
+            <h2>Visual Artists</h2>
+            <p>
+                For visual artists, Luso provides a unique way to monetize your art. Whether you're a painter,
+                illustrator,
+                or digital artist, you can share your creative process, offer exclusive prints, or give
+                behind-the-scenes
+                looks at your work. Your supporters can directly fund your projects, helping you purchase supplies, host
+                exhibitions, or simply continue creating.
+            </p>
+            {% include "reusables/_get_started_free.html" %}
+        </div>
     </div>
-</div>
 
 
-<div id="craft-makers-designers" class="p-section craft-makers-designers">
-    <div class="p-section-content">
-        <h2>Craft Makers & Designers</h2>
-        <p>
-            Craft makers and designers can use Luso to showcase their handmade creations and build a dedicated
-            following. Offer custom designs, limited edition items, or tutorials in exchange for support. Your patrons
-            can help fund your materials, studio space, or new projects, allowing you to continue producing unique and
-            beautiful crafts.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+    <div id="craft-makers-designers" class="p-section craft-makers-designers">
+        <div class="p-section-content">
+            <h2>Craft Makers & Designers</h2>
+            <p>
+                Craft makers and designers can use Luso to showcase their handmade creations and build a dedicated
+                following. Offer custom designs, limited edition items, or tutorials in exchange for support. Your
+                patrons
+                can help fund your materials, studio space, or new projects, allowing you to continue producing unique
+                and
+                beautiful crafts.
+            </p>
+            {% include "reusables/_get_started_free.html" %}
+        </div>
     </div>
-</div>
 
-<div id="musicians" class="p-section musicians">
-    <div class="p-section-content">
-        <h2>Musicians</h2>
-        <p>
-            As a musician, Luso helps you connect with fans who love your work. Through our platform, you can offer
-            exclusive content, early access to new releases, or even personalized shoutouts in exchange for support.
-            This steady stream of funding allows you to focus on your music, whether you're recording, performing, or
-            creating new material.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+    <div id="musicians" class="p-section musicians">
+        <div class="p-section-content">
+            <h2>Musicians</h2>
+            <p>
+                As a musician, Luso helps you connect with fans who love your work. Through our platform, you can offer
+                exclusive content, early access to new releases, or even personalized shoutouts in exchange for support.
+                This steady stream of funding allows you to focus on your music, whether you're recording, performing,
+                or
+                creating new material.
+            </p>
+            {% include "reusables/_get_started_free.html" %}
+        </div>
     </div>
-</div>
 
 
-<div id="writers-poets" class="p-section writers-poets">
-    <div class="p-section-content">
-        <h2>Writers & Poets</h2>
-        <p>
-            Writers and poets can thrive on Luso by offering supporters early access to new chapters, exclusive poems,
-            or personalized pieces. Your fans can fund your creative journey, helping you cover publishing costs, attend
-            writing workshops, or dedicate more time to your craft. It's a perfect way to build a loyal readership while
-            receiving financial support.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+    <div id="writers-poets" class="p-section writers-poets">
+        <div class="p-section-content">
+            <h2>Writers & Poets</h2>
+            <p>
+                Writers and poets can thrive on Luso by offering supporters early access to new chapters, exclusive
+                poems,
+                or personalized pieces. Your fans can fund your creative journey, helping you cover publishing costs,
+                attend
+                writing workshops, or dedicate more time to your craft. It's a perfect way to build a loyal readership
+                while
+                receiving financial support.
+            </p>
+            {% include "reusables/_get_started_free.html" %}
+        </div>
     </div>
-</div>
 
-<div id="filmmakers-videographers" class="p-section filmmakers-videographers">
-    <div class="p-section-content">
-        <h2>Filmmakers & Videographers</h2>
-        <p>
-            Filmmakers and videographers can use Luso to fund their next big project. Whether you're working on a short
-            film, documentary, or a video series, your supporters can contribute to your budget. In return, offer them
-            early screenings, exclusive behind-the-scenes content, or even credits in your film. Luso makes it easier to
-            turn your vision into reality.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+    <div id="filmmakers-videographers" class="p-section filmmakers-videographers">
+        <div class="p-section-content">
+            <h2>Filmmakers & Videographers</h2>
+            <p>
+                Filmmakers and videographers can use Luso to fund their next big project. Whether you're working on a
+                short
+                film, documentary, or a video series, your supporters can contribute to your budget. In return, offer
+                them
+                early screenings, exclusive behind-the-scenes content, or even credits in your film. Luso makes it
+                easier to
+                turn your vision into reality.
+            </p>
+            {% include "reusables/_get_started_free.html" %}
+        </div>
     </div>
-</div>
 
 
-<div id="photographers" class="p-section photographers">
-    <div class="p-section-content">
-        <h2>Photographers</h2>
-        <p>
-            Photographers can benefit from Luso by sharing their unique perspectives with a supportive community. Offer
-            exclusive photo sets, photography tips, or behind-the-scenes access to your shoots. Your supporters can help
-            you finance new equipment, travel to new locations, or even host your own exhibitions. It's a great way to
-            grow your audience while securing financial backing.
-        </p>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-get-started align-self-start">Get Started</a>
+    <div id="photographers" class="p-section photographers">
+        <div class="p-section-content">
+            <h2>Photographers</h2>
+            <p>
+                Photographers can benefit from Luso by sharing their unique perspectives with a supportive community.
+                Offer
+                exclusive photo sets, photography tips, or behind-the-scenes access to your shoots. Your supporters can
+                help
+                you finance new equipment, travel to new locations, or even host your own exhibitions. It's a great way
+                to
+                grow your audience while securing financial backing.
+            </p>
+            {% include "reusables/_get_started_free.html" %}
+        </div>
     </div>
 </div>
 
