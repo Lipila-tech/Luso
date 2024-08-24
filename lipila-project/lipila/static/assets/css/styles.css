@@ -1294,6 +1294,7 @@ ul.breadcrumb li a:hover {
   grid-template-columns: repeat(12, 1fr);
 }
 
+
 .features .features-item .image-stack .stack-back {
   grid-column: 4/-1;
   grid-row: 1;
@@ -1301,14 +1302,103 @@ ul.breadcrumb li a:hover {
   z-index: 1;
 }
 
+.features .features-item .image-stack .stack-middle {
+  grid-row: 1;
+  grid-column: 4/-2;
+  /* margin-top: 20%; */
+  width: 100%;
+  z-index: 2;
+}
+
 .features .features-item .image-stack .stack-front {
   grid-row: 1;
   grid-column: 1/span 8;
   margin-top: 20%;
   width: 100%;
-  z-index: 2;
+  z-index: 3;
 }
 
+/* IMAGE SWAP */
+.p-section-content {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: fit-content;
+  padding: 20px;
+}
+
+.image-stack {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+}
+
+.image-stack img {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+}
+
+.stack-front {
+  animation: swapFront 9s infinite;
+}
+
+.stack-middle {
+  animation: swapMiddle 9s infinite;
+}
+
+.stack-back {
+  animation: swapBack 9s infinite;
+}
+
+@keyframes swapFront {
+
+  0%,
+  33% {
+    z-index: 3;
+    opacity: 1;
+  }
+
+  34%,
+  100% {
+    z-index: 1;
+    opacity: 0;
+  }
+}
+
+@keyframes swapMiddle {
+
+  0%,
+  33% {
+    z-index: 2;
+    opacity: 0;
+  }
+
+  34%,
+  66% {
+    z-index: 3;
+    opacity: 1;
+  }
+
+  67%,
+  100% {
+    z-index: 1;
+    opacity: 0;
+  }
+}
+
+@keyframes swapBack {
+
+  0%,
+  66% {
+    z-index: 1;
+    opacity: 0;
+  }
+
+  67%,
+  100% {
+    z-index: 3;
+    opacity: 1;
+  }
+}
 
 /*--------------------------------------------------------------
 # Footer
