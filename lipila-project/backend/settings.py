@@ -47,6 +47,8 @@ DEBUG = env('DEBUG')
 #     },
 # }
 
+TIKTOK_CLIENT_KEY=env("TIKTOK_CLIENT_KEY")
+SERVER_ENDPOINT_REDIRECT=env("SERVER_ENDPOINT_REDIRECT")
 # SET third party API Credentials
 MTN_TARGET_ENV=env("MTN_TARGET_ENV")
 MTN_COLLECTIONS_KEY=env("MTN_COLLECTIONS_KEY")
@@ -217,6 +219,13 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.0.190']
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SAMESITE = 'None'
 # SESSION_COOKIE_SAMESITE = 'None'
+
+
+# Make sure you have this setting to allow cookies
+# SESSION_COOKIE_HTTPONLY = True
+# SESSION_COOKIE_SECURE = not settings.DEBUG  # Use secure cookies in production
+# CSRF_COOKIE_SECURE = not settings.DEBUG  # Use secure CSRF cookies in production
+
 
 # Bootstrap
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"

@@ -8,4 +8,5 @@ urlpatterns = [
     path('sent/', views.activation_sent_view, name="activation_sent"),
     path('activate/<str:uidb64>/<str:token>/', views.activate, name="activate"),
     path('auth-receiver/', views.auth_receiver, name='auth_receiver'),
+    path('oauth/', views.oauth, name='oauth'),
 ]

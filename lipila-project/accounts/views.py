@@ -14,15 +14,37 @@ from django.urls import reverse
 from .utils import basic_auth_encode, basic_auth_decode
 from .forms import SignUpForm
 
-
-import os
-
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.conf import settings
+
+import random
+import string
+
+TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
+SERVER_ENDPOINT_REDIRECT=''
+
+def oauth(request):
+    # Generate a random CSRF token
+    csrf_state = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
+
+    # Set the CSRF token as a cookie
+    response = HttpResponse()
+    response.set_cookie('csrfState', csrf_state, max_age=60)
+
+    # Build the TikTok authorization URL
+    url = 'https://www.tiktok.com/v2/auth/authorize/'
+    url += f'?client_key={TIKTOK_CLIENT_KEY}'
+    url += '&scope=user.info.basic'
+    url += '&response_type=code'
+    url += '&redirect_uri={SERVER_ENDPOINT_REDIRECT}'
+    url += f'&state={csrf_state}'
+
+    # Redirect to the TikTok authorization URL
+    return redirect(url)
 
 
 def sign_in(request):
