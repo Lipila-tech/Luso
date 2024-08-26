@@ -65,9 +65,10 @@ def auth_receiver(request):
     # Authenticate and log in the user
     user = authenticate(request, email=email)
     if user is not None:
+        messages.success(request, f"Welcome back, {user.username}!")
         login(request, user)
         request.session['user_data'] = user_data
-        return redirect(reverse('patron:profile'))
+        return redirect(reverse('dashboard'))
     else:
         messages.error(request, "Authentication failed")
         return redirect(reverse('accounts:signup'))
@@ -130,7 +131,7 @@ def signup_view(request):
 
 def custom_login_view(request):
     if request.method == 'POST':
-        next_url = request.GET.get('next', 'patron:profile')
+        next_url = request.GET.get('next', 'dashboard')
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
