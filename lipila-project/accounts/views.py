@@ -25,7 +25,7 @@ import random
 import string
 
 TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
-SERVER_ENDPOINT_REDIRECT=''
+SERVER_ENDPOINT_REDIRECT=settings.SERVER_ENDPOINT_REDIRECT
 
 def oauth(request):
     # Generate a random CSRF token
