@@ -1,8 +1,0 @@
-{'iss': 'https://accounts.google.com', 'azp': 
-'679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com', 
-'aud': '679805271271-r01ico7vuitlk1c5nkd1077khfufhqe6.apps.googleusercontent.com', 
-'sub': '105510858680833301316', 'email': 'mightypz2@gmail.com', 'email_verified': True,
-        'nbf': 1721285367, 'name': 'Sangwani-coder', 
-        'picture': 'https://lh3.googleusercontent.com/a/ACg8ocJpb2L6oKcMax0bsazc4uXo11W7akZWi10ZIC8Oh6aZT8iwtlFE=s96-c',
-         'given_name': 'Sangwani-coder', 'iat': 1721285667, 'exp': 1721289267, 'jti': '67359cb4bba16cee69103510de0ecd3c4f6e778c'
-         }
