@@ -1,0 +1,7 @@
+__pycache__/
+.venv
+.env
+migrations/
+media
+db.sqlite3
+debug.log
