@@ -60,7 +60,7 @@ BRAINTREE_PUBLIC_KEY=env("BRAINTREE_PUBLIC_KEY")
 BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 
 LOGIN_URI_TESTING = 'http://localhost:8000/accounts/auth-receiver/'
-LOGIN_URI_PRODUCTION = 'https://lipila.pythonanywhere.com/accounts/auth-receiver/'
+LOGIN_URI_PRODUCTION = 'https://lusostudio.tech/accounts/auth-receiver/'
 
 if env('ENV') == 'dev':
     LOGIN_URI = LOGIN_URI_TESTING
