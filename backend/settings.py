@@ -211,10 +211,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.0.190']
 
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SAMESITE = 'None'
-# SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 
 # Make sure you have this setting to allow cookies
