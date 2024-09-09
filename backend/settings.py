@@ -59,12 +59,10 @@ BRAINTREE_MERCHANT_ID=env("BRAINTREE_MERCHANT_ID")
 BRAINTREE_PUBLIC_KEY=env("BRAINTREE_PUBLIC_KEY")
 BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 
-
-
-LOGIN_URI = 'https://lusostudio.tech/accounts/auth-receiver/'
+GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/auth-receiver/'
 
 # ALLOWED_HOSTS = ['lipila.pythonanywhere.com', 'localhost', '192.168.0.190']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
@@ -98,6 +96,7 @@ INSTALLED_APPS = [
 # Middleware framework
 # https://docs.djangoproject.com/en/2.1/topics/http/middleware/
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -105,7 +104,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django_pagination_bootstrap.middleware.PaginationMiddleware',
 ]
@@ -209,12 +207,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # server will be running is safe to receive requests
 # from
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://192.168.0.190']
+CSRF_TRUSTED_ORIGINS = ['https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SAMESITE = 'None'
 
 
 # Make sure you have this setting to allow cookies
