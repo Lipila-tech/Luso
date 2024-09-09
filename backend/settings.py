@@ -62,7 +62,7 @@ BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/auth-receiver/'
 
 # ALLOWED_HOSTS = ['lipila.pythonanywhere.com', 'localhost', '192.168.0.190']
-ALLOWED_HOSTS = ['https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
+ALLOWED_HOSTS = ['lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
