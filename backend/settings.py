@@ -207,7 +207,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # server will be running is safe to receive requests
 # from
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
+CSRF_TRUSTED_ORIGINS = ['lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
