@@ -216,9 +216,9 @@ CSRF_TRUSTED_ORIGINS = ['lusostudio.tech', 'https://lusostudio.tech', 'https://w
 
 
 # Make sure you have this setting to allow cookies
-# SESSION_COOKIE_HTTPONLY = True
-# SESSION_COOKIE_SECURE = not settings.DEBUG  # Use secure cookies in production
-# CSRF_COOKIE_SECURE = not settings.DEBUG  # Use secure CSRF cookies in production
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = 'None'
+CSRF_COOKIE_SECURE ='None'
 
 
 # Bootstrap
