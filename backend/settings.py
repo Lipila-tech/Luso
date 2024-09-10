@@ -62,7 +62,7 @@ BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/auth-receiver/'
 
 # ALLOWED_HOSTS = ['lipila.pythonanywhere.com', 'localhost', '192.168.0.190']
-ALLOWED_HOSTS = ['lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
+ALLOWED_HOSTS = ['localhost', 'lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
@@ -207,18 +207,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # server will be running is safe to receive requests
 # from
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
+CSRF_TRUSTED_ORIGINS = ['https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SAMESITE = 'None'
-# SESSION_COOKIE_SAMESITE = 'None'
-
-
-# Make sure you have this setting to allow cookies
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = 'None'
-CSRF_COOKIE_SECURE ='None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 
 # Bootstrap
