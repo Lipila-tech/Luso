@@ -43,6 +43,8 @@ def tiktok_callback(request):
 
     # Optionally: Verify the 'state' to prevent CSRF attacks
     csrf_state = request.COOKIES.get('csrfState')
+    if csrf_state is None:
+        return HttpResponseBadRequest(f"Cookie not set")
     if state != csrf_state:
         return HttpResponseBadRequest(f"Invalid state parameter {state} != {csrf_state}")
 
@@ -67,7 +69,7 @@ def oauth(request):
     csrf_state = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
 
     # Set the CSRF token as a cookie
-    response = HttpResponse()
+    response = HttpResponse('cookie')
     response.set_cookie('csrfState', csrf_state, max_age=60)
 
     # Build the TikTok authorization URL
