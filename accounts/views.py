@@ -35,6 +35,8 @@ def tiktok_callback(request):
     # Get the 'code' and 'state' parameters from the URL
     code = request.GET.get('code')
     state = request.GET.get('state')
+    scope = request.GET.get('scope')
+    refresh_token = request.GET.get('request_token')
 
     # Verify that 'code' and 'state' are present
     if not code or not state:
@@ -65,7 +67,7 @@ def tiktok_callback(request):
             return HttpResponse("Server error")
 
     # Handle the response and return to the user
-    return HttpResponse(f"Authorization successful! Code: {code}, State: {state}")
+    return HttpResponse(f"Authorization successful! scope: {scope}, State: {state}")
 
 
 def oauth(request):
