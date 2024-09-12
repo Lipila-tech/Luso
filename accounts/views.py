@@ -1,3 +1,5 @@
+import requests
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
@@ -25,11 +27,8 @@ import random
 import string
 
 TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
-TIKTOK_SERVER_ENDPOINT_REDIRECT=settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
+TIKTOK_SERVER_ENDPOINT_REDIRECT = settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
 TIKTOK_CLIENT_SECRET = settings.TIKTOK_CLIENT_SECRET
-
-from django.http import HttpResponse, HttpResponseBadRequest
-import requests
 
 
 def tiktok_callback(request):
@@ -57,8 +56,13 @@ def tiktok_callback(request):
         'grant_type': 'authorization_code',
         'redirect_uri': TIKTOK_SERVER_ENDPOINT_REDIRECT
     }
-    token_response = requests.post('https://www.tiktok.com/v2/oauth/token/', data=payload)
-    token_data = token_response.json()
+    token_response = requests.post(
+        'https://www.tiktok.com/v2/oauth/token/', data=payload)
+    if token_response.status_code != 204 and token_response.headers["content-type"].strip().startswith("application/json"):
+        try:
+            token_data = token_response.json()
+        except ValueError:
+            return HttpResponse("Server error")
 
     # Handle the response and return to the user
     return HttpResponse(f"Authorization successful! Code: {code}, State: {state}")
@@ -66,9 +70,10 @@ def tiktok_callback(request):
 
 def oauth(request):
     # Generate a random CSRF token
-    csrf_state = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
+    csrf_state = ''.join(random.choices(
+        string.ascii_lowercase + string.digits, k=16))
 
-        # Build the TikTok authorization URL
+    # Build the TikTok authorization URL
     url = 'https://www.tiktok.com/v2/auth/authorize/'
     url += f'?client_key={TIKTOK_CLIENT_KEY}'
     url += '&scope=user.info.basic'
@@ -79,12 +84,9 @@ def oauth(request):
     # Set the CSRF token as a cookie
     response = redirect(url)
     response.set_cookie('csrfState', csrf_state, max_age=60)
-    
 
     # Redirect to the TikTok authorization URL
     return response
-
-
 
 
 def sign_in(request):
@@ -202,7 +204,8 @@ def custom_login_view(request):
             if user is not None:
                 login(request, user)
                 if user.has_group or user.is_staff:
-                    messages.success(request, f"Welcome back, {user.username}!")
+                    messages.success(
+                        request, f"Welcome back, {user.username}!")
                     return redirect(next_url)
                 else:
                     return redirect('patron:create_creator_profile')
