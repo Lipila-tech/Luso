@@ -26,6 +26,41 @@ import string
 
 TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
 SERVER_ENDPOINT_REDIRECT=settings.SERVER_ENDPOINT_REDIRECT
+TIKTOK_CLIENT_SECRET = settings.TIKTOK_CLIENT_SECRET
+
+from django.http import HttpResponse, HttpResponseBadRequest
+import requests
+
+
+def tiktok_callback(request):
+    # Get the 'code' and 'state' parameters from the URL
+    code = request.GET.get('code')
+    state = request.GET.get('state')
+
+    # Verify that 'code' and 'state' are present
+    if not code or not state:
+        return HttpResponseBadRequest("Invalid callback parameters")
+
+    # Optionally: Verify the 'state' to prevent CSRF attacks
+    csrf_state = request.COOKIES.get('csrfState')
+    if state != csrf_state:
+        return HttpResponseBadRequest("Invalid state parameter")
+
+    # Now you can use the 'code' to exchange for an access token
+    # Example: make a POST request to TikTok's token endpoint
+    payload = {
+        'client_key': TIKTOK_CLIENT_KEY,
+        'client_secret': TIKTOK_CLIENT_SECRET,
+        'code': code,
+        'grant_type': 'authorization_code',
+        'redirect_uri': SERVER_ENDPOINT_REDIRECT
+    }
+    token_response = requests.post('https://www.tiktok.com/v2/oauth/token/', data=payload)
+    token_data = token_response.json()
+
+    # Handle the response and return to the user
+    return HttpResponse(f"Authorization successful! Code: {code}, State: {state}")
+
 
 def oauth(request):
     # Generate a random CSRF token
@@ -42,10 +77,12 @@ def oauth(request):
     url += '&response_type=code'
     url += f'&redirect_uri={SERVER_ENDPOINT_REDIRECT}'
     url += f'&state={csrf_state}'
-
+    
 
     # Redirect to the TikTok authorization URL
     return redirect(url)
+
+
 
 
 def sign_in(request):

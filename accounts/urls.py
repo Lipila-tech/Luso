@@ -9,4 +9,5 @@ urlpatterns = [
     path('activate/<str:uidb64>/<str:token>/', views.activate, name="activate"),
     path('auth-receiver/', views.auth_receiver, name='auth_receiver'),
     path('oauth/', views.oauth, name='oauth'),
+    path('tiktok/callback/', views.tiktok_callback, name='tiktok_callback'),
 ]

@@ -48,7 +48,8 @@ DEBUG = env('DEBUG')
 # }
 
 TIKTOK_CLIENT_KEY=env("TIKTOK_CLIENT_KEY")
-SERVER_ENDPOINT_REDIRECT=env("SERVER_ENDPOINT_REDIRECT")
+TIKTOK_CLIENT_SECRET=env("TIKTOK_CLIENT_SECRET")
+TIKTOK_SERVER_ENDPOINT_REDIRECT=env("TIKTOK_SERVER_ENDPOINT_REDIRECT")
 # SET third party API Credentials
 MTN_TARGET_ENV=env("MTN_TARGET_ENV")
 MTN_COLLECTIONS_KEY=env("MTN_COLLECTIONS_KEY")
@@ -61,7 +62,6 @@ BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 
 GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/auth-receiver/'
 
-# ALLOWED_HOSTS = ['lipila.pythonanywhere.com', 'localhost', '192.168.0.190']
 ALLOWED_HOSTS = ['localhost', 'lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
 # Application references
