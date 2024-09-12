@@ -44,7 +44,7 @@ def tiktok_callback(request):
     # Optionally: Verify the 'state' to prevent CSRF attacks
     csrf_state = request.COOKIES.get('csrfState')
     if state != csrf_state:
-        return HttpResponseBadRequest("Invalid state parameter")
+        return HttpResponseBadRequest(f"Invalid state parameter {state} != {csrf_state}")
 
     # Now you can use the 'code' to exchange for an access token
     # Example: make a POST request to TikTok's token endpoint
