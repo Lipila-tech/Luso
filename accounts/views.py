@@ -75,7 +75,7 @@ def oauth(request):
     url += f'?client_key={TIKTOK_CLIENT_KEY}'
     url += '&scope=user.info.basic'
     url += '&response_type=code'
-    url += f'&redirect_uri={SERVER_ENDPOINT_REDIRECT}'
+    url += f'&redirect_uri={TIKTOK_SERVER_ENDPOINT_REDIRECT}'
     url += f'&state={csrf_state}'
     
 
