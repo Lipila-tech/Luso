@@ -25,7 +25,7 @@ import random
 import string
 
 TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
-SERVER_ENDPOINT_REDIRECT=settings.SERVER_ENDPOINT_REDIRECT
+TIKTOK_SERVER_ENDPOINT_REDIRECT=settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
 TIKTOK_CLIENT_SECRET = settings.TIKTOK_CLIENT_SECRET
 
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -53,7 +53,7 @@ def tiktok_callback(request):
         'client_secret': TIKTOK_CLIENT_SECRET,
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': SERVER_ENDPOINT_REDIRECT
+        'redirect_uri': TIKTOK_SERVER_ENDPOINT_REDIRECT
     }
     token_response = requests.post('https://www.tiktok.com/v2/oauth/token/', data=payload)
     token_data = token_response.json()
