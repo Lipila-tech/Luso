@@ -22,7 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.conf import settings
-
+import requests as py_requests
 import random
 import string
 
@@ -56,7 +56,7 @@ def tiktok_callback(request):
         'grant_type': 'authorization_code',
         'redirect_uri': TIKTOK_SERVER_ENDPOINT_REDIRECT
     }
-    token_response = requests.post(
+    token_response = py_requests.post(
         'https://www.tiktok.com/v2/oauth/token/', data=payload)
     if token_response.status_code != 204 and token_response.headers["content-type"].strip().startswith("application/json"):
         try:
