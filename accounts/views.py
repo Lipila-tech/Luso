@@ -68,21 +68,21 @@ def oauth(request):
     # Generate a random CSRF token
     csrf_state = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
 
-    # Set the CSRF token as a cookie
-    response = HttpResponse('cookie')
-    response.set_cookie('csrfState', csrf_state, max_age=60)
-
-    # Build the TikTok authorization URL
+        # Build the TikTok authorization URL
     url = 'https://www.tiktok.com/v2/auth/authorize/'
     url += f'?client_key={TIKTOK_CLIENT_KEY}'
     url += '&scope=user.info.basic'
     url += '&response_type=code'
     url += f'&redirect_uri={TIKTOK_SERVER_ENDPOINT_REDIRECT}'
     url += f'&state={csrf_state}'
+
+    # Set the CSRF token as a cookie
+    response = redirect(url)
+    response.set_cookie('csrfState', csrf_state, max_age=60)
     
 
     # Redirect to the TikTok authorization URL
-    return redirect(url)
+    return response
 
 
 
