@@ -9,16 +9,45 @@ from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
+from django.http import FileResponse, Http404
+import os
+
+from django.shortcuts import render, redirect
 
 # My modules
 from .serializers import LipilaCollectionSerializer, LipilaDisbursementSerializer
 from .models import LipilaCollection, LipilaDisbursement
 from api.momo.mtn import Collections, Disbursement
 from .utils import get_api_user
+from .momo.openapi_client import ApiClient
+from .momo.openapi_client.api.submit_payment_or_refund_request_api import SubmitPaymentOrRefundRequestApi
+
 
 # Define global variables
 User = get_user_model()
 
+
+# Initialize the MTN API client
+api_client = ApiClient()
+api_instance = SubmitPaymentOrRefundRequestApi(api_client)
+
+# Now you can use `api_instance` to make API calls
+# response = api_instance.create_payment()
+
+
+def get_swagger_file(request):
+    base_dir = settings.BASE_DIR
+    file_path = os.path.join(base_dir, 'api', 'static', 'api', 'payments-v1.yaml')
+    print(file_path)
+    
+    if os.path.exists(file_path):
+        # Return the file as a response
+        response = FileResponse(open(file_path, 'rb'), content_type='application/x-yaml')
+        response['Content-Disposition'] = 'attachment; filename="payments.yaml"'
+        return response
+    else:
+        raise Http404("Swagger file not found")
+    
 
 class APILoginView(ObtainAuthToken):
     permission_classes = [AllowAny]
