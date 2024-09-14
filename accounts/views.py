@@ -31,6 +31,46 @@ TIKTOK_SERVER_ENDPOINT_REDIRECT = settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
 TIKTOK_CLIENT_SECRET = settings.TIKTOK_CLIENT_SECRET
 
 
+def momo_callback(request):
+    # Get the 'code' parameter from the URL
+    authorization_code = request.GET.get('code')
+    state = request.GET.get('state')  # If using state for CSRF protection
+
+    # Validate the presence of 'code'
+    if not authorization_code:
+        return HttpResponseBadRequest("Missing authorization code")
+
+    # Optionally: Verify the state to prevent CSRF attacks
+    csrf_state = request.COOKIES.get('csrfState')
+    if state != csrf_state:
+        return HttpResponseBadRequest("Invalid state parameter")
+
+    # Exchange the authorization code for an access token
+    token_url = 'https://sandbox.momodeveloper.mtn.com/oauth/token/'  # MTN MoMo token endpoint
+    headers = {
+        'Authorization': 'Basic YOUR_BASE64_ENCODED_CLIENT_ID_AND_SECRET',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    payload = {
+        'grant_type': 'authorization_code',
+        'code': authorization_code,
+        'redirect_uri': 'YOUR_REDIRECT_URI'
+    }
+
+    # Make the POST request to get the access token
+    token_response = requests.post(token_url, headers=headers, data=payload)
+
+    # Check if the request was successful
+    if token_response.status_code == 200:
+        token_data = token_response.json()
+        access_token = token_data.get('access_token')
+
+        # Handle the access token (store it, use it, etc.)
+        return HttpResponse(f"Access token obtained: {access_token}")
+    else:
+        return HttpResponseBadRequest(f"Failed to get access token: {token_response.text}")
+
+
 def tiktok_callback(request):
     # Get the 'code' and 'state' parameters from the URL
     code = request.GET.get('code')
@@ -59,7 +99,7 @@ def tiktok_callback(request):
         'redirect_uri': TIKTOK_SERVER_ENDPOINT_REDIRECT
     }
     token_response = py_requests.post(
-        'https://www.tiktok.com/v2/oauth/token/', data=payload)
+        'https://www.tiktok.com/v2/tiktok_oauth/token/', data=payload)
     if token_response.status_code != 204 and token_response.headers["content-type"].strip().startswith("application/json"):
         try:
             token_data = token_response.json()
@@ -70,7 +110,7 @@ def tiktok_callback(request):
     return HttpResponse(f"Authorization successful! scope: {scope}, State: {state}")
 
 
-def oauth(request):
+def tiktok_oauth(request):
     # Generate a random CSRF token
     csrf_state = ''.join(random.choices(
         string.ascii_lowercase + string.digits, k=16))
@@ -96,7 +136,7 @@ def sign_in(request):
 
 
 @csrf_exempt
-def auth_receiver(request):
+def google_callback(request):
     """
     Google calls this URL after the user has signed in with their Google account.
     """

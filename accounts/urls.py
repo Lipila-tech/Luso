@@ -7,7 +7,10 @@ urlpatterns = [
     path('signin/', views.custom_login_view, name="signin"),
     path('sent/', views.activation_sent_view, name="activation_sent"),
     path('activate/<str:uidb64>/<str:token>/', views.activate, name="activate"),
-    path('auth-receiver/', views.auth_receiver, name='auth_receiver'),
-    path('oauth/', views.oauth, name='oauth'),
+    
+    #Callback urls
     path('tiktok/callback/', views.tiktok_callback, name='tiktok_callback'),
+    path('momo/callback/', views.momo_callback, name='momo_callback'),
+    path('google/callback', views.google_callback, name='google_callback'),
+    path('tiktok_oauth/', views.tiktok_oauth, name='tiktok_oauth'),
 ]
