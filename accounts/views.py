@@ -29,6 +29,7 @@ import string
 TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
 TIKTOK_SERVER_ENDPOINT_REDIRECT = settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
 TIKTOK_CLIENT_SECRET = settings.TIKTOK_CLIENT_SECRET
+MTN_TOKEN_URL = settings.MTN_TOKEN_URL
 
 
 def momo_callback(request):
@@ -46,7 +47,7 @@ def momo_callback(request):
         return HttpResponseBadRequest("Invalid state parameter")
 
     # Exchange the authorization code for an access token
-    token_url = 'https://sandbox.momodeveloper.mtn.com/oauth/token/'  # MTN MoMo token endpoint
+    token_url = MTN_TOKEN_URL
     headers = {
         'Authorization': 'Basic YOUR_BASE64_ENCODED_CLIENT_ID_AND_SECRET',
         'Content-Type': 'application/x-www-form-urlencoded'
