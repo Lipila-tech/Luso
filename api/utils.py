@@ -9,10 +9,56 @@ from rest_framework.response import Response
 import datetime
 import random
 from uuid import uuid4
-unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"  # Example: '20231125154054_7548'
+import os
 
 
+unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"
 User = settings.AUTH_USER_MODEL
+
+
+import openapi_client
+from openapi_client.models.payment_request import PaymentRequest
+from openapi_client.models.payment_response import PaymentResponse
+from openapi_client.rest import ApiException
+from pprint import pprint
+
+
+def create_payment():
+    # Defining the host is optional and defaults to https://api.mtn.com/v1
+    # See configuration.py for a list of all supported configuration parameters.
+    configuration = openapi_client.Configuration(
+        host = "https://api.mtn.com/v1"
+    )
+
+    # The client must configure the authentication and authorization parameters
+    # in accordance with the API server security policy.
+    # Examples for each auth method are provided below, use the example that
+    # satisfies your auth use case.
+
+    configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+    # Enter a context with an instance of the API client
+    with openapi_client.ApiClient(configuration) as api_client:
+        # Create an instance of the API class
+        c_id=1
+        t_type ='payment'
+        c_URL= 'http://localhost://accouts/mtn/callback'
+        t_amount='120'
+        p_method=''
+
+        api_instance = openapi_client.SubmitPaymentOrRefundRequestApi(api_client)
+        payment_request = openapi_client.PaymentRequest(correlatorId=c_id, transactionType=t_type, callbackURL=c_URL,totalAmount=t_amount, paymentMethod=p_method)
+        x_authorization = 'x_authorization_example' # str | Encrypted ECW credentials (optional)
+
+        try:
+            # Provides the ability for a consumer to make a payment or refund to service providers.
+            api_response = api_instance.create_payment(payment_request, x_authorization=x_authorization)
+            print("The response of SubmitPaymentOrRefundRequestApi->create_payment:\n")
+            pprint(api_response)
+        except Exception as e:
+            print("Exception when calling SubmitPaymentOrRefundRequestApi->create_payment: %s\n" % e)
+
+
 def get_api_user(user:str)-> User:
     """
     This function reteives a user registered as a api user.
