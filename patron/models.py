@@ -23,7 +23,7 @@ class Tier(models.Model):
         # Create default tiers if they don't exist
         defaults = [
             {"name": "Buy me a coffee", "price": DEFAULT_PRICES[0][0],
-                "desc": "Make a one-time Contribution to support my work",
+                "desc": "Make a one-time Contribution to support my work.",
                 'creator': creator, 'visible_to_fans': True, 'editable': True},
         ]
         for tier_data in defaults:

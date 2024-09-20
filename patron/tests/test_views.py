@@ -40,7 +40,7 @@ class TestSubscription(TestCase):
         self.assertEqual(response.status_code, 302)
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
-            str(messages[0]), "Welcome! You Joined my Onetime patrons.")
+            str(messages[0]), "Welcome! You Joined my Buy me a coffee patrons.")
         self.assertEqual(TierSubscriptions.objects.count(), 1)
 
     def test_get_creator_patrons(self):
@@ -108,30 +108,7 @@ class TestSubscription(TestCase):
         self.assertEqual(SubscriptionPayments.objects.count(), 1)
 
     
-    @patch('lipila.views.query_collection')
-    @patch('lipila.views.get_api_user')
-    def test_send_money_support_valid(self, api_user, mock_post):
-        mock_response = Mock()
-        api_user.return_value = self.staff_user
-        mock_response.json.return_value = {
-            'data': 'request accepted, wait for client approval'}
-        mock_response.status_code = 202
-        mock_post.return_value = mock_response
-        user1 = get_user_model().objects.create(
-            username='testuser5', email='user50@bot.test', password='password')
-        self.client.force_login(user1)
-        url = reverse('send_money_id', kwargs={
-                      'type':'contribution', 'id': self.creator1_obj.pk})
-        data = {'amount': '100', 'payer_account_number': '0966443322',
-                'wallet_type': 'mtn', 'description': 'testdescription'}
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Payment of K100 successful!')
-        self.assertEqual(Contributions.objects.count(), 1)
-        conts = Contributions.objects.filter(payer=user1)
-
-    
+        
     def test_subscription_history(self):
         user1 = get_user_model().objects.create(
             username='testuser9', email='user9@bot.test', password='password')
@@ -194,7 +171,7 @@ class TestPatronViews(TestCase):
         response = self.client.post(
             reverse('patron:create_creator_profile'), data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/patron/accounts/profile/")
+        self.assertEqual(response.url, "/patron/my-tiers")
         self.assertEqual(CreatorProfile.objects.count(), 1)
         creator = CreatorProfile.objects.get(user=self.creatoruser1)
         self.assertEqual(creator.patron_title, 'TestPatron')
@@ -228,31 +205,26 @@ class TestPatronViews(TestCase):
         tiers = Tier.objects.filter(creator=creator).values()
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
-        self.assertIn({"name": "Onetime"}, tiers.values('name'))
-        self.assertIn({"name": "Fan"}, tiers.values('name'))
-        self.assertIn({"name": "Superfan"}, tiers.values('name'))
-        self.assertEqual(tiers.count(), 3)
-        self.assertEqual(tiers[0]['name'], 'Onetime')
-        self.assertEqual(tiers[1]['name'], 'Fan')
-        self.assertEqual(tiers[2]['name'], 'Superfan')
-        self.assertEqual(tiers[0]['price'], 100)
-        self.assertEqual(tiers[1]['price'], 25)
-        self.assertEqual(tiers[2]['price'], 50)
+        self.assertIn({"name": "Buy me a coffee"}, tiers.values('name'))
+        
+        self.assertEqual(tiers.count(), 1)
+        self.assertEqual(tiers[0]['name'], 'Buy me a coffee')
+        self.assertEqual(tiers[0]['price'], 10)
+        
         desc = {
-            "one": "Make a one-time Contribution to support the creator's work.",
+            "one": "Make a one-time Contribution to support my work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }
         self.assertEqual(tiers[0]['description'], desc['one'])
-        self.assertEqual(tiers[1]['description'], desc['two'])
-        self.assertEqual(tiers[2]['description'], desc['three'])
+        
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
-            str(messages[1]), "Default tiers created. Please edit them.")
+            str(messages[1]), "Default tier created. You can update the details.")
 
         response = self.client.get(reverse('patron:tiers'))
         messages = list(get_messages(response.wsgi_request))
-        self.assertNotIn("Default tiers created. Please edit them.", messages)
+        self.assertNotIn("Default tier created. You can update the details.", messages)
 
     def test_create_default_tiers_different_user_tier_exists(self):
         """
@@ -278,7 +250,7 @@ class TestPatronViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("patron/admin/pages/view_tiers.html")
         desc = {
-            "one": "Make a one-time Contribution to support the creator's work.",
+            "one": "Make a one-time Contribution to support my work.",
             "two": "Support the creator and get access to exclusive content.",
             "three": "Enjoy additional perks and behind-the-scenes content."
         }

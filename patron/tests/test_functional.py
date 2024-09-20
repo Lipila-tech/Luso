@@ -41,7 +41,7 @@ class CreatePatronProfileTest(FunctionalTest):
         login_button.click()
         redirect_url = self.BROWSER.current_url
         self.assertRegex(redirect_url, 'accounts/profile/create/creator')
-        self.assertIn("Creator Profile", self.BROWSER.title)
+        self.assertIn("Create Creator Profile", self.BROWSER.title)
 
         #  Create Profile
         # form = self.wait_for(By.TAG_NAME, 'form')
@@ -77,7 +77,7 @@ class CreatePatronProfileTest(FunctionalTest):
         login_button.click()
         redirect_url = self.BROWSER.current_url
         self.assertRegex(redirect_url, 'accounts/profile/create/creator')
-        self.assertIn("Creator Profile", self.BROWSER.title)
+        self.assertIn("Create Creator Profile", self.BROWSER.title)
 
         # click continue has fan link
         link = self.BROWSER.find_element(By.TAG_NAME, 'a')
