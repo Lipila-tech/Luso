@@ -119,7 +119,7 @@ class AuthenticateUsersTest(FunctionalTest):
         self.assertIn('Browse Creators', self.BROWSER.title)
 
     @override_settings(DEBUG=True)
-    def test_email_login_valid(self):
+    def test_email_login_new_user_valid(self):
         # login user
         self.BROWSER.get(f'{self.base_url}/accounts/login/')
         username_field = self.BROWSER.find_element(By.ID, 'id_username')

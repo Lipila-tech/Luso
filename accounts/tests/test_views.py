@@ -59,5 +59,5 @@ class AccountsViewTests(TestCase):
 
         # Check if the activation email contains correct activation link
         current_site = get_current_site(response.wsgi_request)
-        expected_activation_link = f'http://{current_site.domain}{reverse("accounts:activate", kwargs={"uidb64": basic_auth_encode(new_user.pk), "token": default_token_generator.make_token(new_user)})}'
+        expected_activation_link = f'https://{current_site.domain}{reverse("accounts:activate", kwargs={"uidb64": basic_auth_encode(new_user.pk), "token": default_token_generator.make_token(new_user)})}'
         self.assertIn(expected_activation_link, mail.outbox[0].body)

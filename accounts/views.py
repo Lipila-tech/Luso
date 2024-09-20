@@ -199,12 +199,8 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        # Default backend or specific one
-        backend = settings.AUTHENTICATION_BACKENDS[0]
-        user = authenticate(request, username=user.username)
-        if user is not None:
-            login(request, user, backend=backend)
-            return redirect('patron:create_creator_profile')
+        messages.success(request, "Account activated please login")
+        return redirect('accounts:signin')
     else:
         return render(request, 'registration/activation_invalid.html')
 
