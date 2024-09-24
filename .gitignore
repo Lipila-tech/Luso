@@ -5,7 +5,6 @@ migrations/
 media
 db.sqlite3
 debug.log
-static/
 .lusoenv
 
 # Byte-compiled / optimized / DLL files
