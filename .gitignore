@@ -6,7 +6,7 @@ media
 db.sqlite3
 debug.log
 .lusoenv
-
+static_prod/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
