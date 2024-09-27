@@ -104,9 +104,12 @@ def tiktok_callback(request):
         'grant_type': 'authorization_code',
         'redirect_uri': TIKTOK_SERVER_ENDPOINT_REDIRECT
     }
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
     token_response = py_requests.post(
-        ' https://open.tiktokapis.com/v2/oauth/token/', data=payload)
-    
+        ' https://open.tiktokapis.com/v2/oauth/token/', headers=headers, data=payload)
+
     if token_response.status_code != 200 or "application/json" not in token_response.headers.get("content-type", ""):
         data = {'message': f'Server error {token_response}', 'status': 500}
         return apology(request, data)
@@ -146,7 +149,8 @@ def tiktok_callback(request):
             messages.success(request, f"Welcome back, {user.username}!")
 
         # Log the user in
-        login(request, user, backend='accounts.auth_backends.EmailOrUsernameModelBackend')
+        login(request, user,
+              backend='accounts.auth_backends.EmailOrUsernameModelBackend')
 
         return redirect(reverse('dashboard'))
     else:
