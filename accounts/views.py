@@ -105,7 +105,7 @@ def tiktok_callback(request):
         'redirect_uri': TIKTOK_SERVER_ENDPOINT_REDIRECT
     }
     token_response = py_requests.post(
-        'https://www.tiktok.com/v2/tiktok_oauth/token/', data=payload)
+        ' https://open.tiktokapis.com/v2/oauth/token/', data=payload)
     
     if token_response.status_code != 200 or "application/json" not in token_response.headers.get("content-type", ""):
         data = {'message': f'Server error {token_response}', 'status': 500}
