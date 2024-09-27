@@ -142,6 +142,8 @@ def tiktok_callback(request):
         else:
             # User already exists, retrieve the user
             user = social_auth.user
+            # Authenticate and log in the user
+            messages.success(request, f"Welcome back, {user.username}!")
 
         # Log the user in
         login(request, user, backend='accounts.auth_backends.EmailOrUsernameModelBackend')
