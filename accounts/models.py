@@ -58,6 +58,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                   self.email], **kwargs)
 
 
+class UserSocialAuth(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    provider = models.CharField(max_length=50)  # e.g., 'tiktok', 'google', 'facebook'
+    access_token = models.CharField(max_length=500)
+    refresh_token = models.CharField(max_length=500, blank=True, null=True)
+    token_expiry = models.DateTimeField(blank=True, null=True)
+    open_id = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'provider')
+
+    def __str__(self):
+        return self.user.username
+
+
 class CreatorProfile(models.Model):
     user = models.OneToOneField(  # Relate to to user model
         settings.AUTH_USER_MODEL,

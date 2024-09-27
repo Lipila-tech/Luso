@@ -8,14 +8,16 @@ from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
 
 #  custom modules
+from lipila.utils import apology
 from .utils import basic_auth_encode, basic_auth_decode
 from .forms import SignUpForm
-
+from accounts.models import UserSocialAuth
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -81,14 +83,17 @@ def tiktok_callback(request):
 
     # Verify that 'code' and 'state' are present
     if not code or not state:
-        return HttpResponseBadRequest("Invalid callback parameters")
+        data = {'message': 'Server error', 'status': 500}
+        return apology(request, data)
 
     # Optionally: Verify the 'state' to prevent CSRF attacks
     csrf_state = request.COOKIES.get('csrfState')
     if csrf_state is None:
-        return HttpResponseBadRequest(f"Cookie not set")
+        data = {'message': 'Server error', 'status': 500}
+        return apology(request, data)
     if state != csrf_state:
-        return HttpResponseBadRequest(f"Invalid state parameter {state} != {csrf_state}")
+        data = {'message': 'Server error', 'status': 500}
+        return apology(request, data)
 
     # Now you can use the 'code' to exchange for an access token
     # Example: make a POST request to TikTok's token endpoint
@@ -101,14 +106,50 @@ def tiktok_callback(request):
     }
     token_response = py_requests.post(
         'https://www.tiktok.com/v2/tiktok_oauth/token/', data=payload)
-    if token_response.status_code != 204 and token_response.headers["content-type"].strip().startswith("application/json"):
-        try:
-            token_data = token_response.json()
-        except ValueError:
-            return HttpResponse("Server error")
+    
+    if token_response.status_code != 200 or "application/json" not in token_response.headers.get("content-type", ""):
+        data = {'message': 'Server error', 'status': 500}
+        return apology(request, data)
 
-    # Handle the response and return to the user
-    return HttpResponse(f"Authorization successful! scope: {scope}, State: {state}")
+    token_data = token_response.json()
+
+    if 'access_token' in token_data:
+        # Extract open_id and tokens
+        open_id = token_data['open_id']
+        username = token_data['username']
+        access_token = token_data['access_token']
+        refresh_token = token_data['refresh_token']
+        expires_in = token_data['expires_in']
+
+        # Check if the user already exists in UserSocialAuth
+        social_auth, created = UserSocialAuth.objects.get_or_create(
+            open_id=open_id,
+            provider='tiktok',
+            defaults={
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+                'token_expiry': timezone.now() + timedelta(seconds=expires_in),
+            }
+        )
+
+        # If the UserSocialAuth was newly created, we need to create a CustomUser
+        if created:
+            # Create a new CustomUser
+            user = get_user_model().objects.create(username=username)
+            # Link the social auth entry with the newly created user
+            social_auth.user = user
+            social_auth.save()
+        else:
+            # User already exists, retrieve the user
+            user = social_auth.user
+
+        # Log the user in
+        login(request, user, backend='accounts.auth_backends.EmailOrUsernameModelBackend')
+
+        return redirect(reverse('dashboard'))
+    else:
+        messages.error(request, "Authentication failed")
+        return redirect(reverse('accounts:signup'))
 
 
 def tiktok_oauth(request):
@@ -119,7 +160,7 @@ def tiktok_oauth(request):
     # Build the TikTok authorization URL
     url = 'https://www.tiktok.com/v2/auth/authorize/'
     url += f'?client_key={TIKTOK_CLIENT_KEY}'
-    url += '&scope=user.info.basic'
+    url += '&scope=user.info.basic, video.list, user.info.profile'
     url += '&response_type=code'
     url += f'&redirect_uri={TIKTOK_SERVER_ENDPOINT_REDIRECT}'
     url += f'&state={csrf_state}'
