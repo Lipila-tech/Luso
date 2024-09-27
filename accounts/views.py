@@ -83,16 +83,16 @@ def tiktok_callback(request):
 
     # Verify that 'code' and 'state' are present
     if not code or not state:
-        data = {'message': 'Server error', 'status': 500}
+        data = {'message': 'Server error code or state not set', 'status': 500}
         return apology(request, data)
 
     # Optionally: Verify the 'state' to prevent CSRF attacks
     csrf_state = request.COOKIES.get('csrfState')
     if csrf_state is None:
-        data = {'message': 'Server error', 'status': 500}
+        data = {'message': 'Server error csrf state not set', 'status': 500}
         return apology(request, data)
     if state != csrf_state:
-        data = {'message': 'Server error', 'status': 500}
+        data = {'message': 'Server error state not equal to csrfstate', 'status': 500}
         return apology(request, data)
 
     # Now you can use the 'code' to exchange for an access token
