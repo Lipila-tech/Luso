@@ -108,7 +108,7 @@ def tiktok_callback(request):
         'https://www.tiktok.com/v2/tiktok_oauth/token/', data=payload)
     
     if token_response.status_code != 200 or "application/json" not in token_response.headers.get("content-type", ""):
-        data = {'message': token_response, 'status': 500}
+        data = {'message': f'Server error {token_response}', 'status': 500}
         return apology(request, data)
 
     token_data = token_response.json()
