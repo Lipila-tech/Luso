@@ -5,11 +5,81 @@ from unittest.mock import patch
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
+
+from django.contrib.messages import get_messages
 from django.contrib.auth import get_user_model
 # custom modules
 from accounts.models import UserSocialAuth
 from accounts.utils import basic_auth_encode, basic_auth_decode
+
+
 tiktok_redirect_url = settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
+
+User = get_user_model()
+
+class GoogleCallbackTest(TestCase):
+    @patch('accounts.views.id_token.verify_oauth2_token')  # Mock token verification
+    @patch('accounts.views.requests.Request')  # Mock external request object for token verification
+    def test_google_callback_no_token(self, mock_request, mock_verify_token):
+        """Test Google callback when no token is provided"""
+        response = self.client.post(reverse('accounts:google_callback'))
+        self.assertEqual(response.status_code, 400)  # Expecting 400 Bad Request
+
+    @patch('accounts.views.id_token.verify_oauth2_token')  # Mock token verification
+    @patch('accounts.views.requests.Request')  # Mock external request object for token verification
+    def test_google_callback_invalid_token(self, mock_request, mock_verify_token):
+        """Test Google callback with invalid token"""
+        mock_verify_token.side_effect = ValueError  # Simulate invalid token
+        response = self.client.post(reverse('accounts:google_callback'), data={'credential': 'invalid_token'})
+        self.assertEqual(response.status_code, 403)  # Expecting 403 Forbidden
+
+    @patch('accounts.views.id_token.verify_oauth2_token')
+    @patch('accounts.views.requests.Request')
+    def test_google_callback_user_created(self, mock_request, mock_verify_token):
+        """Test Google callback where user is created"""
+        # Mock valid user data returned from token verification
+        user_data = {
+            'email': 'testuser@example.com',
+            'given_name': 'Test',
+            'family_name': 'User'
+        }
+        mock_verify_token.return_value = user_data
+
+        response = self.client.post(reverse('accounts:google_callback'), data={'credential': 'valid_token'})
+        
+        # Check if the user was created in the database
+        user = User.objects.get(email='testuser@example.com')
+        self.assertIsNotNone(user)
+        self.assertEqual(user.first_name, 'Test')
+        self.assertEqual(user.last_name, 'User')
+        
+        # Check if the user was logged in
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any("Account created." in str(message) for message in messages))
+        self.assertRedirects(response, reverse('dashboard'))  # Check redirect to dashboard
+
+    @patch('accounts.views.id_token.verify_oauth2_token')
+    @patch('accounts.views.requests.Request')
+    def test_google_callback_user_logged_in(self, mock_request, mock_verify_token):
+        """Test Google callback with existing user"""
+        # Create an existing user
+        user = User.objects.create_user(email='existinguser@example.com', username='existinguser')
+
+        # Mock valid user data returned from token verification
+        user_data = {
+            'email': 'existinguser@example.com',
+            'given_name': 'Existing',
+            'family_name': 'User'
+        }
+        mock_verify_token.return_value = user_data
+
+        response = self.client.post(reverse('accounts:google_callback'), data={'credential': 'valid_token'})
+        
+        # Check if the existing user was logged in
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any(f"Welcome back, {user.username}!" in str(message) for message in messages))
+        self.assertRedirects(response, reverse('dashboard'))  # Check redirect to dashboard
+
 
 
 class TikTokCallbackViewTests(TestCase):

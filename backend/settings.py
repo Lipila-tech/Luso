@@ -276,3 +276,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
+
+# settings.py
+CSRF_COOKIE_NAME = 'csrftoken'  # Default name for the CSRF cookie
+CSRF_USE_SESSIONS = False  # Set to True if you want to use sessions to store the CSRF token
