@@ -119,7 +119,6 @@ def tiktok_callback(request):
     if 'access_token' in token_data:
         # Extract open_id and tokens
         open_id = token_data['open_id']
-        username = token_data['username']
         access_token = token_data['access_token']
         refresh_token = token_data['refresh_token']
         expires_in = token_data['expires_in']
@@ -138,7 +137,7 @@ def tiktok_callback(request):
         # If the UserSocialAuth was newly created, we need to create a CustomUser
         if created:
             # Create a new CustomUser
-            user = get_user_model().objects.create(username=username)
+            user = get_user_model().objects.create(username=open_id[:5])
             # Link the social auth entry with the newly created user
             social_auth.user = user
             social_auth.save()
