@@ -41,12 +41,9 @@
     <div class="social-login-btns">
         <!-- Google signin -->
         <div class="btn-container">
-            {% if request.session.user_data %}
+            {% if request.session.google_user_data %}
             <div>
-                <p>Hi {{ request.session.user_data.given_name }} 🙂</p>
-                <p>Your email is {{ request.session.user_data.email }}</p>
-                <img src="{{ request.session.user_data.picture }}" alt="User picture">
-                <p>Click here to <a href="{% url 'accounts:sign_out' %}">Sign out</a></p>
+                <p>Click here to <a href="{% url 'accounts:logout' %}">Sign out</a></p>
             </div>
             {% else %}
             <div>
@@ -62,15 +59,24 @@
         </div>
         <!-- FB login -->
         <!-- <div class="btn-container">
-            <div id="fb-login-button" class="fb-login-button" data-width="" data-size="large" data-button-type="" data-layout=""
+            <div class="fb-login-button" data-width="" data-size="large" data-button-type="" data-layout=""
                 data-auto-logout-link="false" data-use-continue-as="false"></div>
         </div> -->
         <!-- Tiktok login -->
         <!-- TikTok Login Button -->
-        <button id="tiktok-login-button" class="tiktok-login-button">
+        {% if request.session.tiktok_user_data %}
+        <div>
+            <a href="{% url 'accounts:logout' %}"  class="tiktok-login-button">
+                <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
+                Logout
+            </a>
+        </div>
+        {% else %}
+        <a href="{% url 'accounts:tiktok_oauth' %}"  class="tiktok-login-button">
             <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
             Login with TikTok
-        </button>
+        </a>
+        {% endif %}
     </div>
 
 </div>
