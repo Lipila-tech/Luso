@@ -122,7 +122,24 @@ def tiktok_callback(request):
         access_token = token_data['access_token']
         refresh_token = token_data['refresh_token']
         expires_in = token_data['expires_in']
-        display_name = token_data['display_name']
+        
+
+        # Step 2: Use the access token to fetch the user's TikTok profile information
+        user_info_response = py_requests.get(
+            'https://open.tiktokapis.com/v2/user/info/',
+            headers={'Authorization': f'Bearer {access_token}'}
+        )
+
+        if user_info_response.status_code != 200:
+            return HttpResponseBadRequest("Failed to retrieve user info")
+
+        user_info = user_info_response.json()
+
+        if 'data' not in user_info or 'user' not in user_info['data']:
+            return HttpResponseBadRequest("User info not available")
+
+        # Extract the user's TikTok username
+        tiktok_username = user_info['data']['user']['username']
 
         # Check if the user already exists in UserSocialAuth
         social_auth, created = UserSocialAuth.objects.get_or_create(
@@ -138,7 +155,7 @@ def tiktok_callback(request):
         # If the UserSocialAuth was newly created, we need to create a CustomUser
         if created:
             # Create a new CustomUser
-            user = get_user_model().objects.create(username=open_id[2:6])
+            user = get_user_model().objects.create(username=tiktok_username)
             # Link the social auth entry with the newly created user
             social_auth.user = user
             social_auth.save()
@@ -146,7 +163,7 @@ def tiktok_callback(request):
             # User already exists, retrieve the user
             user = social_auth.user
             # Authenticate and log in the user
-            messages.success(request, f"Welcome back, {display_name}!")
+            messages.success(request, f"Welcome back, {tiktok_username}!")
 
         # Log the user in
         login(request, user,
