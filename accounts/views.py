@@ -122,6 +122,7 @@ def tiktok_callback(request):
         access_token = token_data['access_token']
         refresh_token = token_data['refresh_token']
         expires_in = token_data['expires_in']
+        display_name = token_data['display_name']
 
         # Check if the user already exists in UserSocialAuth
         social_auth, created = UserSocialAuth.objects.get_or_create(
@@ -145,7 +146,7 @@ def tiktok_callback(request):
             # User already exists, retrieve the user
             user = social_auth.user
             # Authenticate and log in the user
-            messages.success(request, f"Welcome back, {user.username}!")
+            messages.success(request, f"Welcome back, {display_name}!")
 
         # Log the user in
         login(request, user,
