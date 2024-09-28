@@ -172,7 +172,7 @@ def tiktok_oauth(request):
 
     # Set the CSRF token as a cookie
     response = redirect(url)
-    response.set_cookie('csrfState', csrf_state, max_age=60)
+    response.set_cookie('csrfState', csrf_state, max_age=300, path='/')
 
     # Redirect to the TikTok authorization URL
     return response
