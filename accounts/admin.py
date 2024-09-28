@@ -9,8 +9,13 @@ from lipila.models import (
     HeroInfo, UserTestimonial, AboutInfo)
 from patron.models import (Tier, SubscriptionPayments,
                            ProcessedWithdrawals, WithdrawalRequest, Contributions)
-from accounts.models import CreatorProfile, CustomUser
+from accounts.models import CreatorProfile, CustomUser, UserSocialAuth
 from file_manager.models import UploadedFile
+
+
+class UserSocialAuthAdmin(admin.ModelAdmin):
+    list_display = ('user', 'provider', 'created_at', 'updated_at')
+    search_fields = ('user__username', 'provider')
 
 
 class CustomUserAdmin(BaseUserAdmin):
@@ -104,6 +109,7 @@ class UploadedFileAdmin(admin.ModelAdmin):
 
 
 # Register
+admin.site.register(UserSocialAuth, UserSocialAuthAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tier, TierAdmin)
 admin.site.register(SubscriptionPayments, PaymentAdmin)
