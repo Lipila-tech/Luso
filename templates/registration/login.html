@@ -32,12 +32,9 @@
     <div class="social-login-btns">
         <!-- Google signin -->
         <div class="btn-container">
-            {% if request.session.user_data %}
+            {% if request.session.google_user_data %}
             <div>
-                <p>Hi {{ request.session.user_data.given_name }} 🙂</p>
-                <p>Your email is {{ request.session.user_data.email }}</p>
-                <img src="{{ request.session.user_data.picture }}" alt="User picture">
-                <p>Click here to <a href="{% url 'accounts:sign_out' %}">Sign out</a></p>
+                <p>Click here to <a href="{% url 'accounts:logout' %}">Sign out</a></p>
             </div>
             {% else %}
             <div>
@@ -58,10 +55,16 @@
         </div> -->
         <!-- Tiktok login -->
         <!-- TikTok Login Button -->
+        {% if request.session.tiktok_user_data %}
+        <div>
+            <p>Click here to <a href="{% url 'accounts:logout' %}">Sign out</a></p>
+        </div>
+        {% else %}
         <a href="{% url 'accounts:tiktok_oauth' %}"  class="tiktok-login-button">
             <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
             Login with TikTok
         </a>
+        {% endif %}
     </div>
 </div>
 

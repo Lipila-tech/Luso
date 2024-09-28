@@ -45,7 +45,7 @@
         {% if request.user.is_authenticated %}
         <li class="nav-item">
             <i class="bi bi-logout"></i>
-            <form method="post" action="{% url 'logout' %}">
+            <form method="post" action="{% url 'accounts:logout' %}">
                 {% csrf_token %}
                 <span><button type="submit" class="btn btn-dark">Logout</button></span>
             </form>

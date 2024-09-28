@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
-
+from django.contrib.auth import logout as auth_logout
 #  custom modules
 from lipila.utils import apology
 from .utils import basic_auth_encode, basic_auth_decode
@@ -137,7 +137,7 @@ def tiktok_callback(request):
         # If the UserSocialAuth was newly created, we need to create a CustomUser
         if created:
             # Create a new CustomUser
-            user = get_user_model().objects.create(username=open_id[:5])
+            user = get_user_model().objects.create(username=open_id[2:6])
             # Link the social auth entry with the newly created user
             social_auth.user = user
             social_auth.save()
@@ -150,6 +150,7 @@ def tiktok_callback(request):
         # Log the user in
         login(request, user,
               backend='accounts.auth_backends.EmailOrUsernameModelBackend')
+        request.session['tiktok_user_data'] = access_token
 
         return redirect(reverse('dashboard'))
     else:
@@ -220,15 +221,35 @@ def google_callback(request):
     if user is not None:
         messages.success(request, f"Welcome back, {user.username}!")
         login(request, user)
-        request.session['user_data'] = user_data
+        request.session['google_user_data'] = user_data
         return redirect(reverse('dashboard'))
     else:
         messages.error(request, "Authentication failed")
         return redirect(reverse('accounts:signup'))
 
 
-def sign_out(request):
-    del request.session['user_data']
+def custom_logout(request):
+    # Log out the user from Django session
+    auth_logout(request)
+
+    # Redirect URLs for third-party services
+    google_logout_url = 'https://accounts.google.com/Logout'
+    facebook_logout_url = 'https://www.facebook.com/logout.php'
+    tiktok_logout_url = 'https://www.tiktok.com/logout'  # Hypothetical URL, adjust if necessary
+    
+    # Check if the user logged in with a third-party service
+    if 'google_user_data' in request.session:
+        del request.session['google_user_data']
+        return redirect('accounts:signin')
+    # elif 'facebook_user_data' in request.session:
+    #     # Add your Facebook access_token in the URL if needed
+    #     access_token = request.session.get('facebook_access_token')
+    #     return redirect(f'{facebook_logout_url}?next={settings.LOGOUT_REDIRECT_URL}&access_token={access_token}')
+    elif 'tiktok_user_data' in request.session:
+        del request.session['tiktok_user_data']
+        return redirect('accounts:signin')
+    
+    # Default logout redirect for custom login
     return redirect('accounts:signin')
 
 
