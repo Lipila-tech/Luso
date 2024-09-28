@@ -126,13 +126,13 @@ def tiktok_callback(request):
 
         # Step 2: Use the access token to fetch the user's TikTok profile information
         user_info_response = py_requests.get(
-            'https://open.tiktokapis.com/v2/user/info/',
+            'https://open.tiktokapis.com/user/info/',
             headers={'Authorization': f'Bearer {access_token}'}
         )
 
         if user_info_response.status_code != 200:
 
-            return HttpResponseBadRequest(f"Failed to retrieve user info {user_info_response}")
+            return HttpResponseBadRequest(f"Failed to retrieve user info: {user_info_response}")
 
         user_info = user_info_response.json()
 
