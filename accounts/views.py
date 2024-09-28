@@ -125,10 +125,14 @@ def tiktok_callback(request):
         
 
         # Step 2: Use the access token to fetch the user's TikTok profile information
-        user_info_response = py_requests.get(
-            'https://open.tiktokapis.com/user/info/',
-            headers={'Authorization': f'Bearer {access_token}'}
-        )
+        # Add the fields as query parameters in the request URL
+        user_info_url = 'https://open.tiktokapis.com/v2/user/info/'
+        params = {
+            'fields': 'open_id,union_id,avatar_url,username'
+        }
+
+        # Make the GET request to fetch user info
+        user_info_response = py_requests.get(user_info_url, headers=headers, params=params)
 
         if user_info_response.status_code != 200:
 
