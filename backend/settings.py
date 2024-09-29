@@ -65,7 +65,7 @@ BRAINTREE_MERCHANT_ID=env("BRAINTREE_MERCHANT_ID")
 BRAINTREE_PUBLIC_KEY=env("BRAINTREE_PUBLIC_KEY")
 BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 
-GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/google/callback'
+GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/google/callback/'
 
 ALLOWED_HOSTS = ['localhost', 'lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
 
