@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
-from api.models import (LipilaDisbursement, LipilaCollection)
+from api.models import (LipilaDisbursement, LipilaCollection, AirtelTransaction)
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
@@ -11,6 +11,10 @@ from patron.models import (Tier, SubscriptionPayments,
                            ProcessedWithdrawals, WithdrawalRequest, Contributions)
 from accounts.models import CreatorProfile, CustomUser, UserSocialAuth
 from file_manager.models import UploadedFile
+
+class AirtelTransactionModel(admin.ModelAdmin):
+    list_display =  ['reference', 'transaction_id', 'msisdn', 'amount', 'status', 'created_at', 'updated_at']
+    search_fields =['reference', 'transaction_id', 'msisdn']
 
 
 class UserSocialAuthAdmin(admin.ModelAdmin):
@@ -57,6 +61,7 @@ class ContributionsAdmin(admin.ModelAdmin):
 class TierAdmin(admin.ModelAdmin):
     list_display = ('name', 'creator', 'price', 'description',
                     'visible_to_fans', 'updated_at', 'is_editable')
+    search_fields = ['name']
 
 
 class PaymentAdmin(admin.ModelAdmin):
@@ -109,6 +114,7 @@ class UploadedFileAdmin(admin.ModelAdmin):
 
 
 # Register
+admin.site.register(AirtelTransaction, AirtelTransactionModel)
 admin.site.register(UserSocialAuth, UserSocialAuthAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tier, TierAdmin)

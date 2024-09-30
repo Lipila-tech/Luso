@@ -15,13 +15,13 @@ import os
 from django.shortcuts import render, redirect
 
 # My modules
-from .serializers import LipilaCollectionSerializer, LipilaDisbursementSerializer
-from .models import LipilaCollection, LipilaDisbursement
+from .serializers import LipilaCollectionSerializer, LipilaDisbursementSerializer, AirtelTransactionSerializer
+from .models import LipilaCollection, LipilaDisbursement, AirtelTransaction
 from api.momo.mtn import Collections, Disbursement
-from .utils import get_api_user
+from .utils import get_api_user, generate_reference_id
 from .momo.openapi_client import ApiClient
 from .momo.openapi_client.api.submit_payment_or_refund_request_api import SubmitPaymentOrRefundRequestApi
-
+from .momo.airtel import AirtelMomo 
 
 # Define global variables
 User = get_user_model()
@@ -31,8 +31,60 @@ User = get_user_model()
 api_client = ApiClient()
 api_instance = SubmitPaymentOrRefundRequestApi(api_client)
 
-# Now you can use `api_instance` to make API calls
+# Now `api_instance` can be used to make API calls
 # response = api_instance.create_payment()
+
+# views.py
+
+class AirtelPaymentCallbackView(views.APIView):
+
+    def post(self, request):
+        transaction_id = request.data.get('transaction_id')
+        transaction_status = request.data.get('status')
+
+        try:
+            transaction = AirtelTransaction.objects.get(transaction_id=transaction_id)
+            transaction.status = transaction_status
+            transaction.save()
+
+            return Response({'message': 'Transaction status updated successfully'}, status=status.HTTP_200_OK)
+        except AirtelTransaction.DoesNotExist:
+            return Response({'error': 'Transaction not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AirtelPaymentRequestView(views.APIView):
+
+    def post(self, request):
+        serializer = AirtelTransactionSerializer(data=request.data)
+        if serializer.is_valid():
+            # Initiate payment via AirtelMomo API
+            airtel_momo = AirtelMomo()
+            transaction_id = generate_reference_id()
+            reference = serializer.validated_data['reference']
+            msisdn = serializer.validated_data['msisdn']
+            amount = serializer.validated_data['amount']
+            
+            # Call the Airtel Momo API to request payment
+            response = airtel_momo.request_payment(
+                reference=reference,
+                subscriber={"msisdn": msisdn},
+                transaction={"amount": amount, "currency": "ZMW", "country": "ZM", "id": transaction_id}
+            )
+            
+            if response['status'] == 'success':
+                # Save transaction if successful
+                transaction = AirtelTransaction.objects.create(
+                    reference=reference,
+                    transaction_id=transaction_id,
+                    msisdn=msisdn,
+                    amount=amount,
+                    status='pending'
+                )
+                return Response({'message': 'Payment request initiated successfully', 'transaction': serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': 'Failed to initiate payment'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 def get_swagger_file(request):
