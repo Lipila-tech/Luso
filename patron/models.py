@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from accounts.models import CreatorProfile
-from api.utils import generate_reference_id
+from api.utils import generate_transaction_id
 
 from accounts.globals import (
     STATUS_CHOICES,
@@ -10,7 +10,7 @@ from accounts.globals import (
 
 class Tier(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=300)
+    reference = models.TextField(max_length=300)
     price = models.IntegerField(choices=DEFAULT_PRICES)
     creator = models.ForeignKey(
         CreatorProfile, on_delete=models.CASCADE, related_name='tiers')
@@ -29,7 +29,7 @@ class Tier(models.Model):
         for tier_data in defaults:
             Tier.objects.create(
                 name=tier_data["name"],
-                description=tier_data["desc"],
+                reference=tier_data["desc"],
                 price=tier_data['price'],
                 creator=tier_data['creator'],
                 visible_to_fans=tier_data['visible_to_fans'],
@@ -55,15 +55,15 @@ class Transfer(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='tranfers')
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=False)
-    payer_account_number = models.CharField(
+    msisdn = models.CharField(
         max_length=300, null=True, blank=False)
     send_money_to = models.CharField(max_length=300, null=True, blank=False)
-    reference_id = models.CharField(
+    transaction_id = models.CharField(
         max_length=40, unique=True, blank=False, null=False)
     wallet_type = models.CharField(
         max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    reference = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
 
@@ -73,19 +73,19 @@ class SubscriptionPayments(models.Model):
         TierSubscriptions, on_delete=models.SET_NULL, null=True, blank=True, related_name='payments')
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, blank=False, null=True)
-    payer_account_number = models.CharField(
+    msisdn = models.CharField(
         max_length=300, blank=False, null=False)
-    reference_id = models.CharField(
+    transaction_id = models.CharField(
         max_length=40, unique=True, blank=False, null=False)
     wallet_type = models.CharField(
         max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    reference = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"{self.reference_id}"
+        return f"{self.transaction_id}"
 
 
 class Contributions(models.Model):
@@ -95,14 +95,14 @@ class Contributions(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=False, related_name='contributions_sent')
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=False)
-    payer_account_number = models.CharField(
+    msisdn = models.CharField(
         max_length=300, null=True, blank=False)
-    reference_id = models.CharField(
+    transaction_id = models.CharField(
         max_length=40, unique=True, blank=False, null=False)
     wallet_type = models.CharField(
         max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    reference = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
 
@@ -116,14 +116,14 @@ class ContributionsUnauth(models.Model):
     payer = models.CharField(max_length=15, null=True, blank=False)
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=False)
-    payer_account_number = models.CharField(
+    msisdn = models.CharField(
         max_length=300, null=True, blank=False)
-    reference_id = models.CharField(
+    transaction_id = models.CharField(
         max_length=40, unique=True, blank=False, null=False)
     wallet_type = models.CharField(
         max_length=20, choices=ISP_CHOICES, default='')
     timestamp = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    reference = models.CharField(max_length=200, null=True, blank=True)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
 
@@ -136,7 +136,7 @@ class WithdrawalRequest(models.Model):
         CreatorProfile, on_delete=models.CASCADE, related_name='withdrawal_requests')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     account_number = models.CharField(max_length=30)
-    reference_id = models.CharField(max_length=120, blank=False, null=False)
+    transaction_id = models.CharField(max_length=120, blank=False, null=False)
     request_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -156,7 +156,7 @@ class ProcessedWithdrawals(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_withdrawals')
     processed_date = models.DateTimeField(auto_now_add=True)
     request_date = models.CharField(max_length=120, blank=True, null=True)
-    reference_id = models.CharField(max_length=120, blank=False, null=False)
+    transaction_id = models.CharField(max_length=120, blank=False, null=False)
     withdrawal_request = models.ForeignKey(
         WithdrawalRequest, on_delete=models.CASCADE, related_name='withdrawals')
     status = models.CharField(

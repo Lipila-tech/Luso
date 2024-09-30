@@ -82,13 +82,13 @@ class SubscriptionPaymentTest(FunctionalTest):
         form = modal.find_element(By.TAG_NAME, 'form')
 
         amount_field = form.find_element(By.ID, 'id_amount')
-        payer_account_number_field = form.find_element(
-            By.ID, 'id_payer_account_number')
+        msisdn_field = form.find_element(
+            By.ID, 'id_msisdn')
         description_field = form.find_element(By.ID, 'id_description')
         wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
         amount_field.send_keys('122')
-        payer_account_number_field.send_keys('0966774433')
+        msisdn_field.send_keys('0966774433')
         description_field.send_keys('test descriptions')
         wallet_type_field.send_keys('mtn')
         form.submit()
@@ -145,13 +145,13 @@ class ContributionModalTest(FunctionalTest):
         form = modal.find_element(By.TAG_NAME, 'form')
 
         amount_field = form.find_element(By.ID, 'id_amount')
-        payer_account_number_field = form.find_element(
-            By.ID, 'id_payer_account_number')
+        msisdn_field = form.find_element(
+            By.ID, 'id_msisdn')
         description_field = form.find_element(By.ID, 'id_description')
         wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
         amount_field.send_keys('122')
-        payer_account_number_field.send_keys('0966774433')
+        msisdn_field.send_keys('0966774433')
         description_field.send_keys('test descriptions')
         wallet_type_field.send_keys('airtel')
         form.submit()
@@ -183,13 +183,13 @@ class ContributionModalTest(FunctionalTest):
         form = modal.find_element(By.TAG_NAME, 'form')
 
         amount_field = form.find_element(By.ID, 'id_amount')
-        payer_account_number_field = form.find_element(
-            By.ID, 'id_payer_account_number')
+        msisdn_field = form.find_element(
+            By.ID, 'id_msisdn')
         description_field = form.find_element(By.ID, 'id_description')
         wallet_type_field = form.find_element(By.ID, 'id_wallet_type')
 
         amount_field.send_keys('122')
-        payer_account_number_field.send_keys('0966774433')
+        msisdn_field.send_keys('0966774433')
         description_field.send_keys('test descriptions')
         wallet_type_field.send_keys('mtn')
         form.submit()

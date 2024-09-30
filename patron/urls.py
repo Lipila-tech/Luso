@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+     path('request-payment/', views.PatronPaymentRequestView.as_view(), name='request-payment'),
      # Public URLS
      path('creators/', views.index, name='index'),
 

@@ -4,7 +4,7 @@ import json
 from django.conf import settings
 from rest_framework.response import Response
 from api.utils import (
-    generate_reference_id, basic_auth, 
+    generate_transaction_id, basic_auth, 
     is_payment_details_valid, is_deposit_details_valid
     )
 
@@ -18,7 +18,7 @@ class MTNBase():
         self.api_key = ''
         self.api_token = 'Bearer '
 
-    def create_api_user(self, subscription_key: str, reference_id) -> Response:
+    def create_api_user(self, subscription_key: str, transaction_id) -> Response:
         """
         Used to create an API user in the mtn sandbox.
 
@@ -35,7 +35,7 @@ class MTNBase():
             "providerCallbackHost": "{}".format(settings.MTN_PROVIDER_CALLBACK_HOST)
         })
         headers = {
-            'X-Reference-Id': reference_id,
+            'X-Reference-Id': transaction_id,
             'Ocp-Apim-Subscription-Key': subscription_key,
             'Content-Type': self.content_type
         }
@@ -53,7 +53,7 @@ class MTNBase():
         except ValueError:
             return Response(status=response.status_code)
 
-    def create_api_key(self, subscription_key: str, reference_id) -> Response:
+    def create_api_key(self, subscription_key: str, transaction_id) -> Response:
         """
         Used to create an API key for an API user in the sandbox target environment.
 
@@ -64,7 +64,7 @@ class MTNBase():
         Returns:
             HTTP Response
         """
-        url = f"https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{reference_id}/apikey"
+        url = f"https://sandbox.momodeveloper.mtn.com/v1_0/apiuser/{transaction_id}/apikey"
 
         payload = {}
         headers = {
@@ -85,12 +85,12 @@ class MTNBase():
         except ValueError:
             return Response(status=response.status_code)
 
-    def provision_sandbox(self, subscription_key: str, reference_id:str):
+    def provision_sandbox(self, subscription_key: str, transaction_id:str):
         """ creates the api user and api token
         """
         try:
-            api_user = self.create_api_user(subscription_key, reference_id)
-            api_key = self.create_api_key(subscription_key, reference_id)
+            api_user = self.create_api_user(subscription_key, transaction_id)
+            api_key = self.create_api_key(subscription_key, transaction_id)
 
             if api_user.status_code == 201 and api_key.status_code == 201:
                 return api_user
@@ -99,7 +99,7 @@ class MTNBase():
         except ValueError:
             return Response(status=api_user.status_code)
 
-    def create_api_token(self, subscription_key: str, endpoint: str, reference_id)->Response:
+    def create_api_token(self, subscription_key: str, endpoint: str, transaction_id)->Response:
         """
         This operation is used to create an access token to the mtn api which can then
         be used to authorize and authenticate towards the other end-points
@@ -117,7 +117,7 @@ class MTNBase():
         payload = {}
         headers = {
             'Ocp-Apim-Subscription-Key': subscription_key,
-            'Authorization': basic_auth(reference_id, self.api_key)
+            'Authorization': basic_auth(transaction_id, self.api_key)
         }
         try:
             response = requests.post(url, headers=headers, data=payload)
@@ -175,20 +175,20 @@ class Collections(MTNBase):
         super().__init__()
         self.subscription_col_key = settings.MTN_COLLECTIONS_KEY
 
-    def request_to_pay(self, amount: str, payer: str, reference_id: str) -> Response:
+    def request_to_pay(self, amount: str, payer: str, transaction_id: str) -> Response:
         """
         This method queries the MTN momo request to pay endpoint.
 
         Args:
             amount(str): The amount to collect from the payer.
             payer(str): The mtn momo registered mobile number.
-            reference_id(str): Unique str formated uuid number to that identitifies the tr
+            transaction_id(str): Unique str formated uuid number to that identitifies the tr
                         transaction.
 
         Returns:
             A HTTP Response.
         """
-        is_valid = is_payment_details_valid(amount, payer, reference_id)
+        is_valid = is_payment_details_valid(amount, payer, transaction_id)
         
         if is_valid:
             """ Query the Collections API"""
@@ -206,7 +206,7 @@ class Collections(MTNBase):
                     "payeeNote": "Lipila gateway"
                 })
                 headers = {
-                    'X-Reference-Id': reference_id,
+                    'X-Reference-Id': transaction_id,
                     'Ocp-Apim-Subscription-Key': self.subscription_col_key,
                     'X-Target-Environment': self.x_target_environment,
                     'Authorization': self.api_token,
@@ -224,7 +224,7 @@ class Collections(MTNBase):
             except Exception as e:
                 return Response(status=500, data={'reason': 'mtn server error'})
 
-    def get_payment_status(self, reference_id) -> Response:
+    def get_payment_status(self, transaction_id) -> Response:
         """
          Queries the mtn api to get the transaction status.
 
@@ -235,7 +235,7 @@ class Collections(MTNBase):
             A HTTP response.
         """
 
-        url = f"https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{reference_id}"
+        url = f"https://sandbox.momodeveloper.mtn.com/collection/v2_0/payment/{transaction_id}"
         headers = {
             'X-Target-Environment': self.x_target_environment,
             'Ocp-Apim-Subscription-Key': self.subscription_col_key,
@@ -264,21 +264,21 @@ class Disbursement(MTNBase):
         super().__init__()
         self.subscription_dis_key = settings.MTN_DISBURSEMENT_KEY
 
-    def deposit(self, amount: str, payee: str, reference_id: str) -> Response:
+    def deposit(self, amount: str, payee: str, transaction_id: str) -> Response:
         """
         This method queries the MTN momo deposit endpoint.
 
         Args:
             amount(str): The amount to send to the payer.
             payee(str): The mtn momo registered mobile number.
-            reference_id(str): Unique str formated uuid number to that identitifies the tr
+            transaction_id(str): Unique str formated uuid number to that identitifies the tr
                         transaction.
 
         Returns:
             A HTTP Response.
         """
         try:
-            is_valid = is_deposit_details_valid(amount, payee, reference_id)
+            is_valid = is_deposit_details_valid(amount, payee, transaction_id)
         except (ValueError, TypeError):
             return Response(status=400, data={'reason': 'Bad Request'})
         
@@ -289,7 +289,7 @@ class Disbursement(MTNBase):
                 payload = json.dumps({
                     "amount": amount,
                     "currency": 'EUR',
-                    "externalId": reference_id,
+                    "externalId": transaction_id,
                     "payee": {
                         "partyIdType": "MSISDN",
                         "partyId": payee
@@ -298,7 +298,7 @@ class Disbursement(MTNBase):
                     "payeeNote": "Lipila gateway"
                 })
                 headers = {
-                    'X-Reference-Id': reference_id,
+                    'X-Reference-Id': transaction_id,
                     'Ocp-Apim-Subscription-Key': self.subscription_dis_key,
                     'X-Target-Environment': self.x_target_environment,
                     'Authorization': self.api_token,

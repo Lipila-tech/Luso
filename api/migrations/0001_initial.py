@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='LipilaCollection',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('payer_account_number', models.CharField(max_length=30)),
+                ('msisdn', models.CharField(max_length=30)),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('wallet_type', models.CharField(max_length=55)),
                 ('reference_id', models.CharField(max_length=120, unique=True)),

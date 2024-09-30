@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
+import requests
 from django.http import JsonResponse
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
@@ -33,7 +34,7 @@ from django.core.mail import send_mail
 from .utils import query_collection, process_mtn_payment
 from django.http import HttpResponseRedirect
 # Custom Models
-from api.utils import generate_reference_id
+from api.utils import generate_transaction_id
 from lipila.utils import (
     apology, get_lipila_contact_info,
     get_lipila_index_page_info, get_testimonials, get_lipila_about_info,
@@ -131,19 +132,19 @@ class ApproveWithdrawModalView(View):
                 amount = withdrawal_request.amount
                 wallet_type = withdrawal_request.wallet_type
                 send_money_to = withdrawal_request.account_number
-                description = withdrawal_request.reason
+                reference = withdrawal_request.reason
                 request_date = withdrawal_request.request_date
-                reference_id = withdrawal_request.reference_id
+                transaction_id = withdrawal_request.transaction_id
 
                 # Process withdrawal (initiate payout using lipila api)
                 payload = {
                     'amount': amount,
                     'wallet_type': wallet_type,
                     'send_money_to': send_money_to,
-                    'description': description
+                    'reference': reference
                 }
                 response = query_disbursement(
-                    request.user, 'POST', reference_id, data=payload)
+                    request.user, 'POST', transaction_id, data=payload)
 
                 if response.status_code == 202:
                     withdrawal_request.status = 'accepted'
@@ -153,11 +154,11 @@ class ApproveWithdrawModalView(View):
                     # save to processed withdrawals
                     processed_withdrawals.approved_by = request.user
                     processed_withdrawals.status = 'accepted'
-                    processed_withdrawals.reference_id = reference_id
+                    processed_withdrawals.transaction_id = transaction_id
                     processed_withdrawals.request_date = request_date
                     processed_withdrawals.save()
                     # consider making an async function
-                    if check_payment_status(reference_id, 'dis') == 'success':
+                    if check_payment_status(transaction_id, 'dis') == 'success':
                         withdrawal_request.status = 'success'
                         processed_withdrawals.status = 'success'
                         withdrawal_request.save()
@@ -193,7 +194,7 @@ class RejectWithdrawModalView(View):
 
                 amount = withdrawal_request.amount
                 request_date = withdrawal_request.request_date
-                reference_id = withdrawal_request.reference_id
+                transaction_id = withdrawal_request.transaction_id
 
                 withdrawal_request.status = 'rejected'
                 withdrawal_request.processed_date = timezone.now()
@@ -202,7 +203,7 @@ class RejectWithdrawModalView(View):
                 # Process withdraw
                 processed_withdrawals.processed_date = timezone.now()
                 processed_withdrawals.request_date = request_date
-                processed_withdrawals.reference_id = reference_id
+                processed_withdrawals.transaction_id = transaction_id
                 processed_withdrawals.rejected_by = request.user
                 processed_withdrawals.status = 'rejected'
                 processed_withdrawals.save()
@@ -221,12 +222,12 @@ class CreateWithdrawalRequest(BSModalCreateView):
     success_url = reverse_lazy('patron:withdraw_request')
 
     def form_valid(self, form):
-        reference_id = generate_reference_id()  # generate uniq transaction id
+        transaction_id = generate_transaction_id()  # generate uniq transaction id
         withdrawal_request = form.save(commit=False)
         # Assuming user is authenticated creator
         withdrawal_request.creator = self.request.user.creatorprofile
         withdrawal_request.status = 'pending'
-        withdrawal_request.reference_id = reference_id
+        withdrawal_request.transaction_id = transaction_id
         withdrawal_request.save()
         messages.success(
             self.request,
@@ -377,7 +378,7 @@ def approve_withdrawals(request):
         item['account_number'] = obj.account_number
         item['wallet_type'] = obj.wallet_type
         item['request_date'] = obj.request_date
-        item['reference_id'] = obj.reference_id
+        item['transaction_id'] = obj.transaction_id
         item['balance'] = calculate_creators_balance(obj.creator)
         data.append(item)
     context = {}
@@ -404,7 +405,7 @@ def processed_withdrawals(request):
         items['status'] = item.status
         items['request_date'] = item.request_date
         items['processed_date'] = item.processed_date
-        items['reference_id'] = item.withdrawal_request.reference_id
+        items['transaction_id'] = item.withdrawal_request.transaction_id
         data.append(items)
     context = {}
     context['processed_withdrawals'] = data
@@ -461,14 +462,15 @@ def checkout_subscription(request, id):
             request.POST, amount=amount, payee=tier)
 
         if form.is_valid():
+            # Extract data from the form
             isp = form.cleaned_data['wallet_type']
-            reference_id = generate_reference_id()
+            transaction_id = generate_transaction_id()
             amount = form.cleaned_data['amount']
-            payer_account_number = form.cleaned_data['payer_account_number']
-            description = form.cleaned_data['description']
-
+            msisdn = form.cleaned_data['msisdn']
+            reference = form.cleaned_data['reference']
+            
             if isp == 'mtn':
-                form.instance.reference_id = reference_id
+                form.instance.transaction_id = transaction_id
                 form.amount = amount
                 form.save()
                 # process mtn payment
@@ -476,16 +478,16 @@ def checkout_subscription(request, id):
                     'payer': request.user,
                     'amount': amount,
                     'transaction': 'subscription',
-                    'reference_id': reference_id,
-                    'payer_account_number': payer_account_number,
-                    'description': description
+                    'transaction_id': transaction_id,
+                    'msisdn': msisdn,
+                    'reference': reference
                 }
                 response = process_mtn_payment(**payment_data)
                 if response.status_code == 200:
                     form.instance.status = 'success'
                     form.save()
                     messages.success(
-                        request, f"Payment Success: Account : { form.cleaned_data['payer_account_number']} amount: {amount} Wallet:{isp}")
+                        request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{isp}")
                     return redirect(url)
                 else:
                     form.instance.status = 'failed'
@@ -495,12 +497,42 @@ def checkout_subscription(request, id):
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
             elif isp == 'airtel':
-                # process airtel payment
-                payment_data = {}
-                messages.error(
-                    request, 'Sorry only mtn is suported at the moment')
-                # redirect user to the same page
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                """
+                This view will make a POST request to the AirtelPaymentRequestView in the 'payments' app.
+                """
+                # Prepare the payload for the API call
+                payload = {
+                    'reference': reference,
+                    'msisdn': msisdn,
+                    'transaction_id': transaction_id,
+                    'amount': amount
+                }
+
+                # Make the request to AirtelPaymentRequestView API
+                try:
+                    # Assuming the AirtelPaymentRequestView URL is /api/airtel/request-payment/
+                    response = requests.post('http://localhost:8000/api/airtel/request-payment/', json=payload)
+
+                    # Handle success
+                    if response.status_code == 201:
+                        data = response.json()
+                        return JsonResponse({
+                            'status': 'success',
+                            'message': 'Payment request initiated successfully',
+                            'data': data
+                        }, status=201)
+
+                    # Handle failure
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': f'Failed to initiate payment: {response.json().get("detail", "Unknown error")}'
+                    }, status=response.status_code)
+
+                except requests.exceptions.RequestException as e:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': f'Request failed: {str(e)}'
+                    }, status=500)
             else:
                 client_token = get_braintree_client_token(request.user)
                 context = {'client_token': client_token,
@@ -535,28 +567,28 @@ def checkout_support(request, payee):
 
         if form.is_valid():
             isp = form.cleaned_data['wallet_type']
-            desc = form.cleaned_data['description']
+            desc = form.cleaned_data['reference']
             amount = form.cleaned_data['amount']
-            reference_id = generate_reference_id()
-            payer_account_number = form.cleaned_data['payer_account_number']
+            transaction_id = generate_transaction_id()
+            msisdn = form.cleaned_data['msisdn']
 
             if isp == 'mtn':
-                form.instance.reference_id = reference_id
+                form.instance.transaction_id = transaction_id
                 # process mtn payment
                 payment_data = {
                     'payer': request.user,
                     'amount': amount,
                     'transaction': 'support',
-                    'description': desc,
-                    'reference_id': reference_id,
-                    'payer_account_number': payer_account_number
+                    'reference': desc,
+                    'transaction_id': transaction_id,
+                    'msisdn': msisdn
                 }
                 response = process_mtn_payment(**payment_data)
                 if response.status_code == 200:
                     form.instance.status = 'success'
                     form.save()
                     messages.success(
-                        request, f"Payment Success: Account : { form.cleaned_data['payer_account_number']} amount: {amount} Wallet:{isp}")
+                        request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{isp}")
                     return redirect(url)
                 else:
                     form.instance.status = 'failed'

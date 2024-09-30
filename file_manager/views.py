@@ -47,17 +47,17 @@ def media_play(request, filename):
     media_file = get_object_or_404(UploadedFile, filename=filename)
 
     content_type = media_file.content_type
-    description = media_file.long_description
-    title = media_file.short_description
+    reference = media_file.long_reference
+    title = media_file.short_reference
     upload_date = media_file.upload_date
     owner = media_file.owner
 
     context = {'file_url': file_url,
                'owner': owner,
                'filename': filename,
-               'short_description': title,
+               'short_reference': title,
                'm_type': content_type,
-               'long_description': description,
+               'long_reference': reference,
                'upload_date': upload_date}
     return render(request, 'file_manager/media_play.html', context)
 

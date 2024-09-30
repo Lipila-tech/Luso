@@ -36,7 +36,7 @@ class SendMoneyViewTests(TestCase):
         mock_generate_reference_id.return_value = 'ref123'
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
-        mock_save_payment.return_value = Contributions(reference_id='ref123', amount=1000, payer_account_number='12345',
+        mock_save_payment.return_value = Contributions(reference_id='ref123', amount=1000, msisdn='12345',
                                                        wallet_type='mtn', description='Test',
                                                        payer=self.contribution_user, payee=self.creator)
 
@@ -45,7 +45,7 @@ class SendMoneyViewTests(TestCase):
         data = {
             'amount': 1000,
             'wallet_type': 'mtn',
-            'payer_account_number': '1234556719',
+            'msisdn': '1234556719',
             'description': 'Test'
         }
         response = self.client.post(url, data)
@@ -64,7 +64,7 @@ class SendMoneyViewTests(TestCase):
         mock_generate_reference_id.return_value = 'ref123'
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
-        mock_save_payment.return_value = SubscriptionPayments(reference_id='ref123', amount=1000, payer_account_number='12345',
+        mock_save_payment.return_value = SubscriptionPayments(reference_id='ref123', amount=1000, msisdn='12345',
                                                               description='Test', wallet_type='mtn',
                                                               payee=self.tier_subscription)
 
@@ -74,7 +74,7 @@ class SendMoneyViewTests(TestCase):
         data = {
             'amount': 1000,
             'wallet_type': 'mtn',
-            'payer_account_number': '12345',
+            'msisdn': '12345',
             'description': 'Test'
         }
         response = self.client.post(url, data)
@@ -92,7 +92,7 @@ class SendMoneyViewTests(TestCase):
         mock_generate_reference_id.return_value = 'ref123'
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
-        mock_save_payment.return_value = Transfer(reference_id='ref123', amount=1000, payer_account_number='12345',
+        mock_save_payment.return_value = Transfer(reference_id='ref123', amount=1000, msisdn='12345',
                                                   wallet_type='mtn', description='Test',
                                                   payer=self.contribution_user, send_money_to='98765')
 
@@ -100,7 +100,7 @@ class SendMoneyViewTests(TestCase):
         data = {
             'amount': 1000,
             'wallet_type': 'mtn',
-            'payer_account_number': '12345',
+            'msisdn': '12345',
             'send_money_to': '98765',
             'description': 'Test'
         }
@@ -118,7 +118,7 @@ class SendMoneyViewTests(TestCase):
         data = {
             'amount': 1000,
             'wallet_type': 'airtel',
-            'payer_account_number': '12345',
+            'msisdn': '12345',
             'description': 'Test'
         }
         response = self.client.post(url, data)
@@ -136,7 +136,7 @@ class SendMoneyViewTests(TestCase):
         data = {
             'amount': '',
             'wallet_type': 'mtn',
-            'payer_account_number': '12345',
+            'msisdn': '12345',
             'description': 'Test'
         }
         response = self.client.post(url, data)

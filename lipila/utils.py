@@ -17,7 +17,7 @@ from django.contrib.auth import get_user_model
 from django.http import Http404, JsonResponse
 from accounts.models import CreatorProfile
 from patron.models import TierSubscriptions, Tier
-from api.utils import generate_reference_id
+from api.utils import generate_transaction_id
 from django.contrib import messages
 from django.db.utils import IntegrityError
 from django.http import HttpResponseRedirect
@@ -112,18 +112,18 @@ def get_api_user():
     return get_user_model().objects.get(username='lipila')
 
 
-def query_collection(user, method, reference_id, data={}):
+def query_collection(user, method, transaction_id, data={}):
     """
     Queries the lipila api payments endpoint for a specific api user.
 
     Args:
         user (str): The username of the api user.
         method (str): The HTTP method allowed values (GET, POST)
-        reference_id(str): The unique uuid id that will be used to identify the transactions
+        transaction_id(str): The unique uuid id that will be used to identify the transactions
         data (dict): data (dict):
                 {
-                    'amount': '', 'payer_account_number': '',
-                    'wallet_type': '', 'description': ''
+                    'amount': '', 'msisdn': '',
+                    'wallet_type': '', 'reference': ''
                     }
 
     Returns:
@@ -132,7 +132,7 @@ def query_collection(user, method, reference_id, data={}):
     url = "http://localhost:8000/api/v1/payments/"
     params = {
         "api_user": user,
-        "reference_id": reference_id
+        "transaction_id": transaction_id
     }
     if method == 'GET':
         response = requests.get(url, params=params)
@@ -151,18 +151,18 @@ def query_collection(user, method, reference_id, data={}):
         return Response({'data': 'Invalid method passed'}, status=400)
 
 
-def query_disbursement(user, method, reference_id, data={}):
+def query_disbursement(user, method, transaction_id, data={}):
     """
     Queries the lipila api disburse endpoint for a specific api user.
 
     Args:
         user (str): The username of the api user.
         method (str): The HTTP method allowed values (GET, POST)
-        reference_id(str): The unique uuid id that will be used to identify the transactions
+        transaction_id(str): The unique uuid id that will be used to identify the transactions
         data (dict):
                 {
                     'amount': '', 'send_money_to': '',
-                    'wallet_type': '', 'description': ''
+                    'wallet_type': '', 'reference': ''
                     }
 
     Returns:
@@ -171,7 +171,7 @@ def query_disbursement(user, method, reference_id, data={}):
     url = "http://localhost:8000/api/v1/disburse/"
     params = {
         "api_user": user,
-        "reference_id": reference_id
+        "transaction_id": transaction_id
     }
     if method == 'GET':
         response = requests.get(url, params=params)
@@ -190,12 +190,12 @@ def query_disbursement(user, method, reference_id, data={}):
         return Response({'data': 'Invalid method passed'}, status=400)
 
 
-def check_payment_status(reference_id: str, transaction: str) -> str:
+def check_payment_status(transaction_id: str, transaction: str) -> str:
     """
     This function checks the status of the transaction in the api models.
 
     Args:
-        reference_id(str): The uuid that identifies the transaction.
+        transaction_id(str): The uuid that identifies the transaction.
         transaction(str): The type of transaction to check. options are (col, dis)
 
     Returns: status (str) options [success, failed, pending]
@@ -204,14 +204,14 @@ def check_payment_status(reference_id: str, transaction: str) -> str:
     if transaction == 'col':
         try:
             status = LipilaCollection.objects.get(
-                reference_id=reference_id).status
+                transaction_id=transaction_id).status
 
         except LipilaCollection.DoesNotExist:
             status = 'transaction id not found'
     elif transaction == 'dis':
         try:
             status = LipilaDisbursement.objects.get(
-                reference_id=reference_id).status
+                transaction_id=transaction_id).status
 
         except LipilaDisbursement.DoesNotExist:
             status = 'transaction id not found'
@@ -340,25 +340,25 @@ def apology(request, data=None, user=None):
 # Define variables
 def process_mtn_payment(*args, **kwargs):
     amount = kwargs.pop('amount')
-    payer_account_number = kwargs.pop('payer_account_number')
-    description = kwargs.pop('description')
-    reference_id = kwargs.pop('reference_id')
+    msisdn = kwargs.pop('msisdn')
+    reference = kwargs.pop('reference')
+    transaction_id = kwargs.pop('transaction_id')
 
     # Populate fields
     
     payload = {
         'amount': amount,
         'wallet_type': 'mtn',
-        'payer_account_number': payer_account_number,
-        'description': description
+        'msisdn': msisdn,
+        'reference': reference
     }
 
     api_user = get_api_user()
 
     response = query_collection(
-        api_user.username, 'POST', reference_id, data=payload)
+        api_user.username, 'POST', transaction_id, data=payload)
     if response.status_code == 202:
-        if check_payment_status(reference_id, 'col') == 'success':
+        if check_payment_status(transaction_id, 'col') == 'success':
                 return JsonResponse({'message': 'success'}, status=200)
         else:
             return JsonResponse({'message': 'waiting user for user response'}, status=202)

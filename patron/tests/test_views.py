@@ -97,7 +97,7 @@ class TestSubscription(TestCase):
         TierSubscriptions.objects.create(patron=user1, tier=tier1)
 
         url = reverse('send_money_id', kwargs={'type':'subscription', 'id':tier1.id})
-        data = {'amount': '100', 'payer_account_number': '0966443322',
+        data = {'amount': '100', 'msisdn': '0966443322',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
 
         # data = json.dumps(data)

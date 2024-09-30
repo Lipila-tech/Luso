@@ -13,12 +13,12 @@ from accounts.globals import ISP_CHOICES
 
 class BaseTransactionForm(BSModalModelForm):
     wallet_type = forms.ChoiceField(choices=ISP_CHOICES)
-    payer_account_number = forms.CharField(max_length=300)
-    description = forms.CharField(max_length=200, required=False)
+    msisdn = forms.CharField(max_length=300)
+    reference = forms.CharField(max_length=200, required=False)
 
     class Meta:
         labels = {
-            'payer_account_number': 'Account number'
+            'msisdn': 'Account number'
         }
 
 
@@ -28,21 +28,21 @@ class TransferForm(BaseTransactionForm):
 
     class Meta:
         model = Transfer
-        fields = ['wallet_type', 'amount', 'payer_account_number', 'send_money_to',
-                  'description']
+        fields = ['wallet_type', 'amount', 'msisdn', 'send_money_to',
+                  'reference']
 
 
 class SubscriptionPaymentsForm(forms.ModelForm):
     class Meta:
         model = SubscriptionPayments
-        fields = ['amount', 'payer_account_number',
-                  'description', "wallet_type", 'payee']
+        fields = ['amount', 'msisdn',
+                  'reference', "wallet_type", 'payee']
 
-        labels = {'payer_account_number': 'Mobile number'}
+        labels = {'msisdn': 'Mobile number'}
 
         widgets = {
-            'payer_account_number': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
-            'description': forms.TextInput(attrs={'placeholder': 'Ex. Firstname lastname'}),
+            'msisdn': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
+            'reference': forms.TextInput(attrs={'placeholder': 'Ex. Firstname lastname'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -61,13 +61,13 @@ class SubscriptionPaymentsForm(forms.ModelForm):
 class SupportPaymentForm(forms.ModelForm):
     class Meta:
         model = Contributions
-        fields = ['wallet_type', 'payer_account_number', 'amount',
-                  'description', 'payee', 'payer']
-        labels = {'payer_account_number': 'Pay using:', "description": 'Message'}
+        fields = ['wallet_type', 'msisdn', 'amount',
+                  'reference', 'payee', 'payer']
+        labels = {'msisdn': 'Pay using:', "reference": 'Message'}
 
         widgets = {
-            'payer_account_number': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
-            'description': forms.TextInput(attrs={'placeholder': 'Ex. I would love to chat with you.'}),
+            'msisdn': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
+            'reference': forms.TextInput(attrs={'placeholder': 'Ex. I would love to chat with you.'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -89,13 +89,13 @@ class SupportPaymentForm(forms.ModelForm):
 class UnUthSupportPaymentForm(forms.ModelForm):
     class Meta:
         model = ContributionsUnauth
-        fields = ['wallet_type', 'payer_account_number', 'amount',
-                  'description', 'payee', 'payer']
-        labels = {'payer_account_number': 'Pay using:', "description": 'Message'}
+        fields = ['wallet_type', 'msisdn', 'amount',
+                  'reference', 'payee', 'payer']
+        labels = {'msisdn': 'Pay using:', "reference": 'Message'}
 
         widgets = {
-            'payer_account_number': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
-            'description': forms.TextInput(attrs={'placeholder': 'Ex. I would love to chat with you.'}),
+            'msisdn': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
+            'reference': forms.TextInput(attrs={'placeholder': 'Ex. I would love to chat with you.'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -114,7 +114,7 @@ class UnUthSupportPaymentForm(forms.ModelForm):
 class WithdrawalModelForm(BSModalModelForm):
     class Meta:
         model = WithdrawalRequest
-        exclude = ['creator', 'reference_id',
+        exclude = ['creator', 'transaction_id',
                    'processed_date', 'request_date', 'status']
         labels = {
             'reason': 'Reference'

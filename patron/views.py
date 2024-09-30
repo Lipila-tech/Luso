@@ -8,6 +8,8 @@ from django.views import View
 from django.http import Http404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+import requests
+from django.http import JsonResponse
 # custom modules
 from lipila.utils import apology
 from accounts.models import CreatorProfile, PayoutAccount
@@ -21,6 +23,53 @@ from patron.utils import (get_creator_subscribers, get_patrons,
                           calculate_total_contributions, calculate_total_withdrawals,
                           calculate_creators_balance)
 
+
+
+class PatronPaymentRequestView(View):
+    def post(self, request, *args, **kwargs):
+        """
+        This view will make a POST request to the AirtelPaymentRequestView in the 'payments' app.
+        """
+        # Extract data from the request
+        reference = request.POST.get('reference')
+        msisdn = request.POST.get('msisdn')
+        transaction_id = request.POST.get('transaction_id')
+        amount = request.POST.get('amount')
+
+        # Prepare the payload for the API call
+        payload = {
+            'reference': reference,
+            'msisdn': msisdn,
+            'transaction_id': transaction_id,
+            'amount': amount
+        }
+
+        # Make the request to AirtelPaymentRequestView API
+        try:
+            # Assuming the AirtelPaymentRequestView URL is /api/airtel/request-payment/
+            response = requests.post('http://127.0.0.1:8000/api/airtel/request-payment/', json=payload)
+
+            # Handle success
+            if response.status_code == 201:
+                data = response.json()
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Payment request initiated successfully',
+                    'data': data
+                }, status=201)
+
+            # Handle failure
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Failed to initiate payment: {response.json().get("detail", "Unknown error")}'
+            }, status=response.status_code)
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Request failed: {str(e)}'
+            }, status=500)
+        
 
 def index(request):
     """
@@ -373,7 +422,7 @@ def withdrawal_history(request):
             item['transaction_type'] = 'Withdraw Request'
             item['account_number'] = obj.account_number
             item['status'] = obj.status
-            item['reference_id'] = obj.reference_id
+            item['transaction_id'] = obj.transaction_id
             history.append(item)
 
     context['history'] = history

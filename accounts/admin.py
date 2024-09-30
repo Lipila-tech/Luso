@@ -54,29 +54,29 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
 
 class ContributionsAdmin(admin.ModelAdmin):
     list_display = ('payee', 'payer', 'amount', 'status',
-                    'description', 'payer_account_number',
-                    'wallet_type', 'timestamp', 'reference_id')
+                    'reference', 'msisdn',
+                    'wallet_type', 'timestamp', 'transaction_id')
 
 
 class TierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'creator', 'price', 'description',
+    list_display = ('name', 'creator', 'price', 'reference',
                     'visible_to_fans', 'updated_at', 'is_editable')
     search_fields = ['name']
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('payee', 'amount', 'status', 'description', 'payer_account_number',
-                    'timestamp', 'reference_id', 'wallet_type')
+    list_display = ('payee', 'amount', 'status', 'reference', 'msisdn',
+                    'timestamp', 'transaction_id', 'wallet_type')
 
 
 class DisbursementAdmin(admin.ModelAdmin):
     list_display = ['send_money_to', 'processed_date', 'updated_at', 'amount',
-                    'reference_id', 'wallet_type', 'description']
+                    'transaction_id', 'wallet_type', 'reference']
 
 
 class LipilaCollectionAdmin(admin.ModelAdmin):
-    list_display = ['payer_account_number', 'processed_date', 'updated_at', 'amount',
-                    'reference_id', 'wallet_type', 'description']
+    list_display = ['msisdn', 'processed_date', 'updated_at', 'amount',
+                    'transaction_id', 'wallet_type', 'reference']
 
 
 class ContactInfoAdmin(admin.ModelAdmin):
@@ -109,8 +109,8 @@ class CreatorProfileAdmin(admin.ModelAdmin):
 
 
 class UploadedFileAdmin(admin.ModelAdmin):
-    list_display = ['owner', 'filename', 'short_description', 'file',
-                    'long_description', 'upload_date', 'content_type']
+    list_display = ['owner', 'filename', 'short_reference', 'file',
+                    'long_reference', 'upload_date', 'content_type']
 
 
 # Register

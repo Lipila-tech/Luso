@@ -78,7 +78,7 @@ class LipilaCollectionViewTest(APITestCase):
         cls.url = reverse('payments-list')
         
     def test_create_payment_success(self):
-        data = {'amount': '100', 'payer_account_number': '0966443322',
+        data = {'amount': '100', 'msisdn': '0966443322',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
         
         response = self.client.post(self.url, data, format='json')

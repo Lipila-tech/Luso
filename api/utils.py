@@ -76,9 +76,9 @@ def get_api_user(user:str)-> User:
         return Response({"error": "api user not found"}, status=404)
 
 
-def generate_reference_id() -> str:
+def generate_transaction_id() -> str:
         """
-        Method that generates a uuid4(x_reference_id) number
+        Method that generates a uuid4(x_transaction_id) number
         """
         url = "https://www.uuidgenerator.net/api/version4"
         payload = {}
@@ -95,7 +95,7 @@ def basic_auth(username:str, password:str):
     generates a Basic Authorization token: we need to encode it to base64 
     and then decode it to acsii as python 3 stores it as a byte string
     params:
-        username: momo x_reference_id
+        username: momo x_transaction_id
         password: momo apikey
     """
     token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")

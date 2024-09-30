@@ -9,8 +9,8 @@ fs = FileSystemStorage()  # Default storage
 class UploadedFile(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="multimedia")
     filename = models.CharField(max_length=255)
-    short_description = models.CharField(max_length=255, blank=True)
-    long_description = models.TextField(max_length=500, blank=True)
+    short_reference = models.CharField(max_length=255, blank=True)
+    long_reference = models.TextField(max_length=500, blank=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     content_type = models.CharField(max_length=255)
     is_private = models.BooleanField(default=False)

@@ -88,7 +88,7 @@ class EditTiersForm(forms.ModelForm):
         model = Tier
         fields = [
             'name',
-            'description',
+            'reference',
             'price',
             'visible_to_fans',
         ]

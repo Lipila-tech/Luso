@@ -32,7 +32,7 @@ def remove_white_spaces(patron_title: str)-> str:
     return output_string
 
 
-def generate_reference_id():
+def generate_transaction_id():
   """Generates a random 10-character reference ID with digits and letters."""
 
   characters = string.ascii_letters + string.digits

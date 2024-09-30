@@ -111,7 +111,7 @@ class PostPaymentTest(TestCase):
         get_user_model().objects.create(username='test_user')
         ref_id = generate_reference_id()
 
-        data = {'amount': '100', 'payer_account_number': '0966443322',
+        data = {'amount': '100', 'msisdn': '0966443322',
                 'wallet_type': 'mtn', 'description': 'testdescription'}
         
         response = query_collection('test_user', 'POST', ref_id, data=data)

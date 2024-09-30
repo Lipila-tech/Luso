@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('payer', models.CharField(max_length=15, null=True)),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=10, null=True)),
-                ('payer_account_number', models.CharField(max_length=300, null=True)),
+                ('msisdn', models.CharField(max_length=300, null=True)),
                 ('reference_id', models.CharField(max_length=40, unique=True)),
                 ('wallet_type', models.CharField(choices=[('', ''), ('mtn', 'mtn'), ('airtel', 'airtel')], default='', max_length=20)),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),

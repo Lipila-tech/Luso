@@ -32,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
 class LipilaCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LipilaCollection
-        fields = ['payer_account_number', 'amount',
+        fields = ['msisdn', 'amount',
                   'wallet_type', 'description']
 
 

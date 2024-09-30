@@ -9,12 +9,12 @@ class UploadFileForm(forms.Form):
 class EditMediaFileForm(forms.ModelForm):
     class Meta:
         model = UploadedFile
-        fields = ['short_description',
-                  'long_description', 'is_private', 'tiers']
+        fields = ['short_reference',
+                  'long_reference', 'is_private', 'tiers']
 
         labels = {
-            'short_description': 'Title',
-            'long_description': 'Description',
+            'short_reference': 'Title',
+            'long_reference': 'reference',
             'is_private': 'Private',
         }
 
