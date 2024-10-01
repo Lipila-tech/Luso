@@ -7,7 +7,7 @@ import json
 from django.contrib.auth import get_user_model
 # Custom models
 from accounts.models import CreatorProfile
-from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Payment
 from.factory import UserFactory, CreatorProfileFactory
 from lipila.utils import get_patron_title_by_creator
 

@@ -23,10 +23,8 @@ from lipila.forms.forms import (
     ContactForm,
     WithdrawalModelForm,
     TierModelForm,
-    SupportPaymentForm,
-    TransferForm,
     SubscriptionPaymentsForm,
-    UnUthSupportPaymentForm,
+    PaymentForm,
 )
 
 from django.core.mail import send_mail
@@ -554,19 +552,16 @@ def checkout_subscription(request, id):
 
 # @login_required
 def checkout_support(request, payee):
-    url = reverse('subscriptions_history')
     tier = get_tier_by_patron_title(payee)
+    url = ''
+
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            form = SupportPaymentForm(
-                request.POST, payee=payee, payer=request.user)
-        else:
-            form = UnUthSupportPaymentForm(
+          
+        form = PaymentForm(
                 request.POST, payee=payee)
-
-        if form.is_valid():
+              
+        if form.is_valid():            
             payment = form.save(commit=False)
-
             # extract data to send to api
             isp = form.cleaned_data['wallet_type']
             reference = form.cleaned_data['reference']
@@ -574,44 +569,56 @@ def checkout_support(request, payee):
             transaction_id = generate_transaction_id()
             msisdn = form.cleaned_data['msisdn']
             payer = form.cleaned_data['payer']
-            
 
-            if payer:
-                payment.payer = payer
+            if request.user.is_authenticated:
+                payment.instance.authenticated_payer = request.user
+                url = reverse('subscriptions_history')
             else:
-                payment.payer = msisdn
+                url = reverse('accounts:signup')
+                if payer:
+                    payment.anonymous_payer = payer
+                else:
+                    payment.anonymous_payer = msisdn
 
             # Add logic for calculating total_amount if the user checked the 'I'll generously add K2.50' box
             if 'add_contribution' in request.POST and request.POST['add_contribution'] == 'on':
-                payment.amount = payment.amount + 2.5
+                payment.amount = float(payment.amount) + 2.5
             else:
                 payment.amount = payment.amount
 
             payment.save()  # Now save to DB
 
             if isp == 'mtn':
-                form.instance.transaction_id = transaction_id
-                # process mtn payment
-                payment_data = {
-                    'payer': request.user,
-                    'amount': amount,
-                    'transaction': 'support',
-                    'reference': reference,
-                    'transaction_id': transaction_id,
-                    'msisdn': msisdn
-                }
-                response = process_mtn_payment(**payment_data)
-                if response.status_code == 200:
-                    form.instance.status = 'success'
-                    form.save()
-                    messages.success(
-                        request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{isp}")
-                    return redirect(url)
-                else:
-                    form.instance.status = 'failed'
-                    form.save()
-                    messages.error(request, "Error: Duplicate reference id")
-                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                try:
+                    form.instance.transaction_id = transaction_id
+                    # process mtn payment
+                    payment_data = {
+                        'payer': request.user,
+                        'amount': amount,
+                        'transaction': 'support',
+                        'reference': reference,
+                        'transaction_id': transaction_id,
+                        'msisdn': msisdn
+                    }
+                    response = process_mtn_payment(**payment_data)
+                    if response.status_code == 200:
+                        
+                        form.instance.status = 'success'
+                        form.save()
+                        messages.success(
+                            request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{isp}")
+                        return redirect(url)
+                    
+                    return JsonResponse({
+                            'status': 'error',
+                            'message': f'Failed to initiate payment: {response.json().get("detail", "Unknown error")}'
+                        }, status=response.status_code)
+                
+                except requests.exceptions.RequestException as e:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': f'Request failed: {str(e)}'
+                    }, status=500)
 
             elif isp == 'airtel':
                 # process airtel payment
@@ -630,7 +637,7 @@ def checkout_support(request, payee):
                 try:
                     # Assuming the AirtelPaymentRequestView URL is /api/airtel/request-payment/
                     response = requests.post('http://localhost:8000/api/airtel/request-payment/', json=payload)
-
+                    
                     # Handle success
                     if response.status_code == 201:
                         data = response.json()
@@ -656,16 +663,14 @@ def checkout_support(request, payee):
                 context = {'client_token': client_token,
                            'form': form, 'amount': amount}
         else:
-            form = SupportPaymentForm(payee=payee,  payer=request.user)
+            form = PaymentForm(payee=payee)
             client_token = get_braintree_client_token(request.user)
             context = {'client_token': client_token,
                        'form': form}
             messages.error(request, "Field errors!")
             return render(request, 'lipila/checkout/checkout_support.html', context)
-    if request.user.is_authenticated:
-        form = SupportPaymentForm(payee=payee,  payer=request.user)
-    else:
-        form = UnUthSupportPaymentForm(payee=payee)
+    
+    form = PaymentForm(payee=payee)
         
     client_token = get_braintree_client_token(request.user)
     context = {'client_token': client_token, 'form': form, "payee": payee, "amount":amount}
@@ -692,7 +697,7 @@ def create_purchase(request):
             }
         })
         if result.is_success:
-            print('success')
+            
             messages.success(request, "Payment completed")
             return JsonResponse({'status': 'success', 'nonce': nonce_from_the_client, 'device_data': device_data})
         else:

@@ -3,18 +3,21 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
-from api.models import (LipilaDisbursement, LipilaCollection, AirtelTransaction)
+from api.models import (
+    LipilaDisbursement, LipilaCollection, AirtelTransaction)
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
-from patron.models import (Tier, SubscriptionPayments,
-                           ProcessedWithdrawals, WithdrawalRequest, Contributions)
+from patron.models import (Tier,
+                           ProcessedWithdrawals, WithdrawalRequest, Payment)
 from accounts.models import CreatorProfile, CustomUser, UserSocialAuth
 from file_manager.models import UploadedFile
 
+
 class AirtelTransactionModel(admin.ModelAdmin):
-    list_display =  ['reference', 'transaction_id', 'msisdn', 'amount', 'status', 'created_at', 'updated_at']
-    search_fields =['reference', 'transaction_id', 'msisdn']
+    list_display = ['reference', 'transaction_id', 'msisdn',
+                    'amount', 'status', 'created_at', 'updated_at']
+    search_fields = ['reference', 'transaction_id', 'msisdn']
 
 
 class UserSocialAuthAdmin(admin.ModelAdmin):
@@ -37,7 +40,8 @@ class CustomUserAdmin(BaseUserAdmin):
         }),
     )
 
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_creator', 'has_group')
+    list_display = ('username', 'email', 'first_name',
+                    'last_name', 'is_staff', 'is_creator', 'has_group')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('email',)
 
@@ -52,7 +56,7 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
                     'request_date', 'status', 'processed_date', 'reason')
 
 
-class ContributionsAdmin(admin.ModelAdmin):
+class PaymentAdmin(admin.ModelAdmin):
     list_display = ('payee', 'payer', 'amount', 'status',
                     'reference', 'msisdn',
                     'wallet_type', 'timestamp', 'transaction_id')
@@ -65,7 +69,7 @@ class TierAdmin(admin.ModelAdmin):
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('payee', 'amount', 'status', 'reference', 'msisdn',
+    list_display = ('payee', 'amount', 'authenticated_payer', 'anonymous_payer', 'status', 'reference', 'msisdn',
                     'timestamp', 'transaction_id', 'wallet_type')
 
 
@@ -118,8 +122,7 @@ admin.site.register(AirtelTransaction, AirtelTransactionModel)
 admin.site.register(UserSocialAuth, UserSocialAuthAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tier, TierAdmin)
-admin.site.register(SubscriptionPayments, PaymentAdmin)
-admin.site.register(Contributions, ContributionsAdmin)
+admin.site.register(Payment, PaymentAdmin)
 admin.site.register(ProcessedWithdrawals, ProcessedWithdrawalAdmin)
 admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)

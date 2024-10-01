@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.conf import settings
-from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Payment, WithdrawalRequest
 from django.contrib.auth import get_user_model
 
 # custom modules
@@ -120,11 +120,11 @@ class TestUtilFunctions(TestCase):
         """
         Test if the function calculates and returns the expected values.
         """
-        contri1 = Contributions.objects.create(
+        contri1 = Payment.objects.create(
             payee=self.creator_user1, payer=self.user1, amount=100, reference_id=generate_reference_id(), status='pending')
-        contri2 = Contributions.objects.create(
+        contri2 = Payment.objects.create(
             payee=self.creator_user1, payer=self.user2, amount=100, reference_id=generate_reference_id(), status='success')
-        contri3 = Contributions.objects.create(
+        contri3 = Payment.objects.create(
             payee=self.creator_user2, payer=self.user1, amount=100, reference_id=generate_reference_id(), status='success')
         self.assertEqual(utils.calculate_total_contributions(
             self.creator_user1), 100)
@@ -170,7 +170,7 @@ class TestUtilFunctions(TestCase):
             creator=self.creator1_obj, amount=100, status='success')
         WithdrawalRequest.objects.create(
             creator=self.creator1_obj, amount=100, status='success')
-        Contributions.objects.create(
+        Payment.objects.create(
             payee=self.creator_user1, payer=self.user1, amount=100, status='success')
         self.assertEqual(utils.calculate_creators_balance(
             self.creator1_obj), 100)

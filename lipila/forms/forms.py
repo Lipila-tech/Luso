@@ -1,7 +1,6 @@
 from django import forms
 from lipila.models import CustomerMessage
-from patron.models import Contributions, ContributionsUnauth
-from django.core.validators import MinValueValidator
+from patron.models import Payment
 from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from patron.models import WithdrawalRequest, Tier, SubscriptionPayments, Transfer
 from django.contrib.auth import get_user_model
@@ -56,38 +55,13 @@ class SubscriptionPaymentsForm(forms.ModelForm):
         if amount is not None:
             self.fields['amount'].initial = amount
         self.fields['payee'].initial = payee
+       
 
-
-class SupportPaymentForm(forms.ModelForm):
+class PaymentForm(forms.ModelForm):
     class Meta:
-        model = Contributions
+        model = Payment
         fields = ['wallet_type', 'msisdn', 'amount',
-                  'reference', 'payee', 'payer']
-        labels = {'msisdn': 'Pay using:', "reference": 'Message'}
-
-        widgets = {
-            'msisdn': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
-            'reference': forms.TextInput(attrs={'placeholder': 'Ex. I would love to chat with you.'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        payee = kwargs.pop('payee')
-        payer = kwargs.pop('payer')
-        super().__init__(*args, **kwargs)
-        self.fields['wallet_type'].widget.attrs['hidden'] = True
-        self.fields['payee'].widget.attrs['hidden'] = True
-        self.fields['payer'].widget.attrs['hidden'] = True
-        self.fields['payee'].initial = get_object_or_404(
-            CreatorProfile, patron_title=payee)
-        self.fields['payer'].initial = get_user_model(
-        ).objects.get(username=payer)
-        
-
-class UnUthSupportPaymentForm(forms.ModelForm):
-    class Meta:
-        model = ContributionsUnauth
-        fields = ['wallet_type', 'msisdn', 'amount',
-                  'reference', 'payee', 'payer']
+                  'reference', 'payee']
         labels = {'msisdn': 'Pay using:', "reference": 'Message', 'payer': 'Email or Phone:'}
 
         widgets = {

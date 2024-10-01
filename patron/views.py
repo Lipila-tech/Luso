@@ -9,6 +9,7 @@ from django.http import Http404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 import requests
+from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 # custom modules
 from lipila.utils import apology
@@ -17,7 +18,7 @@ from lipila.utils import get_user_object
 from patron.forms.forms import (
     CreateCreatorProfileForm, WithdrawalRequestForm)
 from patron.forms.forms import DefaultUserChangeForm, EditCreatorProfileForm, PayoutAccountEditFrom, VerifyForm
-from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Payment, WithdrawalRequest
 from patron.utils import (get_creator_subscribers, get_patrons,
                           get_creator_url, get_tier, calculate_total_payments,
                           calculate_total_contributions, calculate_total_withdrawals,
@@ -429,7 +430,7 @@ def withdrawal_history(request):
     return render(request, 'patron/admin/pages/withdrawal_history.html', context)
 
 
-@login_required
+# @login_required
 def payments_history(request):
     """
     Retrieves an authenticated User's payment/contribution history history.
@@ -444,11 +445,12 @@ def payments_history(request):
         context['contributions'] = contributions
         context['payments'] = payments
         return render(request, 'patron/admin/pages/payments_received.html', context)
+   
 
     except get_user_model().creatorprofile.RelatedObjectDoesNotExist:
         payments = SubscriptionPayments.objects.filter(
             payee__patron=request.user)
-        contributions = Contributions.objects.filter(
+        contributions = Payment.objects.filter(
             payer=request.user, status='success')
         context['contributions'] = contributions
         context['payments'] = payments

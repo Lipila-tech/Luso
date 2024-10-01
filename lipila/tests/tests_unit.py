@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib.messages import get_messages
 from accounts.models import CreatorProfile
-from patron.models import Contributions, SubscriptionPayments, TierSubscriptions, Transfer, Tier
+from patron.models import Payment, SubscriptionPayments, TierSubscriptions, Transfer, Tier
 from lipila.forms.forms import SendMoneyForm
 from lipila.views import SendMoneyView
 from unittest.mock import patch
@@ -36,7 +36,7 @@ class SendMoneyViewTests(TestCase):
         mock_generate_reference_id.return_value = 'ref123'
         mock_query_collection.return_value.status_code = 202
         mock_check_payment_status.return_value = 'success'
-        mock_save_payment.return_value = Contributions(reference_id='ref123', amount=1000, msisdn='12345',
+        mock_save_payment.return_value = Payment(reference_id='ref123', amount=1000, msisdn='12345',
                                                        wallet_type='mtn', description='Test',
                                                        payer=self.contribution_user, payee=self.creator)
 
@@ -54,7 +54,7 @@ class SendMoneyViewTests(TestCase):
         self.assertRedirects(response, reverse('patron:subscriptions_history'))
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'Payment of K1000 successful!')
-        self.assertEqual(Contributions.objects.count(), 1)
+        self.assertEqual(Payment.objects.count(), 1)
 
     @patch('lipila.views.generate_reference_id')
     @patch('lipila.views.query_collection')
@@ -147,7 +147,7 @@ class SendMoneyViewTests(TestCase):
 
     def tearDown(self):
         get_user_model().objects.all().delete()
-        Contributions.objects.all().delete()
+        Payment.objects.all().delete()
         SubscriptionPayments.objects.all().delete()
         TierSubscriptions.objects.all().delete()
         Transfer.objects.all().delete()

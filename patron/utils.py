@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from typing import Union, List
-from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Contributions, WithdrawalRequest
+from patron.models import Tier, TierSubscriptions, SubscriptionPayments, Payment, WithdrawalRequest
 from django.urls import reverse
 from django.db.models import Sum
 import random, re , string
@@ -92,7 +92,7 @@ def calculate_total_contributions(creator: CreatorProfile)-> int:
         A decimal value representing the total amount of contributions.
     """
     # Filter contributions for subscriptions belonging to the given creator's tiers
-    contributions = Contributions.objects.filter(
+    contributions = Payment.objects.filter(
         payee=creator, status='success'
     ).aggregate(total_amount=Sum('amount'))
 
@@ -135,7 +135,7 @@ def get_patrons(creator: CreatorProfile) -> List:
         A queryset of User objects representing the creator's patrons.
     """
     try:
-        contributions = get_list_or_404(Contributions, payee=creator)
+        contributions = get_list_or_404(Payment, payee=creator)
         return contributions
     except Http404:
         return []
