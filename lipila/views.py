@@ -635,8 +635,8 @@ def checkout_support(request, payee):
 
                 # Make the request to AirtelPaymentRequestView API
                 try:
-                    # Assuming the AirtelPaymentRequestView URL is /api/airtel/request-payment/
-                    response = requests.post('http://localhost:8000/api/airtel/request-payment/', json=payload)
+                    checkout_url = settings.LIPILA_CHECKOUT_URL_AIRTEL
+                    response = requests.post(checkout_url, json=payload)
                     
                     # Handle success
                     if response.status_code == 201:
