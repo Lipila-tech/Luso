@@ -59,7 +59,7 @@ class TierFactory(DjangoModelFactory):
         model = Tier
 
     name = factory.Faker('sentence', nb_words=4)
-    description = factory.Faker('paragraph', nb_sentences=3)
+    reference = factory.Faker('paragraph', nb_sentences=3)
     price = factory.Faker('random_element', elements=[choice[0] for choice in DEFAULT_PRICES])
     creator = None
     visible_to_fans = factory.Faker('boolean')
