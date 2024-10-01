@@ -556,21 +556,38 @@ def checkout_subscription(request, id):
 def checkout_support(request, payee):
     url = reverse('subscriptions_history')
     tier = get_tier_by_patron_title(payee)
-    amount = tier.price
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = SupportPaymentForm(
-                request.POST, payee=payee, payer=request.user, amount=amount)
+                request.POST, payee=payee, payer=request.user)
         else:
             form = UnUthSupportPaymentForm(
-                request.POST, payee=payee, amount=amount)
+                request.POST, payee=payee)
 
         if form.is_valid():
+            payment = form.save(commit=False)
+
+            # extract data to send to api
             isp = form.cleaned_data['wallet_type']
-            desc = form.cleaned_data['reference']
+            reference = form.cleaned_data['reference']
             amount = form.cleaned_data['amount']
             transaction_id = generate_transaction_id()
             msisdn = form.cleaned_data['msisdn']
+            payer = form.cleaned_data['payer']
+            
+
+            if payer:
+                payment.payer = payer
+            else:
+                payment.payer = msisdn
+
+            # Add logic for calculating total_amount if the user checked the 'I'll generously add K2.50' box
+            if 'add_contribution' in request.POST and request.POST['add_contribution'] == 'on':
+                payment.amount = payment.amount + 2.5
+            else:
+                payment.amount = payment.amount
+
+            payment.save()  # Now save to DB
 
             if isp == 'mtn':
                 form.instance.transaction_id = transaction_id
@@ -579,7 +596,7 @@ def checkout_support(request, payee):
                     'payer': request.user,
                     'amount': amount,
                     'transaction': 'support',
-                    'reference': desc,
+                    'reference': reference,
                     'transaction_id': transaction_id,
                     'msisdn': msisdn
                 }
@@ -598,11 +615,42 @@ def checkout_support(request, payee):
 
             elif isp == 'airtel':
                 # process airtel payment
-                payment_data = {}
-                messages.error(
-                    request, 'Sorry only mtn is suported at the moment')
-                # redirect user to the same page
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                """
+                This view will make a POST request to the AirtelPaymentRequestView in the 'payments' app.
+                """
+                # Prepare the payload for the API call
+                payload = {
+                    'reference': reference,
+                    'msisdn': msisdn,
+                    'transaction_id': transaction_id,
+                    'amount': amount
+                }
+
+                # Make the request to AirtelPaymentRequestView API
+                try:
+                    # Assuming the AirtelPaymentRequestView URL is /api/airtel/request-payment/
+                    response = requests.post('http://localhost:8000/api/airtel/request-payment/', json=payload)
+
+                    # Handle success
+                    if response.status_code == 201:
+                        data = response.json()
+                        return JsonResponse({
+                            'status': 'success',
+                            'message': 'Payment request initiated successfully',
+                            'data': data
+                        }, status=201)
+
+                    # Handle failure
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': f'Failed to initiate payment: {response.json().get("detail", "Unknown error")}'
+                    }, status=response.status_code)
+
+                except requests.exceptions.RequestException as e:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': f'Request failed: {str(e)}'
+                    }, status=500)
             else:
                 client_token = get_braintree_client_token(request.user)
                 context = {'client_token': client_token,
@@ -615,9 +663,9 @@ def checkout_support(request, payee):
             messages.error(request, "Field errors!")
             return render(request, 'lipila/checkout/checkout_support.html', context)
     if request.user.is_authenticated:
-        form = SupportPaymentForm(payee=payee,  payer=request.user, amount=amount)
+        form = SupportPaymentForm(payee=payee,  payer=request.user)
     else:
-        form = UnUthSupportPaymentForm(payee=payee, amount=amount)
+        form = UnUthSupportPaymentForm(payee=payee)
         
     client_token = get_braintree_client_token(request.user)
     context = {'client_token': client_token, 'form': form, "payee": payee, "amount":amount}

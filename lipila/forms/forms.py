@@ -71,7 +71,6 @@ class SupportPaymentForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        amount = kwargs.pop('amount', None)
         payee = kwargs.pop('payee')
         payer = kwargs.pop('payer')
         super().__init__(*args, **kwargs)
@@ -82,16 +81,14 @@ class SupportPaymentForm(forms.ModelForm):
             CreatorProfile, patron_title=payee)
         self.fields['payer'].initial = get_user_model(
         ).objects.get(username=payer)
-        if amount is not None:
-            self.fields['amount'].initial = amount
-
+        
 
 class UnUthSupportPaymentForm(forms.ModelForm):
     class Meta:
         model = ContributionsUnauth
         fields = ['wallet_type', 'msisdn', 'amount',
                   'reference', 'payee', 'payer']
-        labels = {'msisdn': 'Pay using:', "reference": 'Message'}
+        labels = {'msisdn': 'Pay using:', "reference": 'Message', 'payer': 'Email or Phone:'}
 
         widgets = {
             'msisdn': forms.TextInput(attrs={'placeholder': 'Ex. 076433223'}),
@@ -99,17 +96,13 @@ class UnUthSupportPaymentForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        amount = kwargs.pop('amount', None)
         payee = kwargs.pop('payee')
         super().__init__(*args, **kwargs)
         self.fields['wallet_type'].widget.attrs['hidden'] = True
         self.fields['payee'].widget.attrs['hidden'] = True
-        self.fields['payer'].widget.attrs['hidden'] = True
         self.fields['payee'].initial = get_object_or_404(
             CreatorProfile, patron_title=payee)
-        if amount is not None:
-            self.fields['amount'].initial = amount
-
+       
 
 class WithdrawalModelForm(BSModalModelForm):
     class Meta:

@@ -94,7 +94,7 @@ class Contributions(models.Model):
     payer = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=False, related_name='contributions_sent')
     amount = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=False)
+        max_digits=10, decimal_places=2, null=True, blank=True)
     msisdn = models.CharField(
         max_length=300, null=True, blank=False)
     transaction_id = models.CharField(
@@ -113,9 +113,9 @@ class Contributions(models.Model):
 class ContributionsUnauth(models.Model):
     payee = models.ForeignKey(
         CreatorProfile, on_delete=models.SET_NULL, null=True, blank=True, related_name='donations_received')
-    payer = models.CharField(max_length=15, null=True, blank=False)
+    payer = models.CharField(max_length=15, null=True, blank=True)
     amount = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=False)
+        max_digits=10, decimal_places=2, null=True, blank=True)
     msisdn = models.CharField(
         max_length=300, null=True, blank=False)
     transaction_id = models.CharField(

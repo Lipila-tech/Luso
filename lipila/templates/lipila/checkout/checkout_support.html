@@ -18,15 +18,15 @@
     </div>
 
     <div class="logo-buttons">
-        <button class="payment-button" id="mtn-button">
+        <!-- <button class="payment-button" id="mtn-button">
             <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN">
-        </button>
+        </button> -->
         <button class="payment-button" id="airtel-button">
             <img src="{% static 'assets/img/api/airtel.png' %}" alt="Airtel">
         </button>
-        <button class="payment-button" id="visa-button">
+        <!-- <button class="payment-button" id="visa-button">
             <img src="{% static 'assets/img/api/visa.png' %}" alt="Visa">
-        </button>
+        </button> -->
         <input type="hidden" value="{{client_token}}" id="clientToken">
     </div>
 
@@ -39,7 +39,7 @@
                 <p>Pay with MTN</p>
                 <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN logo">
             </div>
-            {% include 'lipila/modals/pay_support.html' %}
+            
         </div>
     </div>
 
@@ -67,58 +67,122 @@
 </div>
 {% endblock section %}
 {% block extrascripts %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const amountButtons = document.querySelectorAll('.amount-btn');
+        const customInput = document.getElementById('custom');
+        const contributionCheckbox = document.getElementById('add-contribution');
+        const totalAmountDisplay = document.getElementById('total-amount');
+        
+        let selectedAmount = 25;  // Default amount
+        const contributionAmount = 2.5;
+
+        
+        // Function to calculate total
+        function updateTotal() {
+            let total = selectedAmount;
+            // Add contribution if the checkbox is checked
+            if (contributionCheckbox.checked) {
+                total += contributionAmount;
+            }
+            totalAmountDisplay.innerHTML = `Total Payable: K${total}`;
+        }
+
+        // Add event listeners to amount buttons
+        amountButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove 'selected' class from all buttons
+                amountButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // Add 'selected' class to the clicked button
+                this.classList.add('selected');
+
+                // Update selected amount
+                selectedAmount = parseInt(this.getAttribute('data-amount'));
+                
+                
+                // Uncheck the custom input when selecting a predefined amount
+                customInput.value = '';
+
+                // Update the total
+                updateTotal();
+            });
+        });
+
+        // Add event listener to custom amount input
+        customInput.addEventListener('input', function() {
+            // Remove 'selected' class from all amount buttons
+            amountButtons.forEach(btn => btn.classList.remove('selected'));
+
+            // Get the value from the custom input field
+            const customAmount = parseInt(this.value);
+            selectedAmount = customAmount > 0 ? customAmount : 0;  // Use the custom amount if it's valid
+
+            // Update the total
+            updateTotal();
+        });
+
+        // Add event listener to contribution checkbox
+        contributionCheckbox.addEventListener('change', function() {
+            // Update the total whenever the checkbox state changes
+            updateTotal();
+        });
+    });
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        var mtnButton = document.getElementById('mtn-button');
+        // var mtnButton = document.getElementById('mtn-button');
         var airtelButton = document.getElementById('airtel-button');
-        var visaButton = document.getElementById('visa-button');
+        // var visaButton = document.getElementById('visa-button');
 
-        var mtnModal = document.getElementById('mtn-modal');
+        // var mtnModal = document.getElementById('mtn-modal');
         var airtelModal = document.getElementById('airtel-modal');
-        var visaModal = document.getElementById('visa-modal');
+        // var visaModal = document.getElementById('visa-modal');
 
-        var closeMtnModal = document.getElementById('close-mtn-modal');
+        // var closeMtnModal = document.getElementById('close-mtn-modal');
         var closeAirtelModal = document.getElementById('close-airtel-modal');
-        var closeVisaModal = document.getElementById('close-visa-modal');
+        // var closeVisaModal = document.getElementById('close-visa-modal');
 
 
-        mtnButton.addEventListener('click', function () {
-            mtnModal.style.display = 'flex';
-            $(".wallet_type").val("mtn");
-        });
+        // mtnButton.addEventListener('click', function () {
+        //     mtnModal.style.display = 'flex';
+        //     $(".wallet_type").val("mtn");
+        // });
 
         airtelButton.addEventListener('click', function () {
             airtelModal.style.display = 'flex';
             $(".wallet_type").val("airtel");
         });
 
-        visaButton.addEventListener('click', function () {
-            visaModal.style.display = 'flex';
-        });
+        // visaButton.addEventListener('click', function () {
+        //     visaModal.style.display = 'flex';
+        // });
 
-        closeMtnModal.addEventListener('click', function () {
-            mtnModal.style.display = 'none';
-        });
+        // closeMtnModal.addEventListener('click', function () {
+        //     mtnModal.style.display = 'none';
+        // });
 
         closeAirtelModal.addEventListener('click', function () {
             airtelModal.style.display = 'none';
         });
 
-        closeVisaModal.addEventListener('click', function () {
-            visaModal.style.display = 'none';
-        });
+        // closeVisaModal.addEventListener('click', function () {
+        //     visaModal.style.display = 'none';
+        // });
 
         window.addEventListener('click', function (event) {
-            if (event.target == mtnModal) {
-                mtnModal.style.display = 'none';
-            }
+            // if (event.target == mtnModal) {
+            //     mtnModal.style.display = 'none';
+            // }
             if (event.target == airtelModal) {
                 airtelModal.style.display = 'none';
             }
-            if (event.target == visaModal) {
-                visaModal.style.display = 'none';
-            }
+            // if (event.target == visaModal) {
+            //     visaModal.style.display = 'none';
+            // }
         });
     });
 </script>
