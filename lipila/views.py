@@ -568,16 +568,16 @@ def checkout_support(request, payee):
             amount = form.cleaned_data['amount']
             transaction_id = generate_transaction_id()
             msisdn = form.cleaned_data['msisdn']
-            payer = form.cleaned_data['payer']
-
+            
             if request.user.is_authenticated:
-                payment.instance.authenticated_payer = request.user
+                form.instance.authenticated_payer = request.user
                 url = reverse('subscriptions_history')
             else:
                 url = reverse('accounts:signup')
-                if payer:
+                try:
+                    payer = form.cleaned_data['payer']
                     payment.anonymous_payer = payer
-                else:
+                except KeyError:
                     payment.anonymous_payer = msisdn
 
             # Add logic for calculating total_amount if the user checked the 'I'll generously add K2.50' box

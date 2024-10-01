@@ -430,7 +430,7 @@ def withdrawal_history(request):
     return render(request, 'patron/admin/pages/withdrawal_history.html', context)
 
 
-# @login_required
+@login_required
 def payments_history(request):
     """
     Retrieves an authenticated User's payment/contribution history history.
@@ -451,7 +451,7 @@ def payments_history(request):
         payments = SubscriptionPayments.objects.filter(
             payee__patron=request.user)
         contributions = Payment.objects.filter(
-            payer=request.user, status='success')
+            authenticated_payer=request.user, status='success')
         context['contributions'] = contributions
         context['payments'] = payments
         return render(request, 'patron/admin/pages/payments_made.html', context)
