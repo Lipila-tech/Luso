@@ -119,7 +119,7 @@ class APILogoutView(views.APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class LipilaDisbursementView(viewsets.ModelViewSet):
+class MtnDisbursementView(viewsets.ModelViewSet):
     """
     API endpoint that allows Disbursments to be viewed and created.
     """
@@ -200,7 +200,7 @@ class LipilaDisbursementView(viewsets.ModelViewSet):
         return Response({"error": "api user not found"}, status=404)
 
 
-class LipilaCollectionView(viewsets.ModelViewSet):
+class MtnCollectionView(viewsets.ModelViewSet):
     """
     API endpoint that allows COllectins to be viewed and created.
     """

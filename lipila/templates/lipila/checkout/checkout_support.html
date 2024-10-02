@@ -18,9 +18,9 @@
     </div>
 
     <div class="logo-buttons">
-        <!-- <button class="payment-button" id="mtn-button">
+        <button class="payment-button" id="mtn-button">
             <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN">
-        </button> -->
+        </button>
         <button class="payment-button" id="airtel-button">
             <img src="{% static 'assets/img/api/airtel.png' %}" alt="Airtel">
         </button>
@@ -39,7 +39,7 @@
                 <p>Pay with MTN</p>
                 <img src="{% static 'assets/img/api/mtn.png' %}" alt="MTN logo">
             </div>
-            
+            {% include 'lipila/modals/pay_support_mtn.html' %}
         </div>
     </div>
 
@@ -51,7 +51,7 @@
                 <p>Pay with Airtel</p>
                 <img src="{% static 'assets/img/api/airtel.png' %}" alt="airtel logo">
             </div>
-            {% include 'lipila/modals/pay_support.html' %}
+            {% include 'lipila/modals/pay_support_airtel.html' %}
         </div>
     </div>
 
@@ -134,23 +134,23 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        // var mtnButton = document.getElementById('mtn-button');
+        var mtnButton = document.getElementById('mtn-button');
         var airtelButton = document.getElementById('airtel-button');
         // var visaButton = document.getElementById('visa-button');
 
-        // var mtnModal = document.getElementById('mtn-modal');
+        var mtnModal = document.getElementById('mtn-modal');
         var airtelModal = document.getElementById('airtel-modal');
         // var visaModal = document.getElementById('visa-modal');
 
-        // var closeMtnModal = document.getElementById('close-mtn-modal');
+        var closeMtnModal = document.getElementById('close-mtn-modal');
         var closeAirtelModal = document.getElementById('close-airtel-modal');
         // var closeVisaModal = document.getElementById('close-visa-modal');
 
 
-        // mtnButton.addEventListener('click', function () {
-        //     mtnModal.style.display = 'flex';
-        //     $(".wallet_type").val("mtn");
-        // });
+        mtnButton.addEventListener('click', function () {
+            mtnModal.style.display = 'flex';
+            $(".wallet_type").val("mtn");
+        });
 
         airtelButton.addEventListener('click', function () {
             airtelModal.style.display = 'flex';
@@ -161,9 +161,9 @@
         //     visaModal.style.display = 'flex';
         // });
 
-        // closeMtnModal.addEventListener('click', function () {
-        //     mtnModal.style.display = 'none';
-        // });
+        closeMtnModal.addEventListener('click', function () {
+            mtnModal.style.display = 'none';
+        });
 
         closeAirtelModal.addEventListener('click', function () {
             airtelModal.style.display = 'none';
@@ -174,9 +174,9 @@
         // });
 
         window.addEventListener('click', function (event) {
-            // if (event.target == mtnModal) {
-            //     mtnModal.style.display = 'none';
-            // }
+            if (event.target == mtnModal) {
+                mtnModal.style.display = 'none';
+            }
             if (event.target == airtelModal) {
                 airtelModal.style.display = 'none';
             }

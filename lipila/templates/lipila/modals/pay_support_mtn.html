@@ -1,0 +1,103 @@
+{% load custom_filters %}
+<form method="post" class="">
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="donation-container">
+            <h2 id="total-amount-mtn">Total Payable: K25</h2> <!-- Display total amount -->
+            <h2>Select amount (ZMW)</h2>
+            <div class="amount-options">
+                <button type="button" class="amount-btn" data-amount="15">K15</button>
+                <button type="button" class="amount-btn selected" data-amount="25">K25</button> <!-- Initially selected -->
+                <button type="button" class="amount-btn" data-amount="50">K50</button>
+                <div class="custom-amount">
+                    <label for="custom">Own amount: K</label>
+                    <input type="number" id="custom-mtn" class="custom-input" placeholder="Enter amount">
+                </div>
+            </div>
+            <div class="options">
+                <label>
+                    <input type="checkbox" id="add-contribution-mtn">
+                    I'll generously add K2.50 to cover fees.
+                </label>
+            </div>
+        </div>
+        <div class="modal-border donation-container">
+            {{ form.wallet_type|add_class:"wallet_type" }}
+
+            {{ form.msisdn.label_tag }}
+            {{ form.msisdn }}
+
+            {{ form.reference.label_tag }}
+            {{ form.reference }}
+
+            {{ form.payee }}
+            {{ form.payer }}
+        </div>
+    </div>
+    <div class="actions">
+        <button id="support" type="submit" class="continue-btn">Submit</button>
+    </div>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const amountButtons = document.querySelectorAll('.amount-btn');
+        const customInput = document.getElementById('custom-mtn');
+        const contributionCheckbox = document.getElementById('add-contribution-mtn');
+        const totalAmountDisplay = document.getElementById('total-amount-mtn');
+        
+        let selectedAmount = 25;  // Default amount
+        const contributionAmount = 2.5;
+
+        
+        // Function to calculate total
+        function updateTotal() {
+            let total = selectedAmount;
+            // Add contribution if the checkbox is checked
+            if (contributionCheckbox.checked) {
+                total += contributionAmount;
+            }
+            totalAmountDisplay.innerHTML = `Total Payable: K${total}`;
+        }
+
+        // Add event listeners to amount buttons
+        amountButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove 'selected' class from all buttons
+                amountButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // Add 'selected' class to the clicked button
+                this.classList.add('selected');
+
+                // Update selected amount
+                selectedAmount = parseInt(this.getAttribute('data-amount'));
+                
+                
+                // Uncheck the custom input when selecting a predefined amount
+                customInput.value = '';
+
+                // Update the total
+                updateTotal();
+            });
+        });
+
+        // Add event listener to custom amount input
+        customInput.addEventListener('input', function() {
+            // Remove 'selected' class from all amount buttons
+            amountButtons.forEach(btn => btn.classList.remove('selected'));
+
+            // Get the value from the custom input field
+            const customAmount = parseInt(this.value);
+            selectedAmount = customAmount > 0 ? customAmount : 0;  // Use the custom amount if it's valid
+
+            // Update the total
+            updateTotal();
+        });
+
+        // Add event listener to contribution checkbox
+        contributionCheckbox.addEventListener('change', function() {
+            // Update the total whenever the checkbox state changes
+            updateTotal();
+        });
+    });
+</script>

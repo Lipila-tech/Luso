@@ -10,7 +10,7 @@ from api.utils import generate_reference_id
 from lipila.utils import check_payment_status
 from django.contrib.auth import get_user_model
 
-class LipilaDisbursementViewTest(APITestCase):
+class MtnDisbursementViewTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -68,7 +68,7 @@ class LipilaDisbursementViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class LipilaCollectionViewTest(APITestCase):
+class MtnCollectionViewTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):

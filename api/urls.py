@@ -4,8 +4,8 @@ from . import views
 
 router = DefaultRouter()
 
-router.register(r'payments', views.LipilaCollectionView, basename='payments')
-router.register(r'disburse', views.LipilaDisbursementView, basename='disburse')
+router.register(r'payments', views.MtnCollectionView, basename='payments')
+router.register(r'disburse', views.MtnDisbursementView, basename='disburse')
 
 # Add a path for browsing the API
 urlpatterns = [
