@@ -6,10 +6,12 @@ DEFAULT_PRICES = [
 
 CREATOR_CATEGORY_CHOICES = (
     ('', ''),
-    ('artist', 'Artist'),
-    ('musician', 'Musician'),
-    ('videocreator', 'Video Creator'),
-    ('podcaster', 'Podcaster'),
+    ('artist', 'Visual Creator'),
+    ('musician', 'Musician-Actor'),
+    ('filmmaker', 'Filmmaker-Content Creator'),
+    ('writer', 'Writer-Poet'),
+    ('writer', 'Writer-Poet'),
+    ('craftmaker', 'Craft Maker-Designer'),
     ('other', 'Other'),
 )
 
