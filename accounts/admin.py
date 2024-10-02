@@ -11,7 +11,6 @@ from lipila.models import (
 from patron.models import (Tier,
                            ProcessedWithdrawals, WithdrawalRequest, Payment)
 from accounts.models import CreatorProfile, CustomUser, UserSocialAuth
-from file_manager.models import UploadedFile
 
 
 class AirtelTransactionModel(admin.ModelAdmin):
@@ -112,11 +111,6 @@ class CreatorProfileAdmin(admin.ModelAdmin):
                     ]
 
 
-class UploadedFileAdmin(admin.ModelAdmin):
-    list_display = ['owner', 'filename', 'short_reference', 'file',
-                    'long_reference', 'upload_date', 'content_type']
-
-
 # Register
 admin.site.register(AirtelTransaction, AirtelTransactionModel)
 admin.site.register(UserSocialAuth, UserSocialAuthAdmin)
@@ -133,7 +127,7 @@ admin.site.register(HeroInfo, HeroInfoAdmin)
 admin.site.register(AboutInfo, AboutInfoAdmin)
 admin.site.register(UserTestimonial, UserTestimonialAdmin)
 admin.site.register(CreatorProfile, CreatorProfileAdmin)
-admin.site.register(UploadedFile, UploadedFileAdmin)
+
 
 # Unregister
 admin.site.unregister(Group)

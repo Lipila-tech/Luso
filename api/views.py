@@ -19,22 +19,11 @@ from .serializers import LipilaCollectionSerializer, LipilaDisbursementSerialize
 from .models import LipilaCollection, LipilaDisbursement, AirtelTransaction
 from api.momo.mtn import Collections, Disbursement
 from .utils import get_api_user, generate_transaction_id
-from .momo.openapi_client import ApiClient
-from .momo.openapi_client.api.submit_payment_or_refund_request_api import SubmitPaymentOrRefundRequestApi
 from .momo.airtel import AirtelMomo 
 
 # Define global variables
 User = get_user_model()
 
-
-# Initialize the MTN API client
-api_client = ApiClient()
-api_instance = SubmitPaymentOrRefundRequestApi(api_client)
-
-# Now `api_instance` can be used to make API calls
-# response = api_instance.create_payment()
-
-# views.py
 
 class AirtelPaymentCallbackView(views.APIView):
 
