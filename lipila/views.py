@@ -664,7 +664,7 @@ def checkout_support(request, payee):
                            'form': form, 'amount': amount}
         else:
             form = PaymentForm(payee=payee)
-            client_token = get_braintree_client_token(request.user)
+            # client_token = get_braintree_client_token(request.user)
             context = {'client_token': client_token,
                        'form': form}
             messages.error(request, "Field errors!")
@@ -673,7 +673,7 @@ def checkout_support(request, payee):
     form = PaymentForm(payee=payee)
         
     client_token = get_braintree_client_token(request.user)
-    context = {'client_token': client_token, 'form': form, "payee": payee, "amount":amount}
+    context = {'client_token': client_token, 'form': form, "payee": payee}
     return render(request, 'lipila/checkout/checkout_support.html', context)
 
 
