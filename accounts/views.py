@@ -136,7 +136,7 @@ def tiktok_callback(request):
 
         if user_info_response.status_code != 200:
 
-            return HttpResponseBadRequest(f"Failed to retrieve user info: {user_info_response}")
+            return HttpResponseBadRequest(f"Failed to retrieve user info: {user_info_response.status_code}")
 
         user_info = user_info_response.json()
 
