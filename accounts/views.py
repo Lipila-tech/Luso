@@ -148,6 +148,7 @@ def tiktok_callback(request):
 
         # Extract the user's TikTok username
         tiktok_username = user_info['data']['user']['display_name']
+        avatar_url = user_info['data']['user']['avatar_url']
 
         # Check if the user already exists in UserSocialAuth
         social_auth, created = UserSocialAuth.objects.get_or_create(
@@ -156,6 +157,7 @@ def tiktok_callback(request):
             defaults={
                 'access_token': access_token,
                 'refresh_token': refresh_token,
+                'avatar_url': avatar_url,
                 'token_expiry': timezone.now() + timedelta(seconds=expires_in),
             }
         )
@@ -163,6 +165,7 @@ def tiktok_callback(request):
         # If the UserSocialAuth was newly created, we need to create a CustomUser
         if created:
             # Create a new CustomUser
+            messages.success(request, f"Congratulations {tiktok_username}! Account created.")
             user = get_user_model().objects.create(username=tiktok_username)
             # Link the social auth entry with the newly created user
             social_auth.user = user

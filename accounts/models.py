@@ -58,12 +58,28 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                   self.email], **kwargs)
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/', 
+        blank=True, 
+        null=True, 
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
+    )
+    bio = models.TextField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
 class UserSocialAuth(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     provider = models.CharField(max_length=50)  # e.g., 'tiktok', 'google', 'facebook'
     access_token = models.CharField(max_length=500)
     refresh_token = models.CharField(max_length=500, blank=True, null=True)
     token_expiry = models.DateTimeField(blank=True, null=True)
+    avatar_url = models.URLField(blank=True, null=True)
     open_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
