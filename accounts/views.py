@@ -128,7 +128,7 @@ def tiktok_callback(request):
         # Add the fields as query parameters in the request URL
         user_info_url = 'https://open.tiktokapis.com/v2/user/info/'
         params = {
-            'fields': 'open_id,union_id,avatar_url,username'
+            'fields': 'open_id,union_id,avatar_url,username,display_name'
         }
 
         # Make the GET request to fetch user info
@@ -144,7 +144,7 @@ def tiktok_callback(request):
             return HttpResponseBadRequest("User info not available")
 
         # Extract the user's TikTok username
-        tiktok_username = user_info['data']['user']['username']
+        tiktok_username = user_info['data']['user']['display_name']
 
         # Check if the user already exists in UserSocialAuth
         social_auth, created = UserSocialAuth.objects.get_or_create(
