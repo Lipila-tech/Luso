@@ -122,17 +122,20 @@ def tiktok_callback(request):
         access_token = token_data['access_token']
         refresh_token = token_data['refresh_token']
         expires_in = token_data['expires_in']
-        
 
         # Step 2: Use the access token to fetch the user's TikTok profile information
         # Add the fields as query parameters in the request URL
+        user_headers = {
+            'Authorization': f'Bearer {access_token}'
+        }
         user_info_url = 'https://open.tiktokapis.com/v2/user/info/'
         params = {
             'fields': 'open_id,union_id,avatar_url,display_name'
         }
 
         # Make the GET request to fetch user info
-        user_info_response = py_requests.get(user_info_url, headers=headers, params=params)
+        user_info_response = py_requests.get(
+            user_info_url, headers=user_headers, params=params)
 
         if user_info_response.status_code != 200:
 
@@ -258,8 +261,9 @@ def custom_logout(request):
     # Redirect URLs for third-party services
     google_logout_url = 'https://accounts.google.com/Logout'
     facebook_logout_url = 'https://www.facebook.com/logout.php'
-    tiktok_logout_url = 'https://www.tiktok.com/logout'  # Hypothetical URL, adjust if necessary
-    
+    # Hypothetical URL, adjust if necessary
+    tiktok_logout_url = 'https://www.tiktok.com/logout'
+
     # Check if the user logged in with a third-party service
     if 'google_user_data' in request.session:
         del request.session['google_user_data']
@@ -271,7 +275,7 @@ def custom_logout(request):
     elif 'tiktok_user_data' in request.session:
         del request.session['tiktok_user_data']
         return redirect('accounts:signin')
-    
+
     # Default logout redirect for custom login
     return redirect('accounts:signin')
 
