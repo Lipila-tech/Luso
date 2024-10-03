@@ -128,7 +128,7 @@ def tiktok_callback(request):
         # Add the fields as query parameters in the request URL
         user_info_url = 'https://open.tiktokapis.com/v2/user/info/'
         params = {
-            'fields': 'open_id,union_id,avatar_url,username,display_name'
+            'fields': 'open_id,union_id,avatar_url,display_name'
         }
 
         # Make the GET request to fetch user info
