@@ -10,7 +10,7 @@ CREATOR_CATEGORY_CHOICES = (
     ('musician', 'Musician-Actor'),
     ('filmmaker', 'Filmmaker-Content Creator'),
     ('writer', 'Writer-Poet'),
-    ('writer', 'Writer-Poet'),
+    ('educator', 'Educator-Mentor'),
     ('craftmaker', 'Craft Maker-Designer'),
     ('other', 'Other'),
 )
