@@ -176,12 +176,15 @@ def tiktok_callback(request):
             # Authenticate and log in the user
             messages.success(request, f"Welcome back, {tiktok_username}!")
 
-        # Log the user in
-        login(request, user,
-              backend='accounts.auth_backends.EmailOrUsernameModelBackend')
-        request.session['tiktok_user_data'] = access_token
-
-        return redirect(reverse('dashboard'))
+        user = authenticate(request, username=tiktok_username)
+        if user is not None:
+            login(request, user,
+                    backend='accounts.auth_backends.EmailOrUsernameModelBackend')
+            request.session['tiktok_user_data'] = access_token
+            return redirect(reverse('dashboard'))
+        else:
+            messages.error(request, "Authentication failed")
+            return redirect(reverse('accounts:signup'))
     else:
         messages.error(request, "Authentication failed")
         return redirect(reverse('accounts:signup'))
