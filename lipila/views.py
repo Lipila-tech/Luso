@@ -566,7 +566,7 @@ def checkout_support(request, payee):
             isp = form.cleaned_data['wallet_type']
             reference = form.cleaned_data['reference']
             amount = form.cleaned_data['amount']
-            transaction_id = generate_transaction_id()
+            transaction_id = request.session['transaction_id']
             msisdn = form.cleaned_data['msisdn']
             
             if request.user.is_authenticated:
@@ -632,7 +632,6 @@ def checkout_support(request, payee):
                     'transaction_id': transaction_id,
                     'amount': amount
                 }
-
                 # Make the request to AirtelPaymentRequestView API
                 try:
                     checkout_url = settings.LIPILA_CHECKOUT_URL_AIRTEL
@@ -671,6 +670,7 @@ def checkout_support(request, payee):
             return render(request, 'lipila/checkout/checkout_support.html', context)
     
     form = PaymentForm(payee=payee)
+    transaction_id = generate_transaction_id()
         
     client_token = get_braintree_client_token(request.user)
     context = {'client_token': client_token, 'form': form, "payee": payee}
