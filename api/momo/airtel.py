@@ -110,7 +110,7 @@ class AirtelMomo():
             "reference": reference,
             "subscriber": {
                 "country": subscriber['country'],
-                "currency": subscriber['currencu'],
+                "currency": subscriber['currency'],
                 "msisdn": subscriber['msisdn']
             },
             "transaction": {

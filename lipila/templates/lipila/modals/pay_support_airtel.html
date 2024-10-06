@@ -45,6 +45,7 @@
         const customInput = document.getElementById('custom');
         const contributionCheckbox = document.getElementById('add-contribution');
         const totalAmountDisplay = document.getElementById('total-amount');
+        const selectedAmountInput = document.getElementById('selected-amount');
         
         let selectedAmount = 25;  // Default amount
         const contributionAmount = 2.5;
@@ -72,6 +73,8 @@
                 // Update selected amount
                 selectedAmount = parseInt(this.getAttribute('data-amount'));
                 
+                // Update the hidden input with the selected amount
+                selectedAmountInput.value = amount;
                 
                 // Uncheck the custom input when selecting a predefined amount
                 customInput.value = '';
@@ -89,6 +92,10 @@
             // Get the value from the custom input field
             const customAmount = parseInt(this.value);
             selectedAmount = customAmount > 0 ? customAmount : 0;  // Use the custom amount if it's valid
+            // Update the hidden input with the custom amount
+            if (customAmount) {
+                selectedAmountInput.value = customAmount;
+            }
 
             // Update the total
             updateTotal();

@@ -15,26 +15,23 @@ class CheckoutSupportViewTest(TestCase):
         self.creator = CreatorProfile.objects.create(user=self.user, patron_title='testpatron')
         self.payee = self.creator.patron_title
         Tier().create_default_tiers(self.creator)
-        self.url = reverse('checkout_support', args=[self.payee])
+        self.url = reverse('checkout_momo', args=[self.payee])
 
 
-    @patch('lipila.views.process_mtn_payment')
-    def test_valid_mtn_payment_authenticated_user(self, mock_mtn_payment):
-        # Arrange
-        mock_mtn_payment.return_value.status_code = 200  # Simulating a successful MTN payment
+    @patch('requests.post')
+    def test_valid_mtn_payment_authenticated_user(self, mock_post):
+        mock_post.return_value.status_code = 201  # Simulating a successful MTN payment
         self.client.login(username='testpatron', password='12345')
 
         post_data = {
             'wallet_type': 'mtn',
             'reference': '12345ABC',
             'amount': 50,
-            'msisdn': '260123456789',
+            'msisdn': '0123456789',
             'add_contribution': 'on'
         }
         
         response = self.client.post(self.url, post_data)
-
-        # Assert
         self.assertEqual(response.status_code, 302)  # Expecting a redirect after success
         self.assertRedirects(response, reverse('subscriptions_history'))
         payment = Payment.objects.get(reference='12345ABC')
@@ -45,8 +42,7 @@ class CheckoutSupportViewTest(TestCase):
 
 
     @patch('requests.post')
-    def test_airtel_payment_request_authenticated_user(self, mock_post):
-        # Arrange
+    def test_valid_airtel_payment_authenticated_user(self, mock_post):
         mock_post.return_value.status_code = 201  # Simulate Airtel API success
         mock_post.return_value.json.return_value = {'status': 'success', 'transaction_id': 'TX123'}
 
@@ -55,27 +51,29 @@ class CheckoutSupportViewTest(TestCase):
         post_data = {
             'wallet_type': 'airtel',
             'reference': '12345ABC',
-            'amount': 50,
-            'msisdn': '260123456789',
+            'amount': 30,
+            'msisdn': '0123456789',
         }
-
-        # Act
         response = self.client.post(self.url, post_data)
+        self.assertEqual(response.status_code, 302)  # Expecting a redirect after success
+        self.assertRedirects(response, reverse('subscriptions_history'))
+        payment = Payment.objects.get(reference='12345ABC')
 
-        # Assert
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['status'], 'success')
+        self.assertEqual(payment.authenticated_payer.username, self.patron.username)
+        self.assertEqual(payment.amount, 30)
+        self.assertEqual(payment.status, 'success')
 
-    @patch('lipila.views.process_mtn_payment')
-    def test_valid_mtn_payment(self, mock_mtn_payment):
+
+    @patch('requests.post')
+    def test_valid_mtn_payment_anonymous_user(self, mock_post):
         # Arrange
-        mock_mtn_payment.return_value.status_code = 200  # Simulating a successful MTN payment
+        mock_post.return_value.status_code = 200  # Simulating a successful MTN payment
         
         post_data = {
             'wallet_type': 'mtn',
             'reference': '12345ABC',
             'amount': 50,
-            'msisdn': '260123456789',
+            'msisdn': '0123456789',
             'add_contribution': 'on'
         }
 
@@ -86,7 +84,7 @@ class CheckoutSupportViewTest(TestCase):
         self.assertRedirects(response, reverse('accounts:signup'))
 
         payment = Payment.objects.get(reference='12345ABC')
-        self.assertEqual(payment.anonymous_payer, '260123456789')
+        self.assertEqual(payment.anonymous_payer, '0123456789')
         self.assertEqual(payment.amount, 52.5)  # Amount + K2.50 contribution
         self.assertEqual(payment.status, 'success')
 
@@ -97,7 +95,7 @@ class CheckoutSupportViewTest(TestCase):
             'wallet_type': '',
             'reference': '12345ABC',
             'amount': 50,
-            'msisdn': '260123456789',
+            'msisdn': '0123456789',
         }
 
         # Act
@@ -108,16 +106,16 @@ class CheckoutSupportViewTest(TestCase):
         self.assertContains(response, "Field errors!")  # Error message returned in context
 
 
-    @patch('lipila.views.process_mtn_payment')
-    def test_failed_mtn_payment(self, mock_mtn_payment):
+    @patch('requests.post')
+    def test_failed_mtn_payment(self, mock_post):
         # Arrange
-        mock_mtn_payment.return_value.status_code = 400  # Simulate failure
+        mock_post.return_value.status_code = 400  # Simulate failure
         
         post_data = {
             'wallet_type': 'mtn',
             'reference': '12345ABC',
             'amount': 50,
-            'msisdn': '260123456789',
+            'msisdn': '0123456789',
             'payer': 'testpatron'
         }
 
@@ -131,7 +129,7 @@ class CheckoutSupportViewTest(TestCase):
 
 
     @patch('requests.post')
-    def test_airtel_payment_request(self, mock_post):
+    def test_airtel_payment_request_anonymous_user(self, mock_post):
         # Arrange
         mock_post.return_value.status_code = 201  # Simulate Airtel API success
         mock_post.return_value.json.return_value = {'status': 'success', 'transaction_id': 'TX123'}
@@ -140,7 +138,7 @@ class CheckoutSupportViewTest(TestCase):
             'wallet_type': 'airtel',
             'reference': '12345ABC',
             'amount': 50,
-            'msisdn': '260123456789',
+            'msisdn': '0123456789',
             'payer': 'testpatron@io.com'
         }
 
@@ -148,7 +146,7 @@ class CheckoutSupportViewTest(TestCase):
         response = self.client.post(self.url, post_data)
 
         # Assert
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(response.json()['status'], 'success')
 
 
@@ -156,18 +154,15 @@ class CheckoutSupportViewTest(TestCase):
     def test_airtel_payment_failure(self, mock_post):
         # Arrange
         mock_post.return_value.status_code = 500  # Simulate Airtel API failure
+        mock_post.return_value.json.return_value = {'status': 'error', 'transaction_id': 'TX123'}
         post_data = {
             'wallet_type': 'airtel',
             'reference': '12345ABC',
             'amount': 50,
-            'msisdn': '260123456789',
+            'msisdn': '0123456789',
             'payer': 'testpatron'
         }
-
-        # Act
         response = self.client.post(self.url, post_data)
-        
-
         # Assert
         self.assertEqual(response.status_code, 500)
         self.assertEqual(response.json()['status'], 'error')

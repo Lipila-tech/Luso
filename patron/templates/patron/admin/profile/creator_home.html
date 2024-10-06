@@ -61,7 +61,7 @@
                         <p class="description">{{ tier.description }}</p>
                     </div>
                     <div class="">
-                        <form action="{% url 'checkout_support' creator.patron_title %}" method="get">
+                        <form action="{% url 'checkout_momo' creator.patron_title %}" method="get">
                             {% csrf_token %}
                             <input type="hidden" name="amount" id="amount" value={{tier.price}}>
                             <input type="hidden" name="tier_name" id="tier_name" value={{creator}}>

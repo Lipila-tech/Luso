@@ -141,7 +141,7 @@ class AirtelPaymentRequestView(views.APIView):
             # Initiate payment via AirtelMomo API
             airtel_momo = AirtelMomo()
             cleint_id = settings.AIRTEL_CLIENT_ID
-            cleint_secret = settings.AIRTEL_CLIENT_SECRET
+            cleint_secret = settings.AIRTEL_CLIENT_SECRET_KEY
             access_token = airtel_momo.authorization(cleint_id, cleint_secret)
             transaction_id = serializer.validated_data['transaction_id']
             reference = serializer.validated_data['reference']
@@ -154,7 +154,7 @@ class AirtelPaymentRequestView(views.APIView):
                 response = airtel_momo.request_payment(
                     access_token=access_token,
                     reference=reference,
-                    subscriber={"msisdn": msisdn},
+                    subscriber={"msisdn": msisdn, "country": "ZM", "currency": "ZMW",},
                     transaction={"amount": amount, "currency": "ZMW", "country": "ZM", "id": transaction_id}
                 )
                 

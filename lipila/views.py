@@ -551,14 +551,13 @@ def checkout_subscription(request, id):
 
 
 
-def checkout_support(request, payee):
-    url = ''
+def checkout_momo(request, payee):
+    redirect_url = ''
 
     if request.method == 'POST':
           
         form = PaymentForm(
                 request.POST, payee=payee)
-              
         if form.is_valid():            
             form.save(commit=False)
             # extract data to send to api
@@ -579,9 +578,9 @@ def checkout_support(request, payee):
             
             if request.user.is_authenticated:
                 form.instance.authenticated_payer = request.user
-                url = reverse('subscriptions_history')
+                redirect_url = reverse('subscriptions_history')
             else:
-                url = reverse('accounts:signup')
+                redirect_url = reverse('accounts:signup')
                 try:
                     payer = form.cleaned_data['payer']
                     form.instance.anonymous_payer = payer
@@ -590,9 +589,9 @@ def checkout_support(request, payee):
 
             # Add logic for calculating total_amount if the user checked the 'I'll generously add K2.50' box
             if 'add_contribution' in request.POST and request.POST['add_contribution'] == 'on':
-                form.amount = float(amount) + 2.5
+                form.instance.amount = float(amount) + 2.5
             else:
-                form.amount = amount
+                form.instance.amount = amount
             form.instance.transaction_id = transaction_id
             form.save()  # Now save to DB
 
@@ -609,31 +608,25 @@ def checkout_support(request, payee):
                     form.save()
                     messages.success(
                         request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{wallet_type}")
-                    return redirect(url)
+                    return redirect(redirect_url)
                 
-                response_text = response.content.decode('utf-8')
-                response_json = json.loads(response_text)
-                
-                msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':response.status_code}
+                msg = {'message': 'Failed to initiate payment', 'status':response.status_code}
                 return apology(request, data=msg)
             
             except requests.exceptions.RequestException as e:
-                msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':500}
+                msg = {'message': 'Failed to initiate payment', 'status': 500}
                 return apology(request, data=msg)
 
         else:
             form = PaymentForm(payee=payee)
-            # client_token = get_braintree_client_token(request.user)
-            context = {'client_token': client_token,
-                       'form': form}
+            context = {'form': form}
             messages.error(request, "Field errors!")
-            return render(request, 'lipila/checkout/checkout_support.html', context)
+            return render(request, 'lipila/checkout/checkout_momo.html', context)
     
     form = PaymentForm(payee=payee)
             
-    client_token = get_braintree_client_token(request.user)
-    context = {'client_token': client_token, 'form': form, "payee": payee}
-    return render(request, 'lipila/checkout/checkout_support.html', context)
+    context = {'form': form, "payee": payee}
+    return render(request, 'lipila/checkout/checkout_momo.html', context)
 
 
 # Braintree developer api
