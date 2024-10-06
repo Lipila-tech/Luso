@@ -567,6 +567,15 @@ def checkout_support(request, payee):
             amount = form.cleaned_data['amount']
             transaction_id = generate_transaction_id()
             msisdn = form.cleaned_data['msisdn']
+
+             # Prepare the payload for the API call
+            payload = {
+                'amount': amount,
+                'reference': reference,
+                'transaction_id': transaction_id,
+                'msisdn': msisdn,
+                'wallet_type': wallet_type
+            }
             
             if request.user.is_authenticated:
                 form.instance.authenticated_payer = request.user
@@ -587,76 +596,31 @@ def checkout_support(request, payee):
             form.instance.transaction_id = transaction_id
             form.save()  # Now save to DB
 
-            if wallet_type == 'mtn':
-                try:
-                    payload = {
-                        'payer': request.user,
-                        'amount': amount,
-                        'transaction': 'support',
-                        'reference': reference,
-                        'transaction_id': transaction_id,
-                        'msisdn': msisdn
-                    }
+            try:
+                if wallet_type == 'mtn':
                     checkout_url = settings.LIPILA_CHECKOUT_URL_MTN
-                    response = requests.post(checkout_url, json=payload)
-                    
-                    if response.status_code == 201:
-                        form.instance.status = 'success'
-                        form.save()
-                        messages.success(
-                            request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{wallet_type}")
-                        return redirect(url)
-                    
-                    response_text = response.content.decode('utf-8')
-                    response_json = json.loads(response_text)
-                    
-                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':response.status_code}
-                    return apology(request, data=msg)
+                elif wallet_type == 'airtel':
+                    checkout_url = settings.LIPILA_CHECKOUT_URL_MTN
+
+                response = requests.post(checkout_url, json=payload)
                 
-                except requests.exceptions.RequestException as e:
-                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':500}
-                    return apology(request, data=msg)
+                if response.status_code == 201:
+                    form.instance.status = 'success'
+                    form.save()
+                    messages.success(
+                        request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{wallet_type}")
+                    return redirect(url)
+                
+                response_text = response.content.decode('utf-8')
+                response_json = json.loads(response_text)
+                
+                msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':response.status_code}
+                return apology(request, data=msg)
+            
+            except requests.exceptions.RequestException as e:
+                msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':500}
+                return apology(request, data=msg)
 
-            elif wallet_type == 'airtel':
-                # process airtel payment
-                """
-                This view will make a POST request to the AirtelPaymentRequestView in the 'payments' app.
-                """
-                # Prepare the payload for the API call
-                payload = {
-                    'reference': reference,
-                    'msisdn': msisdn,
-                    'transaction_id': transaction_id,
-                    'amount': amount
-                }
-                # Make the request to AirtelPaymentRequestView API
-                try:
-                    checkout_url = settings.LIPILA_CHECKOUT_URL_AIRTEL
-                    response = requests.post(checkout_url, json=payload)
-                    
-                    # Handle success
-                    if response.status_code == 201:
-                        data = response.json()
-
-                        return JsonResponse({
-                            'status': 'success',
-                            'message': 'Payment request initiated successfully',
-                            'data': data
-                        }, status=201)
-
-                    response_text = response.content.decode('utf-8')
-                    response_json = json.loads(response_text)
-                    
-                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':response.status_code}
-                    return apology(request, data=msg)
-
-                except requests.exceptions.RequestException as e:
-                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':500}
-                    return apology(request, data=msg)
-            else:
-                client_token = get_braintree_client_token(request.user)
-                context = {'client_token': client_token,
-                           'form': form, 'amount': amount}
         else:
             form = PaymentForm(payee=payee)
             # client_token = get_braintree_client_token(request.user)

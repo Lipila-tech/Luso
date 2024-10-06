@@ -32,7 +32,7 @@ class MTNBase():
         url = "https://sandbox.momodeveloper.mtn.com/v1_0/apiuser"
 
         payload = json.dumps({
-            "providerCallbackHost": "{}".format(settings.MTN_PROVIDER_CALLBACK_HOST)
+            "providerCallbackHost": "{}".format(settings.CALLBACK_URL_MTN)
         })
         headers = {
             'X-Reference-Id': transaction_id,

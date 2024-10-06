@@ -9,6 +9,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 import requests
+from django.conf import settings
 
 # My modules
 from .serializers import MomoColTransactionSerializer, LipilaDisbursementSerializer
@@ -30,13 +31,12 @@ class TransationHistoryView(views.APIView):
         if not transaction_id:
             return Response({"error": "Transaction_id is missing"}, status=400)
 
-        payment = MomoColTransaction.objects.get(transaction_id=transaction_id)
-
-        if payment:
+        try:
+            payment = MomoColTransaction.objects.get(transaction_id=transaction_id)
             serializer = MomoColTransactionSerializer(payment)
             return Response(serializer.data, status=200)
-        
-        return Response({"error": "transaction not found"}, status=404)
+        except MomoColTransaction.DoesNotExist:
+            return Response({"message": "transaction not found"}, status=404)
     
 
 class MtnPaymentCallbackView(views.APIView):
@@ -61,13 +61,11 @@ class MTNPaymentRequestView(views.APIView):
         
         if serializer.is_valid():
             # Initiate payment via AirtelMomo API
-            mtn_api_user = MtnMomo()
-            mtn_api_user.provision_sandbox(
-            mtn_api_user.subscription_col_key, transaction_id)
-            mtn_api_user.create_api_token(
-            mtn_api_user.subscription_col_key, 'collection', transaction_id)
-
             transaction_id = serializer.validated_data['transaction_id']
+            mtn_api_user = MtnMomo()
+            mtn_api_user.provision_sandbox(mtn_api_user.subscription_col_key, transaction_id)
+            mtn_api_user.create_api_token(mtn_api_user.subscription_col_key, 'collection', transaction_id)
+
             reference = serializer.validated_data['reference']
             msisdn = serializer.validated_data['msisdn']
             amount = serializer.validated_data['amount']
@@ -76,7 +74,7 @@ class MTNPaymentRequestView(views.APIView):
             # Call the Airtel Momo API to request payment
             try:
                 response = mtn_api_user.request_to_pay(
-                    amount=amount,
+                    amount=str(amount),
                     payer=msisdn,
                     transaction_id=transaction_id
                 )
@@ -96,7 +94,7 @@ class MTNPaymentRequestView(views.APIView):
                             transaction_id)
                         if response.status_code == 200:
                             response_json = response.json()  # Attempt to decode the response
-                            if response_json.get('message') == 'success':
+                            if response_json.get('status').lower() == 'successful':
                                 transaction.status = 'success'
                                 transaction.save()
                                 return Response({'message': 'Payment request initiated successfully', 'transaction': serializer.data}, status=status.HTTP_201_CREATED)
@@ -109,7 +107,7 @@ class MTNPaymentRequestView(views.APIView):
                     except ValueError:
                         return Response({'error': 'Invalid JSON response from MTN Momo'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 else:
-                    return Response({'error': 'Failed to initiate payment: Invalid response from MTN Momo'}, status=status.HTTP_502_BAD_GATEWAY)
+                    return Response({'error': f'Failed to initiate payment: Invalid response from MTN Momo: {response.status_code}'}, status=status.HTTP_502_BAD_GATEWAY)
 
             except requests.RequestException as e:
                 return Response({'error': f'Request to MTN Momo API failed: {str(e)}'}, status=status.HTTP_502_BAD_GATEWAY)
@@ -142,6 +140,9 @@ class AirtelPaymentRequestView(views.APIView):
         if serializer.is_valid():
             # Initiate payment via AirtelMomo API
             airtel_momo = AirtelMomo()
+            cleint_id = settings.AIRTEL_CLIENT_ID
+            cleint_secret = settings.AIRTEL_CLIENT_SECRET
+            access_token = airtel_momo.authorization(cleint_id, cleint_secret)
             transaction_id = serializer.validated_data['transaction_id']
             reference = serializer.validated_data['reference']
             msisdn = serializer.validated_data['msisdn']
@@ -151,6 +152,7 @@ class AirtelPaymentRequestView(views.APIView):
             # Call the Airtel Momo API to request payment
             try:
                 response = airtel_momo.request_payment(
+                    access_token=access_token,
                     reference=reference,
                     subscriber={"msisdn": msisdn},
                     transaction={"amount": amount, "currency": "ZMW", "country": "ZM", "id": transaction_id}

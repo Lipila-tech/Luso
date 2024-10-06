@@ -31,47 +31,6 @@ import string
 TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
 TIKTOK_SERVER_ENDPOINT_REDIRECT = settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
 TIKTOK_CLIENT_SECRET = settings.TIKTOK_CLIENT_SECRET
-MTN_TOKEN_URL = settings.MTN_TOKEN_URL
-
-
-def momo_callback(request):
-    # Get the 'code' parameter from the URL
-    authorization_code = request.GET.get('code')
-    state = request.GET.get('state')  # If using state for CSRF protection
-
-    # Validate the presence of 'code'
-    if not authorization_code:
-        return HttpResponseBadRequest("Missing authorization code")
-
-    # Optionally: Verify the state to prevent CSRF attacks
-    csrf_state = request.COOKIES.get('csrfState')
-    if state != csrf_state:
-        return HttpResponseBadRequest("Invalid state parameter")
-
-    # Exchange the authorization code for an access token
-    token_url = MTN_TOKEN_URL
-    headers = {
-        'Authorization': 'Basic YOUR_BASE64_ENCODED_CLIENT_ID_AND_SECRET',
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    payload = {
-        'grant_type': 'authorization_code',
-        'code': authorization_code,
-        'redirect_uri': 'YOUR_REDIRECT_URI'
-    }
-
-    # Make the POST request to get the access token
-    token_response = requests.post(token_url, headers=headers, data=payload)
-
-    # Check if the request was successful
-    if token_response.status_code == 200:
-        token_data = token_response.json()
-        access_token = token_data.get('access_token')
-
-        # Handle the access token (store it, use it, etc.)
-        return HttpResponse(f"Access token obtained: {access_token}")
-    else:
-        return HttpResponseBadRequest(f"Failed to get access token: {token_response.text}")
 
 
 def tiktok_callback(request):

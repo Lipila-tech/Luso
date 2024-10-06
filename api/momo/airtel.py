@@ -78,11 +78,12 @@ class AirtelMomo():
         return r.json()
 
 
-    def request_payment(self, reference: str, subscriber={}, transaction={}) -> json:
+    def request_payment(self, access_token: str, reference: str, subscriber={}, transaction={}) -> json:
         """
         This function is used to request a payment from a consumer.
 
         Args:
+            access_token(str): OAUTH2 str from airtel used to access api
             reference(str): Reference for service / goods purchased.
             subscriber['country'](str): the country of the subscriber.
             subscriber['currency'](str): the currency of the subscriber(optional).
@@ -100,7 +101,7 @@ class AirtelMomo():
             'Content-Type': 'application/json',
             'X-Country': 'UG',
             'X-Currency': 'UGX',
-            'Authorization': 'Bearer UC*******2w',
+            'Authorization': f'Bearer {access_token}',
             ' x-signature': 'MGsp*****************Ag==',
             ' x-key': 'DVZC*******************NM='
         }
