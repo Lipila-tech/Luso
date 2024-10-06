@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from django.contrib.auth import get_user_model
 # custom modules
 from api.utils import generate_reference_id
-from api.models import LipilaCollection, LipilaDisbursement
+from api.models import MomoColTransaction, LipilaDisbursement
 from lipila.models import (
     ContactInfo, HeroInfo, CustomerMessage, UserTestimonial)
 from lipila.utils import (
@@ -28,7 +28,7 @@ class TestCheckPaymentStatus(TestCase):
         self.ref1 =  generate_reference_id()
         self.ref2 =  generate_reference_id()
         self.ref3 =  generate_reference_id()
-        self.payment1 = LipilaCollection.objects.create(
+        self.payment1 = MomoColTransaction.objects.create(
             api_user=self.user, amount=100, status='pending', reference_id=self.ref1)
         
         self.payment2 = LipilaDisbursement.objects.create(

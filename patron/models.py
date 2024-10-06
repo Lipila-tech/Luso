@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from accounts.models import CreatorProfile
-from api.utils import generate_transaction_id
+
 
 from accounts.globals import (
     STATUS_CHOICES,
@@ -97,7 +97,7 @@ class Payment(models.Model):
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
     msisdn = models.CharField(
-        max_length=300, null=True, blank=False)
+        max_length=10, null=True, blank=False)
     transaction_id = models.CharField(
         max_length=40, unique=True, blank=False, null=False)
     wallet_type = models.CharField(

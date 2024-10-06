@@ -1,48 +1,35 @@
 import unittest
 from unittest.mock import patch
 from uuid import UUID
-from api.utils import generate_reference_id, basic_auth, is_payment_details_valid
+from api.utils import basic_auth, is_payment_details_valid, generate_transaction_id
+import uuid
+
+
+class TestTransactionId(unittest.TestCase):
+
+    def test_returns_string(self):
+        """Test if the function returns a string."""
+        result = generate_transaction_id()
+        self.assertIsInstance(result, str)
+
+    def test_is_valid_uuid4(self):
+        """Test if the returned string is a valid UUID4."""
+        result = generate_transaction_id()
+        try:
+            uuid_obj = uuid.UUID(result, version=4)
+            # Check if the UUID is valid and is a version 4 UUID
+            self.assertEqual(uuid_obj.version, 4)
+        except ValueError:
+            self.fail("generate_transaction_id returned an invalid UUID")
+
+    def test_unique_ids(self):
+        """Test if each call returns a unique ID."""
+        result1 = generate_transaction_id()
+        result2 = generate_transaction_id()
+        self.assertNotEqual(result1, result2)
 
 
 class TestUtilFunctions(unittest.TestCase):
-    @patch('requests.get')
-    def test_get_uuid4_successful_response(self, mock_get):
-        mock_response = unittest.mock.Mock()
-        mock_response.text = "test-uuid"
-        mock_response.status_code = 200
-        mock_get.return_value = mock_response
-
-        uuid = generate_reference_id()
-
-        self.assertEqual(uuid, "test-uuid")
-        mock_get.assert_called_once_with(
-            "https://www.uuidgenerator.net/api/version4", headers={}, data={})
-        
-    def test_get_uuid4_returns_valid_uuid(self):
-        """
-        Tests that generate_reference_id returns a valid UUID string.
-        """
-        response_text = generate_reference_id()
-        try:
-            # Attempt to convert the response to a UUID object
-            UUID(response_text)
-            self.assertTrue(True)  # Test passes if conversion is successful
-        except ValueError:
-            self.fail("generate_reference_id did not return a valid UUID string.")
-
-    @patch('requests.get')
-    def test_get_uuid4_failed_response(self, mock_get):
-        mock_response = unittest.mock.Mock()
-        mock_response.text = 'none'
-        mock_response.status_code = 404
-        mock_get.return_value = mock_response
-
-        uuid = generate_reference_id()
-
-        self.assertEqual(uuid, "none")
-        mock_get.assert_called_once_with(
-            "https://www.uuidgenerator.net/api/version4", headers={}, data={})
-
     def test_basic_auth(self):
         username = "test_username"
         password = "test_password"

@@ -11,7 +11,6 @@ import random
 from uuid import uuid4
 import os
 
-
 unique_id = f"{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(100, 999)}"
 User = settings.AUTH_USER_MODEL
 
@@ -76,18 +75,9 @@ def get_api_user(user:str)-> User:
         return Response({"error": "api user not found"}, status=404)
 
 
-def generate_transaction_id() -> str:
-        """
-        Method that generates a uuid4(x_transaction_id) number
-        """
-        url = "https://www.uuidgenerator.net/api/version4"
-        payload = {}
-        headers = {}
-        try:
-            uuid = uuid4()
-            return str(uuid)
-        except Exception:
-            return "none"
+
+def generate_transaction_id():
+  return str(uuid4())
         
 
 def basic_auth(username:str, password:str):

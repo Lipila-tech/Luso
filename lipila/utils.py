@@ -9,7 +9,7 @@ from django.conf import settings
 from rest_framework.response import Response
 import requests
 from django.urls import reverse
-from api.models import LipilaCollection, LipilaDisbursement
+from api.models import MomoColTransaction, LipilaDisbursement
 from django.contrib.auth import get_user_model
 import braintree
 from django.shortcuts import get_object_or_404
@@ -203,10 +203,10 @@ def check_payment_status(transaction_id: str, transaction: str) -> str:
     status = ''
     if transaction == 'col':
         try:
-            status = LipilaCollection.objects.get(
+            status = MomoColTransaction.objects.get(
                 transaction_id=transaction_id).status
 
-        except LipilaCollection.DoesNotExist:
+        except MomoColTransaction.DoesNotExist:
             status = 'transaction id not found'
     elif transaction == 'dis':
         try:

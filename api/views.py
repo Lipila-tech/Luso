@@ -11,12 +11,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from django.http import FileResponse, Http404
 import os
-
+import requests
 from django.shortcuts import render, redirect
 
 # My modules
-from .serializers import LipilaCollectionSerializer, LipilaDisbursementSerializer, AirtelTransactionSerializer
-from .models import LipilaCollection, LipilaDisbursement, AirtelTransaction
+from .serializers import MomoColTransactionSerializer, LipilaDisbursementSerializer
+from .models import MomoColTransaction, LipilaDisbursement
 from api.momo.mtn import Collections, Disbursement
 from .utils import get_api_user, generate_transaction_id
 from .momo.airtel import AirtelMomo 
@@ -32,62 +32,62 @@ class AirtelPaymentCallbackView(views.APIView):
         transaction_status = request.data.get('status')
 
         try:
-            transaction = AirtelTransaction.objects.get(transaction_id=transaction_id)
+            transaction = MomoColTransaction.objects.get(transaction_id=transaction_id)
             transaction.status = transaction_status
             transaction.save()
 
             return Response({'message': 'Transaction status updated successfully'}, status=status.HTTP_200_OK)
-        except AirtelTransaction.DoesNotExist:
+        except MomoColTransaction.DoesNotExist:
             return Response({'error': 'Transaction not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class AirtelPaymentRequestView(views.APIView):
-
     def post(self, request):
-        serializer = AirtelTransactionSerializer(data=request.data)
+        serializer = MomoColTransactionSerializer(data=request.data)
+        
         if serializer.is_valid():
             # Initiate payment via AirtelMomo API
             airtel_momo = AirtelMomo()
-            transaction_id = generate_transaction_id()
+            transaction_id = serializer.validated_data['transaction_id']
             reference = serializer.validated_data['reference']
             msisdn = serializer.validated_data['msisdn']
             amount = serializer.validated_data['amount']
+            wallet_type = serializer.validated_data['wallet_type']
             
             # Call the Airtel Momo API to request payment
-            response = airtel_momo.request_payment(
-                reference=reference,
-                subscriber={"msisdn": msisdn},
-                transaction={"amount": amount, "currency": "ZMW", "country": "ZM", "id": transaction_id}
-            )
-            
-            if response['status'] == 'success':
-                # Save transaction if successful
-                transaction = AirtelTransaction.objects.create(
+            try:
+                response = airtel_momo.request_payment(
                     reference=reference,
-                    transaction_id=transaction_id,
-                    msisdn=msisdn,
-                    amount=amount,
-                    status='pending'
+                    subscriber={"msisdn": msisdn},
+                    transaction={"amount": amount, "currency": "ZMW", "country": "ZM", "id": transaction_id}
                 )
-                return Response({'message': 'Payment request initiated successfully', 'transaction': serializer.data}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({'error': 'Failed to initiate payment'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                # Check if the response is in JSON format
+                if response.status_code == 200:
+                    try:
+                        response_json = response.json()  # Attempt to decode the response
+                        if response_json.get('status') == 'success':
+                            # Save transaction if successful
+                            transaction = MomoColTransaction.objects.create(
+                                reference=reference,
+                                transaction_id=transaction_id,
+                                msisdn=msisdn,
+                                amount=amount,
+                                status='pending'
+                            )
+                            return Response({'message': 'Payment request initiated successfully', 'transaction': serializer.data}, status=status.HTTP_201_CREATED)
+                        else:
+                            return Response({'error': response_json.get('message', 'Failed to initiate payment')}, status=status.HTTP_400_BAD_REQUEST)
+                    except ValueError:
+                        return Response({'error': 'Invalid JSON response from Airtel Momo'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    return Response({'error': 'Failed to initiate payment: Invalid response from Airtel Momo'}, status=status.HTTP_502_BAD_GATEWAY)
+
+            except requests.RequestException as e:
+                return Response({'error': f'Request to Airtel Momo API failed: {str(e)}'}, status=status.HTTP_502_BAD_GATEWAY)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-def get_swagger_file(request):
-    base_dir = settings.BASE_DIR
-    file_path = os.path.join(base_dir, 'api', 'static', 'api', 'payments-v1.yaml')
-    print(file_path)
-    
-    if os.path.exists(file_path):
-        # Return the file as a response
-        response = FileResponse(open(file_path, 'rb'), content_type='application/x-yaml')
-        response['Content-Disposition'] = 'attachment; filename="payments.yaml"'
-        return response
-    else:
-        raise Http404("Swagger file not found")
     
 
 class APILoginView(ObtainAuthToken):
@@ -204,8 +204,8 @@ class MtnCollectionView(viewsets.ModelViewSet):
     """
     API endpoint that allows COllectins to be viewed and created.
     """
-    serializer_class = LipilaCollectionSerializer
-    queryset = LipilaCollection.objects.all()
+    serializer_class = MomoColTransactionSerializer
+    queryset = MomoColTransaction.objects.all()
 
     def create(self, request):
         """
@@ -221,7 +221,7 @@ class MtnCollectionView(viewsets.ModelViewSet):
             data = request.data
             payer = str(data['msisdn'])
             amount = str(data['amount'])
-            serializer = LipilaCollectionSerializer(data=data)
+            serializer = MomoColTransactionSerializer(data=data)
             provisioned_mtn_api_user = Collections()
             provisioned_mtn_api_user.provision_sandbox(
                 provisioned_mtn_api_user.subscription_col_key, transaction_id)
@@ -275,9 +275,9 @@ class MtnCollectionView(viewsets.ModelViewSet):
 
         user = get_api_user(api_user)
         if isinstance(user, User):
-            payments = LipilaCollection.objects.filter(
+            payments = MomoColTransaction.objects.filter(
                 api_user=get_api_user(api_user))
-            serializer = LipilaCollectionSerializer(payments, many=True)
+            serializer = MomoColTransactionSerializer(payments, many=True)
             return Response(serializer.data, status=200)
 
         return Response({"error": "api user not found"}, status=404)

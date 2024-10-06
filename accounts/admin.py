@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from api.models import (
-    LipilaDisbursement, LipilaCollection, AirtelTransaction)
+    LipilaDisbursement, MomoColTransaction, MomoColTransaction)
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
@@ -112,7 +112,7 @@ class CreatorProfileAdmin(admin.ModelAdmin):
 
 
 # Register
-admin.site.register(AirtelTransaction, AirtelTransactionModel)
+admin.site.register(MomoColTransaction, AirtelTransactionModel)
 admin.site.register(UserSocialAuth, UserSocialAuthAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tier, TierAdmin)
@@ -120,7 +120,7 @@ admin.site.register(Payment, PaymentAdmin)
 admin.site.register(ProcessedWithdrawals, ProcessedWithdrawalAdmin)
 admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
-admin.site.register(LipilaCollection, LipilaCollectionAdmin)
+admin.site.register(MomoColTransaction, LipilaCollectionAdmin)
 admin.site.register(ContactInfo, ContactInfoAdmin)
 admin.site.register(CustomerMessage, CustomerMessageAdmin)
 admin.site.register(HeroInfo, HeroInfoAdmin)

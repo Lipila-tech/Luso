@@ -561,12 +561,12 @@ def checkout_support(request, payee):
                 request.POST, payee=payee)
               
         if form.is_valid():            
-            payment = form.save(commit=False)
+            form.save(commit=False)
             # extract data to send to api
             isp = form.cleaned_data['wallet_type']
             reference = form.cleaned_data['reference']
             amount = form.cleaned_data['amount']
-            transaction_id = request.session['transaction_id']
+            transaction_id = generate_transaction_id()
             msisdn = form.cleaned_data['msisdn']
             
             if request.user.is_authenticated:
@@ -576,21 +576,21 @@ def checkout_support(request, payee):
                 url = reverse('accounts:signup')
                 try:
                     payer = form.cleaned_data['payer']
-                    payment.anonymous_payer = payer
+                    form.instance.anonymous_payer = payer
                 except KeyError:
-                    payment.anonymous_payer = msisdn
+                    form.instance.anonymous_payer = msisdn
 
             # Add logic for calculating total_amount if the user checked the 'I'll generously add K2.50' box
             if 'add_contribution' in request.POST and request.POST['add_contribution'] == 'on':
-                payment.amount = float(payment.amount) + 2.5
+                form.amount = float(amount) + 2.5
             else:
-                payment.amount = payment.amount
-
-            payment.save()  # Now save to DB
+                form.amount = amount
+            form.instance.transaction_id = transaction_id
+            form.save()  # Now save to DB
 
             if isp == 'mtn':
                 try:
-                    form.instance.transaction_id = transaction_id
+                    # form.instance.transaction_id = transaction_id
                     # process mtn payment
                     payment_data = {
                         'payer': request.user,
@@ -600,6 +600,9 @@ def checkout_support(request, payee):
                         'transaction_id': transaction_id,
                         'msisdn': msisdn
                     }
+                    checkout_url = settings.LIPILA_CHECKOUT_URL_MTN
+                    # response = requests.post(checkout_url, json=payload)
+                    
                     response = process_mtn_payment(**payment_data)
                     if response.status_code == 200:
                         
@@ -609,16 +612,15 @@ def checkout_support(request, payee):
                             request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{isp}")
                         return redirect(url)
                     
-                    return JsonResponse({
-                            'status': 'error',
-                            'message': f'Failed to initiate payment: {response.json().get("detail", "Unknown error")}'
-                        }, status=response.status_code)
+                    response_text = response.content.decode('utf-8')
+                    response_json = json.loads(response_text)
+                    
+                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':response.status_code}
+                    return apology(request, data=msg)
                 
                 except requests.exceptions.RequestException as e:
-                    return JsonResponse({
-                        'status': 'error',
-                        'message': f'Request failed: {str(e)}'
-                    }, status=500)
+                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':500}
+                    return apology(request, data=msg)
 
             elif isp == 'airtel':
                 # process airtel payment
@@ -640,23 +642,22 @@ def checkout_support(request, payee):
                     # Handle success
                     if response.status_code == 201:
                         data = response.json()
+
                         return JsonResponse({
                             'status': 'success',
                             'message': 'Payment request initiated successfully',
                             'data': data
                         }, status=201)
 
-                    # Handle failure
-                    return JsonResponse({
-                        'status': 'error',
-                        'message': f'Failed to initiate payment: {response.json().get("detail", "Unknown error")}'
-                    }, status=response.status_code)
+                    response_text = response.content.decode('utf-8')
+                    response_json = json.loads(response_text)
+                    
+                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':response.status_code}
+                    return apology(request, data=msg)
 
                 except requests.exceptions.RequestException as e:
-                    return JsonResponse({
-                        'status': 'error',
-                        'message': f'Request failed: {str(e)}'
-                    }, status=500)
+                    msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':500}
+                    return apology(request, data=msg)
             else:
                 client_token = get_braintree_client_token(request.user)
                 context = {'client_token': client_token,
@@ -670,8 +671,7 @@ def checkout_support(request, payee):
             return render(request, 'lipila/checkout/checkout_support.html', context)
     
     form = PaymentForm(payee=payee)
-    transaction_id = generate_transaction_id()
-        
+            
     client_token = get_braintree_client_token(request.user)
     context = {'client_token': client_token, 'form': form, "payee": payee}
     return render(request, 'lipila/checkout/checkout_support.html', context)

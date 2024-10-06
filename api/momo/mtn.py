@@ -45,7 +45,7 @@ class MTNBase():
             if response.status_code == 201:
                 return response
             elif response.status_code == 400:
-                raise ValueError("Bad request")
+                raise ValueError(" Bad request when creating api user")
             elif response.status_code == 409:
                 raise ValueError("Conflict user exists")
             elif response.status_code == 500:
@@ -77,7 +77,7 @@ class MTNBase():
                 self.api_key = self.api_key + key['apiKey']
                 return response
             elif response.status_code == 400:
-                raise ValueError("Bad request")
+                raise ValueError("Bad request when creating api key")
             elif response.status_code == 404:
                 raise ValueError("Not found")
             elif response.status_code == 500:
@@ -159,7 +159,7 @@ class MTNBase():
         try:
             response = requests.get(url, headers=headers)
             if response.status_code != 200:
-                raise ValueError("Bad request")
+                raise ValueError("Bad request when validating account holder")
             else:
                 return response
         except Exception as e:
@@ -216,7 +216,7 @@ class Collections(MTNBase):
                 if response.status_code == 202:
                     return Response(status=202, data={'message': 'pending'})
                 elif response.status_code == 400:
-                    return Response(status=400, data={'reason': 'Bad Request'})
+                    return Response(status=400, data={'reason': 'Bad Request to pay'})
                 elif response.status_code == 409:
                     return Response(status=409, data={'reason': 'Conflict user exists'})
                 elif response.status_code == 500:
@@ -246,7 +246,7 @@ class Collections(MTNBase):
             if response.status_code == 200:
                 return response
             elif response.status_code == 400:
-                return Response(status=400, data={'reason': 'Bad Request'})
+                return Response(status=400, data={'reason': 'Bad Request get payment status'})
             elif response.status_code == 404:
                 return Response(status=404, data={'reason': 'Not Found'})
             elif response.status_code == 500:
@@ -280,7 +280,7 @@ class Disbursement(MTNBase):
         try:
             is_valid = is_deposit_details_valid(amount, payee, transaction_id)
         except (ValueError, TypeError):
-            return Response(status=400, data={'reason': 'Bad Request'})
+            return Response(status=400, data={'reason': 'Bad Request deposit'})
         
         if is_valid:
             """ deposit funds to multiple users"""
@@ -308,7 +308,7 @@ class Disbursement(MTNBase):
                 if response.status_code == 202:
                     return response
                 elif response.status_code == 400:
-                    return Response(status=400, data={'reason': 'Bad Request'})
+                    return Response(status=400, data={'reason': 'Bad Request deposit'})
                 elif response.status_code == 409:
                     return Response(status=409, data={'reason': 'Conflict user exists'})
                 elif response.status_code == 500:
@@ -338,7 +338,7 @@ class Disbursement(MTNBase):
             if response.status_code == 200:
                 return response
             elif response.status_code == 400:
-                return Response(status=400, data={'reason': 'Bad Request'})
+                return Response(status=400, data={'reason': ' get trans status'})
             elif response.status_code == 404:
                 return Response(status=404, data={'reason': 'Not Found'})
             elif response.status_code == 500:
@@ -369,7 +369,7 @@ class Disbursement(MTNBase):
                 """
                 return response
             elif response.status_code == 400:
-                return Response(status=400, data={'reason': 'Bad Request'})
+                return Response(status=400, data={'reason': 'Bad Request get acount balance'})
             elif response.status_code == 404:
                 return Response(status=404, data={'reason': 'Not Found'})
             elif response.status_code == 500:

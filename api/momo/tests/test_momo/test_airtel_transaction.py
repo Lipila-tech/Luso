@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from unittest.mock import patch
-from api.models import AirtelTransaction
+from api.models import MomoColTransaction
 from api.momo.airtel import AirtelMomo
 
 
@@ -28,8 +28,8 @@ class AirtelTransactionTestCase(APITestCase):
 
         response = self.client.post(self.payment_url, self.valid_payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(AirtelTransaction.objects.count(), 1)
-        transaction = AirtelTransaction.objects.get()
+        self.assertEqual(MomoColTransaction.objects.count(), 1)
+        transaction = MomoColTransaction.objects.get()
         self.assertEqual(transaction.reference, self.valid_payload['reference'])
         self.assertEqual(transaction.msisdn, self.valid_payload['msisdn'])
         self.assertEqual(transaction.amount, self.valid_payload['amount'])
@@ -44,7 +44,7 @@ class AirtelTransactionTestCase(APITestCase):
 
         response = self.client.post(self.payment_url, self.valid_payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(AirtelTransaction.objects.count(), 0)  # No transaction created
+        self.assertEqual(MomoColTransaction.objects.count(), 0)  # No transaction created
 
     def test_initiate_payment_invalid_data(self):
         # Send invalid payload (missing msisdn)
@@ -54,11 +54,11 @@ class AirtelTransactionTestCase(APITestCase):
         }
         response = self.client.post(self.payment_url, invalid_payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(AirtelTransaction.objects.count(), 0)
+        self.assertEqual(MomoColTransaction.objects.count(), 0)
 
     def test_callback_update_transaction_status(self):
         # Create a pending transaction in the DB
-        transaction = AirtelTransaction.objects.create(
+        transaction = MomoColTransaction.objects.create(
             reference='REF123',
             transaction_id='TRANS123',
             msisdn='260978123456',

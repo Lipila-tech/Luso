@@ -4,7 +4,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from django.urls import reverse, reverse_lazy
-from .base import FunctionalTest
+from ..base import FunctionalTest
 from django.conf import settings
 from django.test import override_settings
 from django.contrib.auth.hashers import make_password

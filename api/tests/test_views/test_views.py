@@ -1,6 +1,6 @@
 import os
 from django.conf import settings
-from api.models import LipilaCollection, LipilaDisbursement
+from api.models import MomoColTransaction, LipilaDisbursement
 from unittest.mock import Mock, patch
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -84,13 +84,13 @@ class MtnCollectionViewTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertEqual(LipilaCollection.objects.count(), 1)
-        self.assertEqual(LipilaCollection.objects.get().status, 'success')
-        self.assertEqual(LipilaCollection.objects.get().api_user.username, 'test_user1')
+        self.assertEqual(MomoColTransaction.objects.count(), 1)
+        self.assertEqual(MomoColTransaction.objects.get().status, 'success')
+        self.assertEqual(MomoColTransaction.objects.get().api_user.username, 'test_user1')
         # Attempt to convert the response to a UUID object
         try:
             # Attempt to convert the response to a UUID object
-            UUID(LipilaCollection.objects.get().reference_id)
+            UUID(MomoColTransaction.objects.get().reference_id)
             self.assertTrue(True)  # Test passes if conversion is successful
         except ValueError:
             self.fail("generate_reference_id did not return a valid UUID string.")
@@ -99,16 +99,16 @@ class MtnCollectionViewTest(APITestCase):
         data = {'payer': 'lipila', 'amount': 'invalid'}
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(LipilaCollection.objects.count(), 0)
+        self.assertEqual(MomoColTransaction.objects.count(), 0)
 
     def test_create_nonlipila_fail_payer(self):
         data = {'amount': 100, 'payer': '0809123456'}
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(LipilaCollection.objects.count(), 0)
+        self.assertEqual(MomoColTransaction.objects.count(), 0)
 
     def test_get_payments_success(self):
-        LipilaCollection.objects.create(
+        MomoColTransaction.objects.create(
             api_user=self.user, amount=100, status='success')
         response = self.client.get(self.url, {'api_user': self.user.username})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
