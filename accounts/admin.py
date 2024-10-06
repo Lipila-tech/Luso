@@ -13,8 +13,8 @@ from patron.models import (Tier,
 from accounts.models import CreatorProfile, CustomUser, UserSocialAuth
 
 
-class AirtelTransactionModel(admin.ModelAdmin):
-    list_display = ['reference', 'transaction_id', 'msisdn',
+class MomoColTransactionAdmin(admin.ModelAdmin):
+    list_display = ['reference', 'transaction_id', 'msisdn', 'wallet_type',
                     'amount', 'status', 'created_at', 'updated_at']
     search_fields = ['reference', 'transaction_id', 'msisdn']
 
@@ -77,11 +77,6 @@ class DisbursementAdmin(admin.ModelAdmin):
                     'transaction_id', 'wallet_type', 'reference']
 
 
-class LipilaCollectionAdmin(admin.ModelAdmin):
-    list_display = ['msisdn', 'processed_date', 'updated_at', 'amount',
-                    'transaction_id', 'wallet_type', 'reference']
-
-
 class ContactInfoAdmin(admin.ModelAdmin):
     list_display = ('street', 'location', 'phone1', 'phone2',
                     'email1', 'email2', 'hours', 'days', 'timestamp')
@@ -112,7 +107,6 @@ class CreatorProfileAdmin(admin.ModelAdmin):
 
 
 # Register
-admin.site.register(MomoColTransaction, AirtelTransactionModel)
 admin.site.register(UserSocialAuth, UserSocialAuthAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Tier, TierAdmin)
@@ -120,7 +114,7 @@ admin.site.register(Payment, PaymentAdmin)
 admin.site.register(ProcessedWithdrawals, ProcessedWithdrawalAdmin)
 admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
 admin.site.register(LipilaDisbursement, DisbursementAdmin)
-admin.site.register(MomoColTransaction, LipilaCollectionAdmin)
+admin.site.register(MomoColTransaction, MomoColTransactionAdmin)
 admin.site.register(ContactInfo, ContactInfoAdmin)
 admin.site.register(CustomerMessage, CustomerMessageAdmin)
 admin.site.register(HeroInfo, HeroInfoAdmin)

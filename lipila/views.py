@@ -461,13 +461,13 @@ def checkout_subscription(request, id):
 
         if form.is_valid():
             # Extract data from the form
-            isp = form.cleaned_data['wallet_type']
+            wallet_type = form.cleaned_data['wallet_type']
             transaction_id = generate_transaction_id()
             amount = form.cleaned_data['amount']
             msisdn = form.cleaned_data['msisdn']
             reference = form.cleaned_data['reference']
             
-            if isp == 'mtn':
+            if wallet_type == 'mtn':
                 form.instance.transaction_id = transaction_id
                 form.amount = amount
                 form.save()
@@ -485,7 +485,7 @@ def checkout_subscription(request, id):
                     form.instance.status = 'success'
                     form.save()
                     messages.success(
-                        request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{isp}")
+                        request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{wallet_type}")
                     return redirect(url)
                 else:
                     form.instance.status = 'failed'
@@ -494,7 +494,7 @@ def checkout_subscription(request, id):
                         request, "Error: Payment failed try again later!")
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-            elif isp == 'airtel':
+            elif wallet_type == 'airtel':
                 """
                 This view will make a POST request to the AirtelPaymentRequestView in the 'payments' app.
                 """
@@ -550,9 +550,8 @@ def checkout_subscription(request, id):
     return render(request, 'lipila/checkout/checkout_subscription.html', context)
 
 
-# @login_required
+
 def checkout_support(request, payee):
-    tier = get_tier_by_patron_title(payee)
     url = ''
 
     if request.method == 'POST':
@@ -563,7 +562,7 @@ def checkout_support(request, payee):
         if form.is_valid():            
             form.save(commit=False)
             # extract data to send to api
-            isp = form.cleaned_data['wallet_type']
+            wallet_type = form.cleaned_data['wallet_type']
             reference = form.cleaned_data['reference']
             amount = form.cleaned_data['amount']
             transaction_id = generate_transaction_id()
@@ -588,11 +587,9 @@ def checkout_support(request, payee):
             form.instance.transaction_id = transaction_id
             form.save()  # Now save to DB
 
-            if isp == 'mtn':
+            if wallet_type == 'mtn':
                 try:
-                    # form.instance.transaction_id = transaction_id
-                    # process mtn payment
-                    payment_data = {
+                    payload = {
                         'payer': request.user,
                         'amount': amount,
                         'transaction': 'support',
@@ -601,15 +598,13 @@ def checkout_support(request, payee):
                         'msisdn': msisdn
                     }
                     checkout_url = settings.LIPILA_CHECKOUT_URL_MTN
-                    # response = requests.post(checkout_url, json=payload)
+                    response = requests.post(checkout_url, json=payload)
                     
-                    response = process_mtn_payment(**payment_data)
-                    if response.status_code == 200:
-                        
+                    if response.status_code == 201:
                         form.instance.status = 'success'
                         form.save()
                         messages.success(
-                            request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{isp}")
+                            request, f"Payment Success: Account : { form.cleaned_data['msisdn']} amount: {amount} Wallet:{wallet_type}")
                         return redirect(url)
                     
                     response_text = response.content.decode('utf-8')
@@ -622,7 +617,7 @@ def checkout_support(request, payee):
                     msg = {'message': f'Failed to initiate payment: {response_json.get("message", "Unknown error")}', 'status':500}
                     return apology(request, data=msg)
 
-            elif isp == 'airtel':
+            elif wallet_type == 'airtel':
                 # process airtel payment
                 """
                 This view will make a POST request to the AirtelPaymentRequestView in the 'payments' app.

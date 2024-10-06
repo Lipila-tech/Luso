@@ -1,6 +1,5 @@
 from django.urls import path, include
 from accounts import views
-from api.views import get_swagger_file
 
 urlpatterns = [
     path('signup/', views.signup_view, name="signup"),
@@ -14,6 +13,4 @@ urlpatterns = [
     path('momo/callback/', views.momo_callback, name='momo_callback'),
     path('google/callback/', views.google_callback, name='google_callback'),
     path('tiktok_oauth/', views.tiktok_oauth, name='tiktok_oauth'),
-
-    path('swagger/payments/', get_swagger_file, name='get_swagger_file'),
 ]

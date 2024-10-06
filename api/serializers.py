@@ -11,8 +11,10 @@ User = settings.AUTH_USER_MODEL
 class MomoColTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = MomoColTransaction
-        fields = ['reference', 'transaction_id', 'msisdn', 'amount', 'status', 'wallet_type']
-        
+        fields = ['reference', 'transaction_id', 'msisdn', 'amount',
+                  'status', 'wallet_type', 'created_at', 'updated_at']
+        read_only_fields = ['status', 'created_at', 'updated_at']
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,4 +40,5 @@ class LipilaDisbursementSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         mdodel = SubscriptionPayments
-        fields = ['amount', 'payer_account-number', 'transaction_id', 'wallet_type']
+        fields = ['amount', 'payer_account-number',
+                  'transaction_id', 'wallet_type']
