@@ -4,11 +4,30 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="" name="description">
-    <meta content="" name="keywords">
-    <meta name="msapplication-TileColor" content="#da532c">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Support {{creator.patron_title}} on Luso! Help fund their creative journey by becoming a fan and enjoying exclusive content.">
+    <meta name="keywords" content="Support Creators, Fan Support, Creator Monetization, Exclusive Content, Zambian Creators, Artist Support, Patreon Alternative">
+    <meta name="author" content="{{creator.patron_title}}">
+    
+    <!-- Open Graph Meta Tags (for Facebook & Social Sharing) -->
+    <meta property="og:title" content="Support {{creator.patron_title}} on Luso">
+    <meta property="og:description" content="Become a true fan and support {{creator.patron_title}} on Luso. Enjoy exclusive content and help bring their creative vision to life.">
+    <meta property="og:image" content="{% static 'assets/img/avator.jpeg' %}">
+    <meta property="og:url" content="{{url}}">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Support {{creator.patron_title}} on Luso">
+    <meta name="twitter:description" content="Join {{creator.patron_title}}'s community and support their creative journey. Access exclusive content, become a fan, and make a difference.">
+    <meta name="twitter:image" content="{% static 'assets/img/avator.jpeg' %}">
+    
+    <title>Support {{creator.patron_title}} on Luso | Exclusive Content & More</title>
+    
+    <!-- Canonical link for SEO -->
+    <link rel="canonical" href="{{url}}">
     <meta name="theme-color" content="#ffffff">
 
     <!-- Favicons -->
