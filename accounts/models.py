@@ -66,6 +66,7 @@ class Profile(models.Model):
         null=True, 
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
     )
+    avatar_url = models.URLField(blank=True, null=True)
     bio = models.TextField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -74,7 +75,7 @@ class Profile(models.Model):
         return f"{self.user.username}'s Profile"
 
 class UserSocialAuth(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="social_auth")
     provider = models.CharField(max_length=50)  # e.g., 'tiktok', 'google', 'facebook'
     access_token = models.CharField(max_length=500)
     refresh_token = models.CharField(max_length=500, blank=True, null=True)
