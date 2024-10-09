@@ -124,20 +124,26 @@ def tiktok_callback(request):
         # If the UserSocialAuth was newly created, we need to create a CustomUser
         if created:
             # Create a new CustomUser
+            redirect_url = reverse('patron:create_creator_profile')
             messages.success(request, f"Congratulations {tiktok_username}! Account created.")
             user = get_user_model().objects.create(username=tiktok_username, is_active=True)
             # Link the social auth entry with the newly created user
             social_auth.user = user
             social_auth.save()
         else:
+            messages.success(request, f"Welcome back {tiktok_username}")
             user = social_auth.user
-
+            if user.has_group:
+                redirect_url = reverse('patron:create_creator_profile')
+            else:
+                redirect_url = reverse('dashboard')
+        
         # Ensure the user is authenticated and valid before login
         if user and user.is_active:
-            messages.success(request, f"Login success!, {tiktok_username}!")
+            messages.success(request, "Login success!")
             login(request, user, backend='accounts.auth_backends.TikTokBackend')
             request.session['tiktok_user_data'] = access_token
-            return redirect(reverse('dashboard'))
+            return redirect(redirect_url)
         else:
             data = {'message': 'Could not be authenticated', 'status': 500}
             return apology(request, data)
