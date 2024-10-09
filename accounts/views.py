@@ -138,8 +138,8 @@ def tiktok_callback(request):
             request.session['tiktok_user_data'] = access_token
             return redirect(reverse('dashboard'))
         else:
-            messages.error(request, "Tiktok Authentication failed")
-            return redirect(reverse('accounts:signup'))
+            messages.error(request, f"Tiktok Authentication failed for: {tiktok_username} - {user}")
+            return redirect(reverse('accounts:signin'))
 
     data = {'message': 'Tiktok Authentication failed', 'status': 500}
     return apology(request, data)
