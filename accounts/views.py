@@ -129,18 +129,17 @@ def tiktok_callback(request):
             # Link the social auth entry with the newly created user
             social_auth.user = user
             social_auth.save()
-        else:
-            # User already exists, retrieve the user
-            user = social_auth.user
-            messages.success(request, f"Welcome back, {tiktok_username}!")
-        
-        login(request, user,
+                
+        user = authenticate(request, username=user)
+        if user is not None:
+            messages.success(request, f"Login success!, {tiktok_username}!")
+            login(request, user,
                 backend='accounts.auth_backends.TikTokBackend')
-        request.session['tiktok_user_data'] = access_token
-        return redirect(reverse('dashboard'))
-    else:
-        messages.error(request, "Tiktok Authentication failed")
-        return redirect(reverse('accounts:signup'))
+            request.session['tiktok_user_data'] = access_token
+            return redirect(reverse('dashboard'))
+        else:
+            messages.error(request, "Tiktok Authentication failed")
+            return redirect(reverse('accounts:signup'))
 
 
 def tiktok_oauth(request):
