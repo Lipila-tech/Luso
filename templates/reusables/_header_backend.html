@@ -17,7 +17,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-profile align-items-center " href="#"
                     id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {% if request.user.profile.avatar_url %}
+                    {% if request.user.usersocialauth.avatar_url %}
                     <img src="{{request.user.profile.avatar.url}}" alt="Profile" class="rounded-circle">
                     {% else %}
                     <img src="{% static 'assets/img/avator.jpeg' %}" alt="profile" class="rounded-circle">

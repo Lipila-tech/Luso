@@ -20,7 +20,7 @@ class MomoColTransactionAdmin(admin.ModelAdmin):
 
 
 class UserSocialAuthAdmin(admin.ModelAdmin):
-    list_display = ('user', 'provider', 'created_at', 'updated_at')
+    list_display = ('user', 'provider', 'created_at', 'updated_at', 'avatar_url')
     search_fields = ('user__username', 'provider')
 
 
