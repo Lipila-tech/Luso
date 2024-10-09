@@ -130,7 +130,7 @@ def tiktok_callback(request):
             social_auth.user = user
             social_auth.save()
                 
-        user = authenticate(request, username=user)
+        user = authenticate(request, username=tiktok_username)
         if user is not None:
             messages.success(request, f"Login success!, {tiktok_username}!")
             login(request, user)

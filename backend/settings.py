@@ -77,7 +77,13 @@ CALLBACK_URL_MTN=env("CALLBACK_URL_MTN")
 
 # GOOGLE API
 GOOGLE_OAUTH_CLIENT_ID=env("GOOGLE_OAUTH_CLIENT_ID")
-GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/google/callback/'
+
+if env('ENV') != 'dev':
+    GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/google/callback/'
+else:
+    GOOGLE_LOGIN_URI = 'http://localhost:8000/accounts/google/callback/'
+
+
 
 
 # PAYPAL API
