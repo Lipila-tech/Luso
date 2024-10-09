@@ -129,6 +129,7 @@ def tiktok_callback(request):
             user = get_user_model().objects.create(username=tiktok_username, is_active=True)
             # Link the social auth entry with the newly created user
             social_auth.user = user
+            social_auth.user.set_unusable_password()
             social_auth.save()
         else:
             messages.success(request, f"Welcome back {tiktok_username}")
@@ -203,23 +204,31 @@ def google_callback(request):
         'username': email.split('@')[0],  # You can modify this as needed
         'first_name': user_data.get('given_name', ''),
         'last_name': user_data.get('family_name', ''),
+        'is_active': True,
     })
 
     if created:
+        redirect_url = reverse('patron:create_creator_profile')
         messages.success(request, "Account created.")
         user.set_unusable_password()  # Set unusable password if creating a new user
         user.save()
 
-    # Authenticate and log in the user
-    user = authenticate(request, email=email)
-    if user is not None:
+    else:
         messages.success(request, f"Welcome back, {user.username}!")
+        user = authenticate(request, email=email)
+        if not user.has_group:
+                redirect_url = reverse('patron:create_creator_profile')
+        else:
+            redirect_url = reverse('dashboard')
+            
+    if user and user.is_active:
+        messages.success(request, "Login success!")
         login(request, user)
         request.session['google_user_data'] = user_data
-        return redirect(reverse('dashboard'))
+        return redirect(redirect_url)
     else:
-        messages.error(request, "Authentication failed")
-        return redirect(reverse('accounts:signup'))
+        data = {'message': 'Could not be authenticated with Google', 'status': 500}
+        return apology(request, data)
 
 
 def custom_logout(request):
