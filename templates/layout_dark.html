@@ -23,8 +23,7 @@
     <meta name="twitter:description" content="Join {{creator.patron_title}}'s community and support their creative journey. Access exclusive content, become a fan, and make a difference.">
     <meta name="twitter:image" content="{% static 'assets/img/avator.jpeg' %}">
     
-    <title>Support {{creator.patron_title}} on Luso | Exclusive Content & More</title>
-    
+    {% block title %} Support {{creator.patron_title}} on Luso | Exclusive Content & More {% endblock %}
     <!-- Canonical link for SEO -->
     <link rel="canonical" href="{{url}}">
     <meta name="theme-color" content="#ffffff">
@@ -46,7 +45,6 @@
   <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
   <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
 
-  <title>{% block title %} Luso | {% endblock %}</title>
   {% block extrastylesheets %}
   {% endblock extrastylesheets %}
   <style>
