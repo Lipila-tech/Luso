@@ -9,6 +9,25 @@ from django.shortcuts import get_object_or_404
 from accounts.globals import ISP_CHOICES
 
 
+# Define the form
+class MoneyTransferForm(forms.Form):
+    WALLET_CHOICES = [
+        ('mtn', 'MTN Mobile Money'),
+        ('airtel', 'Airtel Money'),
+    ]
+    
+    wallet_type = forms.ChoiceField(choices=WALLET_CHOICES, label="Wallet Type")
+    amount = forms.DecimalField(max_digits=10, decimal_places=2, label="Amount")
+    recipient_phone_number = forms.CharField(max_length=15, label="Recipient Phone Number")
+    sender_phone_number = forms.CharField(max_length=15, label="Sender Phone Number")
+    transaction_reference = forms.CharField(max_length=50, required=False, label="Transaction Reference (Optional)")
+    
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        if amount <= 0:
+            raise forms.ValidationError("The amount must be greater than zero.")
+        return amount
+
 
 class BaseTransactionForm(BSModalModelForm):
     wallet_type = forms.ChoiceField(choices=ISP_CHOICES)

@@ -16,7 +16,9 @@
             <th>Creator</th>
             <th>Amount Requested</th>
             <th>Account Balance</th>
+            <th>Date</th>
             <th>Status</th>
+            <th>MSISDN</th>
             <th>Verified</th>
             <th>Action</th>
         </tr>
@@ -28,7 +30,9 @@
             <td data-label="Creator">{{ request.creator.user.username }}</td>
             <td data-label="Requested">{{ request.amount }}</td>
             <td data-label="Balance">{{ request.balance }}</td>
+            <td data-label="Date">{{ request.request_date }}</td>
             <td data-label="Status">{{ request.status }}</td>
+            <td data-label="msisdn">{{ request.account_number }}</td>
             <td data-label="Verified">{{ request.is_verified }}</td>
             <td>
                 <!-- Approve request buttons -->

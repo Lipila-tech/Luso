@@ -45,7 +45,32 @@ from .utils import get_api_user, get_braintree_client_token, braintree_gateway
 from .models import CustomerMessage
 from .utils import (
     is_patron_title_valid, get_tier_by_patron_title, get_tier_subscription_by_id_patron)
+from .forms.forms import MoneyTransferForm
 
+
+@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
+@login_required
+def money_transfer_view(request):
+    if request.method == 'POST':
+        form = MoneyTransferForm(request.POST)
+        if form.is_valid():
+            # Handle the transfer logic here
+            # e.g., call a payment API or process the transfer
+            wallet_type = form.cleaned_data['wallet_type']
+            amount = form.cleaned_data['amount']
+            recipient_phone = form.cleaned_data['recipient_phone_number']
+            sender_phone = form.cleaned_data['sender_phone_number']
+            transaction_reference = form.cleaned_data.get('transaction_reference', None)
+            
+            messages.success(request, "Money transfer successful!")
+            return redirect(reverse('dashboard'))
+        else:
+            messages.error(request, "Money transfer failed. Try again later")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        form = MoneyTransferForm()
+
+    return render(request, 'lipila/actions/money_transfer.html', {'form': form})
 
 
 def custom_404_view(request, exception):
@@ -276,13 +301,6 @@ def tiers(request):
             request=request
         )
         return JsonResponse(data)
-
-
-@user_passes_test(lambda u: u.is_staff)  # Only allow staff users
-@login_required
-def transfer(request):
-    transfers = Transfer.objects.filter(payer=request.user)
-    return render(request, 'lipila/actions/transfer.html', {'transfers': transfers})
 
 
 @user_passes_test(lambda u: u.is_staff)  # Only allow staff users

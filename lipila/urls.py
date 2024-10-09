@@ -42,7 +42,7 @@ urlpatterns = [
     path('subscription/history/paid/', patron_views.payments_history, name='subscriptions_history'),
     
     # Modal-forms urls
-    path('transfers/lpa/', views.transfer, name ='transfer'),
+    path('money/transfer/', views.money_transfer_view, name ='money_transfer'),
     path('withdrawals/request', views.CreateWithdrawalRequest.as_view(), name ='withdrawals'),
     path('update/<int:pk>', views.TierUpdateView.as_view(), name ='update_tier'),
     path('view/<int:pk>', views.TierReadView.as_view(), name ='view_tier'),
