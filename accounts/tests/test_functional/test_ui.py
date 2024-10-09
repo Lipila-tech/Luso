@@ -69,7 +69,7 @@ class SignupTest(FunctionalTest):
     def test_tiktok_sign_up(self):
         self.BROWSER.get(f'{self.base_url}/accounts/signup/')
         login_btn = self.BROWSER.find_element(
-            By.ID, "tiktok-login-button")
+            By.ID, "tiktok")
         login_btn.click()
 
 

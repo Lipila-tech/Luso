@@ -37,30 +37,20 @@
     </form>
     <p class="mb-5 pb-lg-2" style="color: #393f81;">Already registered. <a href="{% url 'accounts:signin' %}"
             style="color: #393f81;"> Login</a></p>
-    <h6 class="login-section-title">or</h6>
     <div class="social-login-btns">
+        <!-- Tiktok login -->
+        <a href="{% url 'accounts:tiktok_oauth' %}" class="social-login-button tiktok">
+            <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
+            Signup with TikTok
+        </a>
         <!-- Google signin -->
         <a href="{% url 'social:begin' 'google-oauth2' %}" class="social-login-button google">
-            <i class="fab fa-google"></i> Login with Google
+            <i class="fab fa-google"></i> Signup with Google
         </a>
         <!-- FB login -->
         <a href="{% url 'social:begin' 'facebook' %}" class="social-login-button facebook">
-            <i class="fab fa-facebook"></i> Login with Facebook
+            <i class="fab fa-facebook"></i> Signup with Facebook
         </a>
-        <!-- Tiktok login -->
-        {% if request.session.tiktok_user_data %}
-        <div>
-            <a href="{% url 'accounts:logout' %}" class="tiktok-login-button">
-                <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
-                Logout
-            </a>
-        </div>
-        {% else %}
-        <a href="{% url 'accounts:tiktok_oauth' %}" class="tiktok-login-button">
-            <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
-            Login with TikTok
-        </a>
-        {% endif %}
     </div>
 
 </div>

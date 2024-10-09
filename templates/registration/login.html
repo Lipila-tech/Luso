@@ -28,8 +28,12 @@
     <a class="small" href="{% url 'password_reset' %}">Forgot password?</a>
     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'accounts:signup' %}"
             style="color: #393f81;">Register here</a></p>
-    <h6 class="login-section-title">or</h6>
     <div class="social-login-btns">
+        <!-- Tiktok login -->
+        <a href="{% url 'accounts:tiktok_oauth' %}" class="social-login-button tiktok">
+            <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
+            Login with TikTok
+        </a>
         <!-- Google signin -->
         <a href="{% url 'social:begin' 'google-oauth2' %}" class="social-login-button google">
             <i class="fab fa-google"></i> Login with Google
@@ -38,17 +42,6 @@
         <a href="{% url 'social:begin' 'facebook' %}" class="social-login-button facebook">
             <i class="fab fa-facebook"></i> Login with Facebook
         </a>
-        <!-- Tiktok login -->
-        {% if request.session.tiktok_user_data %}
-        <div>
-            <p>Click here to <a href="{% url 'accounts:logout' %}">Sign out</a></p>
-        </div>
-        {% else %}
-        <a href="{% url 'accounts:tiktok_oauth' %}"  class="tiktok-login-button">
-            <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
-            Login with TikTok
-        </a>
-        {% endif %}
     </div>
 </div>
 
