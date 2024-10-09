@@ -125,7 +125,7 @@ def tiktok_callback(request):
         if created:
             # Create a new CustomUser
             messages.success(request, f"Congratulations {tiktok_username}! Account created.")
-            user = get_user_model().objects.create(username=tiktok_username)
+            user = get_user_model().objects.create(username=tiktok_username, is_active=True)
             # Link the social auth entry with the newly created user
             social_auth.user = user
             social_auth.save()
