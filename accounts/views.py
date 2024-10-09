@@ -133,8 +133,8 @@ def tiktok_callback(request):
         user = authenticate(request, username=user)
         if user is not None:
             messages.success(request, f"Login success!, {tiktok_username}!")
-            login(request, user,
-                backend='accounts.auth_backends.TikTokBackend')
+            login(request, user)
+                # backend='accounts.auth_backends.TikTokBackend')
             request.session['tiktok_user_data'] = access_token
             return redirect(reverse('dashboard'))
         else:
