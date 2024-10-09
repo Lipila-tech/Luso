@@ -141,6 +141,9 @@ def tiktok_callback(request):
             messages.error(request, "Tiktok Authentication failed")
             return redirect(reverse('accounts:signup'))
 
+    data = {'message': 'Tiktok Authentication failed', 'status': 500}
+    return apology(request, data)
+
 
 def tiktok_oauth(request):
     # Generate a random CSRF token
