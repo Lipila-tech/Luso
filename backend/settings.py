@@ -77,7 +77,10 @@ MTN_DISBURSEMENT_KEY=env("MTN_DISBURSEMENT_KEY")
 CALLBACK_URL_MTN=env("CALLBACK_URL_MTN")
 
 # GOOGLE API
-GOOGLE_OAUTH_CLIENT_ID=env("GOOGLE_OAUTH_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=env('')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
+
 
 if env('ENV') != 'dev':
     GOOGLE_LOGIN_URI = 'https://lusostudio.tech/accounts/google/callback/'
@@ -100,12 +103,6 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 BRAINTREE_MERCHANT_ID=env("BRAINTREE_MERCHANT_ID")
 BRAINTREE_PUBLIC_KEY=env("BRAINTREE_PUBLIC_KEY")
 BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
-
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.facebook.FacebookOAuth2',
-    'django.contrib.auth.backends.ModelBackend',  # Keep the default
-)
-
 
 
 ALLOWED_HOSTS = ['localhost', 'lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
@@ -163,6 +160,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
     'accounts.auth_backends.EmailBackend',
     'accounts.auth_backends.SocialAuthBackend',
     'accounts.auth_backends.EmailOrUsernameModelBackend',

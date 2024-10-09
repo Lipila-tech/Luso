@@ -40,36 +40,21 @@
     <h6 class="login-section-title">or</h6>
     <div class="social-login-btns">
         <!-- Google signin -->
-        <div class="btn-container">
-            {% if request.session.google_user_data %}
-            <div>
-                <p>Click here to <a href="{% url 'accounts:logout' %}">Sign out</a></p>
-            </div>
-            {% else %}
-            <div>
-                <div id="g_id_onload" data-client_id="{{ CLIENT_ID }}" data-context="signin" data-ux_mode="redirect"
-                    data-login_uri="{{GOOGLE_LOGIN_URI}}" data-auto_select="false" data-itp_support="true">
-                </div>
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a>
 
-                <div id="google-login-button" class="g_id_signin" data-type="standard" data-shape=""
-                    data-theme="filled_black" data-text="signin_with" data-size="large" data-logo_alignment="left">
-                </div>
-            </div>
-            {% endif %}
-        </div>
         <!-- FB login -->
         <a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a>
         <!-- Tiktok login -->
         <!-- TikTok Login Button -->
         {% if request.session.tiktok_user_data %}
         <div>
-            <a href="{% url 'accounts:logout' %}"  class="tiktok-login-button">
+            <a href="{% url 'accounts:logout' %}" class="tiktok-login-button">
                 <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
                 Logout
             </a>
         </div>
         {% else %}
-        <a href="{% url 'accounts:tiktok_oauth' %}"  class="tiktok-login-button">
+        <a href="{% url 'accounts:tiktok_oauth' %}" class="tiktok-login-button">
             <img src="{% static 'assets/img/tiktok.png'%}" alt="TikTok Logo" class="tiktok-logo">
             Login with TikTok
         </a>

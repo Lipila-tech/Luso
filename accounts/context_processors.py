@@ -8,5 +8,5 @@ def login_uri(request):
 
 def data_client_id(request):
     return {
-        'CLIENT_ID': settings.GOOGLE_OAUTH_CLIENT_ID,
+        'CLIENT_ID': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
     }

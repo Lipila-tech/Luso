@@ -31,82 +31,6 @@ import string
 TIKTOK_CLIENT_KEY = settings.TIKTOK_CLIENT_KEY
 TIKTOK_SERVER_ENDPOINT_REDIRECT = settings.TIKTOK_SERVER_ENDPOINT_REDIRECT
 TIKTOK_CLIENT_SECRET = settings.TIKTOK_CLIENT_SECRET
-
-
-def facebook_callback(request):
-    """
-    Facebook calls this URL after the user has signed in with their Facebook account.
-    """
-    code = request.GET.get('code')
-
-    if not code:
-        return HttpResponse(status=400)  # Bad request if no code is provided
-
-    # Exchange the authorization code for an access token
-    token_url = 'https://graph.facebook.com/v12.0/oauth/access_token'
-    params = {
-        'client_id': settings.FACEBOOK_OAUTH_CLIENT_ID,
-        'redirect_uri': settings.FACEBOOK_OAUTH_REDIRECT_URI,
-        'client_secret': settings.FACEBOOK_OAUTH_CLIENT_SECRET,
-        'code': code,
-    }
-
-    try:
-        response = requests.get(token_url, params=params)
-        access_token = response.json().get('access_token')
-
-        if not access_token:
-            return HttpResponse(status=403)  # Forbidden if token retrieval fails
-    except requests.RequestException:
-        return HttpResponse(status=500)  # Internal server error on failure
-
-    # Fetch user data from Facebook using the access token
-    user_info_url = 'https://graph.facebook.com/me'
-    user_info_params = {
-        'fields': 'id,email,first_name,last_name',
-        'access_token': access_token,
-    }
-
-    try:
-        user_data = requests.get(user_info_url, params=user_info_params).json()
-
-        email = user_data.get('email')
-
-        if not email:
-            return HttpResponse(status=400)  # Bad request if no email in user data
-    except requests.RequestException:
-        return HttpResponse(status=500)  # Internal server error on failure
-
-    # Get or create the user in the database
-    user, created = get_user_model().objects.get_or_create(email=email, defaults={
-        'username': email.split('@')[0],  # You can modify this as needed
-        'first_name': user_data.get('first_name', ''),
-        'last_name': user_data.get('last_name', ''),
-        'is_active': True,
-    })
-
-    if created:
-        redirect_url = reverse('patron:create_creator_profile')
-        messages.success(request, "Account created.")
-        user.set_unusable_password()  # Set unusable password if creating a new user
-        user.save()
-
-    else:
-        messages.success(request, f"Welcome back, {user.username}!")
-        if not user.has_group:
-            redirect_url = reverse('patron:create_creator_profile')
-        else:
-            redirect_url = reverse('dashboard')
-
-    # Log in the user if they exist and are active
-    if user and user.is_active:
-        messages.success(request, "Login success!")
-        login(request, user, backend='accounts.auth_backends.SocialAuthBackend')
-        request.session['facebook_user_data'] = user_data  # Store Facebook data in session
-        return redirect(redirect_url)
-    else:
-        data = {'message': 'Could not be authenticated with Facebook', 'status': 500}
-        return HttpResponse(data, status=500)
     
 
 def tiktok_callback(request):
@@ -266,7 +190,7 @@ def google_callback(request):
 
     try:
         user_data = id_token.verify_oauth2_token(
-            token, requests.Request(), settings.GOOGLE_OAUTH_CLIENT_ID)
+            token, requests.Request(), settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY)
     except ValueError:
         return HttpResponse(status=403)  # Forbidden if token is invalid
 
