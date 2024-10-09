@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
-
+ENV = env('ENV')
 
 # LOGGING = {
 #     "version": 1,
@@ -46,6 +46,7 @@ DEBUG = env('DEBUG')
 #         },
 #     },
 # }
+
 
 
 # LIPILA API SETTINGS
