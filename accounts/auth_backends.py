@@ -5,7 +5,7 @@ from django.db import models
 
 User = get_user_model()
 
-class TikTokBackend(BaseBackend):
+class SocialAuthBackend(BaseBackend):
     def authenticate(self, request, username=None, **kwargs):
         try:
             # Get the user by their TikTok username

@@ -146,7 +146,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 AUTHENTICATION_BACKENDS = [
     'accounts.auth_backends.EmailBackend',
-    'accounts.auth_backends.TikTokBackend',
+    'accounts.auth_backends.SocialAuthBackend',
     'accounts.auth_backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]

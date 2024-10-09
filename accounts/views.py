@@ -142,7 +142,7 @@ def tiktok_callback(request):
         # Ensure the user is authenticated and valid before login
         if user and user.is_active:
             messages.success(request, "Login success!")
-            login(request, user, backend='accounts.auth_backends.TikTokBackend')
+            login(request, user, backend='accounts.auth_backends.SocialAuthBackend')
             request.session['tiktok_user_data'] = access_token
             return redirect(redirect_url)
         else:
@@ -215,15 +215,14 @@ def google_callback(request):
 
     else:
         messages.success(request, f"Welcome back, {user.username}!")
-        user = authenticate(request, email=email)
         if not user.has_group:
                 redirect_url = reverse('patron:create_creator_profile')
         else:
             redirect_url = reverse('dashboard')
-            
+
     if user and user.is_active:
         messages.success(request, "Login success!")
-        login(request, user)
+        login(request, user, backend='accounts.auth_backends.SocialAuthBackend')
         request.session['google_user_data'] = user_data
         return redirect(redirect_url)
     else:
