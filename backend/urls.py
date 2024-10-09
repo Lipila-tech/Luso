@@ -26,6 +26,7 @@ urlpatterns = [
 
     # api urls
     path('', include('lipila.urls')),
+    path('social-auth/', include('social_django.urls', namespace='social')),
     path('patron/', include(('patron.urls', 'patron'), namespace='patron')),
     path('api/v1/', include('api.urls')),
     path('accounts/', include('django.contrib.auth.urls')),

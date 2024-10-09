@@ -85,12 +85,27 @@ else:
     GOOGLE_LOGIN_URI = 'http://localhost:8000/accounts/google/callback/'
 
 
+# FACEBOOK
+
+SOCIAL_AUTH_FACEBOOK_KEY = env('')
+SOCIAL_AUTH_FACEBOOK_SECRET = env('')
+# Optional scopes
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, name, email'
+}
 
 
 # PAYPAL API
 BRAINTREE_MERCHANT_ID=env("BRAINTREE_MERCHANT_ID")
 BRAINTREE_PUBLIC_KEY=env("BRAINTREE_PUBLIC_KEY")
 BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',  # Keep the default
+)
+
 
 
 ALLOWED_HOSTS = ['localhost', 'lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
@@ -108,6 +123,7 @@ INSTALLED_APPS = [
     'django_pagination_bootstrap',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'social_django',
     # My apps
     'api',
     'patron',
@@ -146,6 +162,7 @@ REFERRER_POLICY = "strict-origin-when-cross-origin"
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
     'accounts.auth_backends.EmailBackend',
     'accounts.auth_backends.SocialAuthBackend',
     'accounts.auth_backends.EmailOrUsernameModelBackend',
