@@ -1379,6 +1379,42 @@ luso-sign-btn:hover {
   background-color: #0056b3; /* Darker blue on hover */
 }
 
+/* Base Socaal buttons style */
+.social-login-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Facebook button style */
+.social-login-button.facebook {
+  background-color: #3b5998;
+  color: white;
+  border: 1px solid #2d4373;
+}
+
+.social-login-button.facebook:hover {
+  background-color: #2d4373;
+}
+
+/* Google button style */
+.social-login-button.google {
+  background-color: #db4437;
+  color: white;
+  border: 1px solid #b1352e;
+}
+
+.social-login-button.google:hover {
+  background-color: #b1352e;
+}
+
+
 /* Style for TikTok login button */
 .tiktok-login-button {
   background-color: #EE1D52;
