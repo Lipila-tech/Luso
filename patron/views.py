@@ -287,7 +287,7 @@ def dashboard(request):
                 'last_login_time': last_login_time
             }
 
-            domain = 'http://localhost:8000' if settings.ENV == 'dev' else 'https://lusostudio.tech'
+            domain = settings.DOMAIN
 
             url = get_creator_url('index', creator, domain=domain)
             context['user'] = get_user_object(creator)

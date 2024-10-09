@@ -47,7 +47,7 @@ ENV = env('ENV')
 #     },
 # }
 
-
+DOMAIN= 'http://localhost:8000' if ENV == 'dev' else 'https://lusostudio.tech'
 
 # LIPILA API SETTINGS
 if env('ENV') != 'dev':

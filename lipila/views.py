@@ -119,7 +119,8 @@ def creator_index(request, title):
         tiers = Tier.objects.filter(creator=creator.creatorprofile).values()
         patrons = get_creator_subscribers(creator.creatorprofile)
 
-        url = get_creator_url('index', title, domain='localhost:8000')
+        domain = settings.DOMAIN
+        url = get_creator_url('index', title, domain=domain)
 
         files = get_user_files(creator, 'all')
 
