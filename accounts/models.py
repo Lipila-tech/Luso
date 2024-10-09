@@ -75,7 +75,7 @@ class Profile(models.Model):
         return f"{self.user.username}'s Profile"
 
 class UserSocialAuth(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="social_auth")
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     provider = models.CharField(max_length=50)  # e.g., 'tiktok', 'google', 'facebook'
     access_token = models.CharField(max_length=500)
     refresh_token = models.CharField(max_length=500, blank=True, null=True)
