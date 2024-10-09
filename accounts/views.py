@@ -133,7 +133,7 @@ def tiktok_callback(request):
         else:
             messages.success(request, f"Welcome back {tiktok_username}")
             user = social_auth.user
-            if user.has_group:
+            if not user.has_group:
                 redirect_url = reverse('patron:create_creator_profile')
             else:
                 redirect_url = reverse('dashboard')
