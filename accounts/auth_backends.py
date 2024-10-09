@@ -3,9 +3,27 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 
+User = get_user_model()
+
+class TikTokBackend(BaseBackend):
+    def authenticate(self, request, username=None, **kwargs):
+        try:
+            # Get the user by their TikTok username
+            user = User.objects.get(username=username)
+            return user
+        except User.DoesNotExist:
+            return None
+
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
+
+
 class EmailBackend(BaseBackend):
     def authenticate(self, request, email=None, **kwargs):
-        UserModel = get_user_model()
+        UserModel = User
         try:
             user = UserModel.objects.get(email=email)
         except UserModel.DoesNotExist:
@@ -13,7 +31,7 @@ class EmailBackend(BaseBackend):
         return user
 
     def get_user(self, user_id):
-        UserModel = get_user_model()
+        UserModel = User
         try:
             return UserModel.objects.get(pk=user_id)
         except UserModel.DoesNotExist:
@@ -22,7 +40,7 @@ class EmailBackend(BaseBackend):
 
 class EmailOrUsernameModelBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
-        UserModel = get_user_model()
+        UserModel = User
         if username is None:
             username = kwargs.get(UserModel.USERNAME_FIELD)
         try:

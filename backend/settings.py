@@ -136,6 +136,7 @@ ROOT_URLCONF = 'backend.urls'
 
 AUTHENTICATION_BACKENDS = [
     'accounts.auth_backends.EmailBackend',
+    'accounts.auth_backends.TikTokBackend',
     'accounts.auth_backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
