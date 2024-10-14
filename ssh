@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+ssh -i name_sangwani-coder.pem ubuntu@ec2-16-171-138-251.eu-north-1.compute.amazonaws.com

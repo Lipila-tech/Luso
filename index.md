@@ -1,22 +1,29 @@
- <link rel="shortcut icon" type="image/x-icon" href="./logo-color.png">
- 
-# Lipila Patron
-LP is a Zambian-born monetization platform designed by Lipila Technologies Limited to empower creators. It allows them to effortlessly build a thriving community of patrons who provide recurring financial support.
-<img src='./logo-color.png' alt='logo'/>
+## Lipila Technologies Limited: Bringing Your Software Dreams to Life  
 
-## Features for Creators:
-- **Effortless Subscription Management**: Create tiered subscription plans with exclusive content, early access perks, and community benefits.
-Seamless Payments: Receive secure and timely payouts directly through your preferred payment method.
-- **Engaged Community**: Foster deeper connections with your patrons through interactive features and direct messaging.
-- **Detailed Analytics**: Gain valuable insights into your audience and track your subscription growth.
-- **Flexible Content Sharing**: Share a variety of content formats like videos, podcasts, articles, and more, directly on Lipila Patron.
-- **Monetization Tools**: One-time tips and merchandise sales (details coming soon!).
+**We craft custom software solutions and curate off-the-shelf brilliance.** 
 
-## Benefits for Patrons:
-- **Direct Support**: Directly contribute to the creators you love and fuel their creative endeavors.
-- **Exclusive Content**: Enjoy exclusive content, early access perks, and a deeper connection with your favorite creators.
-- **Community Building**: Connect with other patrons who share your interests and form a vibrant community.
+At Lipila Technologies, we believe software should be as vibrant and dynamic as the ideas it helps you realize. That's why we offer a kaleidoscope of services to fit your every need, from bespoke development to top-notch off-the-shelf solutions. 
 
-## Coming Soon:
-- **More Monetization Options**: Explore new ways to support creators, such as merchandise sales.
-- **Enhanced Community Features**: Unlock features that foster deeper engagement between creators and patrons.
+**Here's a peek at our software wonderland:**
+
+* **Custom Development:**   Imagine it, we'll build it! Our talented developers translate your vision into custom software tailored to your specific needs and workflows. 
+* **Off-the-Shelf Software:**    Need a quick and reliable solution? We offer a curated selection of high-quality off-the-shelf software, ready to launch and boost your productivity.
+* **And More!**  ✨  We don't stop there. We offer a range of additional services like maintenance, integration, and training to ensure your software journey is smooth and successful.
+
+**Ready to explore the possibilities?**
+
+* **Explore Our Services:**    Dive deeper into what we offer and discover the perfect solution for you.
+* **Contact Us:**    Let's chat about your project and bring your software dreams to life!
+
+**Why Choose Lipila Technologies?**
+
+* **Passionate Developers:**  ‍  Our team is fueled by a love for software and a commitment to excellence.
+* **Results-Oriented Approach:**    We focus on delivering solutions that get real results for your business.
+* **Agile Methodology:**  ⚡️  We adapt to your needs and keep your project on track with a flexible approach.
+
+
+**Let's build something amazing together!**
+
+zyambo@icloud.com
+
+**P.S.** Follow us on social media for tech tips, industry insights, and a dose of software fun! 
