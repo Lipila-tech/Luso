@@ -202,7 +202,7 @@ if env('DB_BACKEND') == 'postgres':
             'PASSWORD': env('PSQL_PASSWORD'),
             'HOST': env('PSQL_HOST'),
             'PORT': env('PSQL_PORT'),
-            'TEST': {'NAME': 'testdatabse'},
+            'TEST': {'NAME': 'lusotestdatabase'},
         }
     }
 elif env('DB_BACKEND') == 'mysql':
