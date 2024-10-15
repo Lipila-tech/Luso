@@ -28,7 +28,7 @@ urlpatterns = [
     path('', include('lipila.urls')),
     path('social-auth/', include('social_django.urls', namespace='social')),
     path('patron/', include(('patron.urls', 'patron'), namespace='patron')),
-    path('api/v1/', include('api.urls')),
+    path('momo', include('api.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include(('accounts.urls', 'accounts'), namespace='accounts')),
     path('multimedia/', include(('file_manager.urls', 'file_manager'), namespace='file_manager')),

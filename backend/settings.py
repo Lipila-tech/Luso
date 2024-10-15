@@ -14,7 +14,6 @@ import os
 import environ
 import sys
 env = environ.Env()
-# read .env
 environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

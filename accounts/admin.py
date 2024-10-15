@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 from api.models import (
-    LipilaDisbursement, MomoColTransaction, MomoColTransaction)
+    MomoDisTransaction, MomoColTransaction, MomoColTransaction)
 from lipila.models import (
     ContactInfo, CustomerMessage,
     HeroInfo, UserTestimonial, AboutInfo)
@@ -113,7 +113,7 @@ admin.site.register(Tier, TierAdmin)
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(ProcessedWithdrawals, ProcessedWithdrawalAdmin)
 admin.site.register(WithdrawalRequest, WithdrawalRequestAdmin)
-admin.site.register(LipilaDisbursement, DisbursementAdmin)
+admin.site.register(MomoDisTransaction, DisbursementAdmin)
 admin.site.register(MomoColTransaction, MomoColTransactionAdmin)
 admin.site.register(ContactInfo, ContactInfoAdmin)
 admin.site.register(CustomerMessage, CustomerMessageAdmin)
