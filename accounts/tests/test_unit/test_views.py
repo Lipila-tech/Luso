@@ -56,7 +56,7 @@ class GoogleCallbackTest(TestCase):
         # Check if the user was logged in
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(any("Account created." in str(message) for message in messages))
-        self.assertRedirects(response, reverse('dashboard'))  # Check redirect to dashboard
+        self.assertRedirects(response, reverse('patron:create_creator_profile'))  # Check redirect to dashboard
 
     @patch('accounts.views.id_token.verify_oauth2_token')
     @patch('accounts.views.requests.Request')
@@ -78,7 +78,7 @@ class GoogleCallbackTest(TestCase):
         # Check if the existing user was logged in
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(any(f"Welcome back, {user.username}!" in str(message) for message in messages))
-        self.assertRedirects(response, reverse('dashboard'))  # Check redirect to dashboard
+        self.assertRedirects(response, reverse('patron:create_creator_profile'))  # Check redirect to dashboard
 
 
 

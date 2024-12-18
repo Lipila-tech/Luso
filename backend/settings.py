@@ -104,7 +104,7 @@ BRAINTREE_PUBLIC_KEY=env("BRAINTREE_PUBLIC_KEY")
 BRAINTREE_PRIVATE_KEY=env("BRAINTREE_PRIVATE_KEY")
 
 
-ALLOWED_HOSTS = ['localhost', 'lusostudio.tech', 'https://lusostudio.tech', 'https://www.lusostudio.tech', 'https://lipila.lusostudio.tech']
+ALLOWED_HOSTS = ["*"]
 
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
